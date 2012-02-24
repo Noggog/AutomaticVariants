@@ -5,19 +5,32 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
+import lev.debug.Debug;
 import skyproc.ARMA;
 import skyproc.ARMO;
+import skyproc.BSA;
+import skyproc.BSA.FileType;
+import skyproc.FormID;
 import skyproc.GRUP_TYPE;
+import skyproc.Gender;
+import skyproc.MajorRecord;
+import skyproc.MajorRecord.Mask;
 import skyproc.Mod;
 import skyproc.NPC_;
+import skyproc.Perspective;
+import skyproc.RACE;
 import skyproc.SPDatabase;
 import skyproc.SPDefaultGUI;
 import skyproc.SPGlobal;
 import skyproc.SPImporter;
-import skyproc.exceptions.NotFound;
+import skyproc.Type;
+import skyproc.exceptions.BadParameter;
 import skyproc.exceptions.Uninitialized;
 
 /**
@@ -26,10 +39,16 @@ import skyproc.exceptions.Uninitialized;
  */
 public class AutomaticVariations {
 
-    static Map<ARMA, ARMA> ARMAs = new TreeMap<ARMA, ARMA>();
-    static Map<ARMO, ARMO> ARMOs = new TreeMap<ARMO, ARMO>();
-    static Map<NPC_, NPC_> NPCs = new TreeMap<NPC_, NPC_>();
+    static private String header = "AV";
+    // Load in
+    static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
+    static ArrayList<BSA> BSAs = new ArrayList<BSA>();
 
+    // Dup buffers
+//    static ArrayList<Target> targets = new ArrayList<Target>();
+//    static Map<FormID, RACE> races = new HashMap<FormID, RACE>();
+//    static Map<FormID, ARMO> armors = new HashMap<FormID, ARMO>();
+//    static Map<FormID, ARMA> armatures = new HashMap<FormID, ARMA>();
     public static void main(String[] args) {
 
         try {
@@ -42,19 +61,20 @@ public class AutomaticVariations {
             String myPatcherName = "Automatic Variations";
             // Used in the GUI as the description of what your patcher does
             String myPatcherDescription =
-                    "I did not change the description,\n"
-                    + "but I'm patching your setup to do something fantastic!";
+                    "Oh mai gawd!  Experience the rainbow.";
 
             /*
              * Initializing Debug Log and Globals
              */
-            // Go up two folders:  SkyprocPatchers/YourFolderName/
-            SPGlobal.pathToData = "../../";
             SPGlobal.createGlobalLog();
             SPGlobal.debugModMerge = false;
             SPGlobal.debugExportSummary = false;
+            SPGlobal.debugBSAimport = false;
+            SPGlobal.debugNIFimport = false;
+            Debug.timeElapsed = true;
+            Debug.timeStamp = true;
             // Turn Debugging off except for errors
-//            SPGlobal.logging(false);
+            SPGlobal.logging(false);
 
             /*
              * Creating SkyProc Default GUI
@@ -66,11 +86,10 @@ public class AutomaticVariations {
              * Importing all Active Plugins
              */
             try {
-                // Import all Mods and all the GRUPs SkyProc currently supports
                 SPImporter importer = new SPImporter();
-//                Mask m = (new RACE()).getMask();
-//                m.allow(Type.WNAM);
-//                importer.addMask(m);
+                Mask m = MajorRecord.getMask(Type.RACE);
+                m.allow(Type.WNAM);
+                importer.addMask(m);
                 importer.importActiveMods(
                         GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
                         GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
@@ -85,6 +104,7 @@ public class AutomaticVariations {
              * Create your patch to export.  (false means it is NOT an .esm file)
              */
             Mod source = new Mod("Temporary", false);
+            source.addAsOverrides(SPGlobal.getDB());
             Mod patch = new Mod(myPatchName, false);
 
 
@@ -94,8 +114,18 @@ public class AutomaticVariations {
              * =======================================
              */
 
+
+
             SPGlobal.logging(true);
-            ArrayList<VariantSet> variants = importVariants(patch);
+
+            BSAs = BSA.loadInBSAs(FileType.NIF);
+
+            ArrayList<VariantSet> variantRead = importVariants(patch);
+
+            for (VariantSet v : variantRead) {
+                linkToRecords(v);
+            }
+
 
 
 
@@ -125,10 +155,87 @@ public class AutomaticVariations {
         SPGlobal.closeDebug();
     }
 
+    static void linkToRecords(VariantSet vars) {
+        for (String s : vars.Target_FormIDs) {
+            FormID id = new FormID(s);
+            String header = id.toString();
+            SPGlobal.log(header, "Linking: " + id.toString());
+            try {
+
+                NPC_ record = (NPC_) SPDatabase.getMajor(id, GRUP_TYPE.NPC_);
+                if (record == null) {
+                    SPGlobal.logError(header, "Could not locate NPC with FormID: " + s);
+                    continue;
+                } else if (SPGlobal.logging()) {
+                    SPGlobal.log(header, "  " + record);
+                }
+
+                RACE race = (RACE) SPDatabase.getMajor(record.getRace(), GRUP_TYPE.RACE);
+                if (race == null) {
+                    SPGlobal.logError(header, "Could not locate RACE with FormID: " + record.getRace());
+                    continue;
+                } else if (SPGlobal.logging()) {
+                    SPGlobal.log(header, "  " + race);
+                }
+
+                ARMO skin = (ARMO) SPDatabase.getMajor(race.getWornArmor(), GRUP_TYPE.ARMO);
+                if (skin == null) {
+                    SPGlobal.logError(header, "Could not locate ARMO with FormID: " + race.getWornArmor());
+                    continue;
+                } else if (SPGlobal.logging()) {
+                    SPGlobal.log(header, "  " + skin);
+                }
+
+                if (skin.getArmatures().isEmpty()) {
+                    SPGlobal.logError(header, skin + " did not have any armatures.");
+                    continue;
+                }
+                ARMA piece = (ARMA) SPDatabase.getMajor(skin.getArmatures().get(0).getForm());
+                if (piece == null) {
+                    SPGlobal.logError(header, "Could not locate ARMA with FormID: " + skin.getArmatures().get(0).getForm());
+                    continue;
+                } else if (SPGlobal.logging()) {
+                    SPGlobal.log(header, "  " + piece);
+                }
+
+                String nifPath = piece.getModelPath(Gender.MALE, Perspective.THIRD_PERSON);
+                if (nifPath.equals("")) {
+                    SPGlobal.logError(header, piece + " did not have a male third person model.");
+                    continue;
+                }
+                if (!nifs.containsKey(nifPath)) {
+                    AV_Nif textureFields = new AV_Nif();
+                    textureFields.load(nifPath);
+
+                    SPGlobal.log(header, "  Nif path: " + nifPath);
+                    textureFields.print();
+
+                    nifs.put(nifPath,textureFields);
+                }
+
+
+                nifs.get(nifPath).variants.addAll(vars.variants);
+
+            } catch (BadParameter ex) {
+                SPGlobal.logError(id.toString(), "Bad parameter passed to nif texture parser.");
+                SPGlobal.logException(ex);
+            } catch (FileNotFoundException ex) {
+                SPGlobal.logError(id.toString(), "Could not find nif file.");
+                SPGlobal.logException(ex);
+            } catch (IOException ex) {
+                SPGlobal.logError(id.toString(), "File IO error getting nif file.");
+                SPGlobal.logException(ex);
+            } catch (DataFormatException ex) {
+                SPGlobal.logError(id.toString(), "BSA had a bad zipped file.");
+                SPGlobal.logException(ex);
+            }
+        }
+    }
+
     static ArrayList<VariantSet> importVariants(Mod patch) throws Uninitialized, FileNotFoundException {
         String header = "Import Variants";
         ArrayList<VariantSet> out = new ArrayList<VariantSet>();
-        File avPackages = new File("AV Packages/");
+        File avPackages = new File(SPGlobal.pathToData + "AV Packages/");
         if (avPackages.isDirectory()) {
             for (File packageFolder : avPackages.listFiles()) { // Bellyaches Animals
                 if (packageFolder.isDirectory()) {
@@ -149,6 +256,7 @@ public class AutomaticVariations {
     }
 
     static VariantSet importVariantSet(File variantFolder, String header) throws FileNotFoundException {
+        SPGlobal.log(header, "Importing variant set: " + variantFolder.getPath());
         ArrayList<Variant> variants = new ArrayList<Variant>();
         VariantSet varSet = new VariantSet();
 
@@ -157,7 +265,6 @@ public class AutomaticVariations {
                 varSet = AVGlobal.parser.fromJson(new FileReader(variantFile), VariantSet.class);
                 if (SPGlobal.logging()) {
                     SPGlobal.log(variantFile.getName(), "  Specifications loaded: ");
-                    SPGlobal.log(variantFile.getName(), "    Type: " + varSet.Type);
                     SPGlobal.log(variantFile.getName(), "    Target FormIDs: ");
                     for (String s : varSet.Target_FormIDs) {
                         SPGlobal.log(variantFile.getName(), "      " + s);

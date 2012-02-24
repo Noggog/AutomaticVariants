@@ -5,6 +5,11 @@
 package automaticvariations;
 
 import java.util.ArrayList;
+import skyproc.FormID;
+import skyproc.GRUP_TYPE;
+import skyproc.MajorRecord;
+import skyproc.SPDatabase;
+import skyproc.SPGlobal;
 
 /**
  *
@@ -12,18 +17,11 @@ import java.util.ArrayList;
  */
 public class VariantSet {
 
-    VariantType Type = VariantType.NULL;
     ArrayList<String> Target_FormIDs = new ArrayList<String>();
     Boolean Apply_To_Similar = true;
-
     ArrayList<Variant> variants = new ArrayList<Variant>();
 
     boolean isEmpty() {
         return variants.isEmpty();
-    }
-
-    enum VariantType {
-        NPC,
-        NULL
     }
 }

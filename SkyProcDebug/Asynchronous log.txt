@@ -1,0 +1,24 @@
+[1]                            [OPEN DEBUG FILE]  Opening Debug File
+[2][0m:3s][3331121]                        [BSA]  Loaded BSA: ..\..\Skyrim - Meshes.bsa
+[3][0m:3s][1335]               [Import Variants]  Importing variant set: ..\..\AV Packages\Bellyaches Animals\Horker
+[4][0m:3s][1744]                         [Black]    Loaded texture: ..\..\AV Packages\Bellyaches Animals\Horker\Black\horker.dds
+[5][0m:3s][329]                          [Brown]    Loaded texture: ..\..\AV Packages\Bellyaches Animals\Horker\Brown\horker.dds
+[6][0m:3s][295]                           [Grey]    Loaded texture: ..\..\AV Packages\Bellyaches Animals\Horker\Grey\horker.dds
+[7][0m:3s][318]                    [Light Brown]    Loaded texture: ..\..\AV Packages\Bellyaches Animals\Horker\Light Brown\horker.dds
+[8][0m:3s][116971]         [Specifications.json]    Specifications loaded: 
+[9][0m:3s][52]             [Specifications.json]      Target FormIDs: 
+[10][0m:3s][49]            [Specifications.json]        023AB1Skyrim.esm
+[11][0m:3s][39]            [Specifications.json]      Apply to Similar: true
+[12][0m:3s][1524]                        [White]    Loaded texture: ..\..\AV Packages\Bellyaches Animals\Horker\White\horker.dds
+[13][0m:3s][342]              [023AB1Skyrim.esm]  Linking: 023AB1Skyrim.esm
+[14][0m:3s][152]              [023AB1Skyrim.esm]    [NPC_ | 023AB1Skyrim.esm | EncHorker]
+[15][0m:3s][58]               [023AB1Skyrim.esm]    [RACE | 0131FCSkyrim.esm | HorkerRace]
+[16][0m:3s][68]               [023AB1Skyrim.esm]    [ARMO | 08CA6ASkyrim.esm | SkinHorker]
+[17][0m:3s][83]               [023AB1Skyrim.esm]    [ARMA | 08CA6CSkyrim.esm | NakedHorkerAA]
+[18][0m:3s][5104]                   [NIFtexture]    Nif loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[19][0m:3s][347]              [023AB1Skyrim.esm]    Nif path: meshes\Actors\Horker\Character Assets\Horker.nif
+[20][0m:3s][96]                     [NIFtexture]    Texture index 0: Horker.dds
+[21][0m:3s][88]                     [NIFtexture]    Texture index 1: HorkerWhiskers.dds
+[22][0m:3s][1356]                [Standardizing]  Automatic Variations.esp
+[23][0m:3s][58]       [Automatic Variations.esp]  Exporting 0 records.
+[24][0m:3s][9853]                        [DEBUG]  Closing Debug File.  Time was: 3472
