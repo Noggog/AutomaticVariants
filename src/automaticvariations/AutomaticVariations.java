@@ -27,8 +27,6 @@ public class AutomaticVariations {
     static File avPackages = new File(SPGlobal.pathToData + "AV Packages/");
     static File avTextures = new File(SPGlobal.pathToData + "textures/AV Packages/");
     static File avMeshes = new File(SPGlobal.pathToData + "meshes/AV Packages/");
-    // Load in
-    static ArrayList<BSA> BSAs = new ArrayList<BSA>();
     // Nif path key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
 
@@ -106,7 +104,7 @@ public class AutomaticVariations {
 
             SPGlobal.logging(true);
 
-            BSAs = BSA.loadInBSAs(FileType.NIF);
+            BSA.BSAs = BSA.loadInBSAs(FileType.NIF, FileType.DDS);
 
             gatherFiles();
 
@@ -120,7 +118,6 @@ public class AutomaticVariations {
                 n.generateVariants();
             }
 
-//            distributeFiles();
 
             /*
              * Close up shop.
@@ -267,8 +264,8 @@ public class AutomaticVariations {
                 for (File file : variantFile.listFiles()) {  // Files .dds, etc
                     if (file.isFile()) {
                         if (file.getName().endsWith(".dds")) {
-                            file = Ln.moveFile(file, new File(avTextures + file.getPath().substring(avPackages.getPath().length())), false);
-                            variant.textures.add(file);
+                            variant.textures.add(file.getPath().substring(6));
+                            variant.setName(file);
                             if (SPGlobal.logging()) {
                                 SPGlobal.log(variantFile.getName(), "  Loaded texture: " + file.getPath());
                             }

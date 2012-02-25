@@ -27,22 +27,9 @@ public class AV_Nif {
 
     final void load(String path) throws BadParameter, FileNotFoundException, IOException, DataFormatException {
         path = "meshes\\" + path;
-        File outsideBSA = new File(SPGlobal.pathToData + path);
-        NIF nif = null;
-        if (outsideBSA.isFile()) {
-            nif = new NIF(new LShrinkArray(outsideBSA));
-            SPGlobal.logError(header, "  Nif loaded from outside BSAs");
-        } else {
-            for (BSA b : AutomaticVariations.BSAs) {
-                if (b.contains(BSA.FileType.NIF) && b.hasFile(path)) {
-                    nif = new NIF(b.getFile(path));
-                    SPGlobal.logError(header, "  Nif loaded from BSA " + b.getFilePath());
-                    break;
-                }
-            }
-            if (nif == null) {
-                throw new FileNotFoundException("NIF file did not exist for path: " + path);
-            }
+        NIF nif = new NIF(BSA.getUsedFile(path));
+        if (nif == null) {
+            throw new FileNotFoundException("NIF file did not exist for path: " + path);
         }
         ArrayList<LShrinkArray> BSTextureSets = nif.getBlocks(NIF.NodeType.BSShaderTextureSet);
         for (LShrinkArray s : BSTextureSets) {
@@ -55,7 +42,7 @@ public class AV_Nif {
         }
     }
 
-    final void generateVariants() {
+    final void generateVariants() throws IOException {
         for (Variant v : variants) {
             v.generateVariant(textureFields);
         }
