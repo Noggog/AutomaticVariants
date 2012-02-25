@@ -120,7 +120,7 @@ public class AutomaticVariations {
                 n.generateVariants();
             }
 
-            distributeFiles();
+//            distributeFiles();
 
             /*
              * Close up shop.
@@ -267,6 +267,7 @@ public class AutomaticVariations {
                 for (File file : variantFile.listFiles()) {  // Files .dds, etc
                     if (file.isFile()) {
                         if (file.getName().endsWith(".dds")) {
+                            file = Ln.moveFile(file, new File(avTextures + file.getPath().substring(avPackages.getPath().length())), false);
                             variant.textures.add(file);
                             if (SPGlobal.logging()) {
                                 SPGlobal.log(variantFile.getName(), "  Loaded texture: " + file.getPath());
@@ -295,6 +296,7 @@ public class AutomaticVariations {
         }
     }
 
+    // Not used
     static void distributeFiles() {
         ArrayList<File> files = Ln.generateFileList(avPackages, 3, 3, false);
         for (File file : files) {
