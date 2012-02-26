@@ -63,13 +63,17 @@ public class AutomaticVariations {
             LDebug.timeElapsed = true;
             LDebug.timeStamp = true;
             // Turn Debugging off except for errors
-            SPGlobal.logging(false);
+//            SPGlobal.logging(false);
 
             /*
              * Creating SkyProc Default GUI
              */
             // Create the SkyProc Default GUI
             SPDefaultGUI gui = new SPDefaultGUI(myPatcherName, myPatcherDescription);
+
+
+            Mod patch = new Mod(myPatchName, false);
+            SPGlobal.setGlobalPatch(patch);
 
             /*
              * Importing all Active Plugins
@@ -82,7 +86,7 @@ public class AutomaticVariations {
                 importer.importActiveMods(
                         GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
                         GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
-                        GRUP_TYPE.TXST);
+                        GRUP_TYPE.TXST, GRUP_TYPE.LVLN);
             } catch (IOException ex) {
                 // If things go wrong, create an error box.
                 JOptionPane.showMessageDialog(null, "There was an error importing plugins.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
@@ -94,8 +98,6 @@ public class AutomaticVariations {
              */
             Mod source = new Mod("Temporary", false);
             source.addAsOverrides(SPGlobal.getDB());
-            Mod patch = new Mod(myPatchName, false);
-            SPGlobal.setGlobalPatch(patch);
 
 
             /*
@@ -135,6 +137,9 @@ public class AutomaticVariations {
             // Load NPC_ dups into LVLNs
             generateLVLNs(source);
 
+            // Replace original NPCs with LVLN replacements
+            swapInLVLNs(source);
+
             /*
              * Close up shop.
              */
@@ -160,12 +165,31 @@ public class AutomaticVariations {
         SPGlobal.closeDebug();
     }
 
+    static void swapInLVLNs(Mod source) {
+        for (LVLN llist : source.getLeveledLists()) {
+            boolean override = false;
+            for (LVLO entry : llist) {
+                LVLN replacement = llists.get(entry.getForm());
+                if (replacement != null) {
+                    if (SPGlobal.logging()) {
+                        SPGlobal.log(header, "Replacing LList entry: " + entry.getForm() + ", for LVLN: " + replacement.getEDID() + ", in LList: " + llist);
+                    }
+                    entry.setForm(replacement.getForm());
+                    override = true;
+                }
+            }
+            if (override) {
+                SPGlobal.getGlobalPatch().addRecord(llist);
+            }
+        }
+    }
+
     static void generateLVLNs(Mod source) {
         for (FormID srcNpc : npcs.keySet()) {
             LVLN llist = new LVLN(SPGlobal.getGlobalPatch());
             llist.setEDID("AV_" + source.getNPCs().get(srcNpc).getEDID() + "_llist");
             for (NPC_ n : npcs.get(srcNpc)) {
-                llist.addEntry(new LVLO(n.getForm(),1,1));
+                llist.addEntry(new LVLO(n.getForm(), 1, 1));
             }
             llists.put(srcNpc, llist);
         }
@@ -176,6 +200,9 @@ public class AutomaticVariations {
             RACE race = (RACE) SPDatabase.getMajor(npcSrc.getRace());
             ArrayList<ARMO> skinVariants = armors.get(race.getWornArmor());
             if (skinVariants != null) {
+                if (SPGlobal.logging()) {
+                    SPGlobal.log(header, "Duplicating " + npcSrc + ", for armo: " + race.getWornArmor());
+                }
                 ArrayList<NPC_> dups = new ArrayList<NPC_>(skinVariants.size());
                 for (ARMO variant : skinVariants) {
                     NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc);
@@ -202,6 +229,9 @@ public class AutomaticVariations {
             }
 
             if (variants != null) {
+                if (SPGlobal.logging()) {
+                    SPGlobal.log(header, "Duplicating " + armoSrc + ", for arma: " + target);
+                }
                 ArrayList<ARMO> dups = new ArrayList<ARMO>(variants.size());
                 for (ARMA variant : variants) {
                     ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc);
@@ -218,8 +248,12 @@ public class AutomaticVariations {
 
     static void generateARMAvariants(Mod source) {
         for (ARMA armaSrc : source.getArmatures()) {
-            AV_Nif malenif = nifs.get(armaSrc.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase());
+            String modelPath = armaSrc.getModelPath(Gender.MALE, Perspective.THIRD_PERSON);
+            AV_Nif malenif = nifs.get(modelPath.toUpperCase());
             if (malenif != null) { // we have variants for that nif
+                if (SPGlobal.logging()) {
+                    SPGlobal.log(header, "Duplicating " + armaSrc + ", for nif: " + modelPath);
+                }
                 ArrayList<ARMA> dups = new ArrayList<ARMA>();
                 for (Variant v : malenif.variants) {
                     ARMA dup = (ARMA) SPGlobal.getGlobalPatch().makeCopy(armaSrc);

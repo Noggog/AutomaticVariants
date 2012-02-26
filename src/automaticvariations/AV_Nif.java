@@ -51,10 +51,10 @@ public class AV_Nif {
         if (SPGlobal.logging()) {
             int i = 0;
             for (TextureField set : textureFields) {
-                SPGlobal.logError(header, "  Texture index " + i++ + ": " + set.title);
+                SPGlobal.log(header, "  Texture index " + i++ + ": " + set.title);
                 int j = 0;
                 for (String s : set.maps) {
-                    SPGlobal.logError(header, "    " + j++ + ": " + s);
+                    SPGlobal.log(header, "    " + j++ + ": " + s);
                 }
             }
         }
