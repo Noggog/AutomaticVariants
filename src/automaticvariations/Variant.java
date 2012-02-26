@@ -4,10 +4,10 @@
  */
 package automaticvariations;
 
+import automaticvariations.AV_Nif.TextureField;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import skyproc.BSA;
 import skyproc.SPGlobal;
 import skyproc.TXST;
 
@@ -18,21 +18,21 @@ import skyproc.TXST;
 public class Variant {
 
     String name;
-    ArrayList<String> textures = new ArrayList<String>();
-    TXST[] textureVariants;
+    ArrayList<String> variantTexturePaths = new ArrayList<String>();
+    TextureVariant[] textureVariants;
 
-    void generateVariant(ArrayList<ArrayList<String>> texturePack) throws IOException {
+    void generateVariant(ArrayList<TextureField> texturePack) throws IOException {
 
         // Find out which TXSTs need to be generated
         String[][] replacements = new String[texturePack.size()][7];
         boolean[] needed = new boolean[texturePack.size()];
-        for (String s : textures) {
+        for (String s : variantTexturePaths) {
             String fileName = s;
             fileName = fileName.substring(fileName.lastIndexOf('\\'));
             int i = 0;
-            for (ArrayList<String> textureSet : texturePack) {
+            for (TextureField textureSet : texturePack) {
                 int j = 0;
-                for (String texture : textureSet) {
+                for (String texture : textureSet.maps) {
                     if (!texture.equals("") && texture.lastIndexOf('\\') != -1) {
                         String textureName = texture.substring(texture.lastIndexOf('\\'));
                         if (textureName.equalsIgnoreCase(fileName)) {
@@ -51,18 +51,18 @@ public class Variant {
         }
 
         // Make new TXSTs
-        textureVariants = new TXST[texturePack.size()];
+        textureVariants = new TextureVariant[texturePack.size()];
         int i = 0;
-        for (ArrayList<String> textureSet : texturePack) {
+        for (TextureField textureSet : texturePack) {
             if (needed[i]) {
                 // New TXST
                 TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch());
                 tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
-                tmpTXST.setEDID(name);
+                tmpTXST.setEDID(name + "_txst");
 
                 // Set maps
                 int j = 0;
-                for (String texture : textureSet) {
+                for (String texture : textureSet.maps) {
                     if (replacements[i][j] != null) {
                         tmpTXST.setNthMap(j, replacements[i][j]);
                     } else if (!"".equals(texture)) {
@@ -74,20 +74,30 @@ public class Variant {
                         j++;
                     }
                 }
-                textureVariants[i] = tmpTXST;
+                textureVariants[i] = new TextureVariant(tmpTXST, textureSet.title);
             }
             i++;
         }
 
-        textures = null; // Free up space
+        variantTexturePaths = null; // Free up space
+    }
+
+    class TextureVariant {
+        String nifFieldName;
+        TXST textureRecord;
+
+        TextureVariant (TXST txst, String name) {
+            textureRecord = txst;
+            nifFieldName = name;
+        }
     }
 
     void setName (File file) {
         String[] tmp = file.getPath().split("\\\\");
-        name = tmp[tmp.length - 4] + "-" + tmp[tmp.length - 3] + "-" + tmp[tmp.length - 2];
+        name = "AV_" + tmp[tmp.length - 4].replaceAll(" ", "") + "_" + tmp[tmp.length - 3].replaceAll(" ", "") + "_" + tmp[tmp.length - 2].replaceAll(" ", "");
     }
 
     boolean isEmpty() {
-        return textures.isEmpty();
+        return variantTexturePaths.isEmpty();
     }
 }

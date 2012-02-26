@@ -1,5 +1,6 @@
 package automaticvariations;
 
+import automaticvariations.Variant.TextureVariant;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -14,6 +15,7 @@ import lev.debug.LDebug;
 import skyproc.BSA.FileType;
 import skyproc.MajorRecord.Mask;
 import skyproc.*;
+import skyproc.ARMA.AltTexture;
 import skyproc.exceptions.BadParameter;
 import skyproc.exceptions.Uninitialized;
 
@@ -29,12 +31,12 @@ public class AutomaticVariations {
     static File avMeshes = new File(SPGlobal.pathToData + "meshes/AV Packages/");
     // Nif path key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
-
     // Dup buffers
 //    static ArrayList<Target> targets = new ArrayList<Target>();
 //    static Map<FormID, RACE> races = new HashMap<FormID, RACE>();
 //    static Map<FormID, ARMO> armors = new HashMap<FormID, ARMO>();
-//    static Map<FormID, ARMA> armatures = new HashMap<FormID, ARMA>();
+    static Map<FormID, ArrayList<ARMA>> armatures = new HashMap<FormID, ArrayList<ARMA>>();
+
     public static void main(String[] args) {
 
         try {
@@ -110,14 +112,18 @@ public class AutomaticVariations {
 
             ArrayList<VariantSet> variantRead = importVariants(patch);
 
+            // Locate and load NIFs, and assign their variants
             for (VariantSet v : variantRead) {
-                linkToRecords(v);
+                linkToNif(v);
             }
 
+            // Generate TXSTs
             for (AV_Nif n : nifs.values()) {
-                n.generateVariants();
+                n.generateVariantTXSTs();
             }
 
+            // Generate ARMA dups that use TXSTs
+            generateARMAvariants(source);
 
             /*
              * Close up shop.
@@ -144,7 +150,36 @@ public class AutomaticVariations {
         SPGlobal.closeDebug();
     }
 
-    static void linkToRecords(VariantSet vars) {
+    static void generateARMAvariants(Mod source) {
+        for (ARMA armaSrc : source.getArmatures()) {
+            AV_Nif malenif = nifs.get(armaSrc.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase());
+            if (malenif != null) { // we have variants for that nif
+                ArrayList<ARMA> dups = new ArrayList<ARMA>();
+                for (Variant v : malenif.variants) {
+                    ARMA dup = (ARMA) SPGlobal.getGlobalPatch().makeCopy(armaSrc);
+                    dup.setEDID(v.name + "_arma");
+
+                    ArrayList<AltTexture> alts = dup.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
+                    alts.clear();
+                    int i = 0;
+                    for (TextureVariant texVar : v.textureVariants) {
+                        if (texVar != null) {
+                            alts.add(new AltTexture(texVar.nifFieldName, texVar.textureRecord.getForm(), i));
+                        }
+                        i++;
+                    }
+
+                    ArrayList<AltTexture> femalealts = dup.getAltTextures(Gender.FEMALE, Perspective.THIRD_PERSON);
+                    femalealts.clear();
+                    femalealts.addAll(alts);
+
+                    dups.add(dup);
+                }
+            }
+        }
+    }
+
+    static void linkToNif(VariantSet vars) {
         for (String s : vars.Target_FormIDs) {
             FormID id = new FormID(s);
             String header = id.toString();
@@ -187,19 +222,19 @@ public class AutomaticVariations {
                     SPGlobal.log(header, "  " + piece);
                 }
 
-                String nifPath = piece.getModelPath(Gender.MALE, Perspective.THIRD_PERSON);
+                String nifPath = piece.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
                 if (nifPath.equals("")) {
                     SPGlobal.logError(header, piece + " did not have a male third person model.");
                     continue;
                 }
                 if (!nifs.containsKey(nifPath)) {
-                    AV_Nif textureFields = new AV_Nif();
-                    textureFields.load(nifPath);
+                    AV_Nif nif = new AV_Nif();
+                    nif.load(nifPath);
 
                     SPGlobal.log(header, "  Nif path: " + nifPath);
-                    textureFields.print();
+                    nif.print();
 
-                    nifs.put(nifPath, textureFields);
+                    nifs.put(nifPath, nif);
                 }
 
 
@@ -264,7 +299,7 @@ public class AutomaticVariations {
                 for (File file : variantFile.listFiles()) {  // Files .dds, etc
                     if (file.isFile()) {
                         if (file.getName().endsWith(".dds")) {
-                            variant.textures.add(file.getPath().substring(6));
+                            variant.variantTexturePaths.add(file.getPath().substring(6));
                             variant.setName(file);
                             if (SPGlobal.logging()) {
                                 SPGlobal.log(variantFile.getName(), "  Loaded texture: " + file.getPath());
