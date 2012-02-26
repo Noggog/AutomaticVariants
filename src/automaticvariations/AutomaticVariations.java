@@ -16,6 +16,7 @@ import skyproc.BSA.FileType;
 import skyproc.MajorRecord.Mask;
 import skyproc.*;
 import skyproc.ARMA.AltTexture;
+import skyproc.LVLN.LVLO;
 import skyproc.exceptions.BadParameter;
 import skyproc.exceptions.Uninitialized;
 
@@ -32,8 +33,8 @@ public class AutomaticVariations {
     // Nif path key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     // Dup buffers
-//    static ArrayList<Target> targets = new ArrayList<Target>();
-//    static Map<FormID, RACE> races = new HashMap<FormID, RACE>();
+    static Map<FormID, LVLN> llists = new HashMap<FormID, LVLN>();
+    static Map<FormID, ArrayList<NPC_>> npcs = new HashMap<FormID, ArrayList<NPC_>>();
     static Map<FormID, ArrayList<ARMO>> armors = new HashMap<FormID, ArrayList<ARMO>>();
     static Map<FormID, ArrayList<ARMA>> armatures = new HashMap<FormID, ArrayList<ARMA>>();
 
@@ -128,6 +129,12 @@ public class AutomaticVariations {
             // Generate ARMO dups that use ARMAs
             generateARMOvariants(source);
 
+            // Generate NPC_ dups that use ARMO skins
+            generateNPCvariants(source);
+
+            // Load NPC_ dups into LVLNs
+            generateLVLNs(source);
+
             /*
              * Close up shop.
              */
@@ -151,6 +158,35 @@ public class AutomaticVariations {
 
         // Close debug logs before program exits.
         SPGlobal.closeDebug();
+    }
+
+    static void generateLVLNs(Mod source) {
+        for (FormID srcNpc : npcs.keySet()) {
+            LVLN llist = new LVLN(SPGlobal.getGlobalPatch());
+            llist.setEDID("AV_" + source.getNPCs().get(srcNpc).getEDID() + "_llist");
+            for (NPC_ n : npcs.get(srcNpc)) {
+                llist.addEntry(new LVLO(n.getForm(),1,1));
+            }
+            llists.put(srcNpc, llist);
+        }
+    }
+
+    static void generateNPCvariants(Mod source) {
+        for (NPC_ npcSrc : source.getNPCs()) {
+            RACE race = (RACE) SPDatabase.getMajor(npcSrc.getRace());
+            ArrayList<ARMO> skinVariants = armors.get(race.getWornArmor());
+            if (skinVariants != null) {
+                ArrayList<NPC_> dups = new ArrayList<NPC_>(skinVariants.size());
+                for (ARMO variant : skinVariants) {
+                    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc);
+                    dup.setEDID(variant.getEDID().substring(0, variant.getEDID().length() - 5) + "_" + npcSrc.getEDID());
+
+                    dup.setWornArmor(variant.getForm());
+                    dups.add(dup);
+                }
+                npcs.put(npcSrc.getForm(), dups);
+            }
+        }
     }
 
     static void generateARMOvariants(Mod source) {
