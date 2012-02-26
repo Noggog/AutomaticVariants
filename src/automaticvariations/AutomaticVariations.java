@@ -59,7 +59,7 @@ public class AutomaticVariations {
             SPGlobal.debugModMerge = false;
             SPGlobal.debugExportSummary = false;
             SPGlobal.debugBSAimport = false;
-            SPGlobal.debugNIFimport = false;
+//            SPGlobal.debugNIFimport = false;
             LDebug.timeElapsed = true;
             LDebug.timeStamp = true;
             // Turn Debugging off except for errors
@@ -86,7 +86,7 @@ public class AutomaticVariations {
                 importer.importActiveMods(
                         GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
                         GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
-                        GRUP_TYPE.TXST, GRUP_TYPE.LVLN);
+                        GRUP_TYPE.LVLN);
             } catch (IOException ex) {
                 // If things go wrong, create an error box.
                 JOptionPane.showMessageDialog(null, "There was an error importing plugins.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
@@ -131,6 +131,16 @@ public class AutomaticVariations {
             // Generate ARMO dups that use ARMAs
             generateARMOvariants(source);
 
+            if (SPGlobal.logging()) {
+                SPGlobal.log(header, "Variants loaded: ");
+                for (FormID srcArmor : armors.keySet()) {
+                    SPGlobal.log(header, "  Armor " + SPDatabase.getMajor(srcArmor) + " has " + armors.get(srcArmor).size() + " variants.");
+                    for (ARMO variant : armors.get(srcArmor)) {
+                        SPGlobal.log(header, "    " + variant);
+                    }
+                }
+            }
+
             // Generate NPC_ dups that use ARMO skins
             generateNPCvariants(source);
 
@@ -172,7 +182,7 @@ public class AutomaticVariations {
                 LVLN replacement = llists.get(entry.getForm());
                 if (replacement != null) {
                     if (SPGlobal.logging()) {
-                        SPGlobal.log(header, "Replacing LList entry: " + entry.getForm() + ", for LVLN: " + replacement.getEDID() + ", in LList: " + llist);
+                        SPGlobal.log(header, "Replacing LList entry: " + SPDatabase.getMajor(entry.getForm()) + ", for LVLN: " + replacement.getEDID() + ", in LList: " + llist);
                     }
                     entry.setForm(replacement.getForm());
                     override = true;
@@ -197,11 +207,15 @@ public class AutomaticVariations {
 
     static void generateNPCvariants(Mod source) {
         for (NPC_ npcSrc : source.getNPCs()) {
-            RACE race = (RACE) SPDatabase.getMajor(npcSrc.getRace());
-            ArrayList<ARMO> skinVariants = armors.get(race.getWornArmor());
+            FormID armorForm = npcSrc.getWornArmor();
+            if (npcSrc.getWornArmor().equals(FormID.NULL)) {
+                RACE race = (RACE) SPDatabase.getMajor(npcSrc.getRace());
+                armorForm = race.getWornArmor();
+            }
+            ArrayList<ARMO> skinVariants = armors.get(armorForm);
             if (skinVariants != null) {
                 if (SPGlobal.logging()) {
-                    SPGlobal.log(header, "Duplicating " + npcSrc + ", for armo: " + race.getWornArmor());
+                    SPGlobal.log(header, "Duplicating " + npcSrc + ", for " + SPDatabase.getMajor(armorForm, GRUP_TYPE.ARMO));
                 }
                 ArrayList<NPC_> dups = new ArrayList<NPC_>(skinVariants.size());
                 for (ARMO variant : skinVariants) {
@@ -230,7 +244,7 @@ public class AutomaticVariations {
 
             if (variants != null) {
                 if (SPGlobal.logging()) {
-                    SPGlobal.log(header, "Duplicating " + armoSrc + ", for arma: " + target);
+                    SPGlobal.log(header, "Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(target, GRUP_TYPE.ARMA));
                 }
                 ArrayList<ARMO> dups = new ArrayList<ARMO>(variants.size());
                 for (ARMA variant : variants) {
@@ -285,6 +299,7 @@ public class AutomaticVariations {
             FormID id = new FormID(s);
             String header = id.toString();
             SPGlobal.log(header, "Linking: " + id.toString());
+            String nifPath = "...";
             try {
 
                 NPC_ record = (NPC_) SPDatabase.getMajor(id, GRUP_TYPE.NPC_);
@@ -295,20 +310,26 @@ public class AutomaticVariations {
                     SPGlobal.log(header, "  " + record);
                 }
 
-                RACE race = (RACE) SPDatabase.getMajor(record.getRace(), GRUP_TYPE.RACE);
-                if (race == null) {
-                    SPGlobal.logError(header, "Could not locate RACE with FormID: " + record.getRace());
-                    continue;
-                } else if (SPGlobal.logging()) {
-                    SPGlobal.log(header, "  " + race);
-                }
+                // NPC's skin field
+                ARMO skin;
+                skin = (ARMO) SPDatabase.getMajor(record.getWornArmor(), GRUP_TYPE.ARMO);
 
-                ARMO skin = (ARMO) SPDatabase.getMajor(race.getWornArmor(), GRUP_TYPE.ARMO);
                 if (skin == null) {
-                    SPGlobal.logError(header, "Could not locate ARMO with FormID: " + race.getWornArmor());
-                    continue;
-                } else if (SPGlobal.logging()) {
-                    SPGlobal.log(header, "  " + skin);
+                    RACE race = (RACE) SPDatabase.getMajor(record.getRace(), GRUP_TYPE.RACE);
+                    if (race == null) {
+                        SPGlobal.logError(header, "Could not locate RACE with FormID: " + record.getRace());
+                        continue;
+                    } else if (SPGlobal.logging()) {
+                        SPGlobal.log(header, "  " + race);
+                    }
+
+                    skin = (ARMO) SPDatabase.getMajor(race.getWornArmor(), GRUP_TYPE.ARMO);
+                    if (skin == null) {
+                        SPGlobal.logError(header, "Could not locate ARMO with FormID: " + race.getWornArmor());
+                        continue;
+                    } else if (SPGlobal.logging()) {
+                        SPGlobal.log(header, "  " + skin);
+                    }
                 }
 
                 if (skin.getArmatures().isEmpty()) {
@@ -323,7 +344,7 @@ public class AutomaticVariations {
                     SPGlobal.log(header, "  " + piece);
                 }
 
-                String nifPath = piece.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
+                nifPath = piece.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
                 if (nifPath.equals("")) {
                     SPGlobal.logError(header, piece + " did not have a male third person model.");
                     continue;
@@ -342,17 +363,20 @@ public class AutomaticVariations {
                 nifs.get(nifPath).variants.addAll(vars.variants);
 
             } catch (BadParameter ex) {
-                SPGlobal.logError(id.toString(), "Bad parameter passed to nif texture parser.");
+                SPGlobal.logError(id.toString(), "Bad parameter passed to nif texture parser: " + nifPath);
                 SPGlobal.logException(ex);
             } catch (FileNotFoundException ex) {
-                SPGlobal.logError(id.toString(), "Could not find nif file.");
+                SPGlobal.logError(id.toString(), "Could not find nif file: " + nifPath);
                 SPGlobal.logException(ex);
             } catch (IOException ex) {
-                SPGlobal.logError(id.toString(), "File IO error getting nif file.");
+                SPGlobal.logError(id.toString(), "File IO error getting nif file: " + nifPath);
                 SPGlobal.logException(ex);
             } catch (DataFormatException ex) {
-                SPGlobal.logError(id.toString(), "BSA had a bad zipped file.");
+                SPGlobal.logError(id.toString(), "BSA had a bad zipped file: " + nifPath);
                 SPGlobal.logException(ex);
+            } catch (Exception e) {
+                SPGlobal.logError(header, "Exception occured while loading nif: " + nifPath);
+                SPGlobal.logException(e);
             }
         }
     }

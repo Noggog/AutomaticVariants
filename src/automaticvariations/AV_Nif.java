@@ -31,8 +31,8 @@ public class AV_Nif {
         if (nif == null) {
             throw new FileNotFoundException("NIF file did not exist for path: " + path);
         }
-        ArrayList<Node> NiTrishapes = nif.getNode(NIF.NodeType.NiTriShape);
-        ArrayList<Node> BSTextureSets = nif.getNode(NIF.NodeType.BSShaderTextureSet);
+        ArrayList<Node> NiTrishapes = nif.getNode(NIF.NodeType.NITRISHAPE);
+        ArrayList<Node> BSTextureSets = nif.getNode(NIF.NodeType.BSSHADERTEXTURESET);
         for (int i = 0 ; i < BSTextureSets.size() ; i++) {
             TextureField texField = new TextureField(BSTextureSets.get(i));
             texField.title = NiTrishapes.get(i).title;
