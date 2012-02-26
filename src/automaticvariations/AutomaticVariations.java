@@ -34,7 +34,7 @@ public class AutomaticVariations {
     // Dup buffers
 //    static ArrayList<Target> targets = new ArrayList<Target>();
 //    static Map<FormID, RACE> races = new HashMap<FormID, RACE>();
-//    static Map<FormID, ARMO> armors = new HashMap<FormID, ARMO>();
+    static Map<FormID, ArrayList<ARMO>> armors = new HashMap<FormID, ArrayList<ARMO>>();
     static Map<FormID, ArrayList<ARMA>> armatures = new HashMap<FormID, ArrayList<ARMA>>();
 
     public static void main(String[] args) {
@@ -125,6 +125,9 @@ public class AutomaticVariations {
             // Generate ARMA dups that use TXSTs
             generateARMAvariants(source);
 
+            // Generate ARMO dups that use ARMAs
+            generateARMOvariants(source);
+
             /*
              * Close up shop.
              */
@@ -148,6 +151,33 @@ public class AutomaticVariations {
 
         // Close debug logs before program exits.
         SPGlobal.closeDebug();
+    }
+
+    static void generateARMOvariants(Mod source) {
+        for (ARMO armoSrc : source.getArmors()) {
+            ArrayList<ARMA> variants = null;
+            FormID target = null;
+            for (SubForm arma : armoSrc.getArmatures()) {
+                target = arma.getForm();
+                variants = armatures.get(target);
+                if (variants != null) {
+                    break;
+                }
+            }
+
+            if (variants != null) {
+                ArrayList<ARMO> dups = new ArrayList<ARMO>(variants.size());
+                for (ARMA variant : variants) {
+                    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc);
+                    dup.setEDID(variant.getEDID().substring(0, variant.getEDID().length() - 5) + "_armo");
+
+                    dup.removeArmature(target);
+                    dup.addArmature(variant.getForm());
+                    dups.add(dup);
+                }
+                armors.put(armoSrc.getForm(), dups);
+            }
+        }
     }
 
     static void generateARMAvariants(Mod source) {
@@ -175,6 +205,7 @@ public class AutomaticVariations {
 
                     dups.add(dup);
                 }
+                armatures.put(armaSrc.getForm(), dups);
             }
         }
     }
