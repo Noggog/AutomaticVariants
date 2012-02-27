@@ -20,7 +20,6 @@ public class Variant {
     String name;
     ArrayList<String> variantTexturePaths = new ArrayList<String>();
     TextureVariant[] textureVariants;
-
     static int numSupportedTextures = 8;
 
     void generateVariant(ArrayList<TextureField> texturePack) throws IOException {
@@ -59,19 +58,26 @@ public class Variant {
             if (needed[i]) {
                 // New TXST
                 TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch());
-//                tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
+                tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
                 tmpTXST.setEDID(name + "_txst");
 
                 // Set maps
                 int j = 0;
                 for (String texture : textureSet.maps) {
+
+                    // Because nif fields map 2->3 if facegen flag is on.
+                    int set = j;
+                    if (set == 2) {
+                        set = 3;
+                    }
+
                     if (replacements[i][j] != null) {
-                        tmpTXST.setNthMap(j, replacements[i][j]);
+                        tmpTXST.setNthMap(set, replacements[i][j]);
                         if (SPGlobal.logging()) {
                             SPGlobal.log("Variant", "Replaced[" + i + "][" + j + "] with " + replacements[i][j] + " on variant " + name);
                         }
                     } else if (!"".equals(texture)) {
-                        tmpTXST.setNthMap(j, texture.substring(texture.indexOf('\\') + 1));
+                        tmpTXST.setNthMap(set, texture.substring(texture.indexOf('\\') + 1));
                     }
                     if (j == numSupportedTextures - 1) {
                         break;
@@ -88,16 +94,17 @@ public class Variant {
     }
 
     class TextureVariant {
+
         String nifFieldName;
         TXST textureRecord;
 
-        TextureVariant (TXST txst, String name) {
+        TextureVariant(TXST txst, String name) {
             textureRecord = txst;
             nifFieldName = name;
         }
     }
 
-    void setName (File file) {
+    void setName(File file) {
         String[] tmp = file.getPath().split("\\\\");
         name = "AV_" + tmp[tmp.length - 4].replaceAll(" ", "") + "_" + tmp[tmp.length - 3].replaceAll(" ", "") + "_" + tmp[tmp.length - 2].replaceAll(" ", "");
     }

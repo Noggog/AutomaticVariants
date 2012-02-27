@@ -28,7 +28,7 @@ import skyproc.exceptions.Uninitialized;
 public class AutomaticVariations {
 
     static private String header = "AV";
-    static File avPackages = new File(SPGlobal.pathToData + "AV Packages/");
+    static File avPackages = new File("AV Packages/");
     static File avTextures = new File(SPGlobal.pathToData + "textures/AV Packages/");
     static File avMeshes = new File(SPGlobal.pathToData + "meshes/AV Packages/");
     // Nif path key
@@ -474,7 +474,7 @@ public class AutomaticVariations {
                 for (File file : variantFile.listFiles()) {  // Files .dds, etc
                     if (file.isFile()) {
                         if (file.getName().endsWith(".dds")) {
-                            variant.variantTexturePaths.add(file.getPath().substring(6));
+                            variant.variantTexturePaths.add(file.getPath());
                             variant.setName(file);
                             Ln.moveFile(file, new File(avTextures + file.getPath().substring(avPackages.getPath().length())), false);
                             if (SPGlobal.logging()) {
@@ -499,7 +499,7 @@ public class AutomaticVariations {
                     }
                 }
                 if (!skip) {
-                    v.variantTexturePaths.add(f.getPath().substring(6));
+                    v.variantTexturePaths.add(f.getPath());
                 }
             }
         }
