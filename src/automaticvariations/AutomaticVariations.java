@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.DataFormatException;
@@ -37,6 +38,8 @@ public class AutomaticVariations {
     static Map<FormID, ArrayList<NPC_>> npcs = new HashMap<FormID, ArrayList<NPC_>>();
     static Map<FormID, ArrayList<ARMO>> armors = new HashMap<FormID, ArrayList<ARMO>>();
     static Map<FormID, ArrayList<ARMA>> armatures = new HashMap<FormID, ArrayList<ARMA>>();
+    static String[] EDIDexcludeArray = {"AUDIOTEMPLATE"};
+    static ArrayList<String> EDIDexclude = new ArrayList<String>(Arrays.asList(EDIDexcludeArray));
 
     public static void main(String[] args) {
 
@@ -130,19 +133,11 @@ public class AutomaticVariations {
 
             // Generate ARMO dups that use ARMAs
             generateARMOvariants(source);
-
-            if (SPGlobal.logging()) {
-                SPGlobal.log(header, "Variants loaded: ");
-                for (FormID srcArmor : armors.keySet()) {
-                    SPGlobal.log(header, "  Armor " + SPDatabase.getMajor(srcArmor) + " has " + armors.get(srcArmor).size() + " variants.");
-                    for (ARMO variant : armors.get(srcArmor)) {
-                        SPGlobal.log(header, "    " + variant);
-                    }
-                }
-            }
+            printVariants();
 
             // Generate NPC_ dups that use ARMO skins
             generateNPCvariants(source);
+            printNPCdups();
 
             // Load NPC_ dups into LVLNs
             generateLVLNs(source);
@@ -173,6 +168,40 @@ public class AutomaticVariations {
 
         // Close debug logs before program exits.
         SPGlobal.closeDebug();
+    }
+
+    static boolean checkNPCexclude(NPC_ npcSrc) {
+        String edid = npcSrc.getEDID().toUpperCase();
+        for (String exclude : EDIDexclude) {
+            if (edid.contains(exclude)) {
+                if (SPGlobal.logging()) {
+                    SPGlobal.log(header, "  Skipping " + npcSrc + " on edid exclude : " + exclude);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static void printNPCdups() {
+        if (SPGlobal.logging()) {
+            SPGlobal.log(header, "NPC dup summary: ");
+            for (FormID form : npcs.keySet()) {
+                SPGlobal.log(header, "  " + SPDatabase.getMajor(form));
+            }
+        }
+    }
+
+    static void printVariants() {
+        if (SPGlobal.logging()) {
+            SPGlobal.log(header, "Variants loaded: ");
+            for (FormID srcArmor : armors.keySet()) {
+                SPGlobal.log(header, "  Armor " + SPDatabase.getMajor(srcArmor) + " has " + armors.get(srcArmor).size() + " variants.");
+                for (ARMO variant : armors.get(srcArmor)) {
+                    SPGlobal.log(header, "    " + variant);
+                }
+            }
+        }
     }
 
     static void swapInLVLNs(Mod source) {
@@ -207,6 +236,13 @@ public class AutomaticVariations {
 
     static void generateNPCvariants(Mod source) {
         for (NPC_ npcSrc : source.getNPCs()) {
+
+            // If it's pulling from a template, it adopts its template race. No need to dup
+            if (!npcSrc.getTemplate().equals(FormID.NULL)) {
+                continue;
+            }
+
+            // Locate if any variants are available
             FormID armorForm = npcSrc.getWornArmor();
             if (npcSrc.getWornArmor().equals(FormID.NULL)) {
                 RACE race = (RACE) SPDatabase.getMajor(npcSrc.getRace());
@@ -214,6 +250,12 @@ public class AutomaticVariations {
             }
             ArrayList<ARMO> skinVariants = armors.get(armorForm);
             if (skinVariants != null) {
+
+                if (checkNPCexclude(npcSrc)) {
+                    continue;
+                }
+
+
                 if (SPGlobal.logging()) {
                     SPGlobal.log(header, "Duplicating " + npcSrc + ", for " + SPDatabase.getMajor(armorForm, GRUP_TYPE.ARMO));
                 }

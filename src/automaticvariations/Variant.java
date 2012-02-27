@@ -21,10 +21,12 @@ public class Variant {
     ArrayList<String> variantTexturePaths = new ArrayList<String>();
     TextureVariant[] textureVariants;
 
+    static int numSupportedTextures = 8;
+
     void generateVariant(ArrayList<TextureField> texturePack) throws IOException {
 
         // Find out which TXSTs need to be generated
-        String[][] replacements = new String[texturePack.size()][7];
+        String[][] replacements = new String[texturePack.size()][numSupportedTextures];
         boolean[] needed = new boolean[texturePack.size()];
         for (String s : variantTexturePaths) {
             String fileName = s;
@@ -40,7 +42,7 @@ public class Variant {
                             needed[i] = true;
                         }
                     }
-                    if (j == 6) {
+                    if (j == numSupportedTextures - 1) {
                         break;
                     } else {
                         j++;
@@ -57,7 +59,7 @@ public class Variant {
             if (needed[i]) {
                 // New TXST
                 TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch());
-                tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
+//                tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
                 tmpTXST.setEDID(name + "_txst");
 
                 // Set maps
@@ -66,9 +68,10 @@ public class Variant {
                     if (replacements[i][j] != null) {
                         tmpTXST.setNthMap(j, replacements[i][j]);
                     } else if (!"".equals(texture)) {
+                        SPGlobal.log("TEST", texture);
                         tmpTXST.setNthMap(j, texture.substring(texture.indexOf('\\') + 1));
                     }
-                    if (j == 6) {
+                    if (j == numSupportedTextures - 1) {
                         break;
                     } else {
                         j++;
