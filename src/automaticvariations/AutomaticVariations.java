@@ -62,7 +62,7 @@ public class AutomaticVariations {
             SPGlobal.debugModMerge = false;
             SPGlobal.debugExportSummary = false;
             SPGlobal.debugBSAimport = false;
-//            SPGlobal.debugNIFimport = false;
+            SPGlobal.debugNIFimport = false;
             LDebug.timeElapsed = true;
             LDebug.timeStamp = true;
             // Turn Debugging off except for errors
@@ -449,6 +449,7 @@ public class AutomaticVariations {
         SPGlobal.log(header, "Importing variant set: " + variantFolder.getPath());
         ArrayList<Variant> variants = new ArrayList<Variant>();
         VariantSet varSet = new VariantSet();
+        ArrayList<String> commonTexturePaths = new ArrayList<String>();
 
         for (File variantFile : variantFolder.listFiles()) {  // Texture folders ("Grey Horker")
             if (variantFile.isFile() && variantFile.getName().toUpperCase().endsWith(".JSON")) {
@@ -461,6 +462,12 @@ public class AutomaticVariations {
                     }
                     SPGlobal.log(variantFile.getName(), "    Apply to Similar: " + varSet.Apply_To_Similar);
                 }
+            } else if (variantFile.isFile() && variantFile.getName().toUpperCase().endsWith(".DDS")) {
+                commonTexturePaths.add(variantFile.getPath().substring(6));
+                Ln.moveFile(variantFile, new File(avTextures + variantFile.getPath().substring(avPackages.getPath().length())), false);
+                if (SPGlobal.logging()) {
+                    SPGlobal.log(variantFile.getName(), "  Loaded common texture: " + variantFile.getPath());
+                }
             } else if (variantFile.isDirectory()) {
                 Variant variant = new Variant();
                 for (File file : variantFile.listFiles()) {  // Files .dds, etc
@@ -468,6 +475,7 @@ public class AutomaticVariations {
                         if (file.getName().endsWith(".dds")) {
                             variant.variantTexturePaths.add(file.getPath().substring(6));
                             variant.setName(file);
+                            Ln.moveFile(file, new File(avTextures + file.getPath().substring(avPackages.getPath().length())), false);
                             if (SPGlobal.logging()) {
                                 SPGlobal.log(variantFile.getName(), "  Loaded texture: " + file.getPath());
                             }
@@ -480,12 +488,18 @@ public class AutomaticVariations {
             }
         }
 
+        for (Variant v : variants) {
+            for (String s : commonTexturePaths) {
+                v.variantTexturePaths.add(s);
+            }
+        }
+
         varSet.variants.addAll(variants);
         return varSet;
     }
 
     static void gatherFiles() {
-        ArrayList<File> files = Ln.generateFileList(avTextures, 3, 3, false);
+        ArrayList<File> files = Ln.generateFileList(avTextures, 2, 3, false);
         for (File file : files) {
             Ln.moveFile(file, new File(avPackages + file.getPath().substring(avTextures.getPath().length())), false);
         }

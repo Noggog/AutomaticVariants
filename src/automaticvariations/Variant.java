@@ -67,8 +67,10 @@ public class Variant {
                 for (String texture : textureSet.maps) {
                     if (replacements[i][j] != null) {
                         tmpTXST.setNthMap(j, replacements[i][j]);
+                        if (SPGlobal.logging()) {
+                            SPGlobal.log("Variant", "Replaced[" + i + "][" + j + "] with " + replacements[i][j] + " on variant " + name);
+                        }
                     } else if (!"".equals(texture)) {
-                        SPGlobal.log("TEST", texture);
                         tmpTXST.setNthMap(j, texture.substring(texture.indexOf('\\') + 1));
                     }
                     if (j == numSupportedTextures - 1) {
