@@ -53,7 +53,7 @@ public class AutomaticVariations {
             String myPatcherName = "Automatic Variations";
             // Used in the GUI as the description of what your patcher does
             String myPatcherDescription =
-                    "Oh mai gawd!  Experience the rainbow.";
+                    "Oh mai gawd!";
 
             /*
              * Initializing Debug Log and Globals
@@ -76,6 +76,7 @@ public class AutomaticVariations {
 
 
             Mod patch = new Mod(myPatchName, false);
+            patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
             SPGlobal.setGlobalPatch(patch);
 
             /*
@@ -449,7 +450,7 @@ public class AutomaticVariations {
         SPGlobal.log(header, "Importing variant set: " + variantFolder.getPath());
         ArrayList<Variant> variants = new ArrayList<Variant>();
         VariantSet varSet = new VariantSet();
-        ArrayList<String> commonTexturePaths = new ArrayList<String>();
+        ArrayList<File> commonTexturePaths = new ArrayList<File>();
 
         for (File variantFile : variantFolder.listFiles()) {  // Texture folders ("Grey Horker")
             if (variantFile.isFile() && variantFile.getName().toUpperCase().endsWith(".JSON")) {
@@ -463,7 +464,7 @@ public class AutomaticVariations {
                     SPGlobal.log(variantFile.getName(), "    Apply to Similar: " + varSet.Apply_To_Similar);
                 }
             } else if (variantFile.isFile() && variantFile.getName().toUpperCase().endsWith(".DDS")) {
-                commonTexturePaths.add(variantFile.getPath().substring(6));
+                commonTexturePaths.add(variantFile);
                 Ln.moveFile(variantFile, new File(avTextures + variantFile.getPath().substring(avPackages.getPath().length())), false);
                 if (SPGlobal.logging()) {
                     SPGlobal.log(variantFile.getName(), "  Loaded common texture: " + variantFile.getPath());
@@ -489,8 +490,17 @@ public class AutomaticVariations {
         }
 
         for (Variant v : variants) {
-            for (String s : commonTexturePaths) {
-                v.variantTexturePaths.add(s);
+            for (File f : commonTexturePaths) {
+                boolean skip = false;
+                for (String s : v.variantTexturePaths) {
+                    if (s.toUpperCase().contains(f.getName().toUpperCase())) {
+                        skip = true;
+                        break;
+                    }
+                }
+                if (!skip) {
+                    v.variantTexturePaths.add(f.getPath().substring(6));
+                }
             }
         }
 
@@ -502,10 +512,16 @@ public class AutomaticVariations {
         ArrayList<File> files = Ln.generateFileList(avTextures, 2, 3, false);
         for (File file : files) {
             Ln.moveFile(file, new File(avPackages + file.getPath().substring(avTextures.getPath().length())), false);
+            if (file.exists()) {
+                file.delete();
+            }
         }
         files = Ln.generateFileList(avMeshes, 3, 3, false);
         for (File file : files) {
             Ln.moveFile(file, new File(avPackages + file.getPath().substring(avMeshes.getPath().length())), false);
+            if (file.exists()) {
+                file.delete();
+            }
         }
     }
 
