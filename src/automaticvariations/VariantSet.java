@@ -5,11 +5,6 @@
 package automaticvariations;
 
 import java.util.ArrayList;
-import skyproc.FormID;
-import skyproc.GRUP_TYPE;
-import skyproc.MajorRecord;
-import skyproc.SPDatabase;
-import skyproc.SPGlobal;
 
 /**
  *

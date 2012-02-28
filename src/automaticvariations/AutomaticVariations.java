@@ -63,6 +63,7 @@ public class AutomaticVariations {
             SPGlobal.debugExportSummary = false;
             SPGlobal.debugBSAimport = false;
             SPGlobal.debugNIFimport = false;
+	    SPGlobal.debugConsistencyTies = true;
             LDebug.timeElapsed = true;
             LDebug.timeStamp = true;
             // Turn Debugging off except for errors
@@ -143,8 +144,8 @@ public class AutomaticVariations {
             // Load NPC_ dups into LVLNs
             generateLVLNs(source);
 
-            // Replace original NPCs with LVLN replacements
-            swapInLVLNs(source);
+            // Apply template routing from original NPCs to new LLists
+            generateTemplating(source);
 
             /*
              * Close up shop.
@@ -169,6 +170,19 @@ public class AutomaticVariations {
 
         // Close debug logs before program exits.
         SPGlobal.closeDebug();
+    }
+
+    static void generateTemplating(Mod source){
+        for (NPC_ npcSrc : source.getNPCs()) {
+            FormID npcForm = npcSrc.getForm();
+            if (llists.containsKey(npcForm)) {
+                npcSrc.setTemplate(llists.get(npcForm).getForm());
+                SPGlobal.getGlobalPatch().addRecord(npcSrc);
+                if (SPGlobal.logging()) {
+                    SPGlobal.log(header, "Templating " + npcSrc + " with " + llists.get(npcForm));
+                }
+            }
+        }
     }
 
     static boolean checkNPCexclude(NPC_ npcSrc) {
@@ -205,29 +219,9 @@ public class AutomaticVariations {
         }
     }
 
-    static void swapInLVLNs(Mod source) {
-        for (LVLN llist : source.getLeveledLists()) {
-            boolean override = false;
-            for (LVLO entry : llist) {
-                LVLN replacement = llists.get(entry.getForm());
-                if (replacement != null) {
-                    if (SPGlobal.logging()) {
-                        SPGlobal.log(header, "Replacing LList entry: " + SPDatabase.getMajor(entry.getForm()) + ", for LVLN: " + replacement.getEDID() + ", in LList: " + llist);
-                    }
-                    entry.setForm(replacement.getForm());
-                    override = true;
-                }
-            }
-            if (override) {
-                SPGlobal.getGlobalPatch().addRecord(llist);
-            }
-        }
-    }
-
     static void generateLVLNs(Mod source) {
         for (FormID srcNpc : npcs.keySet()) {
-            LVLN llist = new LVLN(SPGlobal.getGlobalPatch());
-            llist.setEDID("AV_" + source.getNPCs().get(srcNpc).getEDID() + "_llist");
+            LVLN llist = new LVLN(SPGlobal.getGlobalPatch(), "AV_" + source.getNPCs().get(srcNpc).getEDID() + "_llist");
             for (NPC_ n : npcs.get(srcNpc)) {
                 llist.addEntry(new LVLO(n.getForm(), 1, 1));
             }
@@ -262,8 +256,7 @@ public class AutomaticVariations {
                 }
                 ArrayList<NPC_> dups = new ArrayList<NPC_>(skinVariants.size());
                 for (ARMO variant : skinVariants) {
-                    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc);
-                    dup.setEDID(variant.getEDID().substring(0, variant.getEDID().length() - 5) + "_" + npcSrc.getEDID());
+                    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc, variant.getEDID().substring(0, variant.getEDID().length() - 5) + "_" + npcSrc.getEDID());
 
                     dup.setWornArmor(variant.getForm());
                     dups.add(dup);
@@ -291,8 +284,7 @@ public class AutomaticVariations {
                 }
                 ArrayList<ARMO> dups = new ArrayList<ARMO>(variants.size());
                 for (ARMA variant : variants) {
-                    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc);
-                    dup.setEDID(variant.getEDID().substring(0, variant.getEDID().length() - 5) + "_armo");
+                    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, variant.getEDID().substring(0, variant.getEDID().length() - 5) + "_armo");
 
                     dup.removeArmature(target);
                     dup.addArmature(variant.getForm());
@@ -313,8 +305,7 @@ public class AutomaticVariations {
                 }
                 ArrayList<ARMA> dups = new ArrayList<ARMA>();
                 for (Variant v : malenif.variants) {
-                    ARMA dup = (ARMA) SPGlobal.getGlobalPatch().makeCopy(armaSrc);
-                    dup.setEDID(v.name + "_arma");
+                    ARMA dup = (ARMA) SPGlobal.getGlobalPatch().makeCopy(armaSrc, v.name + "_arma");
 
                     ArrayList<AltTexture> alts = dup.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
                     alts.clear();

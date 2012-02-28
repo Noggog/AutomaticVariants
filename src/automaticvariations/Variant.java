@@ -57,9 +57,8 @@ public class Variant {
         for (TextureField textureSet : texturePack) {
             if (needed[i]) {
                 // New TXST
-                TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch());
+                TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch(), name + "_txst");
                 tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
-                tmpTXST.setEDID(name + "_txst");
 
                 // Set maps
                 int j = 0;
