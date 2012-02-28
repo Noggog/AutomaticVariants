@@ -63,7 +63,6 @@ public class AutomaticVariations {
             SPGlobal.debugExportSummary = false;
             SPGlobal.debugBSAimport = false;
             SPGlobal.debugNIFimport = false;
-	    SPGlobal.debugConsistencyTies = true;
             LDebug.timeElapsed = true;
             LDebug.timeStamp = true;
             // Turn Debugging off except for errors
@@ -177,6 +176,7 @@ public class AutomaticVariations {
             FormID npcForm = npcSrc.getForm();
             if (llists.containsKey(npcForm)) {
                 npcSrc.setTemplate(llists.get(npcForm).getForm());
+		npcSrc.setTemplateFlag(NPC_.TemplateFlag.USE_TRAITS, true);
                 SPGlobal.getGlobalPatch().addRecord(npcSrc);
                 if (SPGlobal.logging()) {
                     SPGlobal.log(header, "Templating " + npcSrc + " with " + llists.get(npcForm));
@@ -249,7 +249,6 @@ public class AutomaticVariations {
                 if (checkNPCexclude(npcSrc)) {
                     continue;
                 }
-
 
                 if (SPGlobal.logging()) {
                     SPGlobal.log(header, "Duplicating " + npcSrc + ", for " + SPDatabase.getMajor(armorForm, GRUP_TYPE.ARMO));
