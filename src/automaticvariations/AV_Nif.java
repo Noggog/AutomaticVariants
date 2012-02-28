@@ -22,12 +22,14 @@ import skyproc.exceptions.BadParameter;
 public class AV_Nif {
 
     private static String header = "AV_Nif";
+    String name;
     String path;
     ArrayList<TextureField> textureFields = new ArrayList<TextureField>();
     ArrayList<Variant> variants = new ArrayList<Variant>();
 
 
     AV_Nif (String path) {
+	name = path;
 	this.path = "meshes\\" + path;
     }
 

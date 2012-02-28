@@ -30,8 +30,11 @@ public class AutomaticVariations {
     static File avPackages = new File("AV Packages/");
     static File avTextures = new File(SPGlobal.pathToData + "textures/AV Packages/");
     static File avMeshes = new File(SPGlobal.pathToData + "meshes/AV Packages/");
-    // Nif path is key
+    // AV_Nif name is key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
+    // Armo formid is key, nifname is value
+    // Used for existing alt textures such as white skeevers
+    static Map<FormID, String> armoToNif = new HashMap<FormID, String>();
     //srcNPC is key
     static Map<FormID, LVLN> llists = new HashMap<FormID, LVLN>();
     static Map<FormID, ArrayList<NPC_spec>> npcs = new HashMap<FormID, ArrayList<NPC_spec>>();
@@ -269,7 +272,7 @@ public class AutomaticVariations {
 	}
 	boolean last = false;
 	for (NPC_ npcSrc : source.getNPCs()) {
-	    
+
 	    // If it's pulling from a template, it adopts its template race. No need to dup
 	    if (!npcSrc.getTemplate().equals(FormID.NULL) && npcSrc.getTemplateFlag(NPC_.TemplateFlag.USE_TRAITS)) {
 		if (SPGlobal.logging()) {
@@ -383,7 +386,7 @@ public class AutomaticVariations {
 	    }
 	}
     }
-    
+
     static void generateVariant(Variant v, ArrayList<AV_Nif.TextureField> texturePack) throws IOException {
 
 	// Find out which TXSTs need to be generated
@@ -535,13 +538,13 @@ public class AutomaticVariations {
 		    SPGlobal.log(header, "  Nif path: " + nifPath);
 		    nif.print();
 
-		    nifs.put(nifPath, nif);
+		    nifs.put(nif.name, nif);
+		    armoToNif.put(skin.getForm(), nif.name);
 		} else if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "Already a nif with that path.");
 		}
 
-
-		nifs.get(nifPath).variants.addAll(vars.variants);
+		nifs.get(armoToNif.get(skin.getForm())).variants.addAll(vars.variants);
 
 	    } catch (BadParameter ex) {
 		SPGlobal.logError(id.toString(), "Bad parameter passed to nif texture parser: " + nifPath);
