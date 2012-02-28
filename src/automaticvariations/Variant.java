@@ -21,7 +21,7 @@ public class Variant {
     ArrayList<String> variantTexturePaths = new ArrayList<String>();
     TextureVariant[] textureVariants;
     static int numSupportedTextures = 8;
-    VariantSpec specs;
+    VariantSpec specs = new VariantSpec();
 
     void generateVariant(ArrayList<TextureField> texturePack) throws IOException {
 

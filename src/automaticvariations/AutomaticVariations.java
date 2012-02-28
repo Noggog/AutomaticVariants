@@ -35,10 +35,10 @@ public class AutomaticVariations {
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     //srcNPC is key
     static Map<FormID, LVLN> llists = new HashMap<FormID, LVLN>();
-    static Map<FormID, ArrayList<NPC_>> npcs = new HashMap<FormID, ArrayList<NPC_>>();
-    static Map<FormID, ArrayList<ARMO>> armors = new HashMap<FormID, ArrayList<ARMO>>();
-    static Map<FormID, ArrayList<ARMA>> armatures = new HashMap<FormID, ArrayList<ARMA>>();
-    static String[] EDIDexcludeArray = {"AUDIOTEMPLATE"};
+    static Map<FormID, ArrayList<NPC_spec>> npcs = new HashMap<FormID, ArrayList<NPC_spec>>();
+    static Map<FormID, ArrayList<ARMO_spec>> armors = new HashMap<FormID, ArrayList<ARMO_spec>>();
+    static Map<FormID, ArrayList<ARMA_spec>> armatures = new HashMap<FormID, ArrayList<ARMA_spec>>();
+    static final String[] EDIDexcludeArray = {"AUDIOTEMPLATE"};
     static ArrayList<String> EDIDexclude = new ArrayList<String>(Arrays.asList(EDIDexcludeArray));
 
     public static void main(String[] args) {
@@ -217,8 +217,8 @@ public class AutomaticVariations {
 	    SPGlobal.log(header, "Variants loaded: ");
 	    for (FormID srcArmor : armors.keySet()) {
 		SPGlobal.log(header, "  Armor " + SPDatabase.getMajor(srcArmor) + " has " + armors.get(srcArmor).size() + " variants.");
-		for (ARMO variant : armors.get(srcArmor)) {
-		    SPGlobal.log(header, "    " + variant);
+		for (ARMO_spec variant : armors.get(srcArmor)) {
+		    SPGlobal.log(header, "    " + variant.armo + ", prob divider: 1/" + variant.probDiv);
 		}
 	    }
 	}
@@ -231,11 +231,31 @@ public class AutomaticVariations {
 	    SPGlobal.log(header, "====================================================================");
 	}
 	for (FormID srcNpc : npcs.keySet()) {
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(header, "Generating for " + SPDatabase.getMajor(srcNpc));
+	    }
+
 	    LVLN llist = new LVLN(SPGlobal.getGlobalPatch(), "AV_" + source.getNPCs().get(srcNpc).getEDID() + "_llist");
-	    for (NPC_ n : npcs.get(srcNpc)) {
-		llist.addEntry(new LVLO(n.getForm(), 1, 1));
+	    ArrayList<NPC_spec> npcVars = npcs.get(srcNpc);
+	    int[] divs = new int[npcVars.size()];
+	    for (int i = 0; i < divs.length; i++) {
+		divs[i] = npcVars.get(i).probDiv;
+	    }
+	    int lowestCommMult = Ln.lcmm(divs);
+
+	    for (NPC_spec n : npcVars) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "  Generating " + (lowestCommMult / n.probDiv) + " entries for " + n.npc);
+		}
+		for (int i = 0; i < lowestCommMult / n.probDiv; i++) {
+		    llist.addEntry(new LVLO(n.npc.getForm(), 1, 1));
+		}
 	    }
 	    llists.put(srcNpc, llist);
+
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(header, "--------------------------------------------------");
+	    }
 	}
     }
 
@@ -258,7 +278,7 @@ public class AutomaticVariations {
 		RACE race = (RACE) SPDatabase.getMajor(npcSrc.getRace());
 		armorForm = race.getWornArmor();
 	    }
-	    ArrayList<ARMO> skinVariants = armors.get(armorForm);
+	    ArrayList<ARMO_spec> skinVariants = armors.get(armorForm);
 	    if (skinVariants != null) {
 
 		if (checkNPCexclude(npcSrc)) {
@@ -268,12 +288,12 @@ public class AutomaticVariations {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "Duplicating " + npcSrc + ", for " + SPDatabase.getMajor(armorForm, GRUP_TYPE.ARMO));
 		}
-		ArrayList<NPC_> dups = new ArrayList<NPC_>(skinVariants.size());
-		for (ARMO variant : skinVariants) {
-		    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc, variant.getEDID().substring(0, variant.getEDID().length() - 5) + "_" + npcSrc.getEDID());
+		ArrayList<NPC_spec> dups = new ArrayList<NPC_spec>(skinVariants.size());
+		for (ARMO_spec variant : skinVariants) {
+		    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc, variant.armo.getEDID().substring(0, variant.armo.getEDID().length() - 5) + "_" + npcSrc.getEDID());
 
-		    dup.setWornArmor(variant.getForm());
-		    dups.add(dup);
+		    dup.setWornArmor(variant.armo.getForm());
+		    dups.add(new NPC_spec(dup, variant));
 		}
 		npcs.put(npcSrc.getForm(), dups);
 	    }
@@ -287,7 +307,7 @@ public class AutomaticVariations {
 	    SPGlobal.log(header, "====================================================================");
 	}
 	for (ARMO armoSrc : source.getArmors()) {
-	    ArrayList<ARMA> variants = null;
+	    ArrayList<ARMA_spec> variants = null;
 	    FormID target = null;
 	    for (SubForm arma : armoSrc.getArmatures()) {
 		target = arma.getForm();
@@ -301,13 +321,13 @@ public class AutomaticVariations {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(target, GRUP_TYPE.ARMA));
 		}
-		ArrayList<ARMO> dups = new ArrayList<ARMO>(variants.size());
-		for (ARMA variant : variants) {
-		    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, variant.getEDID().substring(0, variant.getEDID().length() - 5) + "_armo");
+		ArrayList<ARMO_spec> dups = new ArrayList<ARMO_spec>(variants.size());
+		for (ARMA_spec variant : variants) {
+		    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, variant.arma.getEDID().substring(0, variant.arma.getEDID().length() - 5) + "_armo");
 
 		    dup.removeArmature(target);
-		    dup.addArmature(variant.getForm());
-		    dups.add(dup);
+		    dup.addArmature(variant.arma.getForm());
+		    dups.add(new ARMO_spec(dup, variant));
 		}
 		armors.put(armoSrc.getForm(), dups);
 	    }
@@ -327,7 +347,7 @@ public class AutomaticVariations {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "Duplicating " + armaSrc + ", for nif: " + modelPath);
 		}
-		ArrayList<ARMA> dups = new ArrayList<ARMA>();
+		ArrayList<ARMA_spec> dups = new ArrayList<ARMA_spec>();
 		for (Variant v : malenif.variants) {
 		    ARMA dup = (ARMA) SPGlobal.getGlobalPatch().makeCopy(armaSrc, v.name + "_arma");
 
@@ -345,7 +365,7 @@ public class AutomaticVariations {
 		    femalealts.clear();
 		    femalealts.addAll(alts);
 
-		    dups.add(dup);
+		    dups.add(new ARMA_spec(dup, v.specs));
 		}
 		armatures.put(armaSrc.getForm(), dups);
 	    }
