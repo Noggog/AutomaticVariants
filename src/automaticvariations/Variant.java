@@ -4,11 +4,8 @@
  */
 package automaticvariations;
 
-import automaticvariations.AV_Nif.TextureField;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import skyproc.SPGlobal;
 import skyproc.TXST;
 
 /**
@@ -22,78 +19,8 @@ public class Variant {
     TextureVariant[] textureVariants;
     static int numSupportedTextures = 8;
     VariantSpec specs = new VariantSpec();
-
-    void generateVariant(ArrayList<TextureField> texturePack) throws IOException {
-
-        // Find out which TXSTs need to be generated
-        String[][] replacements = new String[texturePack.size()][numSupportedTextures];
-        boolean[] needed = new boolean[texturePack.size()];
-        for (String s : variantTexturePaths) {
-            String fileName = s;
-            fileName = fileName.substring(fileName.lastIndexOf('\\'));
-            int i = 0;
-            for (TextureField textureSet : texturePack) {
-                int j = 0;
-                for (String texture : textureSet.maps) {
-                    if (!texture.equals("") && texture.lastIndexOf('\\') != -1) {
-                        String textureName = texture.substring(texture.lastIndexOf('\\'));
-                        if (textureName.equalsIgnoreCase(fileName)) {
-                            replacements[i][j] = s;
-                            needed[i] = true;
-                        }
-                    }
-                    if (j == numSupportedTextures - 1) {
-                        break;
-                    } else {
-                        j++;
-                    }
-                }
-                i++;
-            }
-        }
-
-        // Make new TXSTs
-        textureVariants = new TextureVariant[texturePack.size()];
-        int i = 0;
-        for (TextureField textureSet : texturePack) {
-            if (needed[i]) {
-                // New TXST
-                TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch(), name + "_txst");
-                tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
-
-                // Set maps
-                int j = 0;
-                for (String texture : textureSet.maps) {
-
-                    // Because nif fields map 2->3 if facegen flag is on.
-                    int set = j;
-                    if (set == 2) {
-                        set = 3;
-                    }
-
-                    if (replacements[i][j] != null) {
-                        tmpTXST.setNthMap(set, replacements[i][j]);
-                        if (SPGlobal.logging()) {
-                            SPGlobal.log("Variant", "  Replaced set " + i + ", texture " + j + " with " + replacements[i][j] + " on variant " + name);
-                        }
-                    } else if (!"".equals(texture)) {
-                        tmpTXST.setNthMap(set, texture.substring(texture.indexOf('\\') + 1));
-                    }
-                    if (j == numSupportedTextures - 1) {
-                        break;
-                    } else {
-                        j++;
-                    }
-                }
-                textureVariants[i] = new TextureVariant(tmpTXST, textureSet.title);
-            }
-            i++;
-        }
-
-        variantTexturePaths = null; // Free up space
-    }
-
-    class TextureVariant {
+    
+    static class TextureVariant {
 
         String nifFieldName;
         TXST textureRecord;

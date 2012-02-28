@@ -1,6 +1,5 @@
 package automaticvariations;
 
-import automaticvariations.Variant.TextureVariant;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -55,18 +54,7 @@ public class AutomaticVariations {
 	    String myPatcherDescription =
 		    "Oh mai gawd!";
 
-	    /*
-	     * Initializing Debug Log and Globals
-	     */
-	    SPGlobal.createGlobalLog();
-	    SPGlobal.debugModMerge = false;
-	    SPGlobal.debugExportSummary = false;
-	    SPGlobal.debugBSAimport = false;
-	    SPGlobal.debugNIFimport = false;
-	    LDebug.timeElapsed = true;
-	    LDebug.timeStamp = true;
-	    // Turn Debugging off except for errors
-	    SPGlobal.logging(false);
+	    setGlobals();
 
 	    /*
 	     * Creating SkyProc Default GUI
@@ -125,9 +113,7 @@ public class AutomaticVariations {
 	    }
 
 	    // Generate TXSTs
-	    for (AV_Nif n : nifs.values()) {
-		n.generateVariantTXSTs();
-	    }
+	    generateTXSTvariants();
 
 	    // Generate ARMA dups that use TXSTs
 	    generateARMAvariants(source);
@@ -171,6 +157,21 @@ public class AutomaticVariations {
 	SPGlobal.closeDebug();
     }
 
+    private static void setGlobals() {
+	/*
+	 * Initializing Debug Log and Globals
+	 */
+	SPGlobal.createGlobalLog();
+	SPGlobal.debugModMerge = false;
+	SPGlobal.debugExportSummary = false;
+	SPGlobal.debugBSAimport = false;
+	SPGlobal.debugNIFimport = false;
+	LDebug.timeElapsed = true;
+	LDebug.timeStamp = true;
+	// Turn Debugging off except for errors
+	SPGlobal.logging(false);
+    }
+
     static void generateTemplating(Mod source) {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "====================================================================");
@@ -195,7 +196,7 @@ public class AutomaticVariations {
 	for (String exclude : EDIDexclude) {
 	    if (edid.contains(exclude)) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "  Skipping " + npcSrc + " on edid exclude : " + exclude);
+		    SPGlobal.log(header, "    Skipping " + npcSrc + " on edid exclude : " + exclude);
 		}
 		return true;
 	    }
@@ -241,15 +242,16 @@ public class AutomaticVariations {
 	    for (int i = 0; i < divs.length; i++) {
 		divs[i] = npcVars.get(i).probDiv;
 	    }
-	    int lowestCommMult = Ln.lcmm(divs);
+//	    int lowestCommMult = Ln.lcmm(divs);
+	    int lowestCommMult = 1;
 
 	    for (NPC_spec n : npcVars) {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "  Generating " + (lowestCommMult / n.probDiv) + " entries for " + n.npc);
 		}
-		for (int i = 0; i < lowestCommMult / n.probDiv; i++) {
-		    llist.addEntry(new LVLO(n.npc.getForm(), 1, 1));
-		}
+//		for (int i = 0; i < lowestCommMult / n.probDiv; i++) {
+		llist.addEntry(new LVLO(n.npc.getForm(), 1, 1));
+//		}
 	    }
 	    llists.put(srcNpc, llist);
 
@@ -265,10 +267,18 @@ public class AutomaticVariations {
 	    SPGlobal.log(header, "Generating NPC duplicates for each ARMO skin");
 	    SPGlobal.log(header, "====================================================================");
 	}
+	boolean last = false;
 	for (NPC_ npcSrc : source.getNPCs()) {
-
+	    
 	    // If it's pulling from a template, it adopts its template race. No need to dup
-	    if (!npcSrc.getTemplate().equals(FormID.NULL)) {
+	    if (!npcSrc.getTemplate().equals(FormID.NULL) && npcSrc.getTemplateFlag(NPC_.TemplateFlag.USE_TRAITS)) {
+		if (SPGlobal.logging()) {
+		    if (last) {
+			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
+			last = false;
+		    }
+		    SPGlobal.log(header, "    Skipping because of template : " + npcSrc);
+		}
 		continue;
 	    }
 
@@ -286,7 +296,9 @@ public class AutomaticVariations {
 		}
 
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Duplicating " + npcSrc + ", for " + SPDatabase.getMajor(armorForm, GRUP_TYPE.ARMO));
+		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
+		    SPGlobal.log(header, "| Duplicating " + npcSrc + ", for " + SPDatabase.getMajor(armorForm, GRUP_TYPE.ARMO));
+		    last = true;
 		}
 		ArrayList<NPC_spec> dups = new ArrayList<NPC_spec>(skinVariants.size());
 		for (ARMO_spec variant : skinVariants) {
@@ -354,7 +366,7 @@ public class AutomaticVariations {
 		    ArrayList<AltTexture> alts = dup.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
 		    alts.clear();
 		    int i = 0;
-		    for (TextureVariant texVar : v.textureVariants) {
+		    for (Variant.TextureVariant texVar : v.textureVariants) {
 			if (texVar != null) {
 			    alts.add(new AltTexture(texVar.nifFieldName, texVar.textureRecord.getForm(), i));
 			}
@@ -369,6 +381,91 @@ public class AutomaticVariations {
 		}
 		armatures.put(armaSrc.getForm(), dups);
 	    }
+	}
+    }
+    
+    static void generateVariant(Variant v, ArrayList<AV_Nif.TextureField> texturePack) throws IOException {
+
+	// Find out which TXSTs need to be generated
+	String[][] replacements = new String[texturePack.size()][Variant.numSupportedTextures];
+	boolean[] needed = new boolean[texturePack.size()];
+	for (String s : v.variantTexturePaths) {
+	    String fileName = s;
+	    fileName = fileName.substring(fileName.lastIndexOf('\\'));
+	    int i = 0;
+	    for (AV_Nif.TextureField textureSet : texturePack) {
+		int j = 0;
+		for (String texture : textureSet.maps) {
+		    if (!texture.equals("") && texture.lastIndexOf('\\') != -1) {
+			String textureName = texture.substring(texture.lastIndexOf('\\'));
+			if (textureName.equalsIgnoreCase(fileName)) {
+			    replacements[i][j] = s;
+			    needed[i] = true;
+			}
+		    }
+		    if (j == Variant.numSupportedTextures - 1) {
+			break;
+		    } else {
+			j++;
+		    }
+		}
+		i++;
+	    }
+	}
+
+	// Make new TXSTs
+	v.textureVariants = new Variant.TextureVariant[texturePack.size()];
+	int i = 0;
+	for (AV_Nif.TextureField textureSet : texturePack) {
+	    if (needed[i]) {
+		// New TXST
+		TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch(), v.name + "_txst");
+		tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
+
+		// Set maps
+		int j = 0;
+		for (String texture : textureSet.maps) {
+
+		    // Because nif fields map 2->3 if facegen flag is on.
+		    int set = j;
+		    if (set == 2) {
+			set = 3;
+		    }
+
+		    if (replacements[i][j] != null) {
+			tmpTXST.setNthMap(set, replacements[i][j]);
+			if (SPGlobal.logging()) {
+			    SPGlobal.log("Variant", "  Replaced set " + i + ", texture " + j + " with " + replacements[i][j] + " on variant " + v.name);
+			}
+		    } else if (!"".equals(texture)) {
+			tmpTXST.setNthMap(set, texture.substring(texture.indexOf('\\') + 1));
+		    }
+		    if (j == Variant.numSupportedTextures - 1) {
+			break;
+		    } else {
+			j++;
+		    }
+		}
+		v.textureVariants[i] = new Variant.TextureVariant(tmpTXST, textureSet.title);
+	    }
+	    i++;
+	}
+
+	v.variantTexturePaths = null; // Free up space
+    }
+
+    static void generateTXSTvariants() throws IOException {
+	for (AV_Nif n : nifs.values()) {
+
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(header, "====================================================================");
+		SPGlobal.log(header, "Generating TXST records for Nif: " + n.path);
+		SPGlobal.log(header, "====================================================================");
+	    }
+	    for (Variant v : n.variants) {
+		generateVariant(v, n.textureFields);
+	    }
+	    n.textureFields = null; // Not needed anymore
 	}
     }
 
@@ -439,6 +536,8 @@ public class AutomaticVariations {
 		    nif.print();
 
 		    nifs.put(nifPath, nif);
+		} else if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "Already a nif with that path.");
 		}
 
 

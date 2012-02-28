@@ -45,18 +45,6 @@ public class AV_Nif {
 	}
     }
 
-    final void generateVariantTXSTs() throws IOException {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Generating TXST records for Nif: " + path);
-	    SPGlobal.log(header, "====================================================================");
-	}
-	for (Variant v : variants) {
-	    v.generateVariant(textureFields);
-	}
-	textureFields = null; // Not needed anymore
-    }
-
     public void print() {
 	if (SPGlobal.logging()) {
 	    int i = 0;
