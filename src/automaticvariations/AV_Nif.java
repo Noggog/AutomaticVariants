@@ -22,54 +22,65 @@ import skyproc.exceptions.BadParameter;
 public class AV_Nif {
 
     private static String header = "AV_Nif";
+    String path;
     ArrayList<TextureField> textureFields = new ArrayList<TextureField>();
     ArrayList<Variant> variants = new ArrayList<Variant>();
 
-    final void load(String path) throws BadParameter, FileNotFoundException, IOException, DataFormatException {
-        path = "meshes\\" + path;
-        NIF nif = new NIF(BSA.getUsedFile(path));
-        if (nif == null) {
-            throw new FileNotFoundException("NIF file did not exist for path: " + path);
-        }
-        ArrayList<Node> NiTrishapes = nif.getNode(NIF.NodeType.NITRISHAPE);
-        ArrayList<Node> BSTextureSets = nif.getNode(NIF.NodeType.BSSHADERTEXTURESET);
-        for (int i = 0 ; i < BSTextureSets.size() ; i++) {
-            TextureField texField = new TextureField(BSTextureSets.get(i));
-            texField.title = NiTrishapes.get(i).title;
-            this.textureFields.add(texField);
-        }
+
+    AV_Nif (String path) {
+	this.path = "meshes\\" + path;
+    }
+
+    final void load() throws BadParameter, FileNotFoundException, IOException, DataFormatException {
+	NIF nif = new NIF(BSA.getUsedFile(path));
+	if (nif == null) {
+	    throw new FileNotFoundException("NIF file did not exist for path: " + path);
+	}
+	ArrayList<Node> NiTrishapes = nif.getNode(NIF.NodeType.NITRISHAPE);
+	ArrayList<Node> BSTextureSets = nif.getNode(NIF.NodeType.BSSHADERTEXTURESET);
+	for (int i = 0; i < BSTextureSets.size(); i++) {
+	    TextureField texField = new TextureField(BSTextureSets.get(i));
+	    texField.title = NiTrishapes.get(i).title;
+	    this.textureFields.add(texField);
+	}
     }
 
     final void generateVariantTXSTs() throws IOException {
-        for (Variant v : variants) {
-            v.generateVariant(textureFields);
-        }
-        textureFields = null; // Not needed anymore
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Generating TXST records for Nif: " + path);
+	    SPGlobal.log(header, "====================================================================");
+	}
+	for (Variant v : variants) {
+	    v.generateVariant(textureFields);
+	}
+	textureFields = null; // Not needed anymore
     }
 
     public void print() {
-        if (SPGlobal.logging()) {
-            int i = 0;
-            for (TextureField set : textureFields) {
-                SPGlobal.log(header, "  Texture index " + i++ + ": " + set.title);
-                int j = 0;
-                for (String s : set.maps) {
-                    SPGlobal.log(header, "    " + j++ + ": " + s);
-                }
-            }
-        }
+	if (SPGlobal.logging()) {
+	    int i = 0;
+	    for (TextureField set : textureFields) {
+		SPGlobal.log(header, "  Texture index " + i++ + ": " + set.title);
+		int j = 0;
+		for (String s : set.maps) {
+		    SPGlobal.log(header, "    " + j++ + ": " + s);
+		}
+	    }
+	}
     }
 
     class TextureField {
-        String title;
-        ArrayList<String> maps;
 
-        TextureField (Node n) {
-            int numTextures = n.data.extractInt(4);
-            maps = new ArrayList<String>(numTextures);
-            for (int i = 0; i < numTextures; i++) {
-                maps.add(n.data.extractString(n.data.extractInt(4)));
-            }
-        }
+	String title;
+	ArrayList<String> maps;
+
+	TextureField(Node n) {
+	    int numTextures = n.data.extractInt(4);
+	    maps = new ArrayList<String>(numTextures);
+	    for (int i = 0; i < numTextures; i++) {
+		maps.add(n.data.extractString(n.data.extractInt(4)));
+	    }
+	}
     }
 }

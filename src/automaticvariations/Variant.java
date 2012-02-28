@@ -21,6 +21,7 @@ public class Variant {
     ArrayList<String> variantTexturePaths = new ArrayList<String>();
     TextureVariant[] textureVariants;
     static int numSupportedTextures = 8;
+    VariantSpec specs;
 
     void generateVariant(ArrayList<TextureField> texturePack) throws IOException {
 
@@ -73,7 +74,7 @@ public class Variant {
                     if (replacements[i][j] != null) {
                         tmpTXST.setNthMap(set, replacements[i][j]);
                         if (SPGlobal.logging()) {
-                            SPGlobal.log("Variant", "Replaced[" + i + "][" + j + "] with " + replacements[i][j] + " on variant " + name);
+                            SPGlobal.log("Variant", "  Replaced set " + i + ", texture " + j + " with " + replacements[i][j] + " on variant " + name);
                         }
                     } else if (!"".equals(texture)) {
                         tmpTXST.setNthMap(set, texture.substring(texture.indexOf('\\') + 1));
@@ -105,7 +106,7 @@ public class Variant {
 
     void setName(File file) {
         String[] tmp = file.getPath().split("\\\\");
-        name = "AV_" + tmp[tmp.length - 4].replaceAll(" ", "") + "_" + tmp[tmp.length - 3].replaceAll(" ", "") + "_" + tmp[tmp.length - 2].replaceAll(" ", "");
+        name = "AV_" + tmp[tmp.length - 3].replaceAll(" ", "") + "_" + tmp[tmp.length - 2].replaceAll(" ", "") + "_" + tmp[tmp.length - 1].replaceAll(" ", "");
     }
 
     boolean isEmpty() {
