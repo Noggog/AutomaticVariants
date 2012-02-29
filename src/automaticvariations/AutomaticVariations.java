@@ -1,13 +1,11 @@
 package automaticvariations;
 
+import java.awt.HeadlessException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
 import lev.Ln;
@@ -26,10 +24,16 @@ import skyproc.exceptions.Uninitialized;
  */
 public class AutomaticVariations {
 
+    /*
+     * Static Strings
+     */
     static private String header = "AV";
     static File avPackages = new File("AV Packages/");
     static File avTextures = new File(SPGlobal.pathToData + "textures/AV Packages/");
     static File avMeshes = new File(SPGlobal.pathToData + "meshes/AV Packages/");
+    /*
+     * Variant storage lists/maps
+     */
     // AV_Nif name is key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     // Armo formid is key, nifname is value
@@ -40,67 +44,28 @@ public class AutomaticVariations {
     static Map<FormID, ArrayList<NPC_spec>> npcs = new HashMap<FormID, ArrayList<NPC_spec>>();
     static Map<FormID, ArrayList<ARMO_spec>> armors = new HashMap<FormID, ArrayList<ARMO_spec>>();
     static Map<FormID, ArrayList<ARMA_spec>> armatures = new HashMap<FormID, ArrayList<ARMA_spec>>();
+    /*
+     * Exception lists
+     */
     static final String[] EDIDexcludeArray = {"AUDIOTEMPLATE"};
     static ArrayList<String> EDIDexclude = new ArrayList<String>(Arrays.asList(EDIDexcludeArray));
+    static Set<String> block;
 
     public static void main(String[] args) {
 
 	try {
-	    /*
-	     * Custom names and descriptions
-	     */
-	    // Used to export a patch such as "My Patch.esp"
-	    String myPatchName = "Automatic Variations";
-	    // Used in the GUI as the title
-	    String myPatcherName = "Automatic Variations";
-	    // Used in the GUI as the description of what your patcher does
-	    String myPatcherDescription =
-		    "Oh mai gawd!";
 
+	    SPDefaultGUI gui = createGUI();
 	    setGlobals();
 
-	    /*
-	     * Creating SkyProc Default GUI
-	     */
-	    // Create the SkyProc Default GUI
-	    SPDefaultGUI gui = new SPDefaultGUI(myPatcherName, myPatcherDescription);
-
-
-	    Mod patch = new Mod(myPatchName, false);
+	    Mod patch = new Mod("Automatic Variations", false);
 	    patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
 	    SPGlobal.setGlobalPatch(patch);
 
-	    /*
-	     * Importing all Active Plugins
-	     */
-	    try {
-		SPImporter importer = new SPImporter();
-		Mask m = MajorRecord.getMask(Type.RACE);
-		m.allow(Type.WNAM);
-		importer.addMask(m);
-		importer.importActiveMods(
-			GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
-			GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
-			GRUP_TYPE.LVLN, GRUP_TYPE.TXST);
-	    } catch (IOException ex) {
-		// If things go wrong, create an error box.
-		JOptionPane.showMessageDialog(null, "There was an error importing plugins.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
-		System.exit(0);
-	    }
+	    importMods();
 
-	    /*
-	     * Create your patch to export. (false means it is NOT an .esm file)
-	     */
 	    Mod source = new Mod("Temporary", false);
 	    source.addAsOverrides(SPGlobal.getDB());
-
-
-	    /*
-	     * ======================================= Your custom code begins
-	     * here. =======================================
-	     */
-
-
 
 	    SPGlobal.logging(true);
 
@@ -149,13 +114,30 @@ public class AutomaticVariations {
 
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.
-	    System.out.println(e.toString());
+	    System.err.println(e.toString());
 	    SPGlobal.logException(e);
 	    JOptionPane.showMessageDialog(null, "There was an exception thrown during program execution.  Check the debug logs.");
 	}
 
 	// Close debug logs before program exits.
 	SPGlobal.closeDebug();
+    }
+
+    static void importMods() throws HeadlessException {
+	try {
+	    SPImporter importer = new SPImporter();
+	    Mask m = MajorRecord.getMask(Type.RACE);
+	    m.allow(Type.WNAM);
+	    importer.addMask(m);
+	    importer.importActiveMods(
+		    GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
+		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
+		    GRUP_TYPE.LVLN, GRUP_TYPE.TXST);
+	} catch (IOException ex) {
+	    // If things go wrong, create an error box.
+	    JOptionPane.showMessageDialog(null, "There was an error importing plugins.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
+	    System.exit(0);
+	}
     }
 
     static int readjustTXSTindices(int j) {
@@ -488,8 +470,9 @@ public class AutomaticVariations {
 	    TXST txst = (TXST) SPDatabase.getMajor(t.getTexture(), GRUP_TYPE.TXST);
 	    ArrayList<String> textureMaps = nif.textureFields.get(t.getIndex()).maps;
 	    for (int i = 0; i < TXST.NUM_MAPS; i++) {
-		if (i == 2)
+		if (i == 2) {
 		    continue;
+		}
 		int set;
 		if (i == 3) {
 		    set = 2;
@@ -523,7 +506,7 @@ public class AutomaticVariations {
 		String header = id.toString();
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "====================================================================");
-		    SPGlobal.log(header, "Locating " + id.toString() + "'s NIF file and analyzing the Skin.");
+		    SPGlobal.log(header, "Locating " + SPDatabase.getMajor(id, GRUP_TYPE.NPC_) + "'s NIF file and analyzing the Skin.");
 		    SPGlobal.log(header, "====================================================================");
 		}
 		String nifPath = "...";
@@ -741,6 +724,22 @@ public class AutomaticVariations {
 		file.delete();
 	    }
 	}
+    }
+
+    static SPDefaultGUI createGUI() {
+	/*
+	 * Custom names and descriptions
+	 */
+	// Used in the GUI as the title
+	String myPatcherName = "Automatic Variations";
+	// Used in the GUI as the description of what your patcher does
+	String myPatcherDescription =
+		"Oh mai gawd!";
+
+	/*
+	 * Creating SkyProc Default GUI
+	 */
+	return new SPDefaultGUI(myPatcherName, myPatcherDescription);
     }
 
     // Not used
