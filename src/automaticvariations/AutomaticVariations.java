@@ -34,7 +34,7 @@ public class AutomaticVariations {
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     // Armo formid is key, nifname is value
     // Used for existing alt textures such as white skeevers
-    static Map<FormID, String> armoToNif = new HashMap<FormID, String>();
+    static Map<FormID, String> armaToNif = new HashMap<FormID, String>();
     //srcNPC is key
     static Map<FormID, LVLN> llists = new HashMap<FormID, LVLN>();
     static Map<FormID, ArrayList<NPC_spec>> npcs = new HashMap<FormID, ArrayList<NPC_spec>>();
@@ -111,9 +111,7 @@ public class AutomaticVariations {
 	    ArrayList<VariantSet> variantRead = importVariants(patch);
 
 	    // Locate and load NIFs, and assign their variants
-	    for (VariantSet v : variantRead) {
-		linkToNif(v);
-	    }
+	    linkToNifs(variantRead);
 
 	    // Generate TXSTs
 	    generateTXSTvariants();
@@ -324,8 +322,8 @@ public class AutomaticVariations {
 	for (ARMO armoSrc : source.getArmors()) {
 	    ArrayList<ARMA_spec> variants = null;
 	    FormID target = null;
-	    for (SubForm arma : armoSrc.getArmatures()) {
-		target = arma.getForm();
+	    for (FormID arma : armoSrc.getArmatures()) {
+		target = arma;
 		variants = armatures.get(target);
 		if (variants != null) {
 		    break;
@@ -356,33 +354,35 @@ public class AutomaticVariations {
 	    SPGlobal.log(header, "====================================================================");
 	}
 	for (ARMA armaSrc : source.getArmatures()) {
-	    String modelPath = armaSrc.getModelPath(Gender.MALE, Perspective.THIRD_PERSON);
-	    AV_Nif malenif = nifs.get(modelPath.toUpperCase());
-	    if (malenif != null) { // we have variants for that nif
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Duplicating " + armaSrc + ", for nif: " + modelPath);
-		}
-		ArrayList<ARMA_spec> dups = new ArrayList<ARMA_spec>();
-		for (Variant v : malenif.variants) {
-		    ARMA dup = (ARMA) SPGlobal.getGlobalPatch().makeCopy(armaSrc, v.name + "_arma");
-
-		    ArrayList<AltTexture> alts = dup.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
-		    alts.clear();
-		    int i = 0;
-		    for (Variant.TextureVariant texVar : v.textureVariants) {
-			if (texVar != null) {
-			    alts.add(new AltTexture(texVar.nifFieldName, texVar.textureRecord.getForm(), i));
-			}
-			i++;
+	    // If we have variants for it
+	    if (armaToNif.containsKey(armaSrc.getForm())) {
+		AV_Nif malenif = nifs.get(armaToNif.get(armaSrc.getForm()));
+		if (malenif != null) { // we have variants for that nif
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "Duplicating " + armaSrc + ", for nif: " + armaToNif.get(armaSrc.getForm()));
 		    }
+		    ArrayList<ARMA_spec> dups = new ArrayList<ARMA_spec>();
+		    for (Variant v : malenif.variants) {
+			ARMA dup = (ARMA) SPGlobal.getGlobalPatch().makeCopy(armaSrc, v.name + "_arma");
 
-		    ArrayList<AltTexture> femalealts = dup.getAltTextures(Gender.FEMALE, Perspective.THIRD_PERSON);
-		    femalealts.clear();
-		    femalealts.addAll(alts);
+			ArrayList<AltTexture> alts = dup.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
+			alts.clear();
+			int i = 0;
+			for (Variant.TextureVariant texVar : v.textureVariants) {
+			    if (texVar != null) {
+				alts.add(new AltTexture(texVar.nifFieldName, texVar.textureRecord.getForm(), i));
+			    }
+			    i++;
+			}
 
-		    dups.add(new ARMA_spec(dup, v.specs));
+			ArrayList<AltTexture> femalealts = dup.getAltTextures(Gender.FEMALE, Perspective.THIRD_PERSON);
+			femalealts.clear();
+			femalealts.addAll(alts);
+
+			dups.add(new ARMA_spec(dup, v.specs));
+		    }
+		    armatures.put(armaSrc.getForm(), dups);
 		}
-		armatures.put(armaSrc.getForm(), dups);
 	    }
 	}
     }
@@ -462,7 +462,7 @@ public class AutomaticVariations {
 
 	    if (SPGlobal.logging()) {
 		SPGlobal.log(header, "====================================================================");
-		SPGlobal.log(header, "Generating TXST records for Nif: " + n.path);
+		SPGlobal.log(header, "Generating TXST records for Nif: " + n.name);
 		SPGlobal.log(header, "====================================================================");
 	    }
 	    for (Variant v : n.variants) {
@@ -472,95 +472,127 @@ public class AutomaticVariations {
 	}
     }
 
-    static void linkToNif(VariantSet vars) {
-	for (String s : vars.Target_FormIDs) {
-	    FormID id = new FormID(s);
-	    String header = id.toString();
-	    if (SPGlobal.logging()) {
-		SPGlobal.log(header, "====================================================================");
-		SPGlobal.log(header, "Locating " + id.toString() + "'s NIF file and analyzing it.");
-		SPGlobal.log(header, "====================================================================");
-	    }
-	    String nifPath = "...";
-	    try {
+    static void splitVariant(String nifPath, ARMA piece) throws IOException, BadParameter, DataFormatException {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log("SplitVar", "  Record warrents split due to alt textures in ARMA.");
+	}
+	AV_Nif nif = new AV_Nif(nifPath);
+	nif.load();
+	nif.name = nifPath + "_ALT_" + piece.getForm();
+	nifs.put(nif.name, nif);
+	armaToNif.put(piece.getForm(), nif.name);
+    }
 
-		NPC_ record = (NPC_) SPDatabase.getMajor(id, GRUP_TYPE.NPC_);
-		if (record == null) {
-		    SPGlobal.logError(header, "Could not locate NPC with FormID: " + s);
-		    continue;
-		} else if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "  " + record);
+    static void linkToNifs(ArrayList<VariantSet> variantRead) {
+	for (VariantSet varSet : variantRead) {
+	    for (String s : varSet.Target_FormIDs) {
+		FormID id = new FormID(s);
+		String header = id.toString();
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "====================================================================");
+		    SPGlobal.log(header, "Locating " + id.toString() + "'s NIF file and analyzing the Skin.");
+		    SPGlobal.log(header, "====================================================================");
 		}
+		String nifPath = "...";
+		try {
 
-		// NPC's skin field
-		ARMO skin;
-		skin = (ARMO) SPDatabase.getMajor(record.getWornArmor(), GRUP_TYPE.ARMO);
-
-		if (skin == null) {
-		    RACE race = (RACE) SPDatabase.getMajor(record.getRace(), GRUP_TYPE.RACE);
-		    if (race == null) {
-			SPGlobal.logError(header, "Could not locate RACE with FormID: " + record.getRace());
+		    NPC_ record = (NPC_) SPDatabase.getMajor(id, GRUP_TYPE.NPC_);
+		    if (record == null) {
+			SPGlobal.logError(header, "Could not locate NPC with FormID: " + s);
 			continue;
 		    } else if (SPGlobal.logging()) {
-			SPGlobal.log(header, "  " + race);
+			SPGlobal.log(header, "  " + record);
 		    }
 
-		    skin = (ARMO) SPDatabase.getMajor(race.getWornArmor(), GRUP_TYPE.ARMO);
+		    // NPC's skin field
+		    ARMO skin;
+		    skin = (ARMO) SPDatabase.getMajor(record.getWornArmor(), GRUP_TYPE.ARMO);
+
 		    if (skin == null) {
-			SPGlobal.logError(header, "Could not locate ARMO with FormID: " + race.getWornArmor());
+			RACE race = (RACE) SPDatabase.getMajor(record.getRace(), GRUP_TYPE.RACE);
+			if (race == null) {
+			    SPGlobal.logError(header, "Could not locate RACE with FormID: " + record.getRace());
+			    continue;
+			} else if (SPGlobal.logging()) {
+			    SPGlobal.log(header, "  " + race);
+			}
+
+			skin = (ARMO) SPDatabase.getMajor(race.getWornArmor(), GRUP_TYPE.ARMO);
+			if (skin == null) {
+			    SPGlobal.logError(header, "Could not locate ARMO with FormID: " + race.getWornArmor());
+			    continue;
+			} else if (SPGlobal.logging()) {
+			    SPGlobal.log(header, "  " + skin);
+			}
+		    }
+
+		    // Didn't have a skin
+		    if (skin.getArmatures().isEmpty()) {
+			SPGlobal.logError(header, skin + " did not have any armatures.");
+			continue;
+		    }
+
+		    // Locate armature
+		    ARMA piece = (ARMA) SPDatabase.getMajor(skin.getArmatures().get(0));
+		    if (piece == null) {
+			SPGlobal.logError(header, "Could not locate ARMA with FormID: " + skin.getArmatures().get(0));
 			continue;
 		    } else if (SPGlobal.logging()) {
-			SPGlobal.log(header, "  " + skin);
+			SPGlobal.log(header, "  " + piece);
 		    }
+
+		    // Locate armature's nif
+		    nifPath = piece.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
+		    if (nifPath.equals("")) {
+			SPGlobal.logError(header, piece + " did not have a male third person model.");
+			continue;
+		    }
+
+		    // Load in and add to maps
+		    if (!nifs.containsKey(nifPath)) {
+			AV_Nif nif = new AV_Nif(nifPath);
+			nif.load();
+
+			SPGlobal.log(header, "  Nif path: " + nifPath);
+			nif.print();
+
+			nifs.put(nif.name, nif);
+			armaToNif.put(piece.getForm(), nif.name);
+		    } else {
+			if (SPGlobal.logging()) {
+			    SPGlobal.log(header, "  Already a nif with that path.");
+			}
+			// If new skin, check to see if it warrents separating variants
+			if (!armaToNif.containsKey(piece.getForm())) {
+			    // Has alt texture, separate
+			    if (!piece.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON).isEmpty()) {
+				splitVariant(nifPath, piece);
+			    } else {
+				// Doesn't have alt texture, just route to existing nif
+				armaToNif.put(piece.getForm(), nifPath);
+			    }
+			}
+		    }
+
+		    nifs.get(armaToNif.get(piece.getForm())).variants.addAll(varSet.variants);
+
+		    //Oh nos
+		} catch (BadParameter ex) {
+		    SPGlobal.logError(id.toString(), "Bad parameter passed to nif texture parser: " + nifPath);
+		    SPGlobal.logException(ex);
+		} catch (FileNotFoundException ex) {
+		    SPGlobal.logError(id.toString(), "Could not find nif file: " + nifPath);
+		    SPGlobal.logException(ex);
+		} catch (IOException ex) {
+		    SPGlobal.logError(id.toString(), "File IO error getting nif file: " + nifPath);
+		    SPGlobal.logException(ex);
+		} catch (DataFormatException ex) {
+		    SPGlobal.logError(id.toString(), "BSA had a bad zipped file: " + nifPath);
+		    SPGlobal.logException(ex);
+		} catch (Exception e) {
+		    SPGlobal.logError(header, "Exception occured while loading nif: " + nifPath);
+		    SPGlobal.logException(e);
 		}
-
-		if (skin.getArmatures().isEmpty()) {
-		    SPGlobal.logError(header, skin + " did not have any armatures.");
-		    continue;
-		}
-		ARMA piece = (ARMA) SPDatabase.getMajor(skin.getArmatures().get(0).getForm());
-		if (piece == null) {
-		    SPGlobal.logError(header, "Could not locate ARMA with FormID: " + skin.getArmatures().get(0).getForm());
-		    continue;
-		} else if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "  " + piece);
-		}
-
-		nifPath = piece.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
-		if (nifPath.equals("")) {
-		    SPGlobal.logError(header, piece + " did not have a male third person model.");
-		    continue;
-		}
-		if (!nifs.containsKey(nifPath)) {
-		    AV_Nif nif = new AV_Nif(nifPath);
-		    nif.load();
-
-		    SPGlobal.log(header, "  Nif path: " + nifPath);
-		    nif.print();
-
-		    nifs.put(nif.name, nif);
-		    armoToNif.put(skin.getForm(), nif.name);
-		} else if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Already a nif with that path.");
-		}
-
-		nifs.get(armoToNif.get(skin.getForm())).variants.addAll(vars.variants);
-
-	    } catch (BadParameter ex) {
-		SPGlobal.logError(id.toString(), "Bad parameter passed to nif texture parser: " + nifPath);
-		SPGlobal.logException(ex);
-	    } catch (FileNotFoundException ex) {
-		SPGlobal.logError(id.toString(), "Could not find nif file: " + nifPath);
-		SPGlobal.logException(ex);
-	    } catch (IOException ex) {
-		SPGlobal.logError(id.toString(), "File IO error getting nif file: " + nifPath);
-		SPGlobal.logException(ex);
-	    } catch (DataFormatException ex) {
-		SPGlobal.logError(id.toString(), "BSA had a bad zipped file: " + nifPath);
-		SPGlobal.logException(ex);
-	    } catch (Exception e) {
-		SPGlobal.logError(header, "Exception occured while loading nif: " + nifPath);
-		SPGlobal.logException(e);
 	    }
 	}
     }
