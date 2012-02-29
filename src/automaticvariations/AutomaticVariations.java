@@ -121,6 +121,41 @@ public class AutomaticVariations {
 	SPGlobal.closeDebug();
     }
 
+    static boolean checkNPCskip(NPC_ npcSrc, boolean last) {
+	// If it's pulling from a template, it adopts its template race. No need to dup
+	if (!npcSrc.getTemplate().equals(FormID.NULL) && npcSrc.getTemplateFlag(NPC_.TemplateFlag.USE_TRAITS)) {
+	    if (SPGlobal.logging()) {
+		if (last) {
+		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
+		}
+		SPGlobal.log(header, "    Skipping " + npcSrc + " : Template with traits flag");
+	    }
+	    return true;
+	} else if (npcSrc.get(NPC_.ACBSFlag.Unique)) {
+	    if (SPGlobal.logging()) {
+		if (last) {
+		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
+		}
+		SPGlobal.log(header, "    Skipping " + npcSrc + " : unique flag set");
+	    }
+	    return true;
+	} else {
+	    String edid = npcSrc.getEDID().toUpperCase();
+	    for (String exclude : edidExclude) {
+		if (edid.contains(exclude)) {
+		    if (SPGlobal.logging()) {
+			if (last) {
+			    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
+			}
+			SPGlobal.log(header, "    Skipping " + npcSrc + " : edid exclude '" + exclude + "'");
+		    }
+		    return true;
+		}
+	    }
+	}
+	return false;
+    }
+
     static void importMods() throws HeadlessException {
 	try {
 	    SPImporter importer = new SPImporter();
@@ -179,19 +214,6 @@ public class AutomaticVariations {
 		}
 	    }
 	}
-    }
-
-    static boolean checkNPCexclude(NPC_ npcSrc) {
-	String edid = npcSrc.getEDID().toUpperCase();
-	for (String exclude : edidExclude) {
-	    if (edid.contains(exclude)) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "    Skipping " + npcSrc + " on edid exclude : " + exclude);
-		}
-		return true;
-	    }
-	}
-	return false;
     }
 
     static void printNPCdups() {
@@ -260,18 +282,6 @@ public class AutomaticVariations {
 	boolean last = false;
 	for (NPC_ npcSrc : source.getNPCs()) {
 
-	    // If it's pulling from a template, it adopts its template race. No need to dup
-	    if (!npcSrc.getTemplate().equals(FormID.NULL) && npcSrc.getTemplateFlag(NPC_.TemplateFlag.USE_TRAITS)) {
-		if (SPGlobal.logging()) {
-		    if (last) {
-			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-			last = false;
-		    }
-		    SPGlobal.log(header, "    Skipping because of template : " + npcSrc);
-		}
-		continue;
-	    }
-
 	    // Locate if any variants are available
 	    FormID armorForm = npcSrc.getWornArmor();
 	    if (npcSrc.getWornArmor().equals(FormID.NULL)) {
@@ -281,7 +291,8 @@ public class AutomaticVariations {
 	    ArrayList<ARMO_spec> skinVariants = armors.get(armorForm);
 	    if (skinVariants != null) {
 
-		if (checkNPCexclude(npcSrc)) {
+		if (checkNPCskip(npcSrc, last)) {
+		    last = false;
 		    continue;
 		}
 
@@ -328,6 +339,7 @@ public class AutomaticVariations {
 		} else if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(target, GRUP_TYPE.ARMA));
 		}
+
 		ArrayList<ARMO_spec> dups = new ArrayList<ARMO_spec>(variants.size());
 		for (ARMA_spec variant : variants) {
 		    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, variant.arma.getEDID().substring(0, variant.arma.getEDID().length() - 5) + "_armo");
