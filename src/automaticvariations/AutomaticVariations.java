@@ -488,17 +488,25 @@ public class AutomaticVariations {
 	    TXST txst = (TXST) SPDatabase.getMajor(t.getTexture(), GRUP_TYPE.TXST);
 	    ArrayList<String> textureMaps = nif.textureFields.get(t.getIndex()).maps;
 	    for (int i = 0; i < TXST.NUM_MAPS; i++) {
+		if (i == 2)
+		    continue;
+		int set;
+		if (i == 3) {
+		    set = 2;
+		} else {
+		    set = i;
+		}
 		if (!txst.getNthMap(i).equals("")) {
 		    String altMapName = "textures\\" + txst.getNthMap(i);
-		    if (SPGlobal.logging() && !textureMaps.get(i).equalsIgnoreCase(altMapName)) {
-			SPGlobal.log(header, "Alt Texture index " + t.getIndex() + " texture map[" + i + "] replaced from " + textureMaps.get(i) + " to " + altMapName);
+		    if (SPGlobal.logging() && !textureMaps.get(set).equalsIgnoreCase(altMapName)) {
+			SPGlobal.log(header, "  Alt Texture index " + t.getIndex() + " texture map[" + set + "] replaced from " + textureMaps.get(set) + " to " + altMapName);
 		    }
-		    textureMaps.set(i, altMapName);
-		} else if (!textureMaps.get(i).equals("")) {
+		    textureMaps.set(set, altMapName);
+		} else if (!textureMaps.get(set).equals("")) {
 		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "Alt Texture index " + t.getIndex() + " texture map[" + i + "] removed.  Was: " + textureMaps.get(i));
+			SPGlobal.log(header, "  Alt Texture index " + t.getIndex() + " texture map[" + set + "] removed.  Was: " + textureMaps.get(set));
 		    }
-		    textureMaps.set(i, "");
+		    textureMaps.set(set, "");
 		}
 	    }
 	}
