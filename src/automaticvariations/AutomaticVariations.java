@@ -81,7 +81,7 @@ public class AutomaticVariations {
 		importer.importActiveMods(
 			GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
 			GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
-			GRUP_TYPE.LVLN);
+			GRUP_TYPE.LVLN, GRUP_TYPE.TXST);
 	    } catch (IOException ex) {
 		// If things go wrong, create an error box.
 		JOptionPane.showMessageDialog(null, "There was an error importing plugins.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
@@ -156,6 +156,15 @@ public class AutomaticVariations {
 
 	// Close debug logs before program exits.
 	SPGlobal.closeDebug();
+    }
+
+    static int readjustTXSTindices(int j) {
+	// Because nif fields map 2->3 if facegen flag is on.
+	int set = j;
+	if (set == 2) {
+	    set = 3;
+	}
+	return set;
     }
 
     private static void setGlobals() {
@@ -428,12 +437,7 @@ public class AutomaticVariations {
 		// Set maps
 		int j = 0;
 		for (String texture : textureSet.maps) {
-
-		    // Because nif fields map 2->3 if facegen flag is on.
-		    int set = j;
-		    if (set == 2) {
-			set = 3;
-		    }
+		    int set = readjustTXSTindices(j);
 
 		    if (replacements[i][j] != null) {
 			tmpTXST.setNthMap(set, replacements[i][j]);
@@ -478,6 +482,27 @@ public class AutomaticVariations {
 	}
 	AV_Nif nif = new AV_Nif(nifPath);
 	nif.load();
+
+	// Need to change old filenames to alt texture filenames
+	for (AltTexture t : piece.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON)) {
+	    TXST txst = (TXST) SPDatabase.getMajor(t.getTexture(), GRUP_TYPE.TXST);
+	    ArrayList<String> textureMaps = nif.textureFields.get(t.getIndex()).maps;
+	    for (int i = 0; i < TXST.NUM_MAPS; i++) {
+		if (!txst.getNthMap(i).equals("")) {
+		    String altMapName = "textures\\" + txst.getNthMap(i);
+		    if (SPGlobal.logging() && !textureMaps.get(i).equalsIgnoreCase(altMapName)) {
+			SPGlobal.log(header, "Alt Texture index " + t.getIndex() + " texture map[" + i + "] replaced from " + textureMaps.get(i) + " to " + altMapName);
+		    }
+		    textureMaps.set(i, altMapName);
+		} else if (!textureMaps.get(i).equals("")) {
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "Alt Texture index " + t.getIndex() + " texture map[" + i + "] removed.  Was: " + textureMaps.get(i));
+		    }
+		    textureMaps.set(i, "");
+		}
+	    }
+	}
+
 	nif.name = nifPath + "_ALT_" + piece.getForm();
 	nifs.put(nif.name, nif);
 	armaToNif.put(piece.getForm(), nif.name);
