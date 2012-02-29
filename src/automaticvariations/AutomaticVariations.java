@@ -1,10 +1,7 @@
 package automaticvariations;
 
 import java.awt.HeadlessException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
@@ -47,9 +44,8 @@ public class AutomaticVariations {
     /*
      * Exception lists
      */
-    static final String[] EDIDexcludeArray = {"AUDIOTEMPLATE"};
-    static ArrayList<String> EDIDexclude = new ArrayList<String>(Arrays.asList(EDIDexcludeArray));
-    static Set<String> block;
+    static Set<FormID> block = new HashSet<FormID>();
+    static Set<String> edidExclude = new HashSet<String>();
 
     public static void main(String[] args) {
 
@@ -61,6 +57,8 @@ public class AutomaticVariations {
 	    Mod patch = new Mod("Automatic Variations", false);
 	    patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
 	    SPGlobal.setGlobalPatch(patch);
+
+	    readInExceptions();
 
 	    importMods();
 
@@ -185,7 +183,7 @@ public class AutomaticVariations {
 
     static boolean checkNPCexclude(NPC_ npcSrc) {
 	String edid = npcSrc.getEDID().toUpperCase();
-	for (String exclude : EDIDexclude) {
+	for (String exclude : edidExclude) {
 	    if (edid.contains(exclude)) {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "    Skipping " + npcSrc + " on edid exclude : " + exclude);
@@ -322,7 +320,12 @@ public class AutomaticVariations {
 	    }
 
 	    if (variants != null) {
-		if (SPGlobal.logging()) {
+		if (block.contains(armoSrc.getForm())) {
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "Skipping " + armoSrc + " because it is on the block list");
+		    }
+		    continue;
+		} else if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(target, GRUP_TYPE.ARMA));
 		}
 		ArrayList<ARMO_spec> dups = new ArrayList<ARMO_spec>(variants.size());
@@ -707,6 +710,34 @@ public class AutomaticVariations {
 
 	varSet.variants.addAll(variants);
 	return varSet;
+    }
+
+    static void readInExceptions() throws IOException {
+	try {
+	    BufferedReader in = new BufferedReader(new FileReader("BlockList.txt"));
+	    Set target = null;
+	    String read;
+	    while (in.ready()) {
+		read = in.readLine();
+		if (read.indexOf("//") != -1) {
+		    read = read.substring(0, read.indexOf("//"));
+		}
+		read = read.trim().toUpperCase();
+		if (read.contains("ARMO BLOCKS")) {
+		    target = block;
+		} else if (read.contains("EDID BLOCKS")) {
+		    target = edidExclude;
+		} else if (target != null && !read.equals("")) {
+		    if (target == block) {
+			target.add(new FormID(read));
+		    } else {
+			target.add(read);
+		    }
+		}
+	    }
+	} catch (FileNotFoundException ex) {
+	    SPGlobal.logError("ReadInExceptions", "Failed to locate 'BlockList.txt'");
+	}
     }
 
     static void gatherFiles() {
