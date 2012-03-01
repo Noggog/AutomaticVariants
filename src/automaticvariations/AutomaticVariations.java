@@ -95,6 +95,12 @@ public class AutomaticVariations {
 	    // Apply template routing from original NPCs to new LLists
 	    generateTemplating(source);
 
+	    // Handle unique NPCs templating to AV variation npcs
+//	    handleUniqueNPCs(source);
+
+	    // Replaced old templating, as CK throws errors
+//	    subInNewTemplates(source);
+
 	    // Replace original NPCs in orig LVLNs, as CK throws warning/error for it
 	    subInOldLVLNs(source);
 
@@ -218,6 +224,50 @@ public class AutomaticVariations {
 		    SPGlobal.log(header, "Modified " + llistSrc);
 		}
 		SPGlobal.getGlobalPatch().addRecord(llistSrc);
+	    }
+	}
+    }
+
+    static void handleUniqueNPCs(Mod source) {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Handling unique NPCs");
+	    SPGlobal.log(header, "====================================================================");
+	}
+	for (NPC_ srcNpc : source.getNPCs()) {
+	    if (srcNpc.get(NPC_.ACBSFlag.Unique)
+		    && !srcNpc.getTemplate().equals(FormID.NULL)
+		    && llists.containsKey(srcNpc.getTemplate())) {
+		LVLN avLList = llists.get(srcNpc.getTemplate());
+		// Best we can do is replace its template with one from alt LList.
+		// Put the first to minimize unique actor changing when people rerun av patch
+		if (!avLList.isEmpty()) {
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "Replacing unique actor " + srcNpc + "'s template "
+				+ SPDatabase.getMajor(srcNpc.getTemplate(), GRUP_TYPE.NPC_)
+				+ " with " + SPDatabase.getMajor(avLList.getEntry(0).getForm(), GRUP_TYPE.NPC_));
+		    }
+		    srcNpc.setTemplate(avLList.getEntry(0).getForm());
+		    SPGlobal.getGlobalPatch().addRecord(srcNpc);
+		}
+	    }
+	}
+    }
+
+    static void subInNewTemplates(Mod source) {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Replacing old NPC templates with LList AV versions");
+	    SPGlobal.log(header, "====================================================================");
+	}
+	for (NPC_ srcNPC : source.getNPCs()) {
+	    if (llists.containsKey(srcNPC.getTemplate())) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "Replaced " + srcNPC + " template with "
+			    + SPGlobal.getGlobalPatch().getLeveledLists().get(llists.get(srcNPC.getTemplate()).getForm()));
+		}
+		srcNPC.setTemplate(llists.get(srcNPC.getTemplate()).getForm());
+		SPGlobal.getGlobalPatch().addRecord(srcNPC);
 	    }
 	}
     }
@@ -460,28 +510,28 @@ public class AutomaticVariations {
 	    if (needed[i]) {
 		// New TXST
 		TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch(), v.name + "_txst");
-//		tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
-//
-//		// Set maps
-//		int j = 0;
-//		for (String texture : textureSet.maps) {
-//		    int set = readjustTXSTindices(j);
-//
-//		    if (replacements[i][j] != null) {
-//			tmpTXST.setNthMap(set, replacements[i][j]);
-//			if (SPGlobal.logging()) {
-//			    SPGlobal.log("Variant", "  Replaced set " + i + ", texture " + j + " with " + replacements[i][j] + " on variant " + v.name);
-//			}
-//		    } else if (!"".equals(texture)) {
-//			tmpTXST.setNthMap(set, texture.substring(texture.indexOf('\\') + 1));
-//		    }
-//		    if (j == Variant.numSupportedTextures - 1) {
-//			break;
-//		    } else {
-//			j++;
-//		    }
-//		}
-//		v.textureVariants[i] = new Variant.TextureVariant(tmpTXST, textureSet.title);
+		tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
+
+		// Set maps
+		int j = 0;
+		for (String texture : textureSet.maps) {
+		    int set = readjustTXSTindices(j);
+
+		    if (replacements[i][j] != null) {
+			tmpTXST.setNthMap(set, replacements[i][j]);
+			if (SPGlobal.logging()) {
+			    SPGlobal.log("Variant", "  Replaced set " + i + ", texture " + j + " with " + replacements[i][j] + " on variant " + v.name);
+			}
+		    } else if (!"".equals(texture)) {
+			tmpTXST.setNthMap(set, texture.substring(texture.indexOf('\\') + 1));
+		    }
+		    if (j == Variant.numSupportedTextures - 1) {
+			break;
+		    } else {
+			j++;
+		    }
+		}
+		v.textureVariants[i] = new Variant.TextureVariant(tmpTXST, textureSet.title);
 	    }
 	    i++;
 	}
@@ -667,9 +717,14 @@ public class AutomaticVariations {
 		if (packageFolder.isDirectory()) {
 		    for (File variantSet : packageFolder.listFiles()) { // Horker
 			if (variantSet.isDirectory()) {
-			    VariantSet varSet = importVariantSet(variantSet, header);
-			    if (!varSet.isEmpty()) {
-				out.add(varSet);
+			    try {
+				VariantSet varSet = importVariantSet(variantSet, header);
+				if (!varSet.isEmpty()) {
+				    out.add(varSet);
+				}
+			    } catch (com.google.gson.JsonSyntaxException ex) {
+				SPGlobal.logException(ex);
+				JOptionPane.showMessageDialog(null, "Variant set " + variantSet.getPath() + " had a bad specifications file.  Skipped.");
 			    }
 			}
 		    }
@@ -681,7 +736,7 @@ public class AutomaticVariations {
 	return out;
     }
 
-    static VariantSet importVariantSet(File variantFolder, String header) throws FileNotFoundException {
+    static VariantSet importVariantSet(File variantFolder, String header) throws FileNotFoundException, com.google.gson.JsonSyntaxException {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "======================================================================");
 	    SPGlobal.log(header, "Importing variant set: " + variantFolder.getPath());
