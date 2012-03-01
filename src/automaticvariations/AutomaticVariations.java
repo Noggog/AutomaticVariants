@@ -1,6 +1,5 @@
 package automaticvariations;
 
-import java.awt.HeadlessException;
 import java.io.*;
 import java.util.*;
 import java.util.zip.DataFormatException;
@@ -96,6 +95,9 @@ public class AutomaticVariations {
 	    // Apply template routing from original NPCs to new LLists
 	    generateTemplating(source);
 
+	    // Replace original NPCs in orig LVLNs, as CK throws warning/error for it
+	    subInOldLVLNs(source);
+
 	    /*
 	     * Close up shop.
 	     */
@@ -156,7 +158,7 @@ public class AutomaticVariations {
 	return false;
     }
 
-    static void importMods() throws HeadlessException {
+    static void importMods() {
 	try {
 	    SPImporter importer = new SPImporter();
 	    Mask m = MajorRecord.getMask(Type.RACE);
@@ -195,6 +197,29 @@ public class AutomaticVariations {
 	LDebug.timeStamp = true;
 	// Turn Debugging off except for errors
 //	SPGlobal.logging(false);
+    }
+
+    static void subInOldLVLNs(Mod source) {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Replacing old NPC entries in your mod's LVLNs");
+	    SPGlobal.log(header, "====================================================================");
+	}
+	for (LVLN llistSrc : source.getLeveledLists()) {
+	    boolean add = false;
+	    for (LVLO entry : llistSrc) {
+		if (llists.containsKey(entry.getForm())) {
+		    entry.setForm(llists.get(entry.getForm()).getForm());
+		    add = true;
+		}
+	    }
+	    if (add) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "Modified " + llistSrc);
+		}
+		SPGlobal.getGlobalPatch().addRecord(llistSrc);
+	    }
+	}
     }
 
     static void generateTemplating(Mod source) {
@@ -435,28 +460,28 @@ public class AutomaticVariations {
 	    if (needed[i]) {
 		// New TXST
 		TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch(), v.name + "_txst");
-		tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
-
-		// Set maps
-		int j = 0;
-		for (String texture : textureSet.maps) {
-		    int set = readjustTXSTindices(j);
-
-		    if (replacements[i][j] != null) {
-			tmpTXST.setNthMap(set, replacements[i][j]);
-			if (SPGlobal.logging()) {
-			    SPGlobal.log("Variant", "  Replaced set " + i + ", texture " + j + " with " + replacements[i][j] + " on variant " + v.name);
-			}
-		    } else if (!"".equals(texture)) {
-			tmpTXST.setNthMap(set, texture.substring(texture.indexOf('\\') + 1));
-		    }
-		    if (j == Variant.numSupportedTextures - 1) {
-			break;
-		    } else {
-			j++;
-		    }
-		}
-		v.textureVariants[i] = new Variant.TextureVariant(tmpTXST, textureSet.title);
+//		tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
+//
+//		// Set maps
+//		int j = 0;
+//		for (String texture : textureSet.maps) {
+//		    int set = readjustTXSTindices(j);
+//
+//		    if (replacements[i][j] != null) {
+//			tmpTXST.setNthMap(set, replacements[i][j]);
+//			if (SPGlobal.logging()) {
+//			    SPGlobal.log("Variant", "  Replaced set " + i + ", texture " + j + " with " + replacements[i][j] + " on variant " + v.name);
+//			}
+//		    } else if (!"".equals(texture)) {
+//			tmpTXST.setNthMap(set, texture.substring(texture.indexOf('\\') + 1));
+//		    }
+//		    if (j == Variant.numSupportedTextures - 1) {
+//			break;
+//		    } else {
+//			j++;
+//		    }
+//		}
+//		v.textureVariants[i] = new Variant.TextureVariant(tmpTXST, textureSet.title);
 	    }
 	    i++;
 	}
