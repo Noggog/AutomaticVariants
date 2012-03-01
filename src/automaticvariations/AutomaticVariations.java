@@ -114,7 +114,7 @@ public class AutomaticVariations {
 	    // If a major error happens, print it everywhere and display a message box.
 	    System.err.println(e.toString());
 	    SPGlobal.logException(e);
-	    JOptionPane.showMessageDialog(null, "There was an exception thrown during program execution.  Check the debug logs.");
+	    JOptionPane.showMessageDialog(null, "There was an exception thrown during program execution: '" + e + "'  Check the debug logs.");
 	}
 
 	// Close debug logs before program exits.
@@ -194,7 +194,7 @@ public class AutomaticVariations {
 	LDebug.timeElapsed = true;
 	LDebug.timeStamp = true;
 	// Turn Debugging off except for errors
-	SPGlobal.logging(false);
+//	SPGlobal.logging(false);
     }
 
     static void generateTemplating(Mod source) {
@@ -286,6 +286,12 @@ public class AutomaticVariations {
 	    FormID armorForm = npcSrc.getWornArmor();
 	    if (npcSrc.getWornArmor().equals(FormID.NULL)) {
 		RACE race = (RACE) SPDatabase.getMajor(npcSrc.getRace());
+		if (race == null) {
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "Skipping " + npcSrc + " : did not have a worn armor or race.");
+		    }
+		    continue;
+		}
 		armorForm = race.getWornArmor();
 	    }
 	    ArrayList<ARMO_spec> skinVariants = armors.get(armorForm);
