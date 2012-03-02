@@ -47,84 +47,86 @@ public class AutomaticVariations {
     static Set<String> edidExclude = new HashSet<String>();
 
     public static void main(String[] args) {
-
-	try {
-
-	    SPDefaultGUI gui = createGUI();
-	    setGlobals();
-
-	    Mod patch = new Mod("Automatic Variations", false);
-	    patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
-	    SPGlobal.setGlobalPatch(patch);
-
-	    readInExceptions();
-
-	    importMods();
-
-	    Mod source = new Mod("Temporary", false);
-	    source.addAsOverrides(SPGlobal.getDB());
-
-	    SPGlobal.logging(true);
-
-	    BSA.BSAs = BSA.loadInBSAs(FileType.NIF, FileType.DDS);
-
+	if (args.length == 1) {
 	    gatherFiles();
+	} else {
+	    try {
 
-	    ArrayList<VariantSet> variantRead = importVariants(patch);
+		SPDefaultGUI gui = createGUI();
+		setGlobals();
 
-	    // Locate and load NIFs, and assign their variants
-	    linkToNifs(variantRead);
+		Mod patch = new Mod("Automatic Variations", false);
+		patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
+		SPGlobal.setGlobalPatch(patch);
 
-	    // Generate TXSTs
-	    generateTXSTvariants();
+		readInExceptions();
 
-	    // Generate ARMA dups that use TXSTs
-	    generateARMAvariants(source);
+		importMods();
 
-	    // Generate ARMO dups that use ARMAs
-	    generateARMOvariants(source);
-	    printVariants();
+		Mod source = new Mod("Temporary", false);
+		source.addAsOverrides(SPGlobal.getDB());
 
-	    // Generate NPC_ dups that use ARMO skins
-	    generateNPCvariants(source);
-	    printNPCdups();
+		SPGlobal.logging(true);
 
-	    // Load NPC_ dups into LVLNs
-	    generateLVLNs(source);
+		BSA.BSAs = BSA.loadInBSAs(FileType.NIF, FileType.DDS);
 
-	    // Apply template routing from original NPCs to new LLists
-	    generateTemplating(source);
+		gatherFiles();
 
-	    // Handle unique NPCs templating to AV variation npcs
+		ArrayList<VariantSet> variantRead = importVariants(patch);
+
+		// Locate and load NIFs, and assign their variants
+		linkToNifs(variantRead);
+
+		// Generate TXSTs
+		generateTXSTvariants();
+
+		// Generate ARMA dups that use TXSTs
+		generateARMAvariants(source);
+
+		// Generate ARMO dups that use ARMAs
+		generateARMOvariants(source);
+		printVariants();
+
+		// Generate NPC_ dups that use ARMO skins
+		generateNPCvariants(source);
+		printNPCdups();
+
+		// Load NPC_ dups into LVLNs
+		generateLVLNs(source);
+
+		// Apply template routing from original NPCs to new LLists
+		generateTemplating(source);
+
+		// Handle unique NPCs templating to AV variation npcs
 //	    handleUniqueNPCs(source);
 
-	    // Replaced old templating, as CK throws errors
+		// Replaced old templating, as CK throws errors
 //	    subInNewTemplates(source);
 
-	    // Replace original NPCs in orig LVLNs, as CK throws warning/error for it
-	    subInOldLVLNs(source);
+		// Replace original NPCs in orig LVLNs, as CK throws warning/error for it
+		subInOldLVLNs(source);
 
-	    /*
-	     * Close up shop.
-	     */
-	    try {
-		// Export your custom patch.
-		patch.export();
-	    } catch (IOException ex) {
-		// If something goes wrong, show an error message.
-		JOptionPane.showMessageDialog(null, "There was an error exporting the custom patch.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
-		System.exit(0);
+		/*
+		 * Close up shop.
+		 */
+		try {
+		    // Export your custom patch.
+		    patch.export();
+		} catch (IOException ex) {
+		    // If something goes wrong, show an error message.
+		    JOptionPane.showMessageDialog(null, "There was an error exporting the custom patch.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
+		    System.exit(0);
+		}
+		// Tell the GUI to display "Done Patching"
+		gui.finished();
+
+	    } catch (Exception e) {
+		// If a major error happens, print it everywhere and display a message box.
+		System.err.println(e.toString());
+		SPGlobal.logException(e);
+		JOptionPane.showMessageDialog(null, "There was an exception thrown during program execution: '" + e + "'  Check the debug logs.");
 	    }
-	    // Tell the GUI to display "Done Patching"
-	    gui.finished();
-
-	} catch (Exception e) {
-	    // If a major error happens, print it everywhere and display a message box.
-	    System.err.println(e.toString());
-	    SPGlobal.logException(e);
-	    JOptionPane.showMessageDialog(null, "There was an exception thrown during program execution: '" + e + "'  Check the debug logs.");
 	}
-
 	// Close debug logs before program exits.
 	SPGlobal.closeDebug();
     }
@@ -560,6 +562,8 @@ public class AutomaticVariations {
 	}
 	AV_Nif nif = new AV_Nif(nifPath);
 	nif.load();
+	SPGlobal.log(header, "  Nif path: " + nifPath);
+	nif.print();
 
 	// Need to change old filenames to alt texture filenames
 	for (AltTexture t : piece.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON)) {
@@ -644,8 +648,8 @@ public class AutomaticVariations {
 			continue;
 		    }
 
-		    // Locate armature
-		    ARMA piece = (ARMA) SPDatabase.getMajor(skin.getArmatures().get(0));
+		    // Locate armature 
+		    ARMA piece = (ARMA) SPDatabase.getMajor(skin.getArmatures().get(skin.getArmatures().size() - 1));
 		    if (piece == null) {
 			SPGlobal.logError(header, "Could not locate ARMA with FormID: " + skin.getArmatures().get(0));
 			continue;
@@ -661,7 +665,10 @@ public class AutomaticVariations {
 		    }
 
 		    // Load in and add to maps
-		    if (!nifs.containsKey(nifPath)) {
+		    if (!armaToNif.containsKey(piece.getForm()) && !piece.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON).isEmpty()) {
+			// Has alt texture, separate
+			splitVariant(nifPath, piece);
+		    } else if (!nifs.containsKey(nifPath)) {
 			AV_Nif nif = new AV_Nif(nifPath);
 			nif.load();
 
@@ -672,18 +679,11 @@ public class AutomaticVariations {
 			armaToNif.put(piece.getForm(), nif.name);
 		    } else {
 			if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "  Already a nif with that path.");
+			    SPGlobal.log(header, "  Already a nif with path: " + nifPath);
 			}
-			// If new skin, check to see if it warrents separating variants
-			if (!armaToNif.containsKey(piece.getForm())) {
-			    // Has alt texture, separate
-			    if (!piece.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON).isEmpty()) {
-				splitVariant(nifPath, piece);
-			    } else {
-				// Doesn't have alt texture, just route to existing nif
-				armaToNif.put(piece.getForm(), nifPath);
-			    }
-			}
+			// Doesn't have alt texture, just route to existing nif
+			armaToNif.put(piece.getForm(), nifPath);
+
 		    }
 
 		    nifs.get(armaToNif.get(piece.getForm())).variants.addAll(varSet.variants);
@@ -765,7 +765,7 @@ public class AutomaticVariations {
 		}
 	    } else if (variantFile.isDirectory()) {
 		Variant variant = new Variant();
-		variant.setName(variantFile);
+		variant.setName(variantFile, 3);
 		for (File file : variantFile.listFiles()) {  // Files .dds, etc
 		    if (file.isFile()) {
 			if (file.getName().endsWith(".dds")) {
@@ -782,6 +782,8 @@ public class AutomaticVariations {
 		}
 		if (!variant.isEmpty()) {
 		    variants.add(variant);
+		} else if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "Variant was empty, skipping.");
 		}
 	    } else if (SPGlobal.logging()) {
 		SPGlobal.log(header, "  Skipped file: " + variantFile);
@@ -789,11 +791,20 @@ public class AutomaticVariations {
 	    if (SPGlobal.logging()) {
 		SPGlobal.log(header, "  ----------------------------------------------------------");
 	    }
+
+	}
+
+	// If no specific variants, but generic files still present (perhaps to make a single variant)
+	if (!commonTexturePaths.isEmpty() && variants.isEmpty()) {
+	    Variant variant = new Variant();
+	    variant.setName(variantFolder, 2);
+	    variants.add(variant);
 	}
 
 	for (Variant v : variants) {
 	    for (File f : commonTexturePaths) {
 		boolean skip = false;
+		// Check to see if deeper folder has a more specialized version of the file
 		for (String s : v.variantTexturePaths) {
 		    if (s.toUpperCase().contains(f.getName().toUpperCase())) {
 			skip = true;

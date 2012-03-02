@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.zip.DataFormatException;
-import lev.LShrinkArray;
 import skyproc.BSA;
 import skyproc.NIF;
 import skyproc.NIF.Node;

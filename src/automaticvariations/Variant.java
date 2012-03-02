@@ -19,24 +19,27 @@ public class Variant {
     TextureVariant[] textureVariants;
     static int numSupportedTextures = 8;
     VariantSpec specs = new VariantSpec();
-    
+
     static class TextureVariant {
 
-        String nifFieldName;
-        TXST textureRecord;
+	String nifFieldName;
+	TXST textureRecord;
 
-        TextureVariant(TXST txst, String name) {
-            textureRecord = txst;
-            nifFieldName = name;
-        }
+	TextureVariant(TXST txst, String name) {
+	    textureRecord = txst;
+	    nifFieldName = name;
+	}
     }
 
-    void setName(File file) {
-        String[] tmp = file.getPath().split("\\\\");
-        name = "AV_" + tmp[tmp.length - 3].replaceAll(" ", "") + "_" + tmp[tmp.length - 2].replaceAll(" ", "") + "_" + tmp[tmp.length - 1].replaceAll(" ", "");
+    void setName(File file, int places) {
+	String[] tmp = file.getPath().split("\\\\");
+	for (int i = 1; i <= places; i++) {
+	    name = "_" + tmp[tmp.length - i].replaceAll(" ", "") + name;
+	}
+	name = "AV" + name;
     }
 
     boolean isEmpty() {
-        return variantTexturePaths.isEmpty();
+	return variantTexturePaths.isEmpty();
     }
 }
