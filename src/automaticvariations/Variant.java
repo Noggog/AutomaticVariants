@@ -14,7 +14,7 @@ import skyproc.TXST;
  */
 public class Variant {
 
-    String name;
+    String name = "";
     ArrayList<String> variantTexturePaths = new ArrayList<String>();
     TextureVariant[] textureVariants;
     static int numSupportedTextures = 8;
