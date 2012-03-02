@@ -204,7 +204,7 @@ public class AutomaticVariations {
 	LDebug.timeElapsed = true;
 	LDebug.timeStamp = true;
 	// Turn Debugging off except for errors
-//	SPGlobal.logging(false);
+	SPGlobal.logging(false);
     }
 
     static void subInOldLVLNs(Mod source) {
@@ -648,10 +648,17 @@ public class AutomaticVariations {
 			continue;
 		    }
 
-		    // Locate armature 
-		    ARMA piece = (ARMA) SPDatabase.getMajor(skin.getArmatures().get(skin.getArmatures().size() - 1));
+		    // Locate armature that matches armor's race
+		    ARMA piece = null;
+		    for (FormID arma : skin.getArmatures()) {
+			piece = (ARMA) SPDatabase.getMajor(arma);
+			if (piece.getRace().equals(skin.getRace())) {
+			    break;
+			}
+			piece = null;
+		    }
 		    if (piece == null) {
-			SPGlobal.logError(header, "Could not locate ARMA with FormID: " + skin.getArmatures().get(0));
+			SPGlobal.logError(header, "Could not locate ARMA matching ARMO's race");
 			continue;
 		    } else if (SPGlobal.logging()) {
 			SPGlobal.log(header, "  " + piece);
