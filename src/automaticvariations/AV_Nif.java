@@ -27,8 +27,7 @@ public class AV_Nif {
     ArrayList<TextureField> textureFields = new ArrayList<TextureField>();
     ArrayList<Variant> variants = new ArrayList<Variant>();
 
-
-    AV_Nif (String path) {
+    AV_Nif(String path) {
 	name = path;
 	this.path = "meshes\\" + path;
     }
@@ -38,12 +37,18 @@ public class AV_Nif {
 	if (nif == null) {
 	    throw new FileNotFoundException("NIF file did not exist for path: " + path);
 	}
-	ArrayList<Node> NiTrishapes = nif.getNode(NIF.NodeType.NITRISHAPE);
-	ArrayList<Node> BSTextureSets = nif.getNode(NIF.NodeType.BSSHADERTEXTURESET);
-	for (int i = 0; i < BSTextureSets.size(); i++) {
-	    TextureField texField = new TextureField(BSTextureSets.get(i));
-	    texField.title = NiTrishapes.get(i).title;
-	    this.textureFields.add(texField);
+	ArrayList<ArrayList<Node>> NiTriShapes = nif.getNiTriShapePackages();
+	TextureField last = new TextureField();
+	for (int i = 0; i < NiTriShapes.size(); i++) {
+	    TextureField next = new TextureField(last);
+	    next.title = NiTriShapes.get(i).get(0).title;
+	    for (Node n : NiTriShapes.get(i)) {
+		if (n.type == NIF.NodeType.BSSHADERTEXTURESET) {
+		    next.maps = extractBSTextures(n);
+		}
+	    }
+	    this.textureFields.add(next);
+	    last = next;
 	}
     }
 
@@ -60,17 +65,27 @@ public class AV_Nif {
 	}
     }
 
+    static ArrayList<String> extractBSTextures(Node n) {
+	int numTextures = n.data.extractInt(4);
+	ArrayList<String> maps = new ArrayList<String>(numTextures);
+	for (int i = 0; i < numTextures; i++) {
+	    maps.add(n.data.extractString(n.data.extractInt(4)));
+	}
+	return maps;
+    }
+
     class TextureField {
 
-	String title;
-	ArrayList<String> maps;
+	String title = "No Title";
+	ArrayList<String> maps = new ArrayList<String>(0);
 
-	TextureField(Node n) {
-	    int numTextures = n.data.extractInt(4);
-	    maps = new ArrayList<String>(numTextures);
-	    for (int i = 0; i < numTextures; i++) {
-		maps.add(n.data.extractString(n.data.extractInt(4)));
-	    }
+	TextureField () {
+
+	}
+
+	TextureField (TextureField in) {
+	    this.title = in.title;
+	    this.maps = in.maps;
 	}
     }
 }
