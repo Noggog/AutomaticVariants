@@ -50,7 +50,9 @@ public class AV_Nif {
 			SPGlobal.log(header, "  Loaded new texture maps");
 		    }
 		    next.maps = extractBSTextures(n);
-		    next.unique = true;
+		    if (!next.equals(last)) {
+			next.unique = true;
+		    }
 		}
 	    }
 	    this.textureFields.add(next);
@@ -92,6 +94,28 @@ public class AV_Nif {
 	TextureField(TextureField in) {
 	    this.title = in.title;
 	    this.maps = in.maps;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+	    if (obj == null) {
+		return false;
+	    }
+	    if (getClass() != obj.getClass()) {
+		return false;
+	    }
+	    final TextureField other = (TextureField) obj;
+	    if (this.maps != other.maps && (this.maps == null || !this.maps.equals(other.maps))) {
+		return false;
+	    }
+	    return true;
+	}
+
+	@Override
+	public int hashCode() {
+	    int hash = 7;
+	    hash = 71 * hash + (this.maps != null ? this.maps.hashCode() : 0);
+	    return hash;
 	}
     }
 }

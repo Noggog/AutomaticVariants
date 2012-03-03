@@ -544,7 +544,7 @@ public class AutomaticVariants {
 	    if (needed[i]) {
 		if (textureSet.unique) {
 		    // New TXST
-		    TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch(), v.name + "_txst");
+		    TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch(), v.name + "_" + textureSet.title + "_txst");
 		    tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
 
 		    // Set maps
