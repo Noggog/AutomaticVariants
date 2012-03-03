@@ -436,36 +436,40 @@ public class AutomaticVariants {
 	for (ARMO armoSrc : source.getArmors()) {
 	    ArrayList<ARMA_spec> variants = null;
 	    FormID target = null;
-	    for (FormID arma : armoSrc.getArmatures()) {
-		target = arma;
-		variants = armatures.get(target);
-		if (variants != null) {
-		    break;
+	    for (FormID armaForm : armoSrc.getArmatures()) {
+		ARMA arma = (ARMA) SPDatabase.getMajor(armaForm);
+		if (arma.getRace().equals(armoSrc.getRace())) {
+		    target = armaForm;
+		    variants = armatures.get(target);
+		    if (variants != null) {
+			break;
+		    }
 		}
 	    }
 
 	    if (variants != null) {
-		if (block.contains(armoSrc.getForm())) {
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "Skipping " + armoSrc + " because it is on the block list");
+		    if (block.contains(armoSrc.getForm())) {
+			if (SPGlobal.logging()) {
+			    SPGlobal.log(header, "Skipping " + armoSrc + " because it is on the block list");
+			}
+			continue;
+		    } else if (SPGlobal.logging()) {
+			SPGlobal.log(header, "Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(target, GRUP_TYPE.ARMA));
 		    }
-		    continue;
-		} else if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(target, GRUP_TYPE.ARMA));
-		}
+		    ArrayList<ARMO_spec> dups = new ArrayList<ARMO_spec>(variants.size());
+		    for (ARMA_spec variant : variants) {
+			ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, variant.arma.getEDID().substring(0, variant.arma.getEDID().length() - 5) + "_armo");
 
-		ArrayList<ARMO_spec> dups = new ArrayList<ARMO_spec>(variants.size());
-		for (ARMA_spec variant : variants) {
-		    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, variant.arma.getEDID().substring(0, variant.arma.getEDID().length() - 5) + "_armo");
-
-		    dup.removeArmature(target);
-		    dup.addArmature(variant.arma.getForm());
-		    dups.add(new ARMO_spec(dup, variant));
+			dup.removeArmature(target);
+			dup.addArmature(variant.arma.getForm());
+			dups.add(new ARMO_spec(dup, variant));
+		    }
+		    armors.put(armoSrc.getForm(), dups);
 		}
-		armors.put(armoSrc.getForm(), dups);
 	    }
 	}
-    }
+
+    
 
     static void generateARMAvariants(Mod source) {
 	if (SPGlobal.logging()) {
