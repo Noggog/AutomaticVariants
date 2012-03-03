@@ -1,4 +1,4 @@
-package automaticvariations;
+package automaticvariants;
 
 import java.io.*;
 import java.util.*;
@@ -6,11 +6,11 @@ import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
 import lev.Ln;
 import lev.debug.LDebug;
+import skyproc.ARMA.AltTexture;
 import skyproc.BSA.FileType;
+import skyproc.LVLN.LVLO;
 import skyproc.MajorRecord.Mask;
 import skyproc.*;
-import skyproc.ARMA.AltTexture;
-import skyproc.LVLN.LVLO;
 import skyproc.exceptions.BadParameter;
 import skyproc.exceptions.Uninitialized;
 
@@ -18,7 +18,7 @@ import skyproc.exceptions.Uninitialized;
  *
  * @author Leviathan1753
  */
-public class AutomaticVariations {
+public class AutomaticVariants {
 
     /*
      * Static Strings
@@ -204,7 +204,7 @@ public class AutomaticVariations {
 	LDebug.timeElapsed = true;
 	LDebug.timeStamp = true;
 	// Turn Debugging off except for errors
-	SPGlobal.logging(false);
+//	SPGlobal.logging(false);
     }
 
     static void subInOldLVLNs(Mod source) {
@@ -878,7 +878,7 @@ public class AutomaticVariations {
 	 * Custom names and descriptions
 	 */
 	// Used in the GUI as the title
-	String myPatcherName = "Automatic Variations";
+	String myPatcherName = "Automatic Variants";
 	// Used in the GUI as the description of what your patcher does
 	String myPatcherDescription =
 		"Oh mai gawd!";
