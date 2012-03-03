@@ -791,7 +791,7 @@ public class AutomaticVariants {
 	ArrayList<Variant> variants = new ArrayList<Variant>();
 	VariantSet varSet = new VariantSet();
 	ArrayList<File> commonTexturePaths = new ArrayList<File>();
-
+	boolean loadedSpecs = false;
 	for (File variantFile : variantFolder.listFiles()) {  // Texture folders ("Grey Horker")
 	    if (variantFile.isFile() && variantFile.getName().toUpperCase().endsWith(".JSON")) {
 		varSet = AVGlobal.parser.fromJson(new FileReader(variantFile), VariantSet.class);
@@ -803,6 +803,7 @@ public class AutomaticVariants {
 		    }
 		    SPGlobal.log(variantFile.getName(), "    Apply to Similar: " + varSet.Apply_To_Similar);
 		}
+		loadedSpecs = true;
 	    } else if (variantFile.isFile() && variantFile.getName().toUpperCase().endsWith(".DDS")) {
 		commonTexturePaths.add(variantFile);
 		Ln.moveFile(variantFile, new File(avTextures + variantFile.getPath().substring(avPackages.getPath().length())), false);
@@ -839,7 +840,14 @@ public class AutomaticVariants {
 	    }
 
 	}
-
+	// If no specifications file, return empty
+	if (!loadedSpecs) {
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(header, "Variant set " + variantFolder.getPath() + "did not have specifications file.  Skipping.");
+	    }
+	    return varSet;
+	}
+	
 	// If no specific variants, but generic files still present (perhaps to make a single variant)
 	if (!commonTexturePaths.isEmpty() && variants.isEmpty()) {
 	    Variant variant = new Variant();
