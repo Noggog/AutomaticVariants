@@ -45,13 +45,15 @@ public class AutomaticVariants {
      */
     static Set<FormID> block = new HashSet<FormID>();
     static Set<String> edidExclude = new HashSet<String>();
+    static int debugLevel = 1;
 
     public static void main(String[] args) {
-	if (args.length == 1) {
+	ArrayList<String> arguments = new ArrayList<String>(Arrays.asList(args));
+	if (arguments.contains("-gather")) {
 	    gatherFiles();
 	} else {
 	    try {
-
+		handleArgs(arguments);
 		SPDefaultGUI gui = createGUI();
 		setGlobals();
 
@@ -66,7 +68,9 @@ public class AutomaticVariants {
 		Mod source = new Mod("Temporary", false);
 		source.addAsOverrides(SPGlobal.getDB());
 
-		SPGlobal.logging(true);
+		if (debugLevel >= 1) {
+		    SPGlobal.logging(true);
+		}
 
 		BSA.BSAs = BSA.loadInBSAs(FileType.NIF, FileType.DDS);
 
@@ -129,6 +133,20 @@ public class AutomaticVariants {
 	}
 	// Close debug logs before program exits.
 	SPGlobal.closeDebug();
+    }
+
+    static void handleArgs(ArrayList<String> arguments) {
+	String debug = "-debug";
+	for (String s : arguments) {
+	    if (s.contains(debug)) {
+		s = s.substring(s.indexOf(debug) + debug.length()).trim();
+		try {
+		    debugLevel = Integer.valueOf(s);
+		} catch (NumberFormatException e) {
+		    SPGlobal.logError(header, "Error parsing the debug level: '" + s + "'");
+		}
+	    }
+	}
     }
 
     static boolean checkNPCskip(NPC_ npcSrc, boolean last) {
@@ -204,7 +222,9 @@ public class AutomaticVariants {
 	LDebug.timeElapsed = true;
 	LDebug.timeStamp = true;
 	// Turn Debugging off except for errors
-//	SPGlobal.logging(false);
+	if (debugLevel < 2) {
+	    SPGlobal.logging(false);
+	}
     }
 
     static void subInOldLVLNs(Mod source) {
