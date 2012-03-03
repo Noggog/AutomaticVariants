@@ -49,93 +49,98 @@ public class AutomaticVariants {
 
     public static void main(String[] args) {
 	ArrayList<String> arguments = new ArrayList<String>(Arrays.asList(args));
-	if (arguments.contains("-gather")) {
+	try {
+	    if (handleArgs(arguments)) {
+		SPGlobal.closeDebug();
+		return;
+	    }
+	    SPDefaultGUI gui = createGUI();
+	    setGlobals();
+
+	    Mod patch = new Mod("Automatic Variations", false);
+	    patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
+	    SPGlobal.setGlobalPatch(patch);
+
+	    readInExceptions();
+
+	    importMods();
+
+	    Mod source = new Mod("Temporary", false);
+	    source.addAsOverrides(SPGlobal.getDB());
+
+	    if (debugLevel >= 1) {
+		SPGlobal.logging(true);
+	    }
+
+	    BSA.BSAs = BSA.loadInBSAs(FileType.NIF, FileType.DDS);
+
 	    gatherFiles();
-	} else {
-	    try {
-		handleArgs(arguments);
-		SPDefaultGUI gui = createGUI();
-		setGlobals();
 
-		Mod patch = new Mod("Automatic Variations", false);
-		patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
-		SPGlobal.setGlobalPatch(patch);
+	    ArrayList<VariantSet> variantRead = importVariants(patch);
 
-		readInExceptions();
+	    // Locate and load NIFs, and assign their variants
+	    linkToNifs(variantRead);
 
-		importMods();
+	    // Generate TXSTs
+	    generateTXSTvariants();
 
-		Mod source = new Mod("Temporary", false);
-		source.addAsOverrides(SPGlobal.getDB());
+	    // Generate ARMA dups that use TXSTs
+	    generateARMAvariants(source);
 
-		if (debugLevel >= 1) {
-		    SPGlobal.logging(true);
-		}
+	    // Generate ARMO dups that use ARMAs
+	    generateARMOvariants(source);
+	    printVariants();
 
-		BSA.BSAs = BSA.loadInBSAs(FileType.NIF, FileType.DDS);
+	    // Generate NPC_ dups that use ARMO skins
+	    generateNPCvariants(source);
+	    printNPCdups();
 
-		gatherFiles();
+	    // Load NPC_ dups into LVLNs
+	    generateLVLNs(source);
 
-		ArrayList<VariantSet> variantRead = importVariants(patch);
+	    // Apply template routing from original NPCs to new LLists
+	    generateTemplating(source);
 
-		// Locate and load NIFs, and assign their variants
-		linkToNifs(variantRead);
-
-		// Generate TXSTs
-		generateTXSTvariants();
-
-		// Generate ARMA dups that use TXSTs
-		generateARMAvariants(source);
-
-		// Generate ARMO dups that use ARMAs
-		generateARMOvariants(source);
-		printVariants();
-
-		// Generate NPC_ dups that use ARMO skins
-		generateNPCvariants(source);
-		printNPCdups();
-
-		// Load NPC_ dups into LVLNs
-		generateLVLNs(source);
-
-		// Apply template routing from original NPCs to new LLists
-		generateTemplating(source);
-
-		// Handle unique NPCs templating to AV variation npcs
+	    // Handle unique NPCs templating to AV variation npcs
 //	    handleUniqueNPCs(source);
 
-		// Replaced old templating, as CK throws errors
+	    // Replaced old templating, as CK throws errors
 //	    subInNewTemplates(source);
 
-		// Replace original NPCs in orig LVLNs, as CK throws warning/error for it
-		subInOldLVLNs(source);
+	    // Replace original NPCs in orig LVLNs, as CK throws warning/error for it
+	    subInOldLVLNs(source);
 
-		/*
-		 * Close up shop.
-		 */
-		try {
-		    // Export your custom patch.
-		    patch.export();
-		} catch (IOException ex) {
-		    // If something goes wrong, show an error message.
-		    JOptionPane.showMessageDialog(null, "There was an error exporting the custom patch.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
-		    System.exit(0);
-		}
-		// Tell the GUI to display "Done Patching"
-		gui.finished();
-
-	    } catch (Exception e) {
-		// If a major error happens, print it everywhere and display a message box.
-		System.err.println(e.toString());
-		SPGlobal.logException(e);
-		JOptionPane.showMessageDialog(null, "There was an exception thrown during program execution: '" + e + "'  Check the debug logs.");
+	    /*
+	     * Close up shop.
+	     */
+	    try {
+		// Export your custom patch.
+		patch.export();
+	    } catch (IOException ex) {
+		// If something goes wrong, show an error message.
+		JOptionPane.showMessageDialog(null, "There was an error exporting the custom patch.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
+		System.exit(0);
 	    }
+	    // Tell the GUI to display "Done Patching"
+	    gui.finished();
+
+	} catch (Exception e) {
+	    // If a major error happens, print it everywhere and display a message box.
+	    System.err.println(e.toString());
+	    SPGlobal.logException(e);
+	    JOptionPane.showMessageDialog(null, "There was an exception thrown during program execution: '" + e + "'  Check the debug logs.");
 	}
+
 	// Close debug logs before program exits.
 	SPGlobal.closeDebug();
     }
 
-    static void handleArgs(ArrayList<String> arguments) {
+    static boolean handleArgs(ArrayList<String> arguments) {
+	if (arguments.contains("-gather")) {
+	    gatherFiles();
+	    return true;
+	}
+
 	String debug = "-debug";
 	for (String s : arguments) {
 	    if (s.contains(debug)) {
@@ -147,6 +152,7 @@ public class AutomaticVariants {
 		}
 	    }
 	}
+	return false;
     }
 
     static boolean checkNPCskip(NPC_ npcSrc, boolean last) {
