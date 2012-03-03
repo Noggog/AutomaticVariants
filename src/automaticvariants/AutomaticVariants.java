@@ -45,6 +45,10 @@ public class AutomaticVariants {
      */
     static Set<FormID> block = new HashSet<FormID>();
     static Set<String> edidExclude = new HashSet<String>();
+    /*
+     * Other
+     */
+    static Mod patchg;
     static int debugLevel = 1;
 
     public static void main(String[] args) {
@@ -58,7 +62,8 @@ public class AutomaticVariants {
 	    setGlobals();
 
 	    Mod patch = new Mod("Automatic Variations", false);
-	    patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
+	    patchg = patch;
+//	    patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
 	    SPGlobal.setGlobalPatch(patch);
 
 	    readInExceptions();
@@ -534,32 +539,36 @@ public class AutomaticVariants {
 	// Make new TXSTs
 	v.textureVariants = new Variant.TextureVariant[texturePack.size()];
 	int i = 0;
+	TXST last = null;
 	for (AV_Nif.TextureField textureSet : texturePack) {
 	    if (needed[i]) {
-		// New TXST
-		TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch(), v.name + "_txst");
-		tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
+		if (textureSet.unique) {
+		    // New TXST
+		    TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch(), v.name + "_txst");
+		    tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
 
-		// Set maps
-		int j = 0;
-		for (String texture : textureSet.maps) {
-		    int set = readjustTXSTindices(j);
+		    // Set maps
+		    int j = 0;
+		    for (String texture : textureSet.maps) {
+			int set = readjustTXSTindices(j);
 
-		    if (replacements[i][j] != null) {
-			tmpTXST.setNthMap(set, replacements[i][j]);
-			if (SPGlobal.logging()) {
-			    SPGlobal.log("Variant", "  Replaced set " + i + ", texture " + j + " with " + replacements[i][j] + " on variant " + v.name);
+			if (replacements[i][j] != null) {
+			    tmpTXST.setNthMap(set, replacements[i][j]);
+			    if (SPGlobal.logging()) {
+				SPGlobal.log("Variant", "  Replaced set " + i + ", texture " + j + " with " + replacements[i][j] + " on variant " + v.name);
+			    }
+			} else if (!"".equals(texture)) {
+			    tmpTXST.setNthMap(set, texture.substring(texture.indexOf('\\') + 1));
 			}
-		    } else if (!"".equals(texture)) {
-			tmpTXST.setNthMap(set, texture.substring(texture.indexOf('\\') + 1));
+			if (j == Variant.numSupportedTextures - 1) {
+			    break;
+			} else {
+			    j++;
+			}
 		    }
-		    if (j == Variant.numSupportedTextures - 1) {
-			break;
-		    } else {
-			j++;
-		    }
+		    last = tmpTXST;
 		}
-		v.textureVariants[i] = new Variant.TextureVariant(tmpTXST, textureSet.title);
+		v.textureVariants[i] = new Variant.TextureVariant(last, textureSet.title);
 	    }
 	    i++;
 	}

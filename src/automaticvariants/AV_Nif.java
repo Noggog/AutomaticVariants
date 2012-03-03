@@ -41,9 +41,16 @@ public class AV_Nif {
 	for (int i = 0; i < NiTriShapes.size(); i++) {
 	    TextureField next = new TextureField(last);
 	    next.title = NiTriShapes.get(i).get(0).title;
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(header, "  Loaded NiTriShapes: " + next.title);
+	    }
 	    for (Node n : NiTriShapes.get(i)) {
 		if (n.type == NIF.NodeType.BSSHADERTEXTURESET) {
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "  Loaded new texture maps");
+		    }
 		    next.maps = extractBSTextures(n);
+		    next.unique = true;
 		}
 	    }
 	    this.textureFields.add(next);
@@ -77,12 +84,12 @@ public class AV_Nif {
 
 	String title = "No Title";
 	ArrayList<String> maps = new ArrayList<String>(0);
+	boolean unique = false;
 
-	TextureField () {
-
+	TextureField() {
 	}
 
-	TextureField (TextureField in) {
+	TextureField(TextureField in) {
 	    this.title = in.title;
 	    this.maps = in.maps;
 	}
