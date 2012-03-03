@@ -48,7 +48,7 @@ public class AutomaticVariants {
     /*
      * Other
      */
-    static Mod patchg;
+    static String extraPath = "";
     static int debugLevel = 1;
 
     public static void main(String[] args) {
@@ -62,8 +62,6 @@ public class AutomaticVariants {
 	    setGlobals();
 
 	    Mod patch = new Mod("Automatic Variations", false);
-	    patchg = patch;
-//	    patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
 	    SPGlobal.setGlobalPatch(patch);
 
 	    readInExceptions();
@@ -141,12 +139,8 @@ public class AutomaticVariants {
     }
 
     static boolean handleArgs(ArrayList<String> arguments) {
-	if (arguments.contains("-gather")) {
-	    gatherFiles();
-	    return true;
-	}
-
 	String debug = "-debug";
+	String extraPth = "-extraPath";
 	for (String s : arguments) {
 	    if (s.contains(debug)) {
 		s = s.substring(s.indexOf(debug) + debug.length()).trim();
@@ -155,8 +149,24 @@ public class AutomaticVariants {
 		} catch (NumberFormatException e) {
 		    SPGlobal.logError(header, "Error parsing the debug level: '" + s + "'");
 		}
+	    } else if (s.contains(extraPth)) {
+		s = s.substring(s.indexOf(extraPth) + extraPth.length()).trim();
+		extraPath = s;
+		SPGlobal.pathToData = extraPth + SPGlobal.pathToData;
 	    }
+	    
 	}
+	
+	if (arguments.contains("-gather")) {
+	    gatherFiles();
+	    return true;
+	}
+	
+	if (arguments.contains("-generate")) {
+	    generatePackages();
+	    return true;
+	}
+
 	return false;
     }
 
@@ -225,7 +235,7 @@ public class AutomaticVariants {
 	/*
 	 * Initializing Debug Log and Globals
 	 */
-	SPGlobal.createGlobalLog();
+	SPGlobal.createGlobalLog(extraPath);
 	SPGlobal.debugModMerge = false;
 	SPGlobal.debugExportSummary = false;
 	SPGlobal.debugBSAimport = false;
@@ -468,8 +478,6 @@ public class AutomaticVariants {
 		}
 	    }
 	}
-
-    
 
     static void generateARMAvariants(Mod source) {
 	if (SPGlobal.logging()) {
@@ -875,6 +883,14 @@ public class AutomaticVariants {
 	return varSet;
     }
 
+    static void generatePackages() {
+	String generatorPath = extraPath + "Files/Package Generator/";
+	ArrayList<File> files = Ln.generateFileList(new File(generatorPath + "Source Data/"), -1, -1, false);
+	for (File f : files) {
+	    System.out.println(f);
+	}
+    }
+    
     static void readInExceptions() throws IOException {
 	try {
 	    BufferedReader in = new BufferedReader(new FileReader("BlockList.txt"));
