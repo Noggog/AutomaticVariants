@@ -58,8 +58,8 @@ public class AutomaticVariants {
 		SPGlobal.closeDebug();
 		return;
 	    }
-	    SPDefaultGUI gui = createGUI();
 	    setGlobals();
+	    SPDefaultGUI gui = createGUI();
 
 	    Mod patch = new Mod("Automatic Variations", false);
 	    SPGlobal.setGlobalPatch(patch);
@@ -146,24 +146,27 @@ public class AutomaticVariants {
 		s = s.substring(s.indexOf(debug) + debug.length()).trim();
 		try {
 		    debugLevel = Integer.valueOf(s);
+		    SPGlobal.logMain(header, "Debug level set to: " + debugLevel);
 		} catch (NumberFormatException e) {
 		    SPGlobal.logError(header, "Error parsing the debug level: '" + s + "'");
 		}
 	    } else if (s.contains(extraPth)) {
 		s = s.substring(s.indexOf(extraPth) + extraPth.length()).trim();
 		extraPath = s;
-		SPGlobal.pathToData = extraPth + SPGlobal.pathToData;
+		SPGlobal.pathToData = extraPath + SPGlobal.pathToData;
+		avPackages = new File(extraPath + avPackages.getPath());
+		avMeshes = new File(extraPath + avMeshes.getPath());
+		avTextures = new File(extraPath + avTextures.getPath());
+		if (SPGlobal.logging()) {
+		    SPGlobal.logMain(header, "Extra Path set to: " + extraPath);
+		    SPGlobal.logMain(header, "Path to data: " + SPGlobal.pathToData);
+		}
 	    }
-	    
+
 	}
-	
+
 	if (arguments.contains("-gather")) {
 	    gatherFiles();
-	    return true;
-	}
-	
-	if (arguments.contains("-generate")) {
-	    generatePackages();
 	    return true;
 	}
 
@@ -235,16 +238,18 @@ public class AutomaticVariants {
 	/*
 	 * Initializing Debug Log and Globals
 	 */
-	SPGlobal.createGlobalLog(extraPath);
-	SPGlobal.debugModMerge = false;
-	SPGlobal.debugExportSummary = false;
-	SPGlobal.debugBSAimport = false;
-	SPGlobal.debugNIFimport = false;
-	LDebug.timeElapsed = true;
-	LDebug.timeStamp = true;
-	// Turn Debugging off except for errors
-	if (debugLevel < 2) {
-	    SPGlobal.logging(false);
+	if (debugLevel > 0) {
+	    SPGlobal.createGlobalLog(extraPath);
+	    SPGlobal.debugModMerge = false;
+	    SPGlobal.debugExportSummary = false;
+	    SPGlobal.debugBSAimport = false;
+	    SPGlobal.debugNIFimport = false;
+	    LDebug.timeElapsed = true;
+	    LDebug.timeStamp = true;
+	    // Turn Debugging off except for errors
+	    if (debugLevel < 2) {
+		SPGlobal.logging(false);
+	    }
 	}
     }
 
@@ -458,26 +463,26 @@ public class AutomaticVariants {
 	    }
 
 	    if (variants != null) {
-		    if (block.contains(armoSrc.getForm())) {
-			if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "Skipping " + armoSrc + " because it is on the block list");
-			}
-			continue;
-		    } else if (SPGlobal.logging()) {
-			SPGlobal.log(header, "Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(target, GRUP_TYPE.ARMA));
+		if (block.contains(armoSrc.getForm())) {
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "Skipping " + armoSrc + " because it is on the block list");
 		    }
-		    ArrayList<ARMO_spec> dups = new ArrayList<ARMO_spec>(variants.size());
-		    for (ARMA_spec variant : variants) {
-			ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, variant.arma.getEDID().substring(0, variant.arma.getEDID().length() - 5) + "_armo");
-
-			dup.removeArmature(target);
-			dup.addArmature(variant.arma.getForm());
-			dups.add(new ARMO_spec(dup, variant));
-		    }
-		    armors.put(armoSrc.getForm(), dups);
+		    continue;
+		} else if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(target, GRUP_TYPE.ARMA));
 		}
+		ArrayList<ARMO_spec> dups = new ArrayList<ARMO_spec>(variants.size());
+		for (ARMA_spec variant : variants) {
+		    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, variant.arma.getEDID().substring(0, variant.arma.getEDID().length() - 5) + "_armo");
+
+		    dup.removeArmature(target);
+		    dup.addArmature(variant.arma.getForm());
+		    dups.add(new ARMO_spec(dup, variant));
+		}
+		armors.put(armoSrc.getForm(), dups);
 	    }
 	}
+    }
 
     static void generateARMAvariants(Mod source) {
 	if (SPGlobal.logging()) {
@@ -855,7 +860,7 @@ public class AutomaticVariants {
 	    }
 	    return varSet;
 	}
-	
+
 	// If no specific variants, but generic files still present (perhaps to make a single variant)
 	if (!commonTexturePaths.isEmpty() && variants.isEmpty()) {
 	    Variant variant = new Variant();
@@ -883,17 +888,9 @@ public class AutomaticVariants {
 	return varSet;
     }
 
-    static void generatePackages() {
-	String generatorPath = extraPath + "Files/Package Generator/";
-	ArrayList<File> files = Ln.generateFileList(new File(generatorPath + "Source Data/"), -1, -1, false);
-	for (File f : files) {
-	    System.out.println(f);
-	}
-    }
-    
     static void readInExceptions() throws IOException {
 	try {
-	    BufferedReader in = new BufferedReader(new FileReader("BlockList.txt"));
+	    BufferedReader in = new BufferedReader(new FileReader(extraPath + "Files/BlockList.txt"));
 	    Set target = null;
 	    String read;
 	    while (in.ready()) {

@@ -32,7 +32,7 @@ public class AV_Nif {
     }
 
     final void load() throws BadParameter, FileNotFoundException, IOException, DataFormatException {
-	NIF nif = new NIF(BSA.getUsedFile(path));
+	NIF nif = new NIF(path, BSA.getUsedFile(path));
 	if (nif == null) {
 	    throw new FileNotFoundException("NIF file did not exist for path: " + path);
 	}
@@ -49,7 +49,7 @@ public class AV_Nif {
 		    if (SPGlobal.logging()) {
 			SPGlobal.log(header, "  Loaded new texture maps");
 		    }
-		    next.maps = extractBSTextures(n);
+		    next.maps = NIF.extractBSTextures(n);
 		    if (!next.equals(last)) {
 			next.unique = true;
 		    }
@@ -71,15 +71,6 @@ public class AV_Nif {
 		}
 	    }
 	}
-    }
-
-    static ArrayList<String> extractBSTextures(Node n) {
-	int numTextures = n.data.extractInt(4);
-	ArrayList<String> maps = new ArrayList<String>(numTextures);
-	for (int i = 0; i < numTextures; i++) {
-	    maps.add(n.data.extractString(n.data.extractInt(4)));
-	}
-	return maps;
     }
 
     class TextureField {
