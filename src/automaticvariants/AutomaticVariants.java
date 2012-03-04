@@ -59,7 +59,7 @@ public class AutomaticVariants {
 		return;
 	    }
 	    setGlobals();
-	    SPDefaultGUI gui = createGUI();
+	    AVGUI gui = createGUI();
 
 	    Mod patch = new Mod("Automatic Variations", false);
 	    SPGlobal.setGlobalPatch(patch);
@@ -933,7 +933,7 @@ public class AutomaticVariants {
 	}
     }
 
-    static SPDefaultGUI createGUI() {
+    static AVGUI createGUI() {
 	/*
 	 * Custom names and descriptions
 	 */
@@ -941,12 +941,13 @@ public class AutomaticVariants {
 	String myPatcherName = "Automatic Variants";
 	// Used in the GUI as the description of what your patcher does
 	String myPatcherDescription =
-		"Oh mai gawd!";
+		"Loading in packages; Creating variant records; Inserting them into Skyrim.\n"
+		+ "Enjoy!";
 
 	/*
 	 * Creating SkyProc Default GUI
 	 */
-	return new SPDefaultGUI(myPatcherName, myPatcherDescription);
+	return new AVGUI(myPatcherName, myPatcherDescription);
     }
 
     // Not used
