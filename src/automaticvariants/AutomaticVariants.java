@@ -30,6 +30,7 @@ public class AutomaticVariants {
     /*
      * Variant storage lists/maps
      */
+    static ArrayList<BSA> BSAs;
     // AV_Nif name is key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     // Armo formid is key, nifname is value
@@ -75,7 +76,7 @@ public class AutomaticVariants {
 		SPGlobal.logging(true);
 	    }
 
-	    BSA.BSAs = BSA.loadInBSAs(FileType.NIF, FileType.DDS);
+	    BSAs = BSA.loadInBSAs(FileType.NIF, FileType.DDS);
 
 	    gatherFiles();
 
@@ -175,7 +176,7 @@ public class AutomaticVariants {
 
     static boolean checkNPCskip(NPC_ npcSrc, boolean last) {
 	// If it's pulling from a template, it adopts its template race. No need to dup
-	if (!npcSrc.getTemplate().equals(FormID.NULL) && npcSrc.getTemplateFlag(NPC_.TemplateFlag.USE_TRAITS)) {
+	if (!npcSrc.getTemplate().equals(FormID.NULL) && npcSrc.get(NPC_.TemplateFlag.USE_TRAITS)) {
 	    if (SPGlobal.logging()) {
 		if (last) {
 		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
@@ -183,7 +184,7 @@ public class AutomaticVariants {
 		SPGlobal.log(header, "    Skipping " + npcSrc + " : Template with traits flag");
 	    }
 	    return true;
-	} else if (npcSrc.get(NPC_.ACBSFlag.Unique)) {
+	} else if (npcSrc.get(NPC_.NPCFlags.Unique)) {
 	    if (SPGlobal.logging()) {
 		if (last) {
 		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
@@ -283,7 +284,7 @@ public class AutomaticVariants {
 	    SPGlobal.log(header, "====================================================================");
 	}
 	for (NPC_ srcNpc : source.getNPCs()) {
-	    if (srcNpc.get(NPC_.ACBSFlag.Unique)
+	    if (srcNpc.get(NPC_.NPCFlags.Unique)
 		    && !srcNpc.getTemplate().equals(FormID.NULL)
 		    && llists.containsKey(srcNpc.getTemplate())) {
 		LVLN avLList = llists.get(srcNpc.getTemplate());
@@ -330,7 +331,7 @@ public class AutomaticVariants {
 	    FormID npcForm = npcSrc.getForm();
 	    if (llists.containsKey(npcForm)) {
 		npcSrc.setTemplate(llists.get(npcForm).getForm());
-		npcSrc.setTemplateFlag(NPC_.TemplateFlag.USE_TRAITS, true);
+		npcSrc.set(NPC_.TemplateFlag.USE_TRAITS, true);
 		SPGlobal.getGlobalPatch().addRecord(npcSrc);
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "Templating " + npcSrc + " with " + llists.get(npcForm));
@@ -453,7 +454,7 @@ public class AutomaticVariants {
 	    FormID target = null;
 	    for (FormID armaForm : armoSrc.getArmatures()) {
 		ARMA arma = (ARMA) SPDatabase.getMajor(armaForm);
-		if (arma.getRace().equals(armoSrc.getRace())) {
+		if (arma != null && arma.getRace().equals(armoSrc.getRace())) {
 		    target = armaForm;
 		    variants = armatures.get(target);
 		    if (variants != null) {
@@ -480,7 +481,7 @@ public class AutomaticVariants {
 		    dups.add(new ARMO_spec(dup, variant));
 		}
 		armors.put(armoSrc.getForm(), dups);
-	    }
+	    } 
 	}
     }
 
