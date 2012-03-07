@@ -591,7 +591,6 @@ public class AutomaticVariants {
 	    i++;
 	}
 
-	v.variantTexturePaths = null; // Free up space
     }
 
     static void generateTXSTvariants() throws IOException {
