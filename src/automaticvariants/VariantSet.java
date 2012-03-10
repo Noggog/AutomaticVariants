@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class VariantSet {
 
-    ArrayList<String> Target_FormIDs = new ArrayList<String>();
+    String[][] Target_FormIDs;
     Boolean Apply_To_Similar = true;
     ArrayList<Variant> variants = new ArrayList<Variant>();
 

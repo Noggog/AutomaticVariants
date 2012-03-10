@@ -62,7 +62,7 @@ public class AutomaticVariants {
 	    setGlobals();
 	    AVGUI gui = createGUI();
 
-	    Mod patch = new Mod("Automatic Variations", false);
+	    Mod patch = new Mod("Automatic Variants", false);
 	    SPGlobal.setGlobalPatch(patch);
 
 	    readInExceptions();
@@ -378,16 +378,18 @@ public class AutomaticVariants {
 	    for (int i = 0; i < divs.length; i++) {
 		divs[i] = npcVars.get(i).probDiv;
 	    }
-//	    int lowestCommMult = Ln.lcmm(divs);
-	    int lowestCommMult = 1;
+	    if (source.getNPCs().get(srcNpc).getEDID().equals("EncBear")) {
+		int wer = 23;
+	    }
+	    int lowestCommMult = Ln.lcmm(divs);
 
 	    for (NPC_spec n : npcVars) {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "  Generating " + (lowestCommMult / n.probDiv) + " entries for " + n.npc);
 		}
-//		for (int i = 0; i < lowestCommMult / n.probDiv; i++) {
-		llist.addEntry(new LVLO(n.npc.getForm(), 1, 1));
-//		}
+		for (int i = 0; i < lowestCommMult / n.probDiv; i++) {
+		    llist.addEntry(new LVLO(n.npc.getForm(), 1, 1));
+		}
 	    }
 	    llists.put(srcNpc, llist);
 
@@ -433,7 +435,7 @@ public class AutomaticVariants {
 		}
 		ArrayList<NPC_spec> dups = new ArrayList<NPC_spec>(skinVariants.size());
 		for (ARMO_spec variant : skinVariants) {
-		    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc, variant.armo.getEDID().substring(0, variant.armo.getEDID().length() - 5) + "_" + npcSrc.getEDID());
+		    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc, variant.armo.getEDID().substring(0, variant.armo.getEDID().lastIndexOf("_ID_")) + "_" + npcSrc.getEDID());
 
 		    dup.setWornArmor(variant.armo.getForm());
 		    dups.add(new NPC_spec(dup, variant));
@@ -474,14 +476,14 @@ public class AutomaticVariants {
 		}
 		ArrayList<ARMO_spec> dups = new ArrayList<ARMO_spec>(variants.size());
 		for (ARMA_spec variant : variants) {
-		    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, variant.arma.getEDID().substring(0, variant.arma.getEDID().length() - 5) + "_armo");
+		    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, variant.arma.getEDID().substring(0, variant.arma.getEDID().lastIndexOf("_arma")) + "_armo");
 
 		    dup.removeArmature(target);
 		    dup.addArmature(variant.arma.getForm());
 		    dups.add(new ARMO_spec(dup, variant));
 		}
 		armors.put(armoSrc.getForm(), dups);
-	    } 
+	    }
 	}
     }
 
@@ -501,7 +503,7 @@ public class AutomaticVariants {
 		    }
 		    ArrayList<ARMA_spec> dups = new ArrayList<ARMA_spec>();
 		    for (Variant v : malenif.variants) {
-			ARMA dup = (ARMA) SPGlobal.getGlobalPatch().makeCopy(armaSrc, v.name + "_arma");
+			ARMA dup = (ARMA) SPGlobal.getGlobalPatch().makeCopy(armaSrc, v.name + "_ID_" + malenif.uniqueName() + "_arma");
 
 			ArrayList<AltTexture> alts = dup.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
 			alts.clear();
@@ -653,8 +655,9 @@ public class AutomaticVariants {
 
     static void linkToNifs(ArrayList<VariantSet> variantRead) {
 	for (VariantSet varSet : variantRead) {
-	    for (String s : varSet.Target_FormIDs) {
-		FormID id = new FormID(s);
+	    ArrayList<FormID> uniqueArmas = new ArrayList<FormID>();
+	    for (String[] s : varSet.Target_FormIDs) {
+		FormID id = new FormID(s[0], s[1]);
 		String header = id.toString();
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "====================================================================");
@@ -742,10 +745,14 @@ public class AutomaticVariants {
 			}
 			// Doesn't have alt texture, just route to existing nif
 			armaToNif.put(piece.getForm(), nifPath);
-
 		    }
 
-		    nifs.get(armaToNif.get(piece.getForm())).variants.addAll(varSet.variants);
+		    if (!uniqueArmas.contains(piece.getForm())) {
+			uniqueArmas.add(piece.getForm());
+			nifs.get(armaToNif.get(piece.getForm())).variants.addAll(varSet.variants);
+		    } else if (SPGlobal.logging()) {
+			SPGlobal.log(header, "  Already logged that arma for this variant set.");
+		    }
 
 		    //Oh nos
 		} catch (BadParameter ex) {
@@ -811,8 +818,8 @@ public class AutomaticVariants {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(variantFile.getName(), "  General Specifications loaded: ");
 		    SPGlobal.log(variantFile.getName(), "    Target FormIDs: ");
-		    for (String s : varSet.Target_FormIDs) {
-			SPGlobal.log(variantFile.getName(), "      " + s);
+		    for (String[] s : varSet.Target_FormIDs) {
+			SPGlobal.log(variantFile.getName(), "      " + s[0] + " | " + s[1]);
 		    }
 		    SPGlobal.log(variantFile.getName(), "    Apply to Similar: " + varSet.Apply_To_Similar);
 		}

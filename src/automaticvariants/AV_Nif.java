@@ -67,10 +67,38 @@ public class AV_Nif {
 		SPGlobal.log(header, "  Texture index " + i++ + ": " + set.title);
 		int j = 0;
 		for (String s : set.maps) {
-		    SPGlobal.log(header, "    " + j++ + ": " + s);
+		    if (!s.equals("")) {
+			SPGlobal.log(header, "    " + j++ + ": " + s);
+		    }
 		}
 	    }
 	}
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+	if (obj == null) {
+	    return false;
+	}
+	if (getClass() != obj.getClass()) {
+	    return false;
+	}
+	final AV_Nif other = (AV_Nif) obj;
+	if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+	    return false;
+	}
+	return true;
+    }
+
+    @Override
+    public int hashCode() {
+	int hash = 7;
+	hash = 67 * hash + (this.name != null ? this.name.hashCode() : 0);
+	return hash;
+    }
+    
+    public String uniqueName() {
+	return path.substring(path.lastIndexOf("\\") + 1) + hashCode();
     }
 
     class TextureField {
