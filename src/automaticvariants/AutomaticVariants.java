@@ -2,6 +2,8 @@ package automaticvariants;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
 import lev.Ln;
@@ -72,7 +74,7 @@ public class AutomaticVariants {
 
 	    int step = 0;
 	    SPGUI.progress.setMax(numSteps);
-	    SPGUI.progress.setStatus(step++,numSteps, "Initializing AV");
+	    SPGUI.progress.setStatus(step++, numSteps, "Initializing AV");
 	    Mod source = new Mod("Temporary", false);
 	    source.addAsOverrides(SPGlobal.getDB());
 
@@ -83,45 +85,45 @@ public class AutomaticVariants {
 	    BSAs = BSA.loadInBSAs(FileType.NIF, FileType.DDS);
 
 	    SPGUI.progress.incrementBar();
-	    SPGUI.progress.setStatus(step++,numSteps, "Importing AV Packages");
+	    SPGUI.progress.setStatus(step++, numSteps, "Importing AV Packages");
 	    gatherFiles();
 	    ArrayList<VariantSet> variantRead = importVariants(patch);
 	    SPGUI.progress.incrementBar();
 
 	    // Locate and load NIFs, and assign their variants
-	    SPGUI.progress.setStatus(step++,numSteps, "Linking packages to .nif files.");
+	    SPGUI.progress.setStatus(step++, numSteps, "Linking packages to .nif files.");
 	    linkToNifs(variantRead);
 	    SPGUI.progress.incrementBar();
 
 	    // Generate TXSTs
-	    SPGUI.progress.setStatus(step++,numSteps, "Generating TXST variants.");
+	    SPGUI.progress.setStatus(step++, numSteps, "Generating TXST variants.");
 	    generateTXSTvariants();
 	    SPGUI.progress.incrementBar();
 
 	    // Generate ARMA dups that use TXSTs
-	    SPGUI.progress.setStatus(step++,numSteps, "Generating ARMA variants.");
+	    SPGUI.progress.setStatus(step++, numSteps, "Generating ARMA variants.");
 	    generateARMAvariants(source);
 	    SPGUI.progress.incrementBar();
 
 	    // Generate ARMO dups that use ARMAs
-	    SPGUI.progress.setStatus(step++,numSteps, "Generating ARMO variants.");
+	    SPGUI.progress.setStatus(step++, numSteps, "Generating ARMO variants.");
 	    generateARMOvariants(source);
 	    printVariants();
 	    SPGUI.progress.incrementBar();
 
 	    // Generate NPC_ dups that use ARMO skins
-	    SPGUI.progress.setStatus(step++,numSteps, "Generating NPC variants.");
+	    SPGUI.progress.setStatus(step++, numSteps, "Generating NPC variants.");
 	    generateNPCvariants(source);
 	    printNPCdups();
 	    SPGUI.progress.incrementBar();
 
 	    // Load NPC_ dups into LVLNs
-	    SPGUI.progress.setStatus(step++,numSteps, "Loading NPC variants into Leveled Lists.");
+	    SPGUI.progress.setStatus(step++, numSteps, "Loading NPC variants into Leveled Lists.");
 	    generateLVLNs(source);
 	    SPGUI.progress.incrementBar();
 
 	    // Apply template routing from original NPCs to new LLists
-	    SPGUI.progress.setStatus(step++,numSteps, "Templating original NPCs to variant LLists.");
+	    SPGUI.progress.setStatus(step++, numSteps, "Templating original NPCs to variant LLists.");
 	    generateTemplating(source);
 	    SPGUI.progress.incrementBar();
 
@@ -132,7 +134,7 @@ public class AutomaticVariants {
 //	    subInNewTemplates(source);
 
 	    // Replace original NPCs in orig LVLNs, as CK throws warning/error for it
-	    SPGUI.progress.setStatus(step++,numSteps, "Replacing original NPC entries in your LVLN records.");
+	    SPGUI.progress.setStatus(step++, numSteps, "Replacing original NPC entries in your LVLN records.");
 	    subInOldLVLNs(source);
 	    SPGUI.progress.incrementBar();
 
@@ -975,21 +977,10 @@ public class AutomaticVariants {
 	 */
 	SPDefaultGUI gui = new SPDefaultGUI(myPatcherName, myPatcherDescription);
 	try {
-	    gui.replaceHeader(AVGUI.class.getResource("AutoVarGUITitle.png"), - 35);
+	    gui.replaceHeader(AutomaticVariants.class.getResource("AutoVarGUITitle.png"), - 35);
 	} catch (IOException ex) {
+	    SPGlobal.logException(ex);
 	}
 	return gui;
-    }
-
-    // Not used
-    static void distributeFiles() {
-	ArrayList<File> files = Ln.generateFileList(avPackages, 3, 3, false);
-	for (File file : files) {
-	    if (file.getPath().endsWith(".dds")) {
-		Ln.moveFile(file, new File(avTextures + file.getPath().substring(avPackages.getPath().length())), false);
-	    } else if (file.getPath().endsWith(".nif")) {
-		Ln.moveFile(file, new File(avMeshes + file.getPath().substring(avPackages.getPath().length())), false);
-	    }
-	}
     }
 }
