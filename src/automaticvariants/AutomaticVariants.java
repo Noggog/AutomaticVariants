@@ -53,6 +53,7 @@ public class AutomaticVariants {
      */
     static String extraPath = "";
     static int numSteps = 9;
+    static int step = 0;
     static int debugLevel = 1;
 
     public static void main(String[] args) {
@@ -72,60 +73,40 @@ public class AutomaticVariants {
 
 	    importMods();
 
-	    int step = 0;
 	    SPGUI.progress.setMax(numSteps);
 	    SPGUI.progress.setStatus(step++, numSteps, "Initializing AV");
 	    Mod source = new Mod("Temporary", false);
 	    source.addAsOverrides(SPGlobal.getDB());
-
 	    if (debugLevel >= 1) {
 		SPGlobal.logging(true);
 	    }
-
 	    BSAs = BSA.loadInBSAs(FileType.NIF, FileType.DDS);
 
-	    SPGUI.progress.incrementBar();
 	    SPGUI.progress.setStatus(step++, numSteps, "Importing AV Packages");
 	    gatherFiles();
 	    ArrayList<VariantSet> variantRead = importVariants(patch);
 	    SPGUI.progress.incrementBar();
 
 	    // Locate and load NIFs, and assign their variants
-	    SPGUI.progress.setStatus(step++, numSteps, "Linking packages to .nif files.");
 	    linkToNifs(variantRead);
-	    SPGUI.progress.incrementBar();
 
 	    // Generate TXSTs
-	    SPGUI.progress.setStatus(step++, numSteps, "Generating TXST variants.");
 	    generateTXSTvariants();
-	    SPGUI.progress.incrementBar();
 
 	    // Generate ARMA dups that use TXSTs
-	    SPGUI.progress.setStatus(step++, numSteps, "Generating ARMA variants.");
 	    generateARMAvariants(source);
-	    SPGUI.progress.incrementBar();
 
 	    // Generate ARMO dups that use ARMAs
-	    SPGUI.progress.setStatus(step++, numSteps, "Generating ARMO variants.");
 	    generateARMOvariants(source);
-	    printVariants();
-	    SPGUI.progress.incrementBar();
 
 	    // Generate NPC_ dups that use ARMO skins
-	    SPGUI.progress.setStatus(step++, numSteps, "Generating NPC variants.");
 	    generateNPCvariants(source);
-	    printNPCdups();
-	    SPGUI.progress.incrementBar();
 
 	    // Load NPC_ dups into LVLNs
-	    SPGUI.progress.setStatus(step++, numSteps, "Loading NPC variants into Leveled Lists.");
 	    generateLVLNs(source);
-	    SPGUI.progress.incrementBar();
 
 	    // Apply template routing from original NPCs to new LLists
-	    SPGUI.progress.setStatus(step++, numSteps, "Templating original NPCs to variant LLists.");
 	    generateTemplating(source);
-	    SPGUI.progress.incrementBar();
 
 	    // Handle unique NPCs templating to AV variation npcs
 //	    handleUniqueNPCs(source);
@@ -134,9 +115,7 @@ public class AutomaticVariants {
 //	    subInNewTemplates(source);
 
 	    // Replace original NPCs in orig LVLNs, as CK throws warning/error for it
-	    SPGUI.progress.setStatus(step++, numSteps, "Replacing original NPC entries in your LVLN records.");
 	    subInOldLVLNs(source);
-	    SPGUI.progress.incrementBar();
 
 	    /*
 	     * Close up shop.
@@ -279,6 +258,7 @@ public class AutomaticVariants {
     }
 
     static void subInOldLVLNs(Mod source) {
+	SPGUI.progress.setStatus(step++, numSteps, "Replacing original NPC entries in your LVLN records.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Replacing old NPC entries in your mod's LVLNs");
@@ -299,6 +279,7 @@ public class AutomaticVariants {
 		SPGlobal.getGlobalPatch().addRecord(llistSrc);
 	    }
 	}
+	SPGUI.progress.incrementBar();
     }
 
     static void handleUniqueNPCs(Mod source) {
@@ -346,6 +327,7 @@ public class AutomaticVariants {
     }
 
     static void generateTemplating(Mod source) {
+	SPGUI.progress.setStatus(step++, numSteps, "Templating original NPCs to variant LLists.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Setting source NPCs to template to LVLN loaded with variants");
@@ -362,6 +344,7 @@ public class AutomaticVariants {
 		}
 	    }
 	}
+	SPGUI.progress.incrementBar();
     }
 
     static void printNPCdups() {
@@ -386,6 +369,7 @@ public class AutomaticVariants {
     }
 
     static void generateLVLNs(Mod source) {
+	SPGUI.progress.setStatus(step++, numSteps, "Loading NPC variants into Leveled Lists.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Generating LVLNs loaded with NPC variants.");
@@ -418,9 +402,11 @@ public class AutomaticVariants {
 		SPGlobal.log(header, "--------------------------------------------------");
 	    }
 	}
+	SPGUI.progress.incrementBar();
     }
 
     static void generateNPCvariants(Mod source) {
+	SPGUI.progress.setStatus(step++, numSteps, "Generating NPC variants.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Generating NPC duplicates for each ARMO skin");
@@ -464,9 +450,12 @@ public class AutomaticVariants {
 		npcs.put(npcSrc.getForm(), dups);
 	    }
 	}
+	printNPCdups();
+	SPGUI.progress.incrementBar();
     }
 
     static void generateARMOvariants(Mod source) {
+	SPGUI.progress.setStatus(step++, numSteps, "Generating ARMO variants.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Generating ARMO skin duplicates for each ARMA");
@@ -506,9 +495,12 @@ public class AutomaticVariants {
 		armors.put(armoSrc.getForm(), dups);
 	    }
 	}
+	printVariants();
+	SPGUI.progress.incrementBar();
     }
 
     static void generateARMAvariants(Mod source) {
+	SPGUI.progress.setStatus(step++, numSteps, "Generating ARMA variants.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Generating ARMA duplicates for each NIF");
@@ -546,6 +538,7 @@ public class AutomaticVariants {
 		}
 	    }
 	}
+	SPGUI.progress.incrementBar();
     }
 
     static void generateVariant(Variant v, ArrayList<AV_Nif.TextureField> texturePack) throws IOException {
@@ -617,6 +610,7 @@ public class AutomaticVariants {
     }
 
     static void generateTXSTvariants() throws IOException {
+	SPGUI.progress.setStatus(step++, numSteps, "Generating TXST variants.");
 	for (AV_Nif n : nifs.values()) {
 
 	    if (SPGlobal.logging()) {
@@ -629,6 +623,7 @@ public class AutomaticVariants {
 	    }
 	    n.textureFields = null; // Not needed anymore
 	}
+	SPGUI.progress.incrementBar();
     }
 
     static void splitVariant(String nifPath, ARMA piece) throws IOException, BadParameter, DataFormatException {
@@ -675,6 +670,7 @@ public class AutomaticVariants {
     }
 
     static void linkToNifs(ArrayList<VariantSet> variantRead) {
+	SPGUI.progress.setStatus(step++, numSteps, "Linking packages to .nif files.");
 	for (VariantSet varSet : variantRead) {
 	    ArrayList<FormID> uniqueArmas = new ArrayList<FormID>();
 	    for (String[] s : varSet.Target_FormIDs) {
@@ -794,6 +790,7 @@ public class AutomaticVariants {
 		}
 	    }
 	}
+	SPGUI.progress.incrementBar();
     }
 
     static ArrayList<VariantSet> importVariants(Mod patch) throws Uninitialized, FileNotFoundException {
