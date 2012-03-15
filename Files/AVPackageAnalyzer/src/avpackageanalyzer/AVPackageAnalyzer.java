@@ -5,9 +5,7 @@
 package avpackageanalyzer;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.DataFormatException;
 import lev.LMergeMap;
 import lev.LShrinkArray;
@@ -34,6 +32,7 @@ public class AVPackageAnalyzer {
     static ArrayList<File> meshes;
     static ArrayList<BSA> bsas;
 
+    static BufferedWriter suggestions;
     static int numSteps = 5;
     static int step = 1;
     
@@ -44,7 +43,9 @@ public class AVPackageAnalyzer {
 	
 	SPDefaultGUI gui = init();
 	
-	srcs = Ln.generateFileList(new File("Source Data/"), false);
+	suggestions = new BufferedWriter(new FileWriter("Suggestions.txt"));
+	loadSources();
+	
 	bsas = BSA.loadInBSAs(BSA.FileType.NIF);
 	meshes = Ln.generateFileList(new File(SPGlobal.pathToData + "meshes/"), false);
 	
@@ -129,22 +130,14 @@ public class AVPackageAnalyzer {
 	}
 
 	//Print suggestions
-	BufferedWriter out = new BufferedWriter(new FileWriter("Suggestions.txt"));
-	out.write("==============================================================\n");
-	out.write("================      AV Package Analyzer     ================\n");
-	out.write("==============================================================\n");
-	out.write("Original files:\n");
-	for (File f : srcs) {
-	    out.write("  " + f.getPath() + "\n");
-	}
-	out.write("\n\n");
-	out.write("==============================================================\n\n");
-	out.write("These are groups of NPCs that share a common skin.\n");
-	out.write("It is suggested you put a seed from each group into the spec file,\n"
+	suggestions.write("\n\n");
+	suggestions.write("==============================================================\n\n");
+	suggestions.write("These are groups of NPCs that share a common skin.\n");
+	suggestions.write("It is suggested you put a seed from each group into the spec file,\n"
 		+ "                     --or--\n"
 		+ "make a separate Variant Set for each if it makes logical sense to \n"
 		+ "separate them (such as Black vs Ice wolves).\n\n");
-	out.write("Remember to use NPCs as seeds.  Do not use an ARMA record.\n\n");
+	suggestions.write("Remember to use NPCs as seeds.  Do not use an ARMA record.\n\n");
 
 	LMergeMap<FormID, FormID> ARMAtoNPC = new LMergeMap<>(false);
 	for (FormID npc : NPCtoARMO.keySet()) {
@@ -224,23 +217,35 @@ public class AVPackageAnalyzer {
 
 	int group = 1;
 	for (FormID arma : ARMAtoNPC.keySet()) {
-	    out.write("Group " + group++ + ": " + SPDatabase.getMajor(arma, GRUP_TYPE.ARMA) + "\n");
-	    out.write("   Seed choices:\n");
+	    suggestions.write("Group " + group++ + ": " + SPDatabase.getMajor(arma, GRUP_TYPE.ARMA) + "\n");
+	    suggestions.write("   Seed choices:\n");
 	    for (FormID npc : ARMAtoNPC.get(arma)) {
-		out.write("      " + SPDatabase.getMajor(npc, GRUP_TYPE.NPC_) + "\n");
+		suggestions.write("      " + SPDatabase.getMajor(npc, GRUP_TYPE.NPC_) + "\n");
 	    }
-	    out.write("   Source textures to include:\n");
+	    suggestions.write("   Source textures to include:\n");
 	    File nif = ARMAtoNIF.get(arma);
 	    for (File src : NIFtoSRC.get(nif)) {
-		out.write("      " + src + "\n");
+		suggestions.write("      " + src + "\n");
 	    }
-	    out.write("-------------------------------------------------------------------\n\n");
+	    suggestions.write("-------------------------------------------------------------------\n\n");
 	}
 
-	out.close();
+	suggestions.close();
 	gui.finished();
 
 	LDebug.wrapUp();
+    }
+
+    static void loadSources() throws IOException {
+	srcs = Ln.generateFileList(new File("Source Data/"), false);
+	suggestions.write("==============================================================\n");
+	suggestions.write("================      AV Package Analyzer     ================\n");
+	suggestions.write("==============================================================\n");
+	suggestions.write("Original files:\n");
+	for (File f : srcs) {
+	    suggestions.write("  " + f.getPath() + "\n");
+	}
+	Set<String> noDups = new HashSet<>(srcs.size());
     }
 
     static SPDefaultGUI init() throws IOException {
