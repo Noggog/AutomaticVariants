@@ -1,5 +1,0 @@
-[1]                            [OPEN DEBUG FILE]  Opening Debug File
-[2][0m:3s][3459902]                 [NIFtexture]    Nif loaded from BSA ..\..\SKYRIM - MESHES.BSA
-[3][0m:3s][618]                     [NIFtexture]    Texture index 0: Horker.dds
-[4][0m:3s][98]                      [NIFtexture]    Texture index 1: HorkerWhiskers.dds
-[5][0m:3s][10338]                        [DEBUG]  Closing Debug File.  Time was: 3472
