@@ -50,6 +50,7 @@ public class AutomaticVariants {
      * Other
      */
     static String extraPath = "";
+    static int numSteps = 9;
     static int debugLevel = 1;
 
     public static void main(String[] args) {
@@ -60,7 +61,7 @@ public class AutomaticVariants {
 		return;
 	    }
 	    setGlobals();
-	    AVGUI gui = createGUI();
+	    SPDefaultGUI gui = createGUI();
 
 	    Mod patch = new Mod("Automatic Variants", false);
 	    SPGlobal.setGlobalPatch(patch);
@@ -69,6 +70,8 @@ public class AutomaticVariants {
 
 	    importMods();
 
+	    int step = 0;
+	    SPGuiPortal.progress.setStatus(step++,numSteps, "Initializing AV");
 	    Mod source = new Mod("Temporary", false);
 	    source.addAsOverrides(SPGlobal.getDB());
 
@@ -78,31 +81,38 @@ public class AutomaticVariants {
 
 	    BSAs = BSA.loadInBSAs(FileType.NIF, FileType.DDS);
 
+	    SPGuiPortal.progress.setStatus(step++,numSteps, "Importing AV Packages");
 	    gatherFiles();
-
 	    ArrayList<VariantSet> variantRead = importVariants(patch);
 
 	    // Locate and load NIFs, and assign their variants
+	    SPGuiPortal.progress.setStatus(step++,numSteps, "Linking packages to .nif files.");
 	    linkToNifs(variantRead);
 
 	    // Generate TXSTs
+	    SPGuiPortal.progress.setStatus(step++,numSteps, "Generating TXST variants.");
 	    generateTXSTvariants();
 
 	    // Generate ARMA dups that use TXSTs
+	    SPGuiPortal.progress.setStatus(step++,numSteps, "Generating ARMA variants.");
 	    generateARMAvariants(source);
 
 	    // Generate ARMO dups that use ARMAs
+	    SPGuiPortal.progress.setStatus(step++,numSteps, "Generating ARMO variants.");
 	    generateARMOvariants(source);
 	    printVariants();
 
 	    // Generate NPC_ dups that use ARMO skins
+	    SPGuiPortal.progress.setStatus(step++,numSteps, "Generating NPC variants.");
 	    generateNPCvariants(source);
 	    printNPCdups();
 
 	    // Load NPC_ dups into LVLNs
+	    SPGuiPortal.progress.setStatus(step++,numSteps, "Loading NPC variants into Leveled Lists.");
 	    generateLVLNs(source);
 
 	    // Apply template routing from original NPCs to new LLists
+	    SPGuiPortal.progress.setStatus(step++,numSteps, "Templating original NPCs to variant LLists.");
 	    generateTemplating(source);
 
 	    // Handle unique NPCs templating to AV variation npcs
@@ -112,6 +122,7 @@ public class AutomaticVariants {
 //	    subInNewTemplates(source);
 
 	    // Replace original NPCs in orig LVLNs, as CK throws warning/error for it
+	    SPGuiPortal.progress.setStatus(step++,numSteps, "Replacing original NPC entries in your LVLN records.");
 	    subInOldLVLNs(source);
 
 	    /*
@@ -940,7 +951,7 @@ public class AutomaticVariants {
 	}
     }
 
-    static AVGUI createGUI() {
+    static SPDefaultGUI createGUI() {
 	/*
 	 * Custom names and descriptions
 	 */
@@ -954,7 +965,12 @@ public class AutomaticVariants {
 	/*
 	 * Creating SkyProc Default GUI
 	 */
-	return new AVGUI(myPatcherName, myPatcherDescription);
+	SPDefaultGUI gui = new SPDefaultGUI(myPatcherName, myPatcherDescription);
+	try {
+	    gui.replaceHeader(AVGUI.class.getResource("AutoVarGUITitle.png"), - 35);
+	} catch (IOException ex) {
+	}
+	return gui;
     }
 
     // Not used

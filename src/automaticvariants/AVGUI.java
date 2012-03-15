@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import lev.gui.ImagePane;
+import lev.gui.LImagePane;
 import lev.gui.LLabel;
 import lev.gui.LTextPane;
 import lev.gui.resources.LFonts;
@@ -25,11 +25,11 @@ import lev.gui.resources.LImages;
  */
 public class AVGUI extends JFrame {
 
-    ImagePane backgroundPanel;
+    LImagePane backgroundPanel;
     LLabel patching;
     LTextPane description;
-    ImagePane skyprocLogo;
-    ImagePane AVLogo;
+    LImagePane skyprocLogo;
+    LImagePane AVLogo;
 
     /**
      * Creates and displays the SkyProc default GUI.
@@ -63,15 +63,15 @@ public class AVGUI extends JFrame {
         setLayout(null);
 
         // Background Panel
-        backgroundPanel = new ImagePane(LImages.multipurpose());
+        backgroundPanel = new LImagePane(LImages.multipurpose());
         super.add(backgroundPanel);
-        skyprocLogo = new ImagePane(skyproc.SPDefaultGUI.class.getResource("SkyProc Logo Small.png"));
+        skyprocLogo = new LImagePane(skyproc.SPDefaultGUI.class.getResource("SkyProc Logo Small.png"));
         skyprocLogo.setLocation(5, this.getHeight() - skyprocLogo.getHeight() - 30);
         backgroundPanel.add(skyprocLogo,0);
 
 
         // Label
-        AVLogo = new ImagePane(AVGUI.class.getResource("AutoVarGUITitle.png"));
+        AVLogo = new LImagePane(AVGUI.class.getResource("AutoVarGUITitle.png"));
         AVLogo.setLocation(this.getWidth() / 2 - AVLogo.getWidth() / 2, 
 		0);
         backgroundPanel.add(AVLogo,0);
