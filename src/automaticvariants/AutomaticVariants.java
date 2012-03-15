@@ -71,6 +71,7 @@ public class AutomaticVariants {
 	    importMods();
 
 	    int step = 0;
+	    SPGuiPortal.progress.setMax(numSteps);
 	    SPGuiPortal.progress.setStatus(step++,numSteps, "Initializing AV");
 	    Mod source = new Mod("Temporary", false);
 	    source.addAsOverrides(SPGlobal.getDB());
@@ -81,39 +82,48 @@ public class AutomaticVariants {
 
 	    BSAs = BSA.loadInBSAs(FileType.NIF, FileType.DDS);
 
+	    SPGuiPortal.progress.incrementBar();
 	    SPGuiPortal.progress.setStatus(step++,numSteps, "Importing AV Packages");
 	    gatherFiles();
 	    ArrayList<VariantSet> variantRead = importVariants(patch);
+	    SPGuiPortal.progress.incrementBar();
 
 	    // Locate and load NIFs, and assign their variants
 	    SPGuiPortal.progress.setStatus(step++,numSteps, "Linking packages to .nif files.");
 	    linkToNifs(variantRead);
+	    SPGuiPortal.progress.incrementBar();
 
 	    // Generate TXSTs
 	    SPGuiPortal.progress.setStatus(step++,numSteps, "Generating TXST variants.");
 	    generateTXSTvariants();
+	    SPGuiPortal.progress.incrementBar();
 
 	    // Generate ARMA dups that use TXSTs
 	    SPGuiPortal.progress.setStatus(step++,numSteps, "Generating ARMA variants.");
 	    generateARMAvariants(source);
+	    SPGuiPortal.progress.incrementBar();
 
 	    // Generate ARMO dups that use ARMAs
 	    SPGuiPortal.progress.setStatus(step++,numSteps, "Generating ARMO variants.");
 	    generateARMOvariants(source);
 	    printVariants();
+	    SPGuiPortal.progress.incrementBar();
 
 	    // Generate NPC_ dups that use ARMO skins
 	    SPGuiPortal.progress.setStatus(step++,numSteps, "Generating NPC variants.");
 	    generateNPCvariants(source);
 	    printNPCdups();
+	    SPGuiPortal.progress.incrementBar();
 
 	    // Load NPC_ dups into LVLNs
 	    SPGuiPortal.progress.setStatus(step++,numSteps, "Loading NPC variants into Leveled Lists.");
 	    generateLVLNs(source);
+	    SPGuiPortal.progress.incrementBar();
 
 	    // Apply template routing from original NPCs to new LLists
 	    SPGuiPortal.progress.setStatus(step++,numSteps, "Templating original NPCs to variant LLists.");
 	    generateTemplating(source);
+	    SPGuiPortal.progress.incrementBar();
 
 	    // Handle unique NPCs templating to AV variation npcs
 //	    handleUniqueNPCs(source);
@@ -124,6 +134,7 @@ public class AutomaticVariants {
 	    // Replace original NPCs in orig LVLNs, as CK throws warning/error for it
 	    SPGuiPortal.progress.setStatus(step++,numSteps, "Replacing original NPC entries in your LVLN records.");
 	    subInOldLVLNs(source);
+	    SPGuiPortal.progress.incrementBar();
 
 	    /*
 	     * Close up shop.
@@ -388,9 +399,6 @@ public class AutomaticVariants {
 	    int[] divs = new int[npcVars.size()];
 	    for (int i = 0; i < divs.length; i++) {
 		divs[i] = npcVars.get(i).probDiv;
-	    }
-	    if (source.getNPCs().get(srcNpc).getEDID().equals("EncBear")) {
-		int wer = 23;
 	    }
 	    int lowestCommMult = Ln.lcmm(divs);
 
