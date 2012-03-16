@@ -24,31 +24,31 @@ import skyproc.exceptions.BadParameter;
 public class AVPackageAnalyzer {
 
     static ArrayList<File> srcs;
-    static LMergeMap<File, File> NIFtoSRC = new LMergeMap<>(false);
-    static Map<FormID, File> ARMAtoNIF = new HashMap<>();
-    static Map<FormID, FormID> ARMOtoARMA = new HashMap<>();
-    static Map<FormID, FormID> RACEtoARMO = new HashMap<>();
-    static Map<FormID, FormID> NPCtoARMO = new HashMap<>();
+    static LMergeMap<File, File> NIFtoSRC = new LMergeMap<File, File>(false);
+    static Map<FormID, File> ARMAtoNIF = new HashMap<FormID, File>();
+    static Map<FormID, FormID> ARMOtoARMA = new HashMap<FormID, FormID>();
+    static Map<FormID, FormID> RACEtoARMO = new HashMap<FormID, FormID>();
+    static Map<FormID, FormID> NPCtoARMO = new HashMap<FormID, FormID>();
     static ArrayList<File> meshes;
     static ArrayList<BSA> bsas;
 
     static BufferedWriter suggestions;
     static int numSteps = 5;
     static int step = 1;
-    
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-	
+
 	SPDefaultGUI gui = init();
-	
+
 	suggestions = new BufferedWriter(new FileWriter("Suggestions.txt"));
 	loadSources();
-	
+
 	bsas = BSA.loadInBSAs(BSA.FileType.NIF);
 	meshes = Ln.generateFileList(new File(SPGlobal.pathToData + "meshes/"), false);
-	
+
 	checkMeshes();
 	checkBSAs();
 	SPGlobal.log("SrcToNifs", "Printing Sources to their Nifs:");
@@ -64,7 +64,7 @@ public class AVPackageAnalyzer {
 
 
 	// ARMA
-	LMergeMap<File, FormID> srcToARMAs = new LMergeMap<>(false);
+	LMergeMap<File, FormID> srcToARMAs = new LMergeMap<File, FormID>(false);
 	for (ARMA arma : merger.getArmatures()) {
 	    File model = new File("MESHES/" + arma.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase());
 	    if (NIFtoSRC.containsKey(model)) {
@@ -79,7 +79,7 @@ public class AVPackageAnalyzer {
 	}
 
 	// ARMO
-	LMergeMap<FormID, FormID> srcToARMOs = new LMergeMap<>(false);
+	LMergeMap<FormID, FormID> srcToARMOs = new LMergeMap<FormID, FormID>(false);
 	for (ARMO armo : merger.getArmors()) {
 	    for (FormID armaf : armo.getArmatures()) {
 		if (ARMAtoNIF.containsKey(armaf)) {
@@ -99,7 +99,7 @@ public class AVPackageAnalyzer {
 
 
 	// RACE
-	LMergeMap<FormID, FormID> ARMOToRACE = new LMergeMap<>(false);
+	LMergeMap<FormID, FormID> ARMOToRACE = new LMergeMap<FormID, FormID>(false);
 	for (RACE race : merger.getRaces()) {
 	    if (ARMOtoARMA.containsKey(race.getWornArmor())) {
 		ARMOToRACE.put(race.getWornArmor(), race.getForm());
@@ -114,7 +114,7 @@ public class AVPackageAnalyzer {
 
 
 	// NPCs
-	LMergeMap<FormID, FormID> ARMOToNPC = new LMergeMap<>(false);
+	LMergeMap<FormID, FormID> ARMOToNPC = new LMergeMap<FormID, FormID>(false);
 	for (NPC_ npc : merger.getNPCs()) {
 	    if (!npc.getWornArmor().equals(FormID.NULL) && ARMOtoARMA.containsKey(npc.getWornArmor())) {
 		ARMOToNPC.put(npc.getWornArmor(), npc.getForm());
@@ -139,7 +139,7 @@ public class AVPackageAnalyzer {
 		+ "separate them (such as Black vs Ice wolves).\n\n");
 	suggestions.write("Remember to use NPCs as seeds.  Do not use an ARMA record.\n\n");
 
-	LMergeMap<FormID, FormID> ARMAtoNPC = new LMergeMap<>(false);
+	LMergeMap<FormID, FormID> ARMAtoNPC = new LMergeMap<FormID, FormID>(false);
 	for (FormID npc : NPCtoARMO.keySet()) {
 	    FormID armo = NPCtoARMO.get(npc);
 	    FormID arma = ARMOtoARMA.get(armo);
@@ -173,7 +173,7 @@ public class AVPackageAnalyzer {
 			    // check if both alt texture lists are the same
 			    for (AltTexture test : ARMAtest.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON)) {
 				boolean matched = false;
-				ArrayList<AltTexture> keyTmp = new ArrayList<>();
+				ArrayList<AltTexture> keyTmp = new ArrayList<AltTexture>();
 				keyTmp.addAll(ARMAkey.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON));
 				for (AltTexture key : keyTmp) {
 				    if (key.equals(test)) {
@@ -245,7 +245,7 @@ public class AVPackageAnalyzer {
 	for (File f : srcs) {
 	    suggestions.write("  " + f.getPath() + "\n");
 	}
-	Set<String> noDups = new HashSet<>(srcs.size());
+	Set<String> noDups = new HashSet<String>(srcs.size());
     }
 
     static SPDefaultGUI init() throws IOException {
@@ -266,7 +266,7 @@ public class AVPackageAnalyzer {
 	    numFiles += b.numFiles();
 	}
 	SPGUI.progress.setMax(numFiles);
-	
+
 	for (BSA b : bsas) {
 	    for (String folderPath : b.getFiles().keySet()) {
 		ArrayList<String> files = b.getFiles().get(folderPath);
@@ -275,7 +275,9 @@ public class AVPackageAnalyzer {
 			try {
 			    checkNif(new File(folderPath + fileName), b.getFile(folderPath + fileName));
 			    SPGUI.progress.setStatus("Processed: " + fileName);
-			} catch (IOException | DataFormatException ex) {
+			} catch (IOException ex) {
+			    SPGlobal.logException(ex);
+			} catch (DataFormatException ex) {
 			    SPGlobal.logException(ex);
 			}
 		    }
@@ -308,7 +310,7 @@ public class AVPackageAnalyzer {
 	NIF nif;
 	try {
 	    nif = new NIF(file.getPath(), in);
-	    ArrayList<ArrayList<String>> textures = new ArrayList<>();
+	    ArrayList<ArrayList<String>> textures = new ArrayList<ArrayList<String>>();
 
 	    ArrayList<ArrayList<Node>> NiTriShapes = nif.getNiTriShapePackages();
 	    for (ArrayList<Node> nodes : NiTriShapes) {
@@ -329,7 +331,9 @@ public class AVPackageAnalyzer {
 		}
 	    }
 
-	} catch (BadParameter | java.nio.BufferUnderflowException ex) {
+	} catch (BadParameter ex) {
+	    SPGlobal.logException(ex);
+	} catch (java.nio.BufferUnderflowException ex) {
 	    SPGlobal.logException(ex);
 	}
     }
