@@ -36,14 +36,14 @@ public class AutomaticVariants {
     static ArrayList<BSA> BSAs;
     // AV_Nif name is key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
-    // Armo formid is key, nifname is value
-    // Used for existing alt textures such as white skeevers
-    static Map<FormID, String> armaToNif = new HashMap<FormID, String>();
-    //armoSrc is key
-    static LMergeMap<FormID, RACE_spec> races = new LMergeMap<FormID, RACE_spec>(false);
+    // ArmoSrc is key
+    static Map<FormID, MGEF> magicEffects = new HashMap<FormID, MGEF>();
     static Map<FormID, FLST> formLists = new HashMap<FormID, FLST>();
+    static LMergeMap<FormID, RACE_spec> races = new LMergeMap<FormID, RACE_spec>(false);
     static LMergeMap<FormID, ARMO_spec> armors = new LMergeMap<FormID, ARMO_spec>(false);
+    // ArmaSrc is key
     static LMergeMap<FormID, ARMA_spec> armatures = new LMergeMap<FormID, ARMA_spec>(false);
+    static Map<FormID, String> armaToNif = new HashMap<FormID, String>();
     /*
      * Exception lists
      */
@@ -70,6 +70,7 @@ public class AutomaticVariants {
 	    SPDefaultGUI gui = createGUI();
 
 	    Mod patch = new Mod("Automatic Variants", false);
+	    patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
 	    SPGlobal.setGlobalPatch(patch);
 
 	    readInExceptions();
@@ -110,6 +111,12 @@ public class AutomaticVariants {
 
 	    // Generate FormList of bound weapons, for race switch script
 	    locateBoundWeapons(source);
+
+	    // Generate Magic Effect with script pointing to FormList variants
+	    generateMGEFvariants();
+
+	    // Generate Spells that use Race Switcher Magic Effects
+	    generateSPELvariants();
 
 	    // Add variant scripts to NPCs
 	    addScripts(source);
@@ -315,6 +322,27 @@ public class AutomaticVariants {
 	    }
 	}
 	SPGUI.progress.incrementBar();
+    }
+
+    static void generateSPELvariants() {
+	for (FormID armoSrc : magicEffects.keySet()) {
+	    MGEF mgef = magicEffects.get(armoSrc);
+	    String name = mgef.getEDID().substring(0, mgef.getEDID().lastIndexOf("_mgef")) + "_spell";
+	    SPEL spel = new SPEL(SPGlobal.getGlobalPatch(), name);
+	}
+    }
+
+    static void generateMGEFvariants() {
+	for (FormID armoSrc : formLists.keySet()) {
+	    FLST flst = formLists.get(armoSrc);
+	    String name = flst.getEDID().substring(flst.getEDID().indexOf("AV_") + 3, flst.getEDID().lastIndexOf("_flst")) + "_mgef";
+	    MGEF mgef = new MGEF(SPGlobal.getGlobalPatch(), "AV_" + name, "AV_SwitchRace_" + name);
+	    mgef.scripts.addScript(changeRaceScript);
+	    mgef.scripts.setProperty(changeRaceScript, changeRaceBoundWeaponBuffer, boundBuffer.getForm());
+	    mgef.scripts.setProperty(changeRaceScript, changeRaceBoundWeapons, boundList.getForm());
+	    mgef.scripts.setProperty(changeRaceScript, changeRaceFormList, flst.getForm());
+	    magicEffects.put(armoSrc, mgef);
+	}
     }
 
     static void generateFormLists(Mod source) {
