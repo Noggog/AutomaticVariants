@@ -4,22 +4,19 @@
  */
 package automaticvariants;
 
-import skyproc.ARMA;
-import skyproc.ARMO;
+import skyproc.RACE;
 
 /**
  *
  * @author Justin Swanson
  */
-public class ARMO_spec {
-
-    ARMO armo;
+public class RACE_spec {
+    RACE race;
     int probDiv;
-    ARMA targetArma;
 
-    ARMO_spec (ARMO armo, ARMA_spec spec) {
-	this.armo = armo;
-	targetArma = spec.arma;
+    RACE_spec(RACE race, ARMO_spec spec) {
+	this.race = race;
 	probDiv = spec.probDiv;
     }
+
 }
