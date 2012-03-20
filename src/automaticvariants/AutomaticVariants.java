@@ -34,6 +34,7 @@ public class AutomaticVariants {
      * Variant storage lists/maps
      */
     static ArrayList<BSA> BSAs;
+    static LMergeMap<FormID, NPC_> modifiedNPCs = new LMergeMap<FormID, NPC_>(false);
     // AV_Nif name is key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     // ArmoSrc is key
@@ -55,9 +56,8 @@ public class AutomaticVariants {
      * Other
      */
     static FLST boundList;
-    static FLST boundBuffer;
     static String extraPath = "";
-    static int numSteps = 9;
+    static int numSteps = 10;
     static int step = 0;
     static int debugLevel = 1;
 
@@ -127,6 +127,8 @@ public class AutomaticVariants {
 	    // Sub In script attachment races on target NPCs
 	    subInSwitcherRaces(source);
 
+	    printModifiedNPCs();
+
 	    /*
 	     * Close up shop.
 	     */
@@ -150,41 +152,6 @@ public class AutomaticVariants {
 
 	// Close debug logs before program exits.
 	SPGlobal.closeDebug();
-    }
-
-    static boolean handleArgs(ArrayList<String> arguments) {
-	String debug = "-debug";
-	String extraPth = "-extraPath";
-	for (String s : arguments) {
-	    if (s.contains(debug)) {
-		s = s.substring(s.indexOf(debug) + debug.length()).trim();
-		try {
-		    debugLevel = Integer.valueOf(s);
-		    SPGlobal.logMain(header, "Debug level set to: " + debugLevel);
-		} catch (NumberFormatException e) {
-		    SPGlobal.logError(header, "Error parsing the debug level: '" + s + "'");
-		}
-	    } else if (s.contains(extraPth)) {
-		s = s.substring(s.indexOf(extraPth) + extraPth.length()).trim();
-		extraPath = s;
-		SPGlobal.pathToData = extraPath + SPGlobal.pathToData;
-		avPackages = new File(extraPath + avPackages.getPath());
-		avMeshes = new File(extraPath + avMeshes.getPath());
-		avTextures = new File(extraPath + avTextures.getPath());
-		if (SPGlobal.logging()) {
-		    SPGlobal.logMain(header, "Extra Path set to: " + extraPath);
-		    SPGlobal.logMain(header, "Path to data: " + SPGlobal.pathToData);
-		}
-	    }
-
-	}
-
-	if (arguments.contains("-gather")) {
-	    gatherFiles();
-	    return true;
-	}
-
-	return false;
     }
 
     static boolean checkNPCskip(NPC_ npcSrc, boolean last) {
@@ -211,45 +178,17 @@ public class AutomaticVariants {
 	return false;
     }
 
-    static void importMods() {
-	try {
-	    SPImporter importer = new SPImporter();
-	    importer.importActiveMods(
-		    GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
-		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
-		    GRUP_TYPE.LVLN, GRUP_TYPE.TXST,
-		    GRUP_TYPE.WEAP);
-	} catch (IOException ex) {
-	    // If things go wrong, create an error box.
-	    JOptionPane.showMessageDialog(null, "There was an error importing plugins.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
-	    System.exit(0);
-	}
-    }
-
-    static int readjustTXSTindices(int j) {
-	// Because nif fields map 2->3 if facegen flag is on.
-	int set = j;
-	if (set == 2) {
-	    set = 3;
-	}
-	return set;
-    }
-
-    private static void setGlobals() {
-	/*
-	 * Initializing Debug Log and Globals
-	 */
-	if (debugLevel > 0) {
-	    SPGlobal.createGlobalLog(extraPath);
-	    SPGlobal.debugModMerge = false;
-	    SPGlobal.debugExportSummary = false;
-	    SPGlobal.debugBSAimport = false;
-	    SPGlobal.debugNIFimport = false;
-	    LDebug.timeElapsed = true;
-	    LDebug.timeStamp = true;
-	    // Turn Debugging off except for errors
-	    if (debugLevel < 2) {
-		SPGlobal.logging(false);
+    static void printModifiedNPCs() {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Printing Modified NPCs: ");
+	    SPGlobal.log(header, "====================================================================");
+	    for (FormID armoSrc : modifiedNPCs.keySet()) {
+		SPGlobal.log(header, "For " + SPDatabase.getMajor(armoSrc, GRUP_TYPE.ARMO));
+		for (NPC_ n : modifiedNPCs.get(armoSrc)) {
+		    SPGlobal.log(header, "    " + n);
+		}
+		SPGlobal.log(header, "--------------------------------------");
 	    }
 	}
     }
@@ -303,12 +242,18 @@ public class AutomaticVariants {
 		}
 
 		SPGlobal.getGlobalPatch().addRecord(npcSrc);
+		modifiedNPCs.put(armorForm, npcSrc);
 	    }
 	}
 	SPGUI.progress.incrementBar();
     }
 
     static void generateScriptRaces() {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Generating Races for each ARMO source with racial spell");
+	    SPGlobal.log(header, "====================================================================");
+	}
 	for (FormID armoSrcForm : switcherSpells.keySet()) {
 	    ARMO armoSrc = (ARMO) SPDatabase.getMajor(armoSrcForm, GRUP_TYPE.ARMO);
 	    RACE avRace = races.get(armoSrcForm).get(0).race;
@@ -319,6 +264,11 @@ public class AutomaticVariants {
     }
 
     static void generateSPELvariants() {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Generating Spells for each Magic Effect");
+	    SPGlobal.log(header, "====================================================================");
+	}
 	for (FormID armoSrc : magicEffects.keySet()) {
 	    MGEF mgef = magicEffects.get(armoSrc);
 	    String name = mgef.getEDID().substring(0, mgef.getEDID().lastIndexOf("_mgef")) + "_spell";
@@ -330,17 +280,23 @@ public class AutomaticVariants {
     }
 
     static void generateMGEFvariants() {
+	SPGUI.progress.setStatus(step++, numSteps, "Generating script attachment races.");
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Generating Magic Effects with scripts attached");
+	    SPGlobal.log(header, "====================================================================");
+	}
 	for (FormID armoSrc : formLists.keySet()) {
 	    FLST flst = formLists.get(armoSrc);
 	    String name = flst.getEDID().substring(flst.getEDID().indexOf("AV_") + 3, flst.getEDID().lastIndexOf("_flst")) + "_mgef";
 	    MGEF mgef = new MGEF(SPGlobal.getGlobalPatch(), "AV_" + name, "AV_SwitchRace_" + name);
 	    ScriptRef script = new ScriptRef(changeRaceScript);
-	    script.setProperty(changeRaceBoundWeaponBuffer, boundBuffer.getForm());
 	    script.setProperty(changeRaceBoundWeapons, boundList.getForm());
 	    script.setProperty(changeRaceFormList, flst.getForm());
 	    mgef.scripts.addScript(script);
 	    magicEffects.put(armoSrc, mgef);
 	}
+	SPGUI.progress.incrementBar();
     }
 
     static void locateBoundWeapons(Mod source) {
@@ -359,7 +315,7 @@ public class AutomaticVariants {
 		boundList.addFormEntry(weap.getForm());
 	    }
 	}
-	boundBuffer = new FLST(SPGlobal.getGlobalPatch(), "AV_BoundWeaponsBuffer");
+	SPGUI.progress.incrementBar();
     }
 
     static void generateFormLists(Mod source) {
@@ -393,6 +349,7 @@ public class AutomaticVariants {
 	    }
 	    formLists.put(armoSrcForm, flst);
 	}
+	SPGUI.progress.incrementBar();
     }
 
     static void generateRACEvariants(Mod source) {
@@ -433,6 +390,7 @@ public class AutomaticVariants {
 	    }
 	    races.put(armoSrc.getForm(), dups);
 	}
+	SPGUI.progress.incrementBar();
     }
 
     static void printVariants() {
@@ -914,6 +872,49 @@ public class AutomaticVariants {
 	return varSet;
     }
 
+    static void importMods() {
+	try {
+	    SPImporter importer = new SPImporter();
+	    importer.importActiveMods(
+		    GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
+		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
+		    GRUP_TYPE.LVLN, GRUP_TYPE.TXST,
+		    GRUP_TYPE.WEAP);
+	} catch (IOException ex) {
+	    // If things go wrong, create an error box.
+	    JOptionPane.showMessageDialog(null, "There was an error importing plugins.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
+	    System.exit(0);
+	}
+    }
+
+    static int readjustTXSTindices(int j) {
+	// Because nif fields map 2->3 if facegen flag is on.
+	int set = j;
+	if (set == 2) {
+	    set = 3;
+	}
+	return set;
+    }
+
+    private static void setGlobals() {
+	/*
+	 * Initializing Debug Log and Globals
+	 */
+	if (debugLevel > 0) {
+	    SPGlobal.createGlobalLog(extraPath);
+	    SPGlobal.debugModMerge = false;
+	    SPGlobal.debugExportSummary = false;
+	    SPGlobal.debugBSAimport = false;
+	    SPGlobal.debugNIFimport = false;
+	    LDebug.timeElapsed = true;
+	    LDebug.timeStamp = true;
+	    // Turn Debugging off except for errors
+	    if (debugLevel < 2) {
+		SPGlobal.logging(false);
+	    }
+	}
+    }
+
     static void readInExceptions() throws IOException {
 	try {
 	    BufferedReader in = new BufferedReader(new FileReader(extraPath + "Files/BlockList.txt"));
@@ -940,6 +941,41 @@ public class AutomaticVariants {
 	} catch (FileNotFoundException ex) {
 	    SPGlobal.logError("ReadInExceptions", "Failed to locate 'BlockList.txt'");
 	}
+    }
+
+    static boolean handleArgs(ArrayList<String> arguments) {
+	String debug = "-debug";
+	String extraPth = "-extraPath";
+	for (String s : arguments) {
+	    if (s.contains(debug)) {
+		s = s.substring(s.indexOf(debug) + debug.length()).trim();
+		try {
+		    debugLevel = Integer.valueOf(s);
+		    SPGlobal.logMain(header, "Debug level set to: " + debugLevel);
+		} catch (NumberFormatException e) {
+		    SPGlobal.logError(header, "Error parsing the debug level: '" + s + "'");
+		}
+	    } else if (s.contains(extraPth)) {
+		s = s.substring(s.indexOf(extraPth) + extraPth.length()).trim();
+		extraPath = s;
+		SPGlobal.pathToData = extraPath + SPGlobal.pathToData;
+		avPackages = new File(extraPath + avPackages.getPath());
+		avMeshes = new File(extraPath + avMeshes.getPath());
+		avTextures = new File(extraPath + avTextures.getPath());
+		if (SPGlobal.logging()) {
+		    SPGlobal.logMain(header, "Extra Path set to: " + extraPath);
+		    SPGlobal.logMain(header, "Path to data: " + SPGlobal.pathToData);
+		}
+	    }
+
+	}
+
+	if (arguments.contains("-gather")) {
+	    gatherFiles();
+	    return true;
+	}
+
+	return false;
     }
 
     static void gatherFiles() {
