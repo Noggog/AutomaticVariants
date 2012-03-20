@@ -40,6 +40,7 @@ public class AutomaticVariants {
     // ArmoSrc is key
     static Map<FormID, RACE> switcherRaces = new HashMap<FormID, RACE>();
     static Map<FormID, SPEL> switcherSpells = new HashMap<FormID, SPEL>();
+    static Map<FormID, MGEF> magicEffects = new HashMap<FormID, MGEF>();
     static Map<FormID, FLST> formLists = new HashMap<FormID, FLST>();
     static LMergeMap<FormID, RACE_spec> races = new LMergeMap<FormID, RACE_spec>(false);
     static LMergeMap<FormID, ARMO_spec> armors = new LMergeMap<FormID, ARMO_spec>(false);
@@ -114,8 +115,11 @@ public class AutomaticVariants {
 	    // Generate FormList of bound weapons, for race switch script
 	    locateBoundWeapons(source);
 
-	    // Generate Spells that use Race Switcher Magic Effect Scripters
-	    generateScriptSpells();
+	    // Generate Magic Effect with script pointing to FormList variants
+	    generateMGEFvariants();
+
+	    // Generate Spells that use Race Switcher Magic Effects
+	    generateSPELvariants();
 
 	    // Generate Races that have racial spells with switcher scripts
 	    generateScriptRaces();
@@ -259,21 +263,38 @@ public class AutomaticVariants {
 	}
     }
 
-    static void generateScriptSpells() {
+    static void generateSPELvariants() {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Generating Spells for each Magic Effect");
+	    SPGlobal.log(header, "====================================================================");
+	}
+	for (FormID armoSrc : magicEffects.keySet()) {
+	    MGEF mgef = magicEffects.get(armoSrc);
+	    String name = mgef.getEDID().substring(0, mgef.getEDID().lastIndexOf("_mgef")) + "_spell";
+	    SPEL spel = new SPEL(SPGlobal.getGlobalPatch(), name);
+	    spel.setSpellType(SPEL.SPELType.Ability);
+	    spel.addMagicEffect(mgef);
+	    switcherSpells.put(armoSrc, spel);
+	}
+    }
+
+    static void generateMGEFvariants() {
 	SPGUI.progress.setStatus(step++, numSteps, "Generating script attachment races.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Generating Spells that attach variant scripts");
+	    SPGlobal.log(header, "Generating Magic Effects with scripts attached");
 	    SPGlobal.log(header, "====================================================================");
 	}
 	for (FormID armoSrc : formLists.keySet()) {
 	    FLST flst = formLists.get(armoSrc);
-	    String name = flst.getEDID().substring(flst.getEDID().indexOf("AV_") + 3, flst.getEDID().lastIndexOf("_flst"));
+	    String name = flst.getEDID().substring(flst.getEDID().indexOf("AV_") + 3, flst.getEDID().lastIndexOf("_flst")) + "_mgef";
+	    MGEF mgef = new MGEF(SPGlobal.getGlobalPatch(), "AV_" + name, "AV_SwitchRace_" + name);
 	    ScriptRef script = new ScriptRef(changeRaceScript);
 	    script.setProperty(changeRaceBoundWeapons, boundList.getForm());
 	    script.setProperty(changeRaceFormList, flst.getForm());
-	    SPEL switcherSpell = NiftyFunc.generateScriptAttachingSpell(SPGlobal.getGlobalPatch(), script, name);
-	    switcherSpells.put(armoSrc, switcherSpell);
+	    mgef.scripts.addScript(script);
+	    magicEffects.put(armoSrc, mgef);
 	}
 	SPGUI.progress.incrementBar();
     }
