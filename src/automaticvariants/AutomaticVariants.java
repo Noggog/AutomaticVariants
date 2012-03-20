@@ -37,6 +37,8 @@ public class AutomaticVariants {
     // AV_Nif name is key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     // ArmoSrc is key
+    static Map<FormID, RACE> switcherRaces = new HashMap<FormID, RACE>();
+    static Map<FormID, SPEL> switcherSpells = new HashMap<FormID, SPEL>();
     static Map<FormID, MGEF> magicEffects = new HashMap<FormID, MGEF>();
     static Map<FormID, FLST> formLists = new HashMap<FormID, FLST>();
     static LMergeMap<FormID, RACE_spec> races = new LMergeMap<FormID, RACE_spec>(false);
@@ -71,6 +73,7 @@ public class AutomaticVariants {
 
 	    Mod patch = new Mod("Automatic Variants", false);
 	    patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
+	    patch.setAuthor("DEFAULT");
 	    SPGlobal.setGlobalPatch(patch);
 
 	    readInExceptions();
@@ -118,8 +121,11 @@ public class AutomaticVariants {
 	    // Generate Spells that use Race Switcher Magic Effects
 	    generateSPELvariants();
 
-	    // Add variant scripts to NPCs
-	    addScripts(source);
+	    // Generate Races that have racial spells with switcher scripts
+	    generateScriptRaces();
+
+	    // Sub In script attachment races on target NPCs
+	    subInSwitcherRaces(source);
 
 	    /*
 	     * Close up shop.
@@ -184,16 +190,15 @@ public class AutomaticVariants {
     static boolean checkNPCskip(NPC_ npcSrc, boolean last) {
 	String edid = npcSrc.getEDID().toUpperCase();
 	for (String exclude : edidExclude) {
-//	    if (!npcSrc.getTemplate().equals(FormID.NULL) && npcSrc.get(NPC_.TemplateFlag.USE_TRAITS)) {
-//		if (SPGlobal.logging()) {
-//		    if (last) {
-//			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-//		    }
-//		    SPGlobal.log(header, "    Skipping " + npcSrc + " : Template with traits flag");
-//		}
-//		return true;
-//	    } else
-	    if (edid.contains(exclude)) {
+	    if (!npcSrc.getTemplate().equals(FormID.NULL) && npcSrc.get(NPC_.TemplateFlag.USE_TRAITS)) {
+		if (SPGlobal.logging()) {
+		    if (last) {
+			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
+		    }
+		    SPGlobal.log(header, "    Skipping " + npcSrc + " : Template with traits flag");
+		}
+		return true;
+	    } else if (edid.contains(exclude)) {
 		if (SPGlobal.logging()) {
 		    if (last) {
 			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
@@ -249,30 +254,11 @@ public class AutomaticVariants {
 	}
     }
 
-    static void locateBoundWeapons(Mod source) {
-	SPGUI.progress.setStatus(step++, numSteps, "Locating bound weapons.");
+    static void subInSwitcherRaces(Mod source) {
+	SPGUI.progress.setStatus(step++, numSteps, "Switching in scripted race versions.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Locating Bound Weapons");
-	    SPGlobal.log(header, "====================================================================");
-	}
-	boundList = new FLST(SPGlobal.getGlobalPatch(), "AV_BoundWeaponsList");
-	for (WEAP weap : source.getWeapons()) {
-	    if (weap.get(WEAP.WeaponFlag.BoundWeapon)) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "  Added: " + weap);
-		}
-		boundList.addFormEntry(weap.getForm());
-	    }
-	}
-	boundBuffer = new FLST(SPGlobal.getGlobalPatch(), "AV_BoundWeaponsBuffer");
-    }
-
-    static void addScripts(Mod source) {
-	SPGUI.progress.setStatus(step++, numSteps, "Attaching Variant scripts to NPCs.");
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Attaching Variant scripts to NPCs");
+	    SPGlobal.log(header, "Switching target NPC's races to scripted versions");
 	    SPGlobal.log(header, "====================================================================");
 	}
 	boolean last = false;
@@ -290,8 +276,7 @@ public class AutomaticVariants {
 		}
 		armorForm = race.getWornArmor();
 	    }
-	    FLST varList = formLists.get(armorForm);
-	    if (varList != null) {
+	    if (formLists.containsKey(armorForm)) {
 
 		if (checkNPCskip(npcSrc, last)) {
 		    last = false;
@@ -304,12 +289,11 @@ public class AutomaticVariants {
 		    last = true;
 		}
 
-		npcSrc.scripts.addScript(changeRaceScript);
-		npcSrc.scripts.setProperty(changeRaceScript, changeRaceFormList, varList.getForm());
-		npcSrc.scripts.setProperty(changeRaceScript, changeRaceBoundWeapons, boundList.getForm());
-		npcSrc.scripts.setProperty(changeRaceScript, changeRaceBoundWeaponBuffer, boundBuffer.getForm());
+		RACE switchRace = switcherRaces.get(armorForm);
 
-		// If has special skin, remove it, and confirm races match
+		npcSrc.setRace(switchRace.getForm());
+
+		// If has special skin, remove it
 		if (!npcSrc.getWornArmor().equals(FormID.NULL)) {
 		    ARMO specialSkin = (ARMO) SPDatabase.getMajor(npcSrc.getWornArmor(), GRUP_TYPE.ARMO);
 		    npcSrc.setWornArmor(FormID.NULL);
@@ -324,11 +308,24 @@ public class AutomaticVariants {
 	SPGUI.progress.incrementBar();
     }
 
+    static void generateScriptRaces() {
+	for (FormID armoSrcForm : switcherSpells.keySet()) {
+	    ARMO armoSrc = (ARMO) SPDatabase.getMajor(armoSrcForm, GRUP_TYPE.ARMO);
+	    RACE avRace = races.get(armoSrcForm).get(0).race;
+	    RACE switcherRace = (RACE) SPGlobal.getGlobalPatch().makeCopy(avRace, "AV_" + armoSrc.getEDID() + "_switcherRace");
+	    switcherRace.addSpell(switcherSpells.get(armoSrcForm).getForm());
+	    switcherRaces.put(armoSrcForm, switcherRace);
+	}
+    }
+
     static void generateSPELvariants() {
 	for (FormID armoSrc : magicEffects.keySet()) {
 	    MGEF mgef = magicEffects.get(armoSrc);
 	    String name = mgef.getEDID().substring(0, mgef.getEDID().lastIndexOf("_mgef")) + "_spell";
 	    SPEL spel = new SPEL(SPGlobal.getGlobalPatch(), name);
+	    spel.setSpellType(SPEL.SPELType.Ability);
+	    spel.addMagicEffect(mgef);
+	    switcherSpells.put(armoSrc, spel);
 	}
     }
 
@@ -337,12 +334,32 @@ public class AutomaticVariants {
 	    FLST flst = formLists.get(armoSrc);
 	    String name = flst.getEDID().substring(flst.getEDID().indexOf("AV_") + 3, flst.getEDID().lastIndexOf("_flst")) + "_mgef";
 	    MGEF mgef = new MGEF(SPGlobal.getGlobalPatch(), "AV_" + name, "AV_SwitchRace_" + name);
-	    mgef.scripts.addScript(changeRaceScript);
-	    mgef.scripts.setProperty(changeRaceScript, changeRaceBoundWeaponBuffer, boundBuffer.getForm());
-	    mgef.scripts.setProperty(changeRaceScript, changeRaceBoundWeapons, boundList.getForm());
-	    mgef.scripts.setProperty(changeRaceScript, changeRaceFormList, flst.getForm());
+	    ScriptRef script = new ScriptRef(changeRaceScript);
+	    script.setProperty(changeRaceBoundWeaponBuffer, boundBuffer.getForm());
+	    script.setProperty(changeRaceBoundWeapons, boundList.getForm());
+	    script.setProperty(changeRaceFormList, flst.getForm());
+	    mgef.scripts.addScript(script);
 	    magicEffects.put(armoSrc, mgef);
 	}
+    }
+
+    static void locateBoundWeapons(Mod source) {
+	SPGUI.progress.setStatus(step++, numSteps, "Locating bound weapons.");
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Locating Bound Weapons");
+	    SPGlobal.log(header, "====================================================================");
+	}
+	boundList = new FLST(SPGlobal.getGlobalPatch(), "AV_BoundWeaponsList");
+	for (WEAP weap : source.getWeapons()) {
+	    if (weap.get(WEAP.WeaponFlag.BoundWeapon)) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "  Added: " + weap);
+		}
+		boundList.addFormEntry(weap.getForm());
+	    }
+	}
+	boundBuffer = new FLST(SPGlobal.getGlobalPatch(), "AV_BoundWeaponsBuffer");
     }
 
     static void generateFormLists(Mod source) {
