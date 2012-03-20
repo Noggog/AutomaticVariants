@@ -5,6 +5,7 @@
 package automaticvariants;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import skyproc.TXST;
 
@@ -12,7 +13,7 @@ import skyproc.TXST;
  *
  * @author Justin Swanson
  */
-public class Variant {
+public class Variant implements Serializable {
 
     String name = "";
     ArrayList<String> variantTexturePaths = new ArrayList<String>();
@@ -20,7 +21,7 @@ public class Variant {
     static int numSupportedTextures = 8;
     VariantSpec specs = new VariantSpec();
 
-    static class TextureVariant {
+    static class TextureVariant implements Serializable {
 
 	String nifFieldName;
 	TXST textureRecord;

@@ -4,13 +4,14 @@
  */
 package automaticvariants;
 
+import java.io.Serializable;
 import skyproc.SPGlobal;
 
 /**
  *
  * @author Justin Swanson
  */
-public class VariantSpec {
+public class VariantSpec implements Serializable  {
 
     int Probability_Divider = 1;
 

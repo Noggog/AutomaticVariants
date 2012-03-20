@@ -717,7 +717,9 @@ public class AutomaticVariants {
 
 		    if (!uniqueArmas.contains(piece.getForm())) {
 			uniqueArmas.add(piece.getForm());
-			nifs.get(armaToNif.get(piece.getForm())).variants.addAll(varSet.variants);
+			for (Variant v : varSet.variants) {
+			    nifs.get(armaToNif.get(piece.getForm())).variants.add((Variant)Ln.deepCopy(v));
+			}
 		    } else if (SPGlobal.logging()) {
 			SPGlobal.log(header, "  Already logged that arma for this variant set.");
 		    }

@@ -96,7 +96,7 @@ public class AV_Nif {
 	hash = 67 * hash + (this.name != null ? this.name.hashCode() : 0);
 	return hash;
     }
-    
+
     public String uniqueName() {
 	return path.substring(path.lastIndexOf("\\") + 1) + hashCode();
     }
