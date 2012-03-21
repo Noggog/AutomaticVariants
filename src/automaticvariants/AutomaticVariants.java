@@ -26,11 +26,6 @@ public class AutomaticVariants {
     static File avPackages = new File("AV Packages/");
     static File avTextures = new File(SPGlobal.pathToData + "textures/AV Packages/");
     static File avMeshes = new File(SPGlobal.pathToData + "meshes/AV Packages/");
-    static String changeRaceScript = "AVchangeRace";
-    static String changeRaceFormList = "RaceOptions";
-    static String changeRaceBoundWeapons = "BoundWeapons";
-    static String changeRaceBoundWeaponBuffer = "BoundBuffer";
-    static String alreadySwitched = "AlreadySwitched";
     /*
      * Variant storage lists/maps
      */
@@ -52,6 +47,14 @@ public class AutomaticVariants {
      */
     static Set<FormID> block = new HashSet<FormID>();
     static Set<String> edidExclude = new HashSet<String>();
+    /*
+     * Script/Property names
+     */
+    static String changeRaceScript = "AVchangeRace";
+    static String changeRaceFormList = "RaceOptions";
+    static String changeRaceBoundWeapons = "BoundWeapons";
+    static String changeRaceOn = "RaceVariantOn";
+    static String alreadySwitched = "AlreadySwitched";
     /*
      * Other
      */
@@ -270,6 +273,7 @@ public class AutomaticVariants {
 	    script.setProperty(changeRaceBoundWeapons, boundList.getForm());
 	    script.setProperty(changeRaceFormList, flst.getForm());
 	    script.setProperty(alreadySwitched, alreadySwitchedList.getForm());
+	    script.setProperty(changeRaceOn, true);
 	    switcherSpells.put(armoSrc, NiftyFunc.generateScriptAttachingSpell(SPGlobal.getGlobalPatch(), script, name));
 	}
 	SPGUI.progress.incrementBar();
