@@ -11,10 +11,10 @@ import lev.LMergeMap;
 import lev.LShrinkArray;
 import lev.Ln;
 import lev.debug.LDebug;
+import skyproc.ARMA.AltTexture;
 import skyproc.NIF.Node;
 import skyproc.NIF.NodeType;
 import skyproc.*;
-import skyproc.ARMA.AltTexture;
 import skyproc.exceptions.BadParameter;
 
 /**
@@ -31,7 +31,6 @@ public class AVPackageAnalyzer {
     static Map<FormID, FormID> NPCtoARMO = new HashMap<FormID, FormID>();
     static ArrayList<File> meshes;
     static ArrayList<BSA> bsas;
-
     static BufferedWriter suggestions;
     static int numSteps = 5;
     static int step = 1;
@@ -60,18 +59,49 @@ public class AVPackageAnalyzer {
 	SPGlobal.addModToSkip(new ModListing("Automatic Variants.esp"));
 	Mod merger = new Mod("tmpMod", false);
 	merger.addAsOverrides(importer.importActiveMods(GRUP_TYPE.NPC_, GRUP_TYPE.ARMA,
-		GRUP_TYPE.ARMO, GRUP_TYPE.RACE));
+		GRUP_TYPE.ARMO, GRUP_TYPE.RACE, GRUP_TYPE.TXST));
 
 
 	// ARMA
-	LMergeMap<File, FormID> srcToARMAs = new LMergeMap<File, FormID>(false);
+	LMergeMap<File, FormID> NIFToARMAs = new LMergeMap<File, FormID>(false);
 	for (ARMA arma : merger.getArmatures()) {
 	    File model = new File("MESHES/" + arma.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase());
+
 	    if (NIFtoSRC.containsKey(model)) {
-		srcToARMAs.put(model, arma.getForm());
+
+		// Check for alt textures
+		ArrayList<AltTexture> altTextures = arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
+		Set<File> altSrcs = new HashSet<File>();
+		if (!altTextures.isEmpty()) {
+		    for (AltTexture t : altTextures) {
+			TXST txst = (TXST) SPDatabase.getMajor(t.getTexture(), GRUP_TYPE.TXST);
+			for (String path : txst) {
+			    if (path != null) {
+				File pathFile = new File(path);
+				for (File src : srcs) {
+				    if (pathFile.getName().equalsIgnoreCase(src.getName())) {
+					altSrcs.add(src);
+				    }
+				}
+			    }
+			}
+		    }
+		}
+
+		if (altSrcs.isEmpty()) {
+		    NIFToARMAs.put(model, arma.getForm());
+		} else {
+		    // Split variant
+		    File altModel = new File(model.getPath() + "ALT-" + arma.getFormStr());
+		    for (File altSrc : altSrcs) {
+			NIFtoSRC.put(altModel, altSrc);
+		    }
+		    NIFToARMAs.put(altModel, arma.getForm());
+		}
 	    }
+
 	}
-	ARMAtoNIF = srcToARMAs.flip().flatten();
+	ARMAtoNIF = NIFToARMAs.flip().flatten();
 	SPGlobal.log("ARMAs", "Printing ARMAs to their sources:");
 	for (FormID arma : ARMAtoNIF.keySet()) {
 	    System.out.println(SPDatabase.getMajor(arma, GRUP_TYPE.ARMA));
@@ -133,7 +163,7 @@ public class AVPackageAnalyzer {
 	suggestions.write("\n\n");
 	suggestions.write("==============================================================\n\n");
 	suggestions.write("These are groups of NPCs that share a common skin.\n");
-	suggestions.write("It is suggested you put a seed from each group into the spec file,\n"
+	suggestions.write("It is suggested you put a seed from each group into your spec file,\n"
 		+ "                     --or--\n"
 		+ "make a separate Variant Set for each if it makes logical sense to \n"
 		+ "separate them (such as Black vs Ice wolves).\n\n");
@@ -218,11 +248,11 @@ public class AVPackageAnalyzer {
 	int group = 1;
 	for (FormID arma : ARMAtoNPC.keySet()) {
 	    suggestions.write("Group " + group++ + ": " + SPDatabase.getMajor(arma, GRUP_TYPE.ARMA) + "\n");
-	    suggestions.write("   Seed choices:\n");
+	    suggestions.write("   Seed choices (pick one):\n");
 	    for (FormID npc : ARMAtoNPC.get(arma)) {
 		suggestions.write("      " + SPDatabase.getMajor(npc, GRUP_TYPE.NPC_) + "\n");
 	    }
-	    suggestions.write("   Source textures to include:\n");
+	    suggestions.write("   Source textures to include (include all of them):\n");
 	    File nif = ARMAtoNIF.get(arma);
 	    for (File src : NIFtoSRC.get(nif)) {
 		suggestions.write("      " + src + "\n");
