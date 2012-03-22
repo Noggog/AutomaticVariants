@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
-import lev.Ln;
 import lev.debug.LDebug;
 import skyproc.*;
 
@@ -78,7 +77,7 @@ public class AV {
 	    // For all race SWITCHING variants
 	    // (such as texture variants)
 	    AVRaceSwitchVariants.setUpRaceSwitchVariants(source, patch);
-	    
+
 	    // For all non-race SWITCHING variants
 	    // (such as height variant scripting)
 
@@ -141,7 +140,7 @@ public class AV {
 	return script;
     }
 
-    static void importMods() {
+    static void importMods() throws IOException {
 	try {
 	    SPImporter importer = new SPImporter();
 	    importer.importActiveMods(
@@ -151,11 +150,13 @@ public class AV {
 		    GRUP_TYPE.WEAP);
 	} catch (IOException ex) {
 	    // If things go wrong, create an error box.
+	    SPGlobal.logException(ex);
 	    JOptionPane.showMessageDialog(null, "There was an error importing plugins.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
+	    LDebug.wrapUp();
 	    System.exit(0);
 	}
     }
-    
+
     private static void setGlobals() {
 	/*
 	 * Initializing Debug Log and Globals
