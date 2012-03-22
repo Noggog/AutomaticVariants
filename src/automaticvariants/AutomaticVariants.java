@@ -274,7 +274,7 @@ public class AutomaticVariants {
 	    script.setProperty(changeRaceFormList, flst.getForm());
 	    script.setProperty(alreadySwitched, alreadySwitchedList.getForm());
 	    script.setProperty(changeRaceOn, true);
-	    switcherSpells.put(armoSrc, NiftyFunc.generateScriptAttachingSpell(SPGlobal.getGlobalPatch(), script, name));
+	    switcherSpells.put(armoSrc, NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), script, name));
 	}
 	SPGUI.progress.incrementBar();
     }
