@@ -65,7 +65,7 @@ public class AVRaceSwitchVariants {
 	    BSAs = BSA.loadInBSAs(BSA.FileType.NIF, BSA.FileType.DDS);
 
 	    SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Importing AV Packages");
-	    AV.gatherFiles();
+	    gatherFiles();
 	    ArrayList<VariantSet> variantRead = importVariants(patch);
 	    SPGUI.progress.incrementBar();
 
@@ -796,6 +796,23 @@ public class AVRaceSwitchVariants {
 	    set = 3;
 	}
 	return set;
+    }
+    
+    static void gatherFiles() {
+	ArrayList<File> files = Ln.generateFileList(avTextures, 2, 3, false);
+	for (File file : files) {
+	    Ln.moveFile(file, new File(avPackages + file.getPath().substring(avTextures.getPath().length())), false);
+	    if (file.exists()) {
+		file.delete();
+	    }
+	}
+	files = Ln.generateFileList(avMeshes, 3, 3, false);
+	for (File file : files) {
+	    Ln.moveFile(file, new File(avPackages + file.getPath().substring(avMeshes.getPath().length())), false);
+	    if (file.exists()) {
+		file.delete();
+	    }
+	}
     }
     
     // Internal Classes

@@ -21,9 +21,6 @@ public class AV {
      * Static Strings
      */
     static private String header = "AV";
-    static File avPackages = new File("AV Packages/");
-    static File avTextures = new File(SPGlobal.pathToData + "textures/AV Packages/");
-    static File avMeshes = new File(SPGlobal.pathToData + "meshes/AV Packages/");
     /*
      * Storage Maps
      */
@@ -222,9 +219,9 @@ public class AV {
 		s = s.substring(s.indexOf(extraPth) + extraPth.length()).trim();
 		extraPath = s;
 		SPGlobal.pathToData = extraPath + SPGlobal.pathToData;
-		avPackages = new File(extraPath + avPackages.getPath());
-		avMeshes = new File(extraPath + avMeshes.getPath());
-		avTextures = new File(extraPath + avTextures.getPath());
+		AVRaceSwitchVariants.avPackages = new File(extraPath + AVRaceSwitchVariants.avPackages.getPath());
+		AVRaceSwitchVariants.avMeshes = new File(extraPath + AVRaceSwitchVariants.avMeshes.getPath());
+		AVRaceSwitchVariants.avTextures = new File(extraPath + AVRaceSwitchVariants.avTextures.getPath());
 		if (SPGlobal.logging()) {
 		    SPGlobal.logMain(header, "Extra Path set to: " + extraPath);
 		    SPGlobal.logMain(header, "Path to data: " + SPGlobal.pathToData);
@@ -234,28 +231,11 @@ public class AV {
 	}
 
 	if (arguments.contains("-gather")) {
-	    gatherFiles();
+	    AVRaceSwitchVariants.gatherFiles();
 	    return true;
 	}
 
 	return false;
-    }
-
-    static void gatherFiles() {
-	ArrayList<File> files = Ln.generateFileList(avTextures, 2, 3, false);
-	for (File file : files) {
-	    Ln.moveFile(file, new File(avPackages + file.getPath().substring(avTextures.getPath().length())), false);
-	    if (file.exists()) {
-		file.delete();
-	    }
-	}
-	files = Ln.generateFileList(avMeshes, 3, 3, false);
-	for (File file : files) {
-	    Ln.moveFile(file, new File(avPackages + file.getPath().substring(avMeshes.getPath().length())), false);
-	    if (file.exists()) {
-		file.delete();
-	    }
-	}
     }
 
     static SPDefaultGUI createGUI() {
