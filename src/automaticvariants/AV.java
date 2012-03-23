@@ -135,8 +135,10 @@ public class AV {
 	ScriptRef script = new ScriptRef(raceAttachScript);
 	script.setProperty(changeRaceOn, false);
 	script.setProperty(heightOn, false);
-	script.setProperty(heightMin, 0);
-	script.setProperty(heightMax, 0);
+	script.setProperty(heightMin, (float) 0);
+	script.setProperty(heightMax, (float) 0);
+	script.setProperty(heightWidth, (float) 0);
+	script.setProperty(heightIntensity, (float) 0);
 	return script;
     }
 
