@@ -479,7 +479,7 @@ public class AVRaceSwitchVariants {
 		if (textureSet.unique) {
 		    // New TXST
 		    TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch(), v.name + "_" + textureSet.title + "_txst");
-		    tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
+		    tmpTXST.set(TXST.TXSTflag.FACEGEN_TEXTURES, true);
 
 		    // Set maps
 		    int j = 0;
@@ -998,22 +998,23 @@ public class AVRaceSwitchVariants {
 	for (LVLN llist : source.getLeveledLists()) {
 	    boolean add = false;
 	    for (LVLO entry : llist) {
-//		LVLN template = NiftyFunc.isTemplatedToLList(entry.getForm(), NPC_.TemplateFlag.USE_TRAITS);
-//		if (template != null) { // If entry is NPC and templated to an AV LList
-//		    NPC_ npcEntry = (NPC_) SPDatabase.getMajor(entry.getForm(), GRUP_TYPE.NPC_);
-//
-//		    LVLN sub = llists.get(entry.getForm());
-//		    if (sub == null) { // If variant LList does not already exist for entry NPC, create it
-//			sub = createLVLNvariant(npcEntry, template);
-//		    }
-//
-//		    entry.setForm(sub.getForm());
-//		    add = true;
-//		}
+		LVLN template = NiftyFunc.isTemplatedToLList(entry.getForm(), NPC_.TemplateFlag.USE_TRAITS);
+		if (template != null) { // If entry is NPC and templated to an AV LList
+		    NPC_ npcEntry = (NPC_) SPDatabase.getMajor(entry.getForm(), GRUP_TYPE.NPC_);
+
+		    LVLN sub = llists.get(entry.getForm());
+		    if (sub == null) { // If variant LList does not already exist for entry NPC, create it
+			sub = createLVLNvariant(npcEntry, template);
+		    }
+
+		    entry.setForm(sub.getForm());
+		    add = true;
+		}
 	    }
 	    if (add) {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "Modified " + llist);
+		    SPGlobal.log(header, "----------------------------------------------------------------");
 		}
 		SPGlobal.getGlobalPatch().addRecord(llist);
 	    }
@@ -1021,22 +1022,23 @@ public class AVRaceSwitchVariants {
     }
 
     static LVLN createLVLNvariant(NPC_ npcEntry, LVLN template) {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "Creating variants for " + npcEntry);
+	}
 	LVLN out = new LVLN(SPGlobal.getGlobalPatch(), "AV_" + npcEntry.getEDID() + "_llist");
 
 	// Map to store NPC dups just in case there are multiple entries of the same skin
 	Map<FormID, NPC_> skinToNPCdup = new HashMap<FormID, NPC_>();
 
-	// Make edid prefix for duplicating
-	NPC_ edidSrc = (NPC_) SPGlobal.getGlobalPatch().getNPCs().get(template.getEntry(0).getForm());
-	String[] edidSplit = edidSrc.getEDID().split("_");
-	String edidBase = edidSplit[0] + "_" + edidSplit[1] + "_"  + edidSplit[2] + "_"  + edidSplit[3];
-
 	// Make NPC duplicates for each in the template LList.
 	for (LVLO templateEntry : template) {
 	    NPC_ templateNPC = (NPC_) SPGlobal.getGlobalPatch().getNPCs().get(templateEntry.getForm());
 	    NPC_ dupNPC = skinToNPCdup.get(templateNPC.getSkin());
+	    String[] edidSplit = templateNPC.getEDID().split("_");
+	    String edidBase = edidSplit[0] + "_" + edidSplit[1] + "_" + edidSplit[2] + "_" + edidSplit[3];
 	    if (dupNPC == null) {
-		dupNPC = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcEntry, edidBase + npcEntry.getEDID());
+		dupNPC = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcEntry, edidBase + "_" + npcEntry.getEDID());
+		dupNPC.set(NPC_.TemplateFlag.USE_TRAITS, false);
 		dupNPC.setSkin(templateNPC.getSkin());
 		skinToNPCdup.put(templateNPC.getSkin(), dupNPC);
 	    }

@@ -64,8 +64,8 @@ public class AV {
 	    }
 	    setGlobals();
 	    settings.init();
-	    AVGUI.open();
-//	    SPDefaultGUI gui = createGUI();
+//	    AVGUI.open();
+	    SPDefaultGUI gui = createGUI();
 
 	    // AVGUI runs the program after it's finished displaying.
 	    runProgram();
