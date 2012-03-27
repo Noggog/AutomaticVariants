@@ -1,5 +1,6 @@
 package automaticvariants;
 
+import automaticvariants.gui.AVGUI;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +9,10 @@ import java.util.Set;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
 import lev.debug.LDebug;
+import lev.gui.LSaveFile;
 import skyproc.*;
+import skyproc.exceptions.BadParameter;
+import skyproc.exceptions.Uninitialized;
 
 /**
  *
@@ -32,6 +36,7 @@ public class AV {
     /*
      * Script/Property names
      */
+    static String alreadySwitched = "AlreadySwitched";
     static String raceAttachScript = "AVRaceAttachment";
     static String changeRaceOn = "RaceVariantOn";
     static String heightOn = "HeightVariantOn";
@@ -42,6 +47,9 @@ public class AV {
     /*
      * Other
      */
+    public static LSaveFile settings = new AVSaveFile();
+    static FLST alreadySwitchedList;
+    static boolean heightOnF = false;
     static String extraPath = "";
     static int numSteps = 10;
     static int step = 0;
@@ -55,45 +63,12 @@ public class AV {
 		return;
 	    }
 	    setGlobals();
+	    settings.init();
+//	    AVGUI.open();
 	    SPDefaultGUI gui = createGUI();
 
-	    Mod patch = new Mod("Automatic Variants", false);
-	    patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
-	    patch.setAuthor("Leviathan1753");
-	    SPGlobal.setGlobalPatch(patch);
-
-	    readInExceptions();
-
-	    importMods();
-
-	    SPGUI.progress.setMax(numSteps);
-	    SPGUI.progress.setStatus(step++, numSteps, "Initializing AV");
-	    Mod source = new Mod("Temporary", false);
-	    source.addAsOverrides(SPGlobal.getDB());
-	    if (debugLevel >= 1) {
-		SPGlobal.logging(true);
-	    }
-
-	    // For all race SWITCHING variants
-	    // (such as texture variants)
-	    AVRaceSwitchVariants.setUpRaceSwitchVariants(source, patch);
-
-	    // For all non-race SWITCHING variants
-	    // (such as height variant scripting)
-
-	    /*
-	     * Close up shop.
-	     */
-	    try {
-		// Export your custom patch.
-		patch.export();
-	    } catch (IOException ex) {
-		// If something goes wrong, show an error message.
-		JOptionPane.showMessageDialog(null, "There was an error exporting the custom patch.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
-		System.exit(0);
-	    }
-	    // Tell the GUI to display "Done Patching"
-	    gui.finished();
+	    // AVGUI runs the program after it's finished displaying.
+	    runProgram();
 
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.
@@ -104,6 +79,61 @@ public class AV {
 
 	// Close debug logs before program exits.
 	SPGlobal.closeDebug();
+    }
+
+    static void runProgram() throws IOException, Uninitialized, BadParameter {
+
+	Mod patch = new Mod("Automatic Variants", false);
+	patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
+	patch.setAuthor("Leviathan1753");
+	SPGlobal.setGlobalPatch(patch);
+
+	readInExceptions();
+
+	importMods();
+
+	SPGUI.progress.setMax(numSteps);
+	SPGUI.progress.setStatus(step++, numSteps, "Initializing AV");
+	Mod source = new Mod("Temporary", false);
+	source.addAsOverrides(SPGlobal.getDB());
+	if (debugLevel >= 1) {
+	    SPGlobal.logging(true);
+	}
+
+
+	alreadySwitchedList = new FLST(patch, "AV_" + alreadySwitched);
+
+	// For all race SWITCHING variants
+	// (such as texture variants)
+	AVRaceSwitchVariants.setUpRaceSwitchVariants(source, patch);
+
+	// For all non-race SWITCHING variants
+	// (such as height variant scripting)
+	setUpInGameScriptBasedVariants(source);
+
+	/*
+	 * Close up shop.
+	 */
+	try {
+	    // Export your custom patch.
+	    patch.export();
+	} catch (IOException ex) {
+	    // If something goes wrong, show an error message.
+	    JOptionPane.showMessageDialog(null, "There was an error exporting the custom patch.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
+	    System.exit(0);
+	}
+
+	AVGUI.progress.done();
+    }
+
+    static void setUpInGameScriptBasedVariants(Mod source) {
+	SPEL addScriptSpell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), generateAttachScript(), "AVGenericScriptAttach");
+	for (RACE race : source.getRaces()) {
+	    if (!AVRaceSwitchVariants.switcherRaces.containsKey(race.getForm())) {
+		race.addSpell(addScriptSpell.getForm());
+		SPGlobal.getGlobalPatch().addRecord(race);
+	    }
+	}
     }
 
     static boolean checkNPCskip(NPC_ npcSrc, boolean last) {
@@ -134,11 +164,16 @@ public class AV {
     static ScriptRef generateAttachScript() {
 	ScriptRef script = new ScriptRef(raceAttachScript);
 	script.setProperty(changeRaceOn, false);
-	script.setProperty(heightOn, false);
-	script.setProperty(heightMin, (float) 0);
-	script.setProperty(heightMax, (float) 0);
-	script.setProperty(heightWidth, (float) 0);
-	script.setProperty(heightIntensity, (float) 0);
+	script.setProperty(alreadySwitched, alreadySwitchedList.getForm());
+	if (heightOnF) {
+	    script.setProperty(heightOn, true);
+	    script.setProperty(heightMin, (float) 0);
+	    script.setProperty(heightMax, (float) .98);
+	    script.setProperty(heightWidth, (float) 5);
+	    script.setProperty(heightIntensity, (float) 9);
+	} else {
+	    script.setProperty(heightOn, false);
+	}
 	return script;
     }
 
@@ -266,5 +301,10 @@ public class AV {
 	    SPGlobal.logException(ex);
 	}
 	return gui;
+    }
+
+    public enum Settings {
+	HEIGHT_ON,
+	HEIGHT_MIN;
     }
 }

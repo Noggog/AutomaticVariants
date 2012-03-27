@@ -30,17 +30,16 @@ public class AVRaceSwitchVariants {
     static String header = "AV_RaceSwitch";
 
     static ArrayList<BSA> BSAs;
-    
+
     static File avPackages = new File("AV Packages/");
     static File avTextures = new File(SPGlobal.pathToData + "textures/AV Packages/");
     static File avMeshes = new File(SPGlobal.pathToData + "meshes/AV Packages/");
-    
-    static String alreadySwitched = "AlreadySwitched";
+
     static String changeRaceFormList = "RaceOptions";
     static String changeRaceBoundWeapons = "BoundWeapons";
-    
+
     static int numSupportedTextures = 8;
-    
+
     /*
      * Variant storage lists/maps
      */
@@ -58,18 +57,15 @@ public class AVRaceSwitchVariants {
     static Map<FormID, RACE> switcherRaces = new HashMap<FormID, RACE>();
 
     static FLST boundList;
-    static FLST alreadySwitchedList;
-    
-    static void setUpRaceSwitchVariants (Mod source, Mod patch) throws IOException, Uninitialized {
-	
+
+    static void setUpRaceSwitchVariants (Mod source, Mod patch) throws IOException, Uninitialized, BadParameter {
+
 	    BSAs = BSA.loadInBSAs(BSA.FileType.NIF, BSA.FileType.DDS);
 
 	    SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Importing AV Packages");
 	    gatherFiles();
 	    ArrayList<VariantSet> variantRead = importVariants(patch);
 	    SPGUI.progress.incrementBar();
-
-	    alreadySwitchedList = new FLST(patch, "AV_" + alreadySwitched);
 
 	    // Locate and load NIFs, and assign their variants
 	    linkToNifs(variantRead);
@@ -102,7 +98,7 @@ public class AVRaceSwitchVariants {
 
 	    printModifiedNPCs();
     }
-    
+
     static VariantSet importVariantSet(File variantFolder, String header) throws FileNotFoundException, JsonSyntaxException {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "======================================================================");
@@ -215,7 +211,7 @@ public class AVRaceSwitchVariants {
 	    }
 	}
     }
-    
+
     static ArrayList<VariantSet> importVariants(Mod patch) throws Uninitialized, FileNotFoundException {
 	String header = "Import Variants";
 	ArrayList<VariantSet> out = new ArrayList<VariantSet>();
@@ -368,7 +364,7 @@ public class AVRaceSwitchVariants {
 	}
 	SPGUI.progress.incrementBar();
     }
-    
+
     static void splitVariant(String nifPath, ARMA piece) throws IOException, BadParameter, DataFormatException {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log("SplitVar", "  Record warrents split due to alt textures in ARMA.");
@@ -411,7 +407,7 @@ public class AVRaceSwitchVariants {
 	nifs.put(nif.name, nif);
 	armaToNif.put(piece.getForm(), nif.name);
     }
-    
+
     static void generateVariantTXSTSets(Variant v, ArrayList<AV_Nif.TextureField> texturePack) throws IOException {
 
 	// Find out which TXSTs need to be generated
@@ -479,7 +475,7 @@ public class AVRaceSwitchVariants {
 	}
 
     }
-    
+
     static void generateTXSTvariants() throws IOException {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Generating TXST variants.");
 	for (AV_Nif n : nifs.values()) {
@@ -703,7 +699,6 @@ public class AVRaceSwitchVariants {
 	    ScriptRef script = AV.generateAttachScript();
 	    script.setProperty(changeRaceBoundWeapons, boundList.getForm());
 	    script.setProperty(changeRaceFormList, flst.getForm());
-	    script.setProperty(alreadySwitched, alreadySwitchedList.getForm());
 	    script.setProperty(AV.changeRaceOn, true);
 	    switcherSpells.put(armoSrc, NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), script, name));
 	}
@@ -773,7 +768,7 @@ public class AVRaceSwitchVariants {
 	}
 	SPGUI.progress.incrementBar();
     }
-    
+
     static void printModifiedNPCs() {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "====================================================================");
@@ -797,7 +792,7 @@ public class AVRaceSwitchVariants {
 	}
 	return set;
     }
-    
+
     static void gatherFiles() {
 	ArrayList<File> files = Ln.generateFileList(avTextures, 2, 3, false);
 	for (File file : files) {
@@ -814,9 +809,9 @@ public class AVRaceSwitchVariants {
 	    }
 	}
     }
-    
+
     // Internal Classes
-    
+
     static class AV_Nif {
 
 	String name;
