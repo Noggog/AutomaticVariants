@@ -27,7 +27,6 @@ public abstract class DefaultsPanel extends LPanel {
     protected EncompassingPanel parent;
     protected int spacing = 12;
     protected Point last;
-    protected static int fontSize = 16;
     protected LLabel header;
     protected ArrayList<LUserSetting> settings = new ArrayList<LUserSetting>();
     protected LPanel settingsPanel;

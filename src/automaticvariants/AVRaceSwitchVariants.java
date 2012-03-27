@@ -479,7 +479,7 @@ public class AVRaceSwitchVariants {
 		if (textureSet.unique) {
 		    // New TXST
 		    TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch(), v.name + "_" + textureSet.title + "_txst");
-		    tmpTXST.set(TXST.TXSTflag.FACEGEN_TEXTURES, true);
+		    tmpTXST.setFlag(TXST.TXSTflag.FACEGEN_TEXTURES, true);
 
 		    // Set maps
 		    int j = 0;
@@ -998,18 +998,18 @@ public class AVRaceSwitchVariants {
 	for (LVLN llist : source.getLeveledLists()) {
 	    boolean add = false;
 	    for (LVLO entry : llist) {
-		LVLN template = NiftyFunc.isTemplatedToLList(entry.getForm(), NPC_.TemplateFlag.USE_TRAITS);
-		if (template != null) { // If entry is NPC and templated to an AV LList
-		    NPC_ npcEntry = (NPC_) SPDatabase.getMajor(entry.getForm(), GRUP_TYPE.NPC_);
-
-		    LVLN sub = llists.get(entry.getForm());
-		    if (sub == null) { // If variant LList does not already exist for entry NPC, create it
-			sub = createLVLNvariant(npcEntry, template);
-		    }
-
-		    entry.setForm(sub.getForm());
-		    add = true;
-		}
+//		LVLN template = NiftyFunc.isTemplatedToLList(entry.getForm(), NPC_.TemplateFlag.USE_TRAITS);
+//		if (template != null) { // If entry is NPC and templated to an AV LList
+//		    NPC_ npcEntry = (NPC_) SPDatabase.getMajor(entry.getForm(), GRUP_TYPE.NPC_);
+//
+//		    LVLN sub = llists.get(entry.getForm());
+//		    if (sub == null) { // If variant LList does not already exist for entry NPC, create it
+//			sub = createLVLNvariant(npcEntry, template);
+//		    }
+//
+//		    entry.setForm(sub.getForm());
+//		    add = true;
+//		}
 	    }
 	    if (add) {
 		if (SPGlobal.logging()) {

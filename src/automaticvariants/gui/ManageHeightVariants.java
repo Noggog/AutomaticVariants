@@ -24,8 +24,10 @@ import lev.gui.LNumericSetting;
  */
 public class ManageHeightVariants extends DefaultsPanel {
 
-    LLabel min;
     LNumericSetting minSetting;
+    LNumericSetting maxSetting;
+    LNumericSetting widthSetting;
+    LNumericSetting intensitySetting;
     LAreaChart chart;
 
     public ManageHeightVariants(EncompassingPanel parent_) {
@@ -36,15 +38,24 @@ public class ManageHeightVariants extends DefaultsPanel {
     public boolean initialize() {
         if (super.initialize()) {
 
-            min = new LLabel("Low Tier", new Font("Serif", Font.PLAIN, 16), AVGUI.light);
-            min.addShadow();
-            setPlacement(min, new Point(settingsPanel.getWidth() - 10, 95));
+            minSetting = new LNumericSetting("Height Minimum", AVGUI.settingsFont, AVGUI.light, 
+		    0, 99, 1, AV.Settings.HEIGHT_MIN, parent.helpPanel);
+            last = setPlacement(minSetting, last);
+            minSetting.addChangeListener(new UpdateChartChangeHandler());
+            AddSetting(minSetting);
 
-//            minSetting = new LNumericSetting("Low Tier Reduction Line", fontSize, 0, 99, 1, SettingsDB.Settings.ACTORS_LOW_TIER_REDUC, parent.helpPanel);
-//            last = setPlacement(minSetting, last);
-//            minSetting.addChangeListener(new UpdateChartChangeHandler());
-//            AddSetting(minSetting);
-
+	    maxSetting = new LNumericSetting("Height Maximum", AVGUI.settingsFont, AVGUI.light, 
+		    1, 100, 1, AV.Settings.HEIGHT_MAX, parent.helpPanel);
+            last = setPlacement(maxSetting, last);
+            maxSetting.addChangeListener(new UpdateChartChangeHandler());
+            AddSetting(maxSetting);
+	    
+	    widthSetting = new LNumericSetting("Height Width", AVGUI.settingsFont, AVGUI.light, 
+		    1, 100, 1, AV.Settings.HEIGHT_WIDTH, parent.helpPanel);
+            last = setPlacement(widthSetting, last);
+            widthSetting.addChangeListener(new UpdateChartChangeHandler());
+            AddSetting(widthSetting);
+	    
             alignRight();
 
             chart = new LAreaChart("Current Settings", parent.helpPanel.getBottomSize(), Color.cyan);

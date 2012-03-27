@@ -42,6 +42,8 @@ public class AVGUI extends JFrame {
     static Color light = Color.GREEN;
     static Color medium = Color.BLUE;
     static Color lightred = Color.red;
+    
+    static Font settingsFont = new Font("Serif", Font.BOLD, 16);
 
     // Non static
     LImagePane backgroundPanel;
