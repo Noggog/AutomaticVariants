@@ -1039,7 +1039,10 @@ public class AVRaceSwitchVariants {
 	    if (dupNPC == null) {
 		dupNPC = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcEntry, edidBase + "_" + npcEntry.getEDID());
 		dupNPC.set(NPC_.TemplateFlag.USE_TRAITS, false);
-		dupNPC.setSkin(templateNPC.getSkin());
+
+		////
+
+		dupNPC.templateTo(templateNPC);
 		skinToNPCdup.put(templateNPC.getSkin(), dupNPC);
 	    }
 	    out.addEntry(new LVLO(dupNPC.getForm(), 1, 1));
