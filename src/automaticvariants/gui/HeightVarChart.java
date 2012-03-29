@@ -7,7 +7,12 @@ package automaticvariants.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lev.gui.LAreaChart;
+import lev.gui.LImagePane;
 
 /**
  *
@@ -17,16 +22,36 @@ public class HeightVarChart extends LAreaChart {
 
     double max = 0;
     double min = 0;
-    static int peak = 66;
-    static int floor = 155;
-    int height = floor - peak;
-    static int offsetX = 4;
-    static int width = 125;
-    static int chartHeight = 80;
+    double left = 0;
+    double right = 0;
+    final static int peak = 66;
+    final static int floor = 155;
+    final static int height = floor - peak;
+    final static int offsetX = 4;
+    final static int width = 125;
+    final static int smallPicX = 80;
+    final static int largePicX = 235;
+    
+    URL pic = HeightVarChart.class.getResource("crapFalmerTestPic.png");
+    LImagePane small;
+    LImagePane norm;
+    LImagePane large;
 
     public HeightVarChart(String title_, Dimension size_, Color titleColor, Color seriesColor,
 	    String XLabel, String YLabel) {
 	super(title_, size_, titleColor, seriesColor, XLabel, YLabel);
+	try {
+	    small = new LImagePane(pic);
+	    norm = new LImagePane(pic);
+	    norm.setMaxSize(0, height);
+	    norm.setLocation(125, peak);
+	    large = new LImagePane(pic);
+
+	    add(small, 0);
+	    add(norm, 0);
+	    add(large, 0);
+	} catch (IOException ex) {
+	}
     }
 
     @Override
@@ -40,15 +65,24 @@ public class HeightVarChart extends LAreaChart {
 
 
 	// Min Height
-	g.drawLine(this.getSize().width / 2 + offsetX - width, peak
-		- (int)Math.round(min * height),
-		this.getSize().width / 2 + offsetX + width, peak
-		- (int)Math.round(min * height));
+	int minHeight = peak - (int) Math.round(min * height);
+	g.drawLine(this.getSize().width / 2 + offsetX - width, minHeight,
+		this.getSize().width / 2 + offsetX + width, minHeight);
 
 	// Max Height
-	g.drawLine(this.getSize().width / 2 + offsetX - width, peak
-		- (int)Math.round(max * height),
-		this.getSize().width / 2 + offsetX + width, peak
-		- (int)Math.round(max * height));
+	int maxHeight = peak - (int) Math.round(max * height);
+	g.drawLine(this.getSize().width / 2 + offsetX - width, maxHeight,
+		this.getSize().width / 2 + offsetX + width, maxHeight);
+	try {
+	    small.setImage(pic);
+	    small.setMaxSize(0, floor - minHeight);
+	    small.setLocation(smallPicX - small.getWidth() / 2, floor - small.getHeight());
+	    
+	    large.setImage(pic);
+	    large.setMaxSize(0, floor - maxHeight);
+	    large.setLocation(largePicX - large.getWidth() / 2, floor - large.getHeight());
+	    
+	} catch (IOException ex) {
+	}
     }
 }

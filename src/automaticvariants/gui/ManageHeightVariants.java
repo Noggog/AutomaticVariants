@@ -22,7 +22,7 @@ public class ManageHeightVariants extends DefaultsPanel {
 
     LNumericSetting stdDevSetting;
     HeightVarChart chart;
-    
+    static int minStd = 3;
     static int maxStd = 40;
     static double cutoff = 2.5;
 
@@ -39,7 +39,7 @@ public class ManageHeightVariants extends DefaultsPanel {
 	    chart.addSeries(Color.yellow);
 
 	    stdDevSetting = new LNumericSetting("Height Difference", AVGUI.settingsFont, AVGUI.light,
-		    1, maxStd, 1, AV.Settings.HEIGHT_STD, AV.save, parent.helpPanel);
+		    0, maxStd, 1, AV.Settings.HEIGHT_STD, AV.save, parent.helpPanel);
 	    last = setPlacement(stdDevSetting, last);
 	    stdDevSetting.addChangeListener(new UpdateChartChangeHandler());
 	    AddSetting(stdDevSetting);
@@ -56,33 +56,27 @@ public class ManageHeightVariants extends DefaultsPanel {
     void updateChart() {
 	AV.save.update();
 	chart.clear();
-	double std = AV.save.getInt(AV.Settings.HEIGHT_STD) / 3.0;
+	double std = (AV.save.getInt(AV.Settings.HEIGHT_STD) + minStd) / 3.0;
 	if (std == 0) {
 	    return;
 	}
 
-	boolean hit = false;
 	double scale = 1 / bellCurve(0, std);
 	// only iterate over "accepted area"
 	for (double i = cutoff * -std - 1; i <= cutoff * std + 1; i = i + .5) {
 	    double value = bellCurve(i, std);
-	    if (value > .0001) {
-		chart.putPoint(0, i, value * scale);
-		if (i >= cutoff * std) {
-		    chart.max = (i / 100);
-		    chart.putPoint(1, i, 1 +  chart.max);
-		} else if (i <= - cutoff * std) {
-		    chart.min = (i / 100);
-		    chart.putPoint(1, i, 1 + chart.min);
-		}
-		hit = true;
-	    } else if (hit) {
-		break;
+	    chart.putPoint(0, i, value * scale);
+	    if (i >= cutoff * std) {
+		chart.max = (i / 100);
+		chart.putPoint(1, i, 1 + chart.max);
+	    } else if (i <= -cutoff * std) {
+		chart.min = (i / 100);
+		chart.putPoint(1, i, 1 + chart.min);
 	    }
 	}
 
-	chart.resetDomain();
-	chart.plot.getRangeAxis().setRange(0, 1.5) ;
+	chart.plot.getDomainAxis().setRange(cutoff * -std, cutoff * std);
+	chart.plot.getRangeAxis().setRange(0, 1.5);
     }
 
     // Equation just taken from wikipedia bell curve page.
