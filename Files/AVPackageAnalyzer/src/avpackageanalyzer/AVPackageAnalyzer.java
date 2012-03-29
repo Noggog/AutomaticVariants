@@ -6,6 +6,8 @@ package avpackageanalyzer;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import lev.LMergeMap;
 import lev.LShrinkArray;
@@ -44,8 +46,11 @@ public class AVPackageAnalyzer {
 
 	suggestions = new BufferedWriter(new FileWriter("Suggestions.txt"));
 	loadSources();
-
-	bsas = BSA.loadInBSAs(BSA.FileType.NIF);
+	try {
+	    bsas = BSA.loadInBSAs(BSA.FileType.NIF);
+	} catch (BadParameter ex) {
+	    System.exit(0);
+	}
 	meshes = Ln.generateFileList(new File(SPGlobal.pathToData + "meshes/"), false);
 
 	checkMeshes();
@@ -146,8 +151,8 @@ public class AVPackageAnalyzer {
 	// NPCs
 	LMergeMap<FormID, FormID> ARMOToNPC = new LMergeMap<FormID, FormID>(false);
 	for (NPC_ npc : merger.getNPCs()) {
-	    if (!npc.getWornArmor().equals(FormID.NULL) && ARMOtoARMA.containsKey(npc.getWornArmor())) {
-		ARMOToNPC.put(npc.getWornArmor(), npc.getForm());
+	    if (!npc.getSkin().equals(FormID.NULL) && ARMOtoARMA.containsKey(npc.getSkin())) {
+		ARMOToNPC.put(npc.getSkin(), npc.getForm());
 	    } else if (RACEtoARMO.containsKey(npc.getRace())) {
 		ARMOToNPC.put(RACEtoARMO.get(npc.getRace()), npc.getForm());
 	    }

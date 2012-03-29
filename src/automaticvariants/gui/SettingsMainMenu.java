@@ -25,7 +25,7 @@ public class SettingsMainMenu extends EncompassingPanel {
 
 	menu = new LPanel(AVGUI.leftDimensions);
 
-	manageHeightButton = new LMainMenuConfig("Height Variance", true, helpPanel, new Point(xPlacement, 170), AV.settings, AV.Settings.HEIGHT_ON);
+	manageHeightButton = new LMainMenuConfig("Height Variance", true, helpPanel, new Point(xPlacement, 170), AV.save, AV.Settings.HEIGHT_ON);
 	manageHeightButton.addActionListener(manageHeightPanel.getOpenHandler(this));
 	menu.add(manageHeightButton);
 

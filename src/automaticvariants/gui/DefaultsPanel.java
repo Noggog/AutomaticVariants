@@ -25,7 +25,7 @@ public abstract class DefaultsPanel extends LPanel {
     protected LButton defaults = new LButton("Set to Default");
     protected LButton save = new LButton("Revert to Saved");
     protected EncompassingPanel parent;
-    protected int spacing = 12;
+    public int spacing = 12;
     protected Point last;
     protected LLabel header;
     protected ArrayList<LUserSetting> settings = new ArrayList<LUserSetting>();
@@ -141,12 +141,12 @@ public abstract class DefaultsPanel extends LPanel {
     }
 
     public Point setPlacement(Component c, int x, int y) {
-        c.setLocation(x / 2 - c.getWidth() / 2, y);
+        c.setLocation(x / 2 - c.getWidth() / 2, y + spacing);
         components.add(c);
         if (c.getX() + c.getWidth() > rightMost) {
             rightMost = c.getX() + c.getWidth();
         }
-        return new Point(x, y + c.getHeight());
+        return new Point(x, c.getY() + c.getHeight());
     }
 
     public void alignRight() {

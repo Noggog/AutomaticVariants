@@ -47,7 +47,7 @@ public class AV {
     /*
      * Other
      */
-    public static LSaveFile settings = new AVSaveFile();
+    public static LSaveFile save = new AVSaveFile();
     static FLST alreadySwitchedList;
     static boolean heightOnF = false;
     static String extraPath = "";
@@ -63,9 +63,9 @@ public class AV {
 		return;
 	    }
 	    setGlobals();
-	    settings.init();
-//	    AVGUI.open();
-	    SPDefaultGUI gui = createGUI();
+	    save.init();
+	    AVGUI.open();
+//	    SPDefaultGUI gui = createGUI();
 
 	    // AVGUI runs the program after it's finished displaying.
 	    runProgram();
@@ -305,10 +305,7 @@ public class AV {
 
     public enum Settings {
 	HEIGHT_ON,
-	HEIGHT_MIN,
-	HEIGHT_MAX,
-	HEIGHT_WIDTH,
-	HEIGHT_INTENSITY
+	HEIGHT_STD
 	;
     }
 }
