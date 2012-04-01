@@ -64,8 +64,8 @@ public class AV {
 	    }
 	    setGlobals();
 	    save.init();
-//	    AVGUI.open();
-	    SPDefaultGUI gui = createGUI();
+	    AVGUI.open();
+//	    SPDefaultGUI gui = createGUI();
 
 	    // AVGUI runs the program after it's finished displaying.
 	    runProgram();
@@ -304,6 +304,9 @@ public class AV {
     }
 
     public enum Settings {
+	PACKAGES_ON,
+	
+	
 	HEIGHT_ON,
 	HEIGHT_STD
 	;

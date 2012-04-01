@@ -26,7 +26,7 @@ public abstract class DefaultsPanel extends LPanel {
     protected LButton save = new LButton("Revert to Saved");
     protected EncompassingPanel parent;
     public int spacing = 12;
-    protected Point last;
+    Point last;
     protected LLabel header;
     protected ArrayList<LUserSetting> settings = new ArrayList<LUserSetting>();
     protected LPanel settingsPanel;

@@ -15,6 +15,7 @@ public class AVSaveFile extends LSaveFile {
 
     @Override
     protected void init(Map m) {
+	Add(m, AV.Settings.PACKAGES_ON, "Packages On", false, true);
 	Add(m, AV.Settings.HEIGHT_ON, "Height Variants On", false, true);
 	Add(m, AV.Settings.HEIGHT_STD, "Height Variants Min", false, 10);
     }

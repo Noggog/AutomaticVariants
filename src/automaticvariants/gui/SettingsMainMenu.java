@@ -16,26 +16,25 @@ import lev.gui.LPanel;
 public class SettingsMainMenu extends EncompassingPanel {
 
     private LPanel menu;
+    private LMainMenuConfig managePackagesButton;
+    private ManagePackagesPanel managePackagesPanel = new ManagePackagesPanel(this);
     private LMainMenuConfig manageHeightButton;
-    private ManageHeightVariants manageHeightPanel = new ManageHeightVariants(this);
-//    private LButton done;
+    private ManageHeightPanel manageHeightPanel = new ManageHeightPanel(this);
+    
+    static int spacing = 35;
 
     public SettingsMainMenu(Dimension d) {
 	super(d);
 
 	menu = new LPanel(AVGUI.leftDimensions);
 
-	manageHeightButton = new LMainMenuConfig("Height Variance", true, helpPanel, new Point(xPlacement, 170), AV.save, AV.Settings.HEIGHT_ON);
+	managePackagesButton = new LMainMenuConfig("Textures", true, helpPanel, new Point(xPlacement, 170), AV.save, AV.Settings.PACKAGES_ON);
+	managePackagesButton.addActionListener(managePackagesPanel.getOpenHandler(this));
+	menu.add(managePackagesButton);
+	
+	manageHeightButton = new LMainMenuConfig("Height", true, helpPanel, new Point(xPlacement, managePackagesButton.getY() + spacing), AV.save, AV.Settings.HEIGHT_ON);
 	manageHeightButton.addActionListener(manageHeightPanel.getOpenHandler(this));
 	menu.add(manageHeightButton);
-
-
-
-//	    done = new DLLbutton("Done");
-//	    done.setSize(90, 45);
-//	    done.setLocation(xPlacement - done.getWidth(), debugButton.getY() + defaultSpacing);
-//	    done.addActionListener(closeHandler);
-//	    menu.add(done);
 
     }
 
