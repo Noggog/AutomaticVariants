@@ -105,7 +105,7 @@ public class AV {
 
 	// For all race SWITCHING variants
 	// (such as texture variants)
-	AVRaceSwitchVariants.setUpRaceSwitchVariants(source, patch);
+	AVFileVariants.setUpRaceSwitchVariants(source, patch);
 
 	// For all non-race SWITCHING variants
 	// (such as height variant scripting)
@@ -129,7 +129,7 @@ public class AV {
     static void setUpInGameScriptBasedVariants(Mod source) {
 	SPEL addScriptSpell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), generateAttachScript(), "AVGenericScriptAttach");
 	for (RACE race : source.getRaces()) {
-	    if (!AVRaceSwitchVariants.switcherRaces.containsKey(race.getForm())) {
+	    if (!AVFileVariants.switcherRaces.containsKey(race.getForm())) {
 		race.addSpell(addScriptSpell.getForm());
 		SPGlobal.getGlobalPatch().addRecord(race);
 	    }
@@ -257,9 +257,9 @@ public class AV {
 		s = s.substring(s.indexOf(extraPth) + extraPth.length()).trim();
 		extraPath = s;
 		SPGlobal.pathToData = extraPath + SPGlobal.pathToData;
-		AVRaceSwitchVariants.avPackages = new File(extraPath + AVRaceSwitchVariants.avPackages.getPath());
-		AVRaceSwitchVariants.avMeshes = new File(extraPath + AVRaceSwitchVariants.avMeshes.getPath());
-		AVRaceSwitchVariants.avTextures = new File(extraPath + AVRaceSwitchVariants.avTextures.getPath());
+		AVFileVariants.avPackages = new File(extraPath + AVFileVariants.avPackages.getPath());
+		AVFileVariants.avMeshes = new File(extraPath + AVFileVariants.avMeshes.getPath());
+		AVFileVariants.avTextures = new File(extraPath + AVFileVariants.avTextures.getPath());
 		if (SPGlobal.logging()) {
 		    SPGlobal.logMain(header, "Extra Path set to: " + extraPath);
 		    SPGlobal.logMain(header, "Path to data: " + SPGlobal.pathToData);
@@ -269,7 +269,7 @@ public class AV {
 	}
 
 	if (arguments.contains("-gather")) {
-	    AVRaceSwitchVariants.gatherFiles();
+	    AVFileVariants.gatherFiles();
 	    return true;
 	}
 
