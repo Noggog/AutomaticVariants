@@ -64,8 +64,8 @@ public class AV {
 	    }
 	    setGlobals();
 	    save.init();
-	    AVGUI.open();
-//	    SPDefaultGUI gui = createGUI();
+//	    AVGUI.open();
+	    SPDefaultGUI gui = createGUI();
 
 	    // AVGUI runs the program after it's finished displaying.
 	    runProgram();
@@ -296,7 +296,7 @@ public class AV {
 
 
 	try {
-	    gui.replaceHeader(AV.class.getResource("AutoVarGUITitle.png"), - 35);
+	    gui.replaceHeader(AVGUI.class.getResource("AutoVarGUITitle.png"), - 35);
 	} catch (IOException ex) {
 	    SPGlobal.logException(ex);
 	}

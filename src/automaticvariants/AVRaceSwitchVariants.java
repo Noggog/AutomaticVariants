@@ -103,9 +103,6 @@ public class AVRaceSwitchVariants {
 	// Handle unique NPCs templating to AV variation npcs
 //	handleUniqueNPCs(source);
 
-	// Replaced old templating, as CK throws errors
-//	subInNewTemplates(source);
-
 	// Replace original NPCs in orig LVLNs, as CK throws warning/error for it
 	subInOldLVLNs(source);
 
@@ -804,103 +801,67 @@ public class AVRaceSwitchVariants {
     }
 
     //NPC dup methods
-    static void subInOldLVLNs(Mod source) {
-	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Replacing original NPC entries in your LVLN records.");
+    static void generateNPCvariants(Mod source) {
+	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Generating NPC variants.");
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Replacing old NPC entries in your mod's LVLNs");
-	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "====================================================================================================");
+	    SPGlobal.log(header, "Generating NPC duplicates for each ARMO skin.  Only NPCs that have skin directly without templating.");
+	    SPGlobal.log(header, "====================================================================================================");
 	}
-	for (LVLN llistSrc : source.getLeveledLists()) {
-	    boolean add = false;
-	    for (LVLO entry : llistSrc) {
-		if (llists.containsKey(entry.getForm())) {
-		    entry.setForm(llists.get(entry.getForm()).getForm());
-		    add = true;
-		}
-	    }
-	    if (add) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Modified " + llistSrc);
-		}
-		SPGlobal.getGlobalPatch().addRecord(llistSrc);
-	    }
-	}
-	SPGUI.progress.incrementBar();
-    }
-
-    static void handleUniqueNPCs(Mod source) {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Handling unique NPCs");
-	    SPGlobal.log(header, "====================================================================");
-	}
-	for (NPC_ srcNpc : source.getNPCs()) {
-	    if (srcNpc.get(NPC_.NPCFlag.Unique)
-		    && !srcNpc.getTemplate().equals(FormID.NULL)
-		    && llists.containsKey(srcNpc.getTemplate())) {
-		LVLN avLList = llists.get(srcNpc.getTemplate());
-		// Best we can do is replace its template with one from alt LList.
-		// Put the first to minimize unique actor changing when people rerun av patch
-		if (!avLList.isEmpty()) {
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "Replacing unique actor " + srcNpc + "'s template "
-				+ SPDatabase.getMajor(srcNpc.getTemplate(), GRUP_TYPE.NPC_)
-				+ " with " + SPDatabase.getMajor(avLList.getEntry(0).getForm(), GRUP_TYPE.NPC_));
-		    }
-		    srcNpc.setTemplate(avLList.getEntry(0).getForm());
-		    SPGlobal.getGlobalPatch().addRecord(srcNpc);
-		}
-	    }
-	}
-    }
-
-    static void subInNewTemplates(Mod source) {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Replacing old NPC templates with LList AV versions");
-	    SPGlobal.log(header, "====================================================================");
-	}
-	for (NPC_ srcNPC : source.getNPCs()) {
-	    if (llists.containsKey(srcNPC.getTemplate())) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Replaced " + srcNPC + " template with "
-			    + SPGlobal.getGlobalPatch().getLeveledLists().get(llists.get(srcNPC.getTemplate()).getForm()));
-		}
-		srcNPC.setTemplate(llists.get(srcNPC.getTemplate()).getForm());
-		SPGlobal.getGlobalPatch().addRecord(srcNPC);
-	    }
-	}
-    }
-
-    static void generateTemplating(Mod source) {
-	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Templating original NPCs to variant LLists.");
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Setting source NPCs to template to LVLN loaded with variants");
-	    SPGlobal.log(header, "====================================================================");
-	}
+	boolean last = false;
 	for (NPC_ npcSrc : source.getNPCs()) {
-	    FormID npcForm = npcSrc.getForm();
-	    if (llists.containsKey(npcForm)) {
-		npcSrc.setTemplate(llists.get(npcForm).getForm());
-		npcSrc.set(NPC_.TemplateFlag.USE_TRAITS, true);
-		SPGlobal.getGlobalPatch().addRecord(npcSrc);
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Templating " + npcSrc + " with " + llists.get(npcForm));
-		}
-	    }
-	}
-	SPGUI.progress.incrementBar();
-    }
 
-    static void printNPCdups() {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "NPC dup summary: ");
-	    for (FormID form : npcs.keySet()) {
-		SPGlobal.log(header, "  " + SPDatabase.getMajor(form));
+	    // Locate if any variants are available
+	    FormID armorForm = npcSrc.getSkin();
+	    if (npcSrc.getSkin().equals(FormID.NULL)) {
+		RACE race = (RACE) SPDatabase.getMajor(npcSrc.getRace());
+		if (race == null) {
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "Skipping " + npcSrc + " : did not have a worn armor or race.");
+		    }
+		    continue;
+		}
+		armorForm = race.getWornArmor();
+	    }
+	    ArrayList<ARMO_spec> skinVariants = armors.get(armorForm);
+	    if (skinVariants != null) {
+
+		if (AV.checkNPCskip(npcSrc, last)) {
+		    last = false;
+		    continue;
+		}
+
+		NPC_ template = null;
+		if (!npcSrc.getTemplate().equals(FormID.NULL)) {
+		    template = (NPC_) SPDatabase.getMajor(npcSrc.getTemplate(), GRUP_TYPE.NPC_);
+		}
+
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
+		    SPGlobal.log(header, "| Duplicating " + npcSrc + ", for " + SPDatabase.getMajor(armorForm, GRUP_TYPE.ARMO));
+		    if (template != null) {
+			SPGlobal.log(header, "| Flattening template to " + template);
+		    }
+		    last = true;
+		}
+
+		ArrayList<NPC_spec> dups = new ArrayList<NPC_spec>(skinVariants.size());
+		for (ARMO_spec variant : skinVariants) {
+		    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc, variant.armo.getEDID().substring(0, variant.armo.getEDID().lastIndexOf("_ID_")) + "_" + npcSrc.getEDID());
+
+		    if (template != null) {
+			dup.templateTo(template);
+		    }
+		    
+		    dup.setSkin(variant.armo.getForm());
+
+		    dups.add(new NPC_spec(dup, variant));
+		}
+		npcs.put(npcSrc.getForm(), dups);
 	    }
 	}
+	printNPCdups();
+	SPGUI.progress.incrementBar();
     }
 
     static void generateLVLNs(Mod source) {
@@ -940,52 +901,49 @@ public class AVRaceSwitchVariants {
 	SPGUI.progress.incrementBar();
     }
 
-    static void generateNPCvariants(Mod source) {
-	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Generating NPC variants.");
+    static void generateTemplating(Mod source) {
+	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Templating original NPCs to variant LLists.");
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================================================");
-	    SPGlobal.log(header, "Generating NPC duplicates for each ARMO skin.  Only NPCs that have skin directly without templating.");
-	    SPGlobal.log(header, "====================================================================================================");
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Setting source NPCs to template to LVLN loaded with variants");
+	    SPGlobal.log(header, "====================================================================");
 	}
-	boolean last = false;
 	for (NPC_ npcSrc : source.getNPCs()) {
-
-	    // Locate if any variants are available
-	    FormID armorForm = npcSrc.getSkin();
-	    if (npcSrc.getSkin().equals(FormID.NULL)) {
-		RACE race = (RACE) SPDatabase.getMajor(npcSrc.getRace());
-		if (race == null) {
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "Skipping " + npcSrc + " : did not have a worn armor or race.");
-		    }
-		    continue;
-		}
-		armorForm = race.getWornArmor();
-	    }
-	    ArrayList<ARMO_spec> skinVariants = armors.get(armorForm);
-	    if (skinVariants != null) {
-
-		if (AV.checkNPCskip(npcSrc, last)) {
-		    last = false;
-		    continue;
-		}
-
+	    FormID npcForm = npcSrc.getForm();
+	    if (llists.containsKey(npcForm)) {
+		npcSrc.setTemplate(llists.get(npcForm).getForm());
+		npcSrc.set(NPC_.TemplateFlag.USE_TRAITS, true);
+		SPGlobal.getGlobalPatch().addRecord(npcSrc);
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		    SPGlobal.log(header, "| Duplicating " + npcSrc + ", for " + SPDatabase.getMajor(armorForm, GRUP_TYPE.ARMO));
-		    last = true;
+		    SPGlobal.log(header, "Templating " + npcSrc + " with " + llists.get(npcForm));
 		}
-		ArrayList<NPC_spec> dups = new ArrayList<NPC_spec>(skinVariants.size());
-		for (ARMO_spec variant : skinVariants) {
-		    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc, variant.armo.getEDID().substring(0, variant.armo.getEDID().lastIndexOf("_ID_")) + "_" + npcSrc.getEDID());
-
-		    dup.setSkin(variant.armo.getForm());
-		    dups.add(new NPC_spec(dup, variant));
-		}
-		npcs.put(npcSrc.getForm(), dups);
 	    }
 	}
-	printNPCdups();
+	SPGUI.progress.incrementBar();
+    }
+
+    static void subInOldLVLNs(Mod source) {
+	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Replacing original NPC entries in your LVLN records.");
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Replacing old NPC entries in your mod's LVLNs");
+	    SPGlobal.log(header, "====================================================================");
+	}
+	for (LVLN llistSrc : source.getLeveledLists()) {
+	    boolean add = false;
+	    for (LVLO entry : llistSrc) {
+		if (llists.containsKey(entry.getForm())) {
+		    entry.setForm(llists.get(entry.getForm()).getForm());
+		    add = true;
+		}
+	    }
+	    if (add) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "Modified " + llistSrc);
+		}
+		SPGlobal.getGlobalPatch().addRecord(llistSrc);
+	    }
+	}
 	SPGUI.progress.incrementBar();
     }
 
@@ -998,12 +956,18 @@ public class AVRaceSwitchVariants {
 	for (LVLN llist : source.getLeveledLists()) {
 	    boolean add = false;
 	    for (LVLO entry : llist) {
-		LVLN template = NiftyFunc.isTemplatedToLList(entry.getForm(), NPC_.TemplateFlag.USE_TRAITS);
-		if (template != null) { // If entry is NPC and templated to an AV LList
+		LVLN template = NiftyFunc.isTemplatedToLList(entry.getForm());
+		if (template != null && template.getFormMaster().equals(SPGlobal.getGlobalPatch().getInfo())) { // If entry is NPC and templated to an AV LList
 		    NPC_ npcEntry = (NPC_) SPDatabase.getMajor(entry.getForm(), GRUP_TYPE.NPC_);
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "  " + npcEntry + " replaced.");
+		    }
 
 		    LVLN sub = llists.get(entry.getForm());
 		    if (sub == null) { // If variant LList does not already exist for entry NPC, create it
+			if (SPGlobal.logging()) {
+			    SPGlobal.log(header, "    Creating variants.");
+			}
 			sub = createLVLNvariant(npcEntry, template);
 		    }
 
@@ -1022,9 +986,6 @@ public class AVRaceSwitchVariants {
     }
 
     static LVLN createLVLNvariant(NPC_ npcEntry, LVLN template) {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "Creating variants for " + npcEntry);
-	}
 	LVLN out = new LVLN(SPGlobal.getGlobalPatch(), "AV_" + npcEntry.getEDID() + "_llist");
 
 	// Map to store NPC dups just in case there are multiple entries of the same skin
@@ -1038,10 +999,6 @@ public class AVRaceSwitchVariants {
 	    String edidBase = edidSplit[0] + "_" + edidSplit[1] + "_" + edidSplit[2] + "_" + edidSplit[3];
 	    if (dupNPC == null) {
 		dupNPC = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcEntry, edidBase + "_" + npcEntry.getEDID());
-		dupNPC.set(NPC_.TemplateFlag.USE_TRAITS, false);
-
-		////
-
 		dupNPC.templateTo(templateNPC);
 		skinToNPCdup.put(templateNPC.getSkin(), dupNPC);
 	    }
@@ -1049,6 +1006,41 @@ public class AVRaceSwitchVariants {
 	}
 	llists.put(npcEntry.getForm(), out);
 	return out;
+    }
+
+    static void handleUniqueNPCs(Mod source) {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Handling unique NPCs");
+	    SPGlobal.log(header, "====================================================================");
+	}
+	for (NPC_ srcNpc : source.getNPCs()) {
+	    if (srcNpc.get(NPC_.NPCFlag.Unique)
+		    && !srcNpc.getTemplate().equals(FormID.NULL)
+		    && llists.containsKey(srcNpc.getTemplate())) {
+		LVLN avLList = llists.get(srcNpc.getTemplate());
+		// Best we can do is replace its template with one from alt LList.
+		// Put the first to minimize unique actor changing when people rerun av patch
+		if (!avLList.isEmpty()) {
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "Replacing unique actor " + srcNpc + "'s template "
+				+ SPDatabase.getMajor(srcNpc.getTemplate(), GRUP_TYPE.NPC_)
+				+ " with " + SPDatabase.getMajor(avLList.getEntry(0).getForm(), GRUP_TYPE.NPC_));
+		    }
+		    srcNpc.setTemplate(avLList.getEntry(0).getForm());
+		    SPGlobal.getGlobalPatch().addRecord(srcNpc);
+		}
+	    }
+	}
+    }
+
+    static void printNPCdups() {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "NPC dup summary: ");
+	    for (FormID form : npcs.keySet()) {
+		SPGlobal.log(header, "  " + SPDatabase.getMajor(form));
+	    }
+	}
     }
 
     static void printModifiedNPCs() {
@@ -1066,6 +1058,7 @@ public class AVRaceSwitchVariants {
 	}
     }
 
+    // Other Methods
     static int readjustTXSTindices(int j) {
 	// Because nif fields map 2->3 if facegen flag is on.
 	int set = j;
