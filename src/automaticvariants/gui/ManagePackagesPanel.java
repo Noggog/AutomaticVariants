@@ -5,8 +5,7 @@
 package automaticvariants.gui;
 
 import automaticvariants.AV;
-import java.awt.Color;
-import lev.gui.LNumericSetting;
+import lev.gui.LSwingTree;
 
 /**
  *
@@ -14,7 +13,7 @@ import lev.gui.LNumericSetting;
  */
 public class ManagePackagesPanel extends DefaultsPanel {
 
-    LNumericSetting stdDevSetting;
+    LSwingTree activePackages;
 
     public ManagePackagesPanel(EncompassingPanel parent_) {
 	super("Texture Variants", AV.save, parent_);
@@ -24,12 +23,13 @@ public class ManagePackagesPanel extends DefaultsPanel {
     public boolean initialize() {
 	if (super.initialize()) {
 
-	    stdDevSetting = new LNumericSetting("Height Difference", AVGUI.settingsFont, AVGUI.light,
-		    0, 100, 1, AV.Settings.HEIGHT_STD, AV.save, parent.helpPanel);
-	    last = setPlacement(stdDevSetting, last);
-	    AddSetting(stdDevSetting);
-
-	    alignRight();
+	    activePackages = new LSwingTree(AVGUI.middleDimensions.width - 30,
+		    (AVGUI.middleDimensions.height - 200 ) * 3 / 5  );
+	    activePackages.setLocation(AVGUI.middleDimensions.x 
+		    + AVGUI.middleDimensions.width / 2 - activePackages.getWidth() / 2, 120);
+	    activePackages.setMargin(10, 5);
+	    activePackages.removeBorder();
+	    add(activePackages);
 
 	    return true;
 	}

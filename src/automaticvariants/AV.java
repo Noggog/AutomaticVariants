@@ -54,6 +54,8 @@ public class AV {
     static int numSteps = 10;
     static int step = 0;
     static int debugLevel = 1;
+    
+    static boolean imported = false;
 
     public static void main(String[] args) {
 	ArrayList<String> arguments = new ArrayList<String>(Arrays.asList(args));
@@ -68,7 +70,7 @@ public class AV {
 //	    SPDefaultGUI gui = createGUI();
 
 	    // AVGUI runs the program after it's finished displaying.
-	    runProgram();
+//	    runProgram();
 
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.
@@ -305,7 +307,6 @@ public class AV {
 
     public enum Settings {
 	PACKAGES_ON,
-	
 	
 	HEIGHT_ON,
 	HEIGHT_STD
