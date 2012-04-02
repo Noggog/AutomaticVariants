@@ -4,6 +4,7 @@
  */
 package automaticvariants.gui;
 
+import automaticvariants.AV;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -43,6 +44,8 @@ public class AVGUI extends JFrame {
     static Color lightred = Color.red;
     
     static Font settingsFont = new Font("Serif", Font.BOLD, 16);
+    
+    public static boolean exitRequested = false;
 
     // Non static
     LImagePane backgroundPanel;
@@ -78,7 +81,7 @@ public class AVGUI extends JFrame {
 		public void windowClosing(WindowEvent arg0) {
 		    if (progress.closeOp == JFrame.DISPOSE_ON_CLOSE) {
 			SPGlobal.log(header, "Progress bar window closing");
-			AVGUI.exitRequested();
+			AV.exitProgram();
 		    }
 		}
 
@@ -177,6 +180,8 @@ public class AVGUI extends JFrame {
 		    });
 
 		    singleton.addComponents();
+		    
+		    AV.runProgram();
 		}
 	    }
 	});
@@ -194,14 +199,11 @@ public class AVGUI extends JFrame {
 
 	    @Override
 	    public void stateChanged(ChangeEvent e) {
-		exitRequested();
+		AV.exitProgram();
 	    }
 	});
-    }
-
-    public static void exitRequested() {
-	SPGlobal.log(header, "Exit requested.");
-	LDebug.wrapUpAndExit();
+	exitRequested = true;
+	AV.runProgram();
     }
 
     public class AVProgress implements LProgressBarInterface {
