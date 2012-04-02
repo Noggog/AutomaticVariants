@@ -17,9 +17,9 @@ public class SettingsMainMenu extends EncompassingPanel {
 
     private LPanel menu;
     private LMainMenuConfig managePackagesButton;
-    private ManagePackagesPanel managePackagesPanel = new ManagePackagesPanel(this);
+    private SettingsPackagesPanel managePackagesPanel = new SettingsPackagesPanel(this);
     private LMainMenuConfig manageHeightButton;
-    private ManageHeightPanel manageHeightPanel = new ManageHeightPanel(this);
+    private SettingsHeightPanel manageHeightPanel = new SettingsHeightPanel(this);
     
     static int spacing = 35;
 

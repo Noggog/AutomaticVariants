@@ -13,11 +13,11 @@ import javax.swing.tree.DefaultTreeModel;
  *
  * @author Justin Swanson
  */
-public class ManagePackagesPanel extends DefaultsPanel {
+public class SettingsPackagesPanel extends DefaultsPanel {
 
     PackageTree tree;
 
-    public ManagePackagesPanel(EncompassingPanel parent_) {
+    public SettingsPackagesPanel(EncompassingPanel parent_) {
 	super("Texture Variants", AV.save, parent_);
     }
 
