@@ -5,7 +5,7 @@
 package automaticvariants.gui;
 
 import automaticvariants.AV;
-import automaticvariants.AVFileVariants;
+import automaticvariants.AVFileVars;
 import java.io.File;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -41,9 +41,9 @@ public class SettingsPackagesPanel extends DefaultsPanel {
     }
 
     public void refreshPackageList() {
-	PackageNode AVNode = new PackageNode(AVFileVariants.AVPackages);
-	refreshPackageList(AVFileVariants.AVPackages, AVNode, false);
-	refreshPackageList(AVFileVariants.inactiveAVPackages, AVNode, true);
+	PackageNode AVNode = new PackageNode(AVFileVars.AVPackages);
+	refreshPackageList(AVFileVars.AVPackages, AVNode, false);
+	refreshPackageList(AVFileVars.inactiveAVPackages, AVNode, true);
 	AVNode.sort();
 	tree.setModel(new DefaultTreeModel(AVNode));
     }

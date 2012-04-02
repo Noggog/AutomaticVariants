@@ -129,7 +129,7 @@ public class AV {
     
     static void importFunction() throws IOException, Uninitialized, BadParameter {
 	
-	AVFileVariants.gatherFiles();
+	AVFileVars.gatherFiles();
 	
 	Mod patch = new Mod("Automatic Variants", false);
 	patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
@@ -161,7 +161,7 @@ public class AV {
 
 	// For all race SWITCHING variants
 	// (such as texture variants)
-	AVFileVariants.setUpRaceSwitchVariants(source, patch);
+	AVFileVars.setUpRaceSwitchVariants(source, patch);
 
 	// For all non-race SWITCHING variants
 	// (such as height variant scripting)
@@ -186,7 +186,7 @@ public class AV {
     static void setUpInGameScriptBasedVariants(Mod source) {
 	SPEL addScriptSpell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), generateAttachScript(), "AVGenericScriptAttach");
 	for (RACE race : source.getRaces()) {
-	    if (!AVFileVariants.switcherRaces.containsKey(race.getForm())) {
+	    if (!AVFileVars.switcherRaces.containsKey(race.getForm())) {
 		race.addSpell(addScriptSpell.getForm());
 		SPGlobal.getGlobalPatch().addRecord(race);
 	    }
@@ -314,9 +314,9 @@ public class AV {
 		s = s.substring(s.indexOf(extraPth) + extraPth.length()).trim();
 		extraPath = s;
 		SPGlobal.pathToData = extraPath + SPGlobal.pathToData;
-		AVFileVariants.AVPackages = new File(extraPath + AVFileVariants.AVPackages.getPath());
-		AVFileVariants.AVMeshes = new File(extraPath + AVFileVariants.AVMeshes.getPath());
-		AVFileVariants.AVTextures = new File(extraPath + AVFileVariants.AVTextures.getPath());
+		AVFileVars.AVPackages = new File(extraPath + AVFileVars.AVPackages.getPath());
+		AVFileVars.AVMeshes = new File(extraPath + AVFileVars.AVMeshes.getPath());
+		AVFileVars.AVTextures = new File(extraPath + AVFileVars.AVTextures.getPath());
 		if (SPGlobal.logging()) {
 		    SPGlobal.logMain(header, "Extra Path set to: " + extraPath);
 		    SPGlobal.logMain(header, "Path to data: " + SPGlobal.pathToData);
@@ -326,7 +326,7 @@ public class AV {
 	}
 	
 	if (arguments.contains("-gather")) {
-	    AVFileVariants.gatherFiles();
+	    AVFileVars.gatherFiles();
 	    return true;
 	}
 	
