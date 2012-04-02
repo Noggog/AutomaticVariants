@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
 import lev.debug.LDebug;
@@ -70,10 +68,8 @@ public class AV {
 	    setGlobals();
 	    save.init();
 	    AVGUI.open();
-//	    SPDefaultGUI gui = createGUI();
 
-	    // AVGUI runs the program after it's finished displaying.
-//	    runProgram();
+	    // AVGUI runs the program after it's finished displaying.\
 
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.
@@ -97,7 +93,7 @@ public class AV {
 	
 	@Override
 	public void run() {
-	    SPGlobal.log("START IMPORT THREAD", "Starting of import thread.");
+	    SPGlobal.log("START IMPORT THREAD", "Starting of process thread.");
 	    try {
 		if (!imported) {
 		    importFunction();
@@ -123,8 +119,7 @@ public class AV {
 	    }
 	    
 	    // if exception occurs
-	    SPGlobal.log(header, "Exiting.");
-	    LDebug.wrapUpAndExit();
+	    exitProgram();
 	}
 	
 	public void main(String args[]) {
@@ -133,6 +128,8 @@ public class AV {
     }
     
     static void importFunction() throws IOException, Uninitialized, BadParameter {
+	
+	AVFileVariants.gatherFiles();
 	
 	Mod patch = new Mod("Automatic Variants", false);
 	patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
@@ -317,9 +314,9 @@ public class AV {
 		s = s.substring(s.indexOf(extraPth) + extraPth.length()).trim();
 		extraPath = s;
 		SPGlobal.pathToData = extraPath + SPGlobal.pathToData;
-		AVFileVariants.avPackages = new File(extraPath + AVFileVariants.avPackages.getPath());
-		AVFileVariants.avMeshes = new File(extraPath + AVFileVariants.avMeshes.getPath());
-		AVFileVariants.avTextures = new File(extraPath + AVFileVariants.avTextures.getPath());
+		AVFileVariants.AVPackages = new File(extraPath + AVFileVariants.AVPackages.getPath());
+		AVFileVariants.AVMeshes = new File(extraPath + AVFileVariants.AVMeshes.getPath());
+		AVFileVariants.AVTextures = new File(extraPath + AVFileVariants.AVTextures.getPath());
 		if (SPGlobal.logging()) {
 		    SPGlobal.logMain(header, "Extra Path set to: " + extraPath);
 		    SPGlobal.logMain(header, "Path to data: " + SPGlobal.pathToData);
