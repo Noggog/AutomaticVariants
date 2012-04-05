@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import lev.Ln;
 import lev.gui.LHelpPanel;
 import lev.gui.LImagePane;
 import lev.gui.LSwingTreeNode;
@@ -179,7 +180,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	help.hideArrow();
     }
 
-    ArrayList<PackageNode> getAll(Type type) {
+    public ArrayList<PackageNode> getAll(Type type) {
 	ArrayList<PackageNode> out = new ArrayList<PackageNode>();
 	for (Object o : children) {
 	    PackageNode child = (PackageNode) o;
@@ -190,7 +191,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	return out;
     }
 
-    ArrayList<PackageNode> getAll() {
+    public ArrayList<PackageNode> getAll() {
 	ArrayList<PackageNode> out = new ArrayList<PackageNode>();
 	if (children != null) {
 	    for (Object o : children) {
@@ -201,7 +202,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	return out;
     }
 
-    String printSpec() {
+    public String printSpec() {
 	String content = "";
 	switch (type) {
 	    case VARSET:
@@ -232,7 +233,37 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	return content;
     }
 
-    enum Type {
+    public boolean moveNode() {
+	boolean proper = true;
+	if (disabled != disabledOrig) {
+	    if (src.isFile()) {
+		proper = proper && moveFile(src);
+	    } else if (src.isDirectory()) {
+		for (File f : src.listFiles()) {
+		    if (f.getPath().toUpperCase().endsWith(".JSON")) {
+			proper = proper && moveFile(f);
+		    }
+		}
+	    }
+	}
+	for (PackageNode p : getAll()) {
+	    proper = proper && p.moveNode();
+	}
+	return proper;
+    }
+
+    public boolean moveFile(File src) {
+	String prefix;
+	if (disabled) {
+	    prefix = AVFileVars.inactiveAVPackages.getPath();
+	} else {
+	    prefix = AVFileVars.AVPackages.getPath();
+	}
+	File dest = new File(prefix + src.getPath().substring(src.getPath().indexOf("\\")));
+	return Ln.moveFile(src, dest, true);
+    }
+
+    public enum Type {
 
 	DEFAULT,
 	PACKAGE,

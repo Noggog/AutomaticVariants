@@ -23,15 +23,13 @@ import lev.gui.LPanel;
  */
 public class SettingsPackagesPanel extends DefaultsPanel {
 
-    static PackageTree tree;
+    public static PackageTree tree;
 //    static DDSreader reader;
     LImagePane display;
     LButton enable;
     LButton disable;
     LButton editSpec;
     LPanel packagePanel;
-    
-    
     LPanel varSetSpecPanel;
 
     public SettingsPackagesPanel(EncompassingPanel parent_) {
@@ -86,11 +84,11 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	    packagePanel.Add(editSpec);
 	    Add(packagePanel);
 
-	    
+
 	    varSetSpecPanel = new LPanel(AVGUI.middleDimensions);
 	    varSetSpecPanel.setLocation(0, 0);
 	    Add(varSetSpecPanel);
-	    
+
 //	    reader = new DDSreader();
 //	    display = new LImagePane();
 //	    display.setMaxSize(AVGUI.rightDimensions.width - 50, 0);
@@ -117,80 +115,45 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	for (TreePath p : paths) {
 	    enable((PackageNode) p.getLastPathComponent(), enable);
 	}
+
+	// adjust folders to enable/disable based on their contents
+	for (TreePath p : paths) {
+	    for (int i = p.getPathCount() - 1 ; i >= 0 ; i--) {
+		PackageNode node = (PackageNode) p.getPathComponent(i);
+		if (node.src.isDirectory()) {
+		    if (node.disabled) {
+			for (PackageNode child : node.getAll()) {
+			    if (!child.disabled) {
+				node.disabled = false;
+				break;
+			    }
+			}
+		    } else {
+			boolean allDisabled = true;
+			for (PackageNode child : node.getAll()) {
+			    if (!child.disabled) {
+				allDisabled = false;
+				break;
+			    }
+			}
+			if (allDisabled) {
+			    node.disabled = true;
+			}
+		    }
+		}
+	    }
+	}
 	tree.repaint();
     }
-    
-    public void enable (PackageNode node, boolean enable) {
+
+    public void enable(PackageNode node, boolean enable) {
 	node.disabled = !enable;
 	for (PackageNode n : node.getAll()) {
 	    enable(n, enable);
 	}
     }
 
-    public boolean enableB(PackageNode node) {
-	boolean proper = true;
-	if (node.disabled && node.src.exists()) {
-	    File folder = null;
-	    if (node.src.isFile()) {
-		String path = node.src.getPath();
-		File dest = new File(AVFileVars.AVPackages + "\\" + path.substring(path.indexOf("\\") + 1));
-		proper = proper && Ln.moveFile(node.src, dest, true);
-		folder = node.src.getParentFile();
-
-	    } else if (node.src.isDirectory()) {
-		folder = node.src;
-		for (PackageNode n : node.getAll()) {
-		    proper = proper && enableB(n);
-		}
-	    }
-
-	    // Move all spec files to active
-	    if (folder.exists()) {
-		for (File f : folder.listFiles()) {
-		    if (f.getPath().toUpperCase().endsWith(".JSON")) {
-			String path = f.getPath();
-			File dest = new File(AVFileVars.AVPackages + "\\" + path.substring(path.indexOf("\\") + 1));
- 			proper = proper && Ln.moveFile(f, dest, true);
-		    }
-		}
-	    }
-	}
-	return proper;
-    }
-
-    public boolean disableB(PackageNode node) {
-	boolean proper = true;
-	if (!node.disabled && node.src.exists()) {
-	    File folder = null;
-
-	    if (node.src.isFile()) {
-		String path = node.src.getPath();
-		File dest = new File(AVFileVars.inactiveAVPackages + "\\" + path.substring(path.indexOf("\\") + 1));
-		proper = proper && Ln.moveFile(node.src, dest, true);
-		folder = node.src.getParentFile();
-
-	    } else if (node.src.isDirectory()) {
-		folder = node.src;
-		for (PackageNode n : node.getAll()) {
-		    proper = proper && disableB(n);
-		}
-	    }
-
-	    // If only non-displaying files left, then move to inactive
-	    if (folder.exists() && folder.listFiles().length == 1) {
-		File f = folder.listFiles()[0];
-		if (f.getPath().toUpperCase().endsWith(".JSON")) {
-		    String path = f.getPath();
-		    File dest = new File(AVFileVars.inactiveAVPackages + "\\" + path.substring(path.indexOf("\\") + 1));
-		    proper = proper && Ln.moveFile(f, dest, true);
-		}
-	    }
-	}
-	return proper;
-    }
-
     public void editSpec() {
-
     }
 
     public void loadPackageList() {

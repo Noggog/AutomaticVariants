@@ -1,6 +1,9 @@
 package automaticvariants;
 
 import automaticvariants.gui.AVGUI;
+import automaticvariants.gui.PackageNode;
+import automaticvariants.gui.PackageTree;
+import automaticvariants.gui.SettingsPackagesPanel;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
+import lev.Ln;
 import lev.debug.LDebug;
 import lev.gui.LSaveFile;
 import skyproc.*;
@@ -163,6 +167,9 @@ public class AV {
 
 	alreadySwitchedList = new FLST(patch, "AV_" + alreadySwitched);
 
+	// Change packages to enabled/disabled based on GUI requests
+	shufflePackages();
+
 	// For all race SWITCHING variants
 	// (such as texture variants)
 	AVFileVars.setUpRaceSwitchVariants(source, patch);
@@ -186,6 +193,19 @@ public class AV {
 
 	exported = true;
 	AVGUI.progress.done();
+    }
+
+    static public void shufflePackages() {
+	PackageTree tree = SettingsPackagesPanel.tree;
+	if (tree != null) {
+	    if (!((PackageNode) tree.getRoot()).moveNode()){
+		JOptionPane.showMessageDialog(null,
+			"<html>Error moving one of the selected files.  This is probably due to AV being run<br>"
+			+ "inside a 'windows protected' folder where windows is not allowing the moves.  Either<br>"
+			+ "move your Skyrim to an unprotected folder location (outside Program Files), or manually<br>"
+			+ "install/uninstall packages by moving them in/out of the AV Packages folder yourself.</html>");
+	    }
+	}
     }
 
     static void setUpInGameScriptBasedVariants(Mod source) {
