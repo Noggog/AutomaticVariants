@@ -9,6 +9,7 @@ import automaticvariants.AVFileVars;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import lev.Ln;
@@ -22,13 +23,16 @@ import lev.gui.LPanel;
  */
 public class SettingsPackagesPanel extends DefaultsPanel {
 
-    PackageTree tree;
+    static PackageTree tree;
 //    static DDSreader reader;
     LImagePane display;
     LButton enable;
     LButton disable;
     LButton editSpec;
     LPanel packagePanel;
+    
+    
+    LPanel varSetSpecPanel;
 
     public SettingsPackagesPanel(EncompassingPanel parent_) {
 	super("Texture Variants", AV.save, parent_);
@@ -79,9 +83,14 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	    packagePanel.Add(enable);
 	    packagePanel.Add(disable);
 	    packagePanel.Add(tree);
-//	    packagePanel.Add(editSpec);
+	    packagePanel.Add(editSpec);
 	    Add(packagePanel);
 
+	    
+	    varSetSpecPanel = new LPanel(AVGUI.middleDimensions);
+	    varSetSpecPanel.setLocation(0, 0);
+	    Add(varSetSpecPanel);
+	    
 //	    reader = new DDSreader();
 //	    display = new LImagePane();
 //	    display.setMaxSize(AVGUI.rightDimensions.width - 50, 0);
@@ -90,7 +99,7 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 //	    parent.helpPanel.addToBottomArea(display);
 //	    parent.helpPanel.setBottomAreaHeight(250);
 
-	    refreshPackageList();
+	    loadPackageList();
 
 	    return true;
 	}
@@ -104,33 +113,34 @@ public class SettingsPackagesPanel extends DefaultsPanel {
     }
 
     public void enableSelection(boolean enable) {
-	tree.saveExpansionState();
 	TreePath[] paths = tree.getSelectionPaths();
 	for (TreePath p : paths) {
-	    PackageNode node = (PackageNode) p.getLastPathComponent();
-	    if (enable) {
-		enable(node);
-	    } else {
-		disable(node);
-	    }
+	    enable((PackageNode) p.getLastPathComponent(), enable);
 	}
-	refreshPackageList();
-	tree.restoreExpansionState();
+	tree.repaint();
+    }
+    
+    public void enable (PackageNode node, boolean enable) {
+	node.disabled = !enable;
+	for (PackageNode n : node.getAll()) {
+	    enable(n, enable);
+	}
     }
 
-    public void enable(PackageNode node) {
+    public boolean enableB(PackageNode node) {
+	boolean proper = true;
 	if (node.disabled && node.src.exists()) {
 	    File folder = null;
 	    if (node.src.isFile()) {
 		String path = node.src.getPath();
 		File dest = new File(AVFileVars.AVPackages + "\\" + path.substring(path.indexOf("\\") + 1));
-		Ln.moveFile(node.src, dest, true);
+		proper = proper && Ln.moveFile(node.src, dest, true);
 		folder = node.src.getParentFile();
 
 	    } else if (node.src.isDirectory()) {
 		folder = node.src;
 		for (PackageNode n : node.getAll()) {
-		    enable(n);
+		    proper = proper && enableB(n);
 		}
 	    }
 
@@ -140,27 +150,29 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 		    if (f.getPath().toUpperCase().endsWith(".JSON")) {
 			String path = f.getPath();
 			File dest = new File(AVFileVars.AVPackages + "\\" + path.substring(path.indexOf("\\") + 1));
- 			Ln.moveFile(f, dest, true);
+ 			proper = proper && Ln.moveFile(f, dest, true);
 		    }
 		}
 	    }
 	}
+	return proper;
     }
 
-    public void disable(PackageNode node) {
+    public boolean disableB(PackageNode node) {
+	boolean proper = true;
 	if (!node.disabled && node.src.exists()) {
 	    File folder = null;
 
 	    if (node.src.isFile()) {
 		String path = node.src.getPath();
 		File dest = new File(AVFileVars.inactiveAVPackages + "\\" + path.substring(path.indexOf("\\") + 1));
-		Ln.moveFile(node.src, dest, true);
+		proper = proper && Ln.moveFile(node.src, dest, true);
 		folder = node.src.getParentFile();
 
 	    } else if (node.src.isDirectory()) {
 		folder = node.src;
 		for (PackageNode n : node.getAll()) {
-		    disable(n);
+		    proper = proper && disableB(n);
 		}
 	    }
 
@@ -170,25 +182,26 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 		if (f.getPath().toUpperCase().endsWith(".JSON")) {
 		    String path = f.getPath();
 		    File dest = new File(AVFileVars.inactiveAVPackages + "\\" + path.substring(path.indexOf("\\") + 1));
-		    Ln.moveFile(f, dest, true);
+		    proper = proper && Ln.moveFile(f, dest, true);
 		}
 	    }
 	}
+	return proper;
     }
 
     public void editSpec() {
 
     }
 
-    public void refreshPackageList() {
+    public void loadPackageList() {
 	PackageNode AVNode = new PackageNode(AVFileVars.AVPackages, parent.helpPanel);
-	refreshPackageList(AVFileVars.AVPackages, AVNode, false);
-	refreshPackageList(AVFileVars.inactiveAVPackages, AVNode, true);
+	loadPackageList(AVFileVars.AVPackages, AVNode, false);
+	loadPackageList(AVFileVars.inactiveAVPackages, AVNode, true);
 	AVNode.sort();
 	tree.setModel(new DefaultTreeModel(AVNode));
     }
 
-    public void refreshPackageList(File dir, PackageNode root, boolean disabled) {
+    public void loadPackageList(File dir, PackageNode root, boolean disabled) {
 	if (!dir.exists()) {
 	    return;
 	}
@@ -239,6 +252,7 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	    return old;
 	} else {
 	    newPackage.disabled = disabled;
+	    newPackage.disabledOrig = disabled;
 	    return newPackage;
 	}
     }

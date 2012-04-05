@@ -67,13 +67,13 @@ public class AV {
 	    }
 	    setGlobals();
 	    save.init();
-//	    AVGUI.open();
+	    AVGUI.open();
 	    // AVGUI runs the program after it's finished displaying.\
 
-	    SPDefaultGUI gui = createGUI();
-	    importFunction();
-	    exportFunction();
-	    gui.finished();
+//	    SPDefaultGUI gui = createGUI();
+//	    importFunction();
+//	    exportFunction();
+//	    gui.finished();
 
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.

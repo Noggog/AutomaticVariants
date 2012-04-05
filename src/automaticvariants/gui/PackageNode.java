@@ -14,10 +14,6 @@ import java.util.Comparator;
 import lev.gui.LHelpPanel;
 import lev.gui.LImagePane;
 import lev.gui.LSwingTreeNode;
-import skyproc.FormID;
-import skyproc.GRUP_TYPE;
-import skyproc.NPC_;
-import skyproc.SPDatabase;
 
 /**
  *
@@ -28,6 +24,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
     static PackageNode lastDisplayed;
     File src;
     boolean disabled = false;
+    boolean disabledOrig = false;
     Type type;
     LHelpPanel help;
     LImagePane display;
@@ -195,9 +192,11 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 
     ArrayList<PackageNode> getAll() {
 	ArrayList<PackageNode> out = new ArrayList<PackageNode>();
-	for (Object o : children) {
-	    PackageNode child = (PackageNode) o;
-	    out.add(child);
+	if (children != null) {
+	    for (Object o : children) {
+		PackageNode child = (PackageNode) o;
+		out.add(child);
+	    }
 	}
 	return out;
     }
