@@ -30,6 +30,14 @@ public class AVSaveFile extends LSaveFile {
 
     @Override
     protected void initHelp() {
+	helpInfo.put(AV.Settings.PACKAGES_ON, "This feature will duplicate and reorganize records to make actors"
+		+ " with different textures spawn."
+
+		+ "\n\nThe variants will be created from the contents your enabled AV Packages."
+
+		+ "\n\nNOTE: If you disable a package that you have been playing with, "
+		+ "make sure to reset the cells of your savegame.");
+
 	helpInfo.put(AV.Settings.HEIGHT_ON, "This variant setup will give each actor "
 		+ "that spawns a variance in its height.");
     }

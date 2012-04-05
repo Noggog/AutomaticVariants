@@ -39,7 +39,7 @@ public abstract class DefaultsPanel extends LPanel {
         super(AVGUI.fullDimensions);
         saveFile = saveFile_;
         parent = parent_;
-        header = new LLabel(title, new Font("Serif", Font.BOLD, 20), AVGUI.light);
+        header = new LLabel(title, new Font("Serif", Font.BOLD, 26), AVGUI.orange);
     }
 
     public boolean initialize() {
@@ -58,14 +58,14 @@ public abstract class DefaultsPanel extends LPanel {
             save.addActionListener(getRevert(saveFile.saveSettings));
 
             header.addShadow();
-            header.setLocation(settingsPanel.getWidth() / 2 - header.getWidth() / 2, 70);
+            header.setLocation(settingsPanel.getWidth() / 2 - header.getWidth() / 2, 15);
 
             Add(defaults);
             Add(save);
             Add(header);
             add(settingsPanel);
             add(parent.helpPanel);
-            last = new Point(settingsPanel.getWidth(), 125);
+            last = new Point(settingsPanel.getWidth(), 65);
             initialized = true;
             return true;
         }

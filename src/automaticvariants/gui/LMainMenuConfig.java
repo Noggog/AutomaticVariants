@@ -15,7 +15,7 @@ import lev.gui.*;
  */
 public class LMainMenuConfig extends LCheckBoxConfig {
 
-    Color color = Color.GREEN;
+    Color color = AVGUI.green;
 
     public LMainMenuConfig(String title_, Boolean large, LHelpPanel help_, Point location, Enum setting) {
         super(title_);

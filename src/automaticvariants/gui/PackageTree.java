@@ -19,7 +19,7 @@ import lev.gui.LSwingTree;
 public class PackageTree extends LSwingTree {
 
     static Color disabledColor = new Color(150,150,150);
-    
+
     public PackageTree(int width, int height) {
 	super(width, height);
 	tree.setCellRenderer(new CellRenderer(tree.getCellRenderer()));
@@ -38,10 +38,20 @@ public class PackageTree extends LSwingTree {
 	@Override
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 	    PackageNode item = (PackageNode) value;
+
+	    if (hasFocus) {
+		item.updateHelp();
+	    }
+
 	    Component defaultC = defaultR.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
 	    if (item.disabled) {
 		defaultC.setForeground(disabledColor);
 	    }
+
+	    if (item.type == PackageNode.Type.VARSET && item.spec == null) {
+		defaultC.setForeground(Color.RED);
+	    }
+
 	    return defaultC;
 	}
     }

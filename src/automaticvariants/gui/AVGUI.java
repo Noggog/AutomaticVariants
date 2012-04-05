@@ -39,19 +39,25 @@ public class AVGUI extends JFrame {
     public static Rectangle middleRightDimensions;
     public static Rectangle fullDimensions;
 
-    static Color light = Color.GREEN;
-    static Color medium = Color.BLUE;
+//    static Color green = new Color(35,174,10);
+    static Color green = new Color(67,162,10);
+    static Color darkGreen = new Color(61,128,21);
+//    static Color orange = new Color(234,165,18);
+    static Color orange = new Color(247,163,52);
+    static Color blue = new Color(0,147,196);
+    static Color yellow = new Color(255,204,26);
+    static Color lightGray = new Color(190,190,190);
     static Color lightred = Color.red;
-    
+
     static Font settingsFont = new Font("Serif", Font.BOLD, 16);
-    
+
     public static boolean exitRequested = false;
 
     // Non static
     LImagePane backgroundPanel;
     LLabel willMakePatch;
     JTextArea statusUpdate;
-    SettingsMainMenu settingsMenu;
+    static SettingsMainMenu settingsMenu;
 
     private AVGUI() {
 	super("Automatic Variants");
@@ -60,7 +66,7 @@ public class AVGUI extends JFrame {
     void addComponents() {
 	try {
 
-	    backgroundPanel = new LImagePane(AVGUI.class.getResource("background.png"));
+	    backgroundPanel = new LImagePane(AVGUI.class.getResource("background.jpg"));
 	    add(backgroundPanel);
 
 	    willMakePatch = new LLabel("A patch will be generated upon exit.", new Font("SansSerif", Font.PLAIN, 10), Color.GRAY);
@@ -180,7 +186,7 @@ public class AVGUI extends JFrame {
 		    });
 
 		    singleton.addComponents();
-		    
+
 		    AV.runProgram();
 		}
 	    }

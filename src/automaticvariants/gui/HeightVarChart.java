@@ -31,8 +31,8 @@ public class HeightVarChart extends LAreaChart {
     final static int width = 125;
     final static int smallPicX = 80;
     final static int largePicX = 235;
-    
-    URL pic = HeightVarChart.class.getResource("crapFalmerTestPic.png");
+
+    URL pic = HeightVarChart.class.getResource("heightFalmer.png");
     LImagePane small;
     LImagePane norm;
     LImagePane large;
@@ -57,7 +57,7 @@ public class HeightVarChart extends LAreaChart {
     @Override
     public void paint(Graphics g) {
 	super.paint(g);
-	g.setColor(Color.red);
+	g.setColor(AVGUI.blue);
 
 	// Normal line
 	g.drawLine(this.getSize().width / 2 + offsetX - width, peak,
@@ -77,11 +77,11 @@ public class HeightVarChart extends LAreaChart {
 	    small.setImage(pic);
 	    small.setMaxSize(0, floor - minHeight);
 	    small.setLocation(smallPicX - small.getWidth() / 2, floor - small.getHeight());
-	    
+
 	    large.setImage(pic);
 	    large.setMaxSize(0, floor - maxHeight);
 	    large.setLocation(largePicX - large.getWidth() / 2, floor - large.getHeight());
-	    
+
 	} catch (IOException ex) {
 	}
     }

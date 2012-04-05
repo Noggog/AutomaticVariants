@@ -6,12 +6,16 @@ package automaticvariants;
 
 import com.google.gson.JsonSyntaxException;
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
+import lev.LShrinkArray;
 import lev.Ln;
 import skyproc.LVLN.LVLO;
 import skyproc.*;
@@ -87,7 +91,6 @@ public class AVFileVars {
 	    npcDupMethod(source);
 	}
 
-	printModifiedNPCs();
     }
 
     static void npcDupMethod(Mod source) {
@@ -104,13 +107,14 @@ public class AVFileVars {
 	subInOldLVLNs(source);
 
 	// Bethesda doesn't like two LLists being on the same template chain
-	// Searches for LList entries that template to new AV LLists and 
-	// Flattens their templating and sets up variants of their own to 
+	// Searches for LList entries that template to new AV LLists and
+	// Flattens their templating and sets up variants of their own to
 	// Route around the issue.
 	dupTemplatedLVLNentries(source);
 
 	handleUniqueNPCs(source);
 
+	printVariantList();
     }
 
     static void raceSwitchMethod(Mod source) {
@@ -176,10 +180,6 @@ public class AVFileVars {
 			    Ln.moveFile(file, new File(AVTextures + file.getPath().substring(AVPackages.getPath().length())), false);
 			    if (SPGlobal.logging()) {
 				SPGlobal.log(variantFile.getName(), "  Loaded texture: " + file.getPath());
-
-
-
-
 			    }
 			} else if (file.getName().endsWith(".json")) {
 			    variant.specs = AVGlobal.parser.fromJson(new FileReader(file), VariantSpec.class);
@@ -233,18 +233,6 @@ public class AVFileVars {
 
 	varSet.variants.addAll(variants);
 	return varSet;
-    }
-
-    static class VariantSpec implements Serializable {
-
-	int Probability_Divider = 1;
-
-	void print() {
-	    if (SPGlobal.logging()) {
-		SPGlobal.log("VariantSpec", "  Loaded specs: ");
-		SPGlobal.log("VariantSpec", "    Prob Div: 1/" + Probability_Divider);
-	    }
-	}
     }
 
     static ArrayList<VariantSet> importVariants(Mod patch) throws Uninitialized, FileNotFoundException {
@@ -443,74 +431,6 @@ public class AVFileVars {
 	armaToNif.put(piece.getForm(), nif.name);
     }
 
-    static void generateVariantTXSTSets(Variant v, ArrayList<AV_Nif.TextureField> texturePack) throws IOException {
-
-	// Find out which TXSTs need to be generated
-	String[][] replacements = new String[texturePack.size()][numSupportedTextures];
-	boolean[] needed = new boolean[texturePack.size()];
-	for (String s : v.variantTexturePaths) {
-	    String fileName = s;
-	    fileName = fileName.substring(fileName.lastIndexOf('\\'));
-	    int i = 0;
-	    for (AV_Nif.TextureField textureSet : texturePack) {
-		int j = 0;
-		for (String texture : textureSet.maps) {
-		    if (!texture.equals("") && texture.lastIndexOf('\\') != -1) {
-			String textureName = texture.substring(texture.lastIndexOf('\\'));
-			if (textureName.equalsIgnoreCase(fileName)) {
-			    replacements[i][j] = s;
-			    needed[i] = true;
-			}
-		    }
-		    if (j == numSupportedTextures - 1) {
-			break;
-		    } else {
-			j++;
-		    }
-		}
-		i++;
-	    }
-	}
-
-	// Make new TXSTs
-	v.textureVariants = new TextureVariant[texturePack.size()];
-	int i = 0;
-	TXST last = null;
-	for (AV_Nif.TextureField textureSet : texturePack) {
-	    if (needed[i]) {
-		if (textureSet.unique) {
-		    // New TXST
-		    TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch(), v.name + "_" + textureSet.title + "_txst");
-		    tmpTXST.set(TXST.TXSTflag.FACEGEN_TEXTURES, true);
-
-		    // Set maps
-		    int j = 0;
-		    for (String texture : textureSet.maps) {
-			int set = readjustTXSTindices(j);
-
-			if (replacements[i][j] != null) {
-			    tmpTXST.setNthMap(set, replacements[i][j]);
-			    if (SPGlobal.logging()) {
-				SPGlobal.log("Variant", "  Replaced set " + i + ", texture " + j + " with " + replacements[i][j] + " on variant " + v.name);
-			    }
-			} else if (!"".equals(texture)) {
-			    tmpTXST.setNthMap(set, texture.substring(texture.indexOf('\\') + 1));
-			}
-			if (j == numSupportedTextures - 1) {
-			    break;
-			} else {
-			    j++;
-			}
-		    }
-		    last = tmpTXST;
-		}
-		v.textureVariants[i] = new TextureVariant(last, textureSet.title);
-	    }
-	    i++;
-	}
-
-    }
-
     static void generateTXSTvariants() throws IOException {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Generating TXST variants.");
 	for (AV_Nif n : nifs.values()) {
@@ -521,7 +441,71 @@ public class AVFileVars {
 		SPGlobal.log(header, "====================================================================");
 	    }
 	    for (Variant v : n.variants) {
-		generateVariantTXSTSets(v, n.textureFields);
+
+		// Find out which TXSTs need to be generated
+		String[][] replacements = new String[n.textureFields.size()][numSupportedTextures];
+		boolean[] needed = new boolean[n.textureFields.size()];
+		for (String s : v.variantTexturePaths) {
+		    String fileName = s;
+		    fileName = fileName.substring(fileName.lastIndexOf('\\'));
+		    int i = 0;
+		    for (AV_Nif.TextureField textureSet : n.textureFields) {
+			int j = 0;
+			for (String texture : textureSet.maps) {
+			    if (!texture.equals("") && texture.lastIndexOf('\\') != -1) {
+				String textureName = texture.substring(texture.lastIndexOf('\\'));
+				if (textureName.equalsIgnoreCase(fileName)) {
+				    replacements[i][j] = s;
+				    needed[i] = true;
+				}
+			    }
+			    if (j == numSupportedTextures - 1) {
+				break;
+			    } else {
+				j++;
+			    }
+			}
+			i++;
+		    }
+		}
+
+		// Make new TXSTs
+		v.textureVariants = new TextureVariant[n.textureFields.size()];
+		int i = 0;
+		TXST last = null;
+		for (AV_Nif.TextureField textureSet : n.textureFields) {
+		    if (needed[i]) {
+			if (textureSet.unique) {
+			    // New TXST
+			    TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch(), v.name + "_" + n.uniqueName() + "_" + textureSet.title + "_txst");
+			    tmpTXST.set(TXST.TXSTflag.FACEGEN_TEXTURES, true);
+
+			    // Set maps
+			    int j = 0;
+			    for (String texture : textureSet.maps) {
+				int set = readjustTXSTindices(j);
+
+				if (replacements[i][j] != null) {
+				    tmpTXST.setNthMap(set, replacements[i][j]);
+				    if (SPGlobal.logging()) {
+					SPGlobal.log("Variant", "  Replaced set " + i + ", texture " + j + " with " + replacements[i][j] + " on variant " + v.name);
+				    }
+				} else if (!"".equals(texture)) {
+				    tmpTXST.setNthMap(set, texture.substring(texture.indexOf('\\') + 1));
+				}
+				if (j == numSupportedTextures - 1) {
+				    break;
+				} else {
+				    j++;
+				}
+			    }
+			    last = tmpTXST;
+			}
+			v.textureVariants[i] = new TextureVariant(last, textureSet.title);
+		    }
+		    i++;
+		}
+
 	    }
 	    n.textureFields = null; // Not needed anymore
 	}
@@ -557,9 +541,9 @@ public class AVFileVars {
 			    i++;
 			}
 
-			ArrayList<ARMA.AltTexture> femalealts = dup.getAltTextures(Gender.FEMALE, Perspective.THIRD_PERSON);
-			femalealts.clear();
-			femalealts.addAll(alts);
+//			ArrayList<ARMA.AltTexture> femalealts = dup.getAltTextures(Gender.FEMALE, Perspective.THIRD_PERSON);
+//			femalealts.clear();
+//			femalealts.addAll(alts);
 
 			dups.add(new ARMA_spec(dup, v.specs));
 		    }
@@ -805,6 +789,21 @@ public class AVFileVars {
 	SPGUI.progress.incrementBar();
     }
 
+    static void printModifiedNPCs() {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Printing Modified NPCs: ");
+	    SPGlobal.log(header, "====================================================================");
+	    for (FormID armoSrc : AV.modifiedNPCs.keySet()) {
+		SPGlobal.log(header, "For " + SPDatabase.getMajor(armoSrc, GRUP_TYPE.ARMO));
+		for (NPC_ n : AV.modifiedNPCs.get(armoSrc)) {
+		    SPGlobal.log(header, "    " + n);
+		}
+		SPGlobal.log(header, "--------------------------------------");
+	    }
+	}
+    }
+
     //NPC dup methods
     static void generateNPCvariants(Mod source) {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Generating NPC variants.");
@@ -865,7 +864,7 @@ public class AVFileVars {
 		npcs.put(npcSrc.getForm(), dups);
 	    }
 	}
-	printNPCdups();
+	
 	SPGUI.progress.incrementBar();
     }
 
@@ -959,7 +958,7 @@ public class AVFileVars {
 	    SPGlobal.log(header, "============================================================================================");
 	}
 	for (LVLN llist : source.getLeveledLists()) {
-	    
+
 	    boolean add = false;
 	    for (LVLO entry : llist) {
 		LVLN template = NiftyFunc.isTemplatedToLList(entry.getForm());
@@ -1029,7 +1028,7 @@ public class AVFileVars {
 		    // Put the first to minimize unique actor changing when people rerun av patch
 		    if (!llistTemplate.isEmpty()) {
 			if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "Replacing unique actor " + srcNpc + "'s template "
+			    SPGlobal.log(header, "  Replacing unique actor " + srcNpc + "'s template "
 				    + SPDatabase.getMajor(srcNpc.getTemplate(), GRUP_TYPE.NPC_)
 				    + " with " + SPDatabase.getMajor(llistTemplate.getEntry(0).getForm(), GRUP_TYPE.NPC_));
 			}
@@ -1042,26 +1041,19 @@ public class AVFileVars {
 	}
     }
 
-    static void printNPCdups() {
+    static void printVariantList() {
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "NPC dup summary: ");
-	    for (FormID form : npcs.keySet()) {
-		SPGlobal.log(header, "  " + SPDatabase.getMajor(form));
+	    SPGlobal.log(header, "===================================================");
+	    SPGlobal.log(header, "Printing all NPCs that have a matching variant LList.");
+	    SPGlobal.log(header, "===================================================");
+	    Map<String, NPC_> sorter = new TreeMap<String, NPC_>();
+	    for (FormID form : llists.keySet()) {
+		NPC_ tmp = (NPC_) SPDatabase.getMajor(form, GRUP_TYPE.NPC_);
+		sorter.put(tmp.getEDID(), tmp);
 	    }
-	}
-    }
 
-    static void printModifiedNPCs() {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Printing Modified NPCs: ");
-	    SPGlobal.log(header, "====================================================================");
-	    for (FormID armoSrc : AV.modifiedNPCs.keySet()) {
-		SPGlobal.log(header, "For " + SPDatabase.getMajor(armoSrc, GRUP_TYPE.ARMO));
-		for (NPC_ n : AV.modifiedNPCs.get(armoSrc)) {
-		    SPGlobal.log(header, "    " + n);
-		}
-		SPGlobal.log(header, "--------------------------------------");
+	    for (NPC_ n : sorter.values()) {
+		SPGlobal.log(header, "  " + n);
 	    }
 	}
     }
@@ -1111,27 +1103,36 @@ public class AVFileVars {
 	    if (nif == null) {
 		throw new FileNotFoundException("NIF file did not exist for path: " + path);
 	    }
+
+	    Map<Integer, NIF.Node> BiLightingShaderProperties = nif.getNodes(NIF.NodeType.BSLIGHTINGSHADERPROPERTY);
+	    Map<Integer, NIF.Node> BiShaderTextureNodes = nif.getNodes(NIF.NodeType.BSSHADERTEXTURESET);
+	    Map<Integer, ArrayList<String>> BiShaderTextureSets = new HashMap<Integer, ArrayList<String>>();
+	    Map<Integer, AV_Nif.TextureField> fields = new HashMap<Integer, AV_Nif.TextureField>();
 	    ArrayList<ArrayList<NIF.Node>> NiTriShapes = nif.getNiTriShapePackages();
-	    AV_Nif.TextureField last = new AV_Nif.TextureField();
-	    for (int i = 0; i < NiTriShapes.size(); i++) {
-		AV_Nif.TextureField next = new AV_Nif.TextureField(last);
+
+	    for (Integer i : BiShaderTextureNodes.keySet()) {
+		BiShaderTextureSets.put(i, NIF.extractBSTextures(BiShaderTextureNodes.get(i)));
+	    }
+
+	    int i = 0;
+	    for (Integer key : BiLightingShaderProperties.keySet()) {
+		int textureLink = BiLightingShaderProperties.get(key).data.extractInt(40, 4);
+		AV_Nif.TextureField next = new AV_Nif.TextureField();
+		if (fields.containsKey(textureLink)) {
+		    next.maps = fields.get(textureLink).maps;
+		    next.unique = false;
+		} else {
+		    next.maps = BiShaderTextureSets.get(textureLink);
+		    next.unique = true;
+		    fields.put(textureLink, next);
+		}
+
 		next.title = NiTriShapes.get(i).get(0).title;
 		if (SPGlobal.logging()) {
-		    SPGlobal.log("AV_Nif", "  Loaded NiTriShapes: " + next.title);
-		}
-		for (NIF.Node n : NiTriShapes.get(i)) {
-		    if (n.type == NIF.NodeType.BSSHADERTEXTURESET) {
-			if (SPGlobal.logging()) {
-			    SPGlobal.log("AV_Nif", "  Loaded new texture maps");
-			}
-			next.maps = NIF.extractBSTextures(n);
-			if (!next.equals(last)) {
-			    next.unique = true;
-			}
-		    }
+		    SPGlobal.log("AV_Nif", "  Loaded NiTriShapes: " + next.title + " (" + BiLightingShaderProperties.get(key).number + ") linked to texture index " + textureLink);
 		}
 		this.textureFields.add(next);
-		last = next;
+		i++;
 	    }
 	}
 
@@ -1260,7 +1261,7 @@ public class AVFileVars {
 	}
     }
 
-    static class Variant implements Serializable {
+    public static class Variant implements Serializable {
 
 	String name = "";
 	ArrayList<String> variantTexturePaths = new ArrayList<String>();
@@ -1291,7 +1292,7 @@ public class AVFileVars {
 	}
     }
 
-    static class VariantSet {
+    public static class VariantSet {
 
 	String[][] Target_FormIDs;
 	Boolean Apply_To_Similar = true;
@@ -1299,6 +1300,36 @@ public class AVFileVars {
 
 	boolean isEmpty() {
 	    return variants.isEmpty();
+	}
+
+	public String printHelpInfo() {
+	    String content = "Seeds:";
+	    for (String[] formID : Target_FormIDs) {
+		content += "\n    ";
+		FormID id = new FormID(formID[0], formID[1]);
+		NPC_ npc = (NPC_) SPDatabase.getMajor(id, GRUP_TYPE.NPC_);
+		if (npc != null) {
+		    content += npc.getEDID() + "  |  ";
+		}
+		content += id.getFormStr();
+	    }
+	    return content;
+	}
+    }
+
+    public static class VariantSpec implements Serializable {
+
+	int Probability_Divider = 1;
+
+	void print() {
+	    if (SPGlobal.logging()) {
+		SPGlobal.log("VariantSpec", "  Loaded specs: ");
+		SPGlobal.log("VariantSpec", "    Prob Div: 1/" + Probability_Divider);
+	    }
+	}
+
+	public String printHelpInfo() {
+	    return "Relative Probability: 1/" + Probability_Divider;
 	}
     }
 }

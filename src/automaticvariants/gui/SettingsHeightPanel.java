@@ -5,7 +5,7 @@
 package automaticvariants.gui;
 
 import automaticvariants.AV;
-import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.SwingUtilities;
@@ -34,11 +34,11 @@ public class SettingsHeightPanel extends DefaultsPanel {
     public boolean initialize() {
 	if (super.initialize()) {
 
-	    chart = new HeightVarChart("Current Settings", parent.helpPanel.getBottomSize(),
-		    Color.red, Color.BLUE, "Percent deviance from normal height", "Probability / Height");
-	    chart.addSeries(Color.yellow);
+	    chart = new HeightVarChart("Current Settings", new Dimension (parent.helpPanel.getBottomSize().width , 190),
+		    AVGUI.yellow, AVGUI.orange, "Percent deviance from normal height", "Probability / Height");
+	    chart.addSeries(AVGUI.darkGreen);
 
-	    stdDevSetting = new LNumericSetting("Height Difference", AVGUI.settingsFont, AVGUI.light,
+	    stdDevSetting = new LNumericSetting("Height Difference", AVGUI.settingsFont, AVGUI.yellow,
 		    0, maxStd, 1, AV.Settings.HEIGHT_STD, AV.save, parent.helpPanel);
 	    last = setPlacement(stdDevSetting, last);
 	    stdDevSetting.addChangeListener(new SettingsHeightPanel.UpdateChartChangeHandler());
@@ -147,5 +147,6 @@ public class SettingsHeightPanel extends DefaultsPanel {
 
     public void addChart(LHelpPanel help) {
 	help.addToBottomArea(chart);
+	help.setBottomAreaHeight(190);
     }
 }

@@ -57,7 +57,7 @@ public class AV {
     static int debugLevel = 1;
     static boolean imported = false;
     static boolean exported = false;
-    
+
     public static void main(String[] args) {
 	ArrayList<String> arguments = new ArrayList<String>(Arrays.asList(args));
 	try {
@@ -67,9 +67,13 @@ public class AV {
 	    }
 	    setGlobals();
 	    save.init();
-	    AVGUI.open();
-
+//	    AVGUI.open();
 	    // AVGUI runs the program after it's finished displaying.\
+
+	    SPDefaultGUI gui = createGUI();
+	    importFunction();
+	    exportFunction();
+	    gui.finished();
 
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.
@@ -81,16 +85,16 @@ public class AV {
 	// Close debug logs before program exits.
 	SPGlobal.closeDebug();
     }
-    
+
     public static void runProgram() {
 	if (parser == null || !parser.isAlive()) {
 	    parser = new Thread(new StartProcessThread());
 	    parser.start();
 	}
     }
-    
+
     static class StartProcessThread implements Runnable {
-	
+
 	@Override
 	public void run() {
 	    SPGlobal.log("START IMPORT THREAD", "Starting of process thread.");
@@ -117,37 +121,37 @@ public class AV {
 		SPGlobal.logException(e);
 		JOptionPane.showMessageDialog(null, "There was an exception thrown during program execution: '" + e + "'  Check the debug logs.");
 	    }
-	    
+
 	    // if exception occurs
 	    exitProgram();
 	}
-	
+
 	public void main(String args[]) {
 	    (new Thread(new StartProcessThread())).start();
 	}
     }
-    
+
     static void importFunction() throws IOException, Uninitialized, BadParameter {
-	
+
 	AVFileVars.gatherFiles();
-	
+
 	Mod patch = new Mod("Automatic Variants", false);
 	patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
 	patch.setAuthor("Leviathan1753");
 	SPGlobal.setGlobalPatch(patch);
-	
+
 	readInExceptions();
-	
+
 	importMods();
-	
+
 	imported = true;
 	SPGUI.progress.setStatus("Done importing.");
     }
-    
+
     static void exportFunction() throws IOException, BadParameter, Uninitialized {
-	
+
 	Mod patch = SPGlobal.getGlobalPatch();
-	
+
 	SPGUI.progress.setMax(numSteps);
 	SPGUI.progress.setStatus(step++, numSteps, "Initializing AV");
 	Mod source = new Mod("Temporary", false);
@@ -155,8 +159,8 @@ public class AV {
 	if (debugLevel >= 1) {
 	    SPGlobal.logging(true);
 	}
-	
-	
+
+
 	alreadySwitchedList = new FLST(patch, "AV_" + alreadySwitched);
 
 	// For all race SWITCHING variants
@@ -173,16 +177,17 @@ public class AV {
 	try {
 	    // Export your custom patch.
 	    patch.export();
-	} catch (IOException ex) {
+	} catch (Exception ex) {
 	    // If something goes wrong, show an error message.
+	    SPGlobal.logException(ex);
 	    JOptionPane.showMessageDialog(null, "There was an error exporting the custom patch.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
-	    System.exit(0);
+	    LDebug.wrapUpAndExit();
 	}
-	
+
 	exported = true;
 	AVGUI.progress.done();
     }
-    
+
     static void setUpInGameScriptBasedVariants(Mod source) {
 	SPEL addScriptSpell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), generateAttachScript(), "AVGenericScriptAttach");
 	for (RACE race : source.getRaces()) {
@@ -192,17 +197,28 @@ public class AV {
 	    }
 	}
     }
-    
+
     static boolean checkNPCskip(NPC_ npcSrc, boolean last) {
 	String edid = npcSrc.getEDID().toUpperCase();
-	if (!npcSrc.getTemplate().equals(FormID.NULL) && npcSrc.get(NPC_.TemplateFlag.USE_TRAITS)) {
-	    if (SPGlobal.logging()) {
-		if (last) {
-		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
+	if (!npcSrc.getTemplate().equals(FormID.NULL)) {
+	    if (npcSrc.get(NPC_.TemplateFlag.USE_TRAITS)) {
+		if (SPGlobal.logging()) {
+		    if (last) {
+			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
+		    }
+		    SPGlobal.log(header, "    Skipping " + npcSrc + " : Template with traits flag");
 		}
-		SPGlobal.log(header, "    Skipping " + npcSrc + " : Template with traits flag");
+		return true;
+	    } else if (NiftyFunc.isTemplatedToLList(npcSrc) != null) {
+		if (SPGlobal.logging()) {
+		    if (last) {
+			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
+		    }
+		    SPGlobal.log(header, "    Skipping " + npcSrc + " : Template w/o traits flag but templated to a LList.");
+		    SPGlobal.logBlocked(header, "Templated w/o traits flag but templated to a LList", npcSrc);
+		}
+		return true;
 	    }
-	    return true;
 	}
 	for (String exclude : edidExclude) {
 	    if (edid.contains(exclude)) {
@@ -217,7 +233,7 @@ public class AV {
 	}
 	return false;
     }
-    
+
     static ScriptRef generateAttachScript() {
 	ScriptRef script = new ScriptRef(raceAttachScript);
 	script.setProperty(changeRaceOn, false);
@@ -233,7 +249,7 @@ public class AV {
 	}
 	return script;
     }
-    
+
     static void importMods() throws IOException {
 	try {
 	    SPImporter importer = new SPImporter();
@@ -250,7 +266,7 @@ public class AV {
 	    System.exit(0);
 	}
     }
-    
+
     private static void setGlobals() {
 	/*
 	 * Initializing Debug Log and Globals
@@ -269,7 +285,7 @@ public class AV {
 	    }
 	}
     }
-    
+
     static void readInExceptions() throws IOException {
 	try {
 	    BufferedReader in = new BufferedReader(new FileReader(extraPath + "Files/BlockList.txt"));
@@ -297,7 +313,7 @@ public class AV {
 	    SPGlobal.logError("ReadInExceptions", "Failed to locate 'BlockList.txt'");
 	}
     }
-    
+
     static boolean handleArgs(ArrayList<String> arguments) {
 	String debug = "-debug";
 	String extraPth = "-extraPath";
@@ -322,22 +338,22 @@ public class AV {
 		    SPGlobal.logMain(header, "Path to data: " + SPGlobal.pathToData);
 		}
 	    }
-	    
+
 	}
-	
+
 	if (arguments.contains("-gather")) {
 	    AVFileVars.gatherFiles();
 	    return true;
 	}
-	
+
 	return false;
     }
-    
+
     public static void exitProgram() {
 	SPGlobal.log(header, "Exit requested.");
 	LDebug.wrapUpAndExit();
     }
-    
+
     static SPDefaultGUI createGUI() {
 	/*
 	 * Custom names and descriptions
@@ -353,10 +369,10 @@ public class AV {
 	 * Creating SkyProc Default GUI
 	 */
 	SPDefaultGUI gui = new SPDefaultGUI(myPatcherName, myPatcherDescription);
-	
-	
-	
-	
+
+
+
+
 	try {
 	    gui.replaceHeader(AVGUI.class.getResource("AutoVarGUITitle.png"), - 35);
 	} catch (IOException ex) {
@@ -364,9 +380,9 @@ public class AV {
 	}
 	return gui;
     }
-    
+
     public enum Settings {
-	
+
 	PACKAGES_ON,
 	HEIGHT_ON,
 	HEIGHT_STD;

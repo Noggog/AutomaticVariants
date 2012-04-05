@@ -255,7 +255,9 @@ public class AVPackageAnalyzer {
 	    suggestions.write("Group " + group++ + ": " + SPDatabase.getMajor(arma, GRUP_TYPE.ARMA) + "\n");
 	    suggestions.write("   Seed choices (pick one):\n");
 	    for (FormID npc : ARMAtoNPC.get(arma)) {
-		suggestions.write("      " + SPDatabase.getMajor(npc, GRUP_TYPE.NPC_) + "\n");
+		NPC_ npc_ = (NPC_) SPDatabase.getMajor(npc, GRUP_TYPE.NPC_);
+		suggestions.write("\t\t[\"" + npc.getFormStr().substring(0,6) + "\",\"" + npc.getFormStr().substring(6) + "\"]"
+			+ "   //" + npc_.getEDID() + "\n");
 	    }
 	    suggestions.write("   Source textures to include (include all of them):\n");
 	    File nif = ARMAtoNIF.get(arma);

@@ -16,11 +16,11 @@ import lev.gui.LPanel;
 public class SettingsMainMenu extends EncompassingPanel {
 
     private LPanel menu;
-    private LMainMenuConfig managePackagesButton;
-    private SettingsPackagesPanel managePackagesPanel = new SettingsPackagesPanel(this);
-    private LMainMenuConfig manageHeightButton;
-    private SettingsHeightPanel manageHeightPanel = new SettingsHeightPanel(this);
-    
+    LMainMenuConfig managePackagesButton;
+    SettingsPackagesPanel managePackagesPanel = new SettingsPackagesPanel(this);
+    LMainMenuConfig manageHeightButton;
+    SettingsHeightPanel manageHeightPanel = new SettingsHeightPanel(this);
+
     static int spacing = 35;
 
     public SettingsMainMenu(Dimension d) {
@@ -31,7 +31,7 @@ public class SettingsMainMenu extends EncompassingPanel {
 	managePackagesButton = new LMainMenuConfig("Textures", true, helpPanel, new Point(xPlacement, 170), AV.save, AV.Settings.PACKAGES_ON);
 	managePackagesButton.addActionListener(managePackagesPanel.getOpenHandler(this));
 	menu.add(managePackagesButton);
-	
+
 	manageHeightButton = new LMainMenuConfig("Height", true, helpPanel, new Point(xPlacement, managePackagesButton.getY() + spacing), AV.save, AV.Settings.HEIGHT_ON);
 	manageHeightButton.addActionListener(manageHeightPanel.getOpenHandler(this));
 	menu.add(manageHeightButton);

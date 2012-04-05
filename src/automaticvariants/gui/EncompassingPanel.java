@@ -20,8 +20,6 @@ import lev.gui.LHelpPanel;
  */
 public abstract class EncompassingPanel extends JPanel {
 
-//    public MainMenuControl openMainMenu;
-
     protected int xPlacement = AVGUI.leftDimensions.width - 25;
     public LHelpPanel helpPanel;
     protected int defaultSpacing = 55;
@@ -32,19 +30,9 @@ public abstract class EncompassingPanel extends JPanel {
         this.setLayout(null);
         setSize(d);
         setLocation(0, 0);
-	helpPanel = new LHelpPanel(AVGUI.rightDimensions, new Font("Serif", Font.BOLD, 25), Color.GREEN, Color.BLUE, true, 5);
+	helpPanel = new LHelpPanel(AVGUI.rightDimensions, new Font("Serif", Font.BOLD, 25), AVGUI.green, AVGUI.lightGray, true, 5);
         setOpaque(false);
     }
-
-//    public EncompassingPanel(Dimension d, MainMenuControl m) {
-//        this.setLayout(null);
-//        setSize(d);
-//        setLocation(0, 0);
-//	helpPanel = new HelpPanel(DLLGUI.rightDimensions);
-//        setOpaque(false);
-//        openMainMenu = m;
-//
-//    }
 
     protected void Add(JComponent c) {
         c.setVisible(true);
