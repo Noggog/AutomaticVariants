@@ -81,7 +81,7 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	    packagePanel.Add(enable);
 	    packagePanel.Add(disable);
 	    packagePanel.Add(tree);
-	    packagePanel.Add(editSpec);
+//	    packagePanel.Add(editSpec);
 	    Add(packagePanel);
 
 
