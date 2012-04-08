@@ -14,7 +14,6 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import lev.debug.LDebug;
 import lev.gui.LImagePane;
 import lev.gui.LLabel;
 import lev.gui.LProgressBarFrame;

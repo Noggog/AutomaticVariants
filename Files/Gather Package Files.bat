@@ -1,1 +1,0 @@
-start javaw.exe -jar "../Automatic Variants.jar" "-gather" "-extraPath ../"

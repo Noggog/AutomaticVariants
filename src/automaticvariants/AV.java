@@ -68,15 +68,11 @@ public class AV {
 		SPGlobal.closeDebug();
 		return;
 	    }
+	    cleanUp();
 	    setGlobals();
 	    save.init();
 	    AVGUI.open();
 	    // AVGUI runs the program after it's finished displaying.
-//	    SPDefaultGUI gui = createGUI();
-//	    importFunction();
-//	    exportFunction();
-//	    gui.finished();
-//	    SPGlobal.closeDebug();
 
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.
@@ -86,6 +82,21 @@ public class AV {
 	    SPGlobal.closeDebug();
 	}
 
+    }
+
+    static void cleanUp() {
+	File delete = new File(SPGlobal.pathToInternalFiles + "Automatic Variants More Memory.bat");
+	if (delete.isFile()) {
+	    delete.delete();
+	}
+	delete = new File(SPGlobal.pathToInternalFiles + "AV Debug Mode.bat");
+	if (delete.isFile()) {
+	    delete.delete();
+	}
+	delete = new File(SPGlobal.pathToInternalFiles + "Gather Package Files.bat");
+	if (delete.isFile()) {
+	    delete.delete();
+	}
     }
 
     public static void runProgram() {
