@@ -91,9 +91,6 @@ public class AVFileVars {
     }
 
     static void npcDupMethod(Mod source) {
-	// Generate Race dups that use ARMO skins
-	generateRACEvariants(source);
-
 	// Generate NPC_ dups that use ARMO skins
 	generateNPCvariants(source);
 
@@ -630,6 +627,7 @@ public class AVFileVars {
 	}
     }
 
+    // Race Switch Methods
     static void generateRACEvariants(Mod source) {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Generating RACE variants.");
 	if (SPGlobal.logging()) {
@@ -671,7 +669,6 @@ public class AVFileVars {
 	SPGUI.progress.incrementBar();
     }
 
-    // Race Switch Methods
     static void generateFormLists(Mod source) {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Generating Form Lists.");
 	if (SPGlobal.logging()) {
@@ -846,8 +843,8 @@ public class AVFileVars {
 		}
 		armorForm = race.getWornArmor();
 	    }
-	    ArrayList<RACE_spec> raceVariants = races.get(armorForm);
-	    if (raceVariants != null) {
+	    ArrayList<ARMO_spec> skinVariants = armors.get(armorForm);
+	    if (skinVariants != null) {
 
 		if (AV.checkNPCskip(npcSrc, last)) {
 		    last = false;
@@ -868,16 +865,15 @@ public class AVFileVars {
 		    last = true;
 		}
 
-		ArrayList<NPC_spec> dups = new ArrayList<NPC_spec>(raceVariants.size());
-		for (RACE_spec variant : raceVariants) {
-		    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc, variant.race.getEDID().substring(0, variant.race.getEDID().lastIndexOf("_ID_")) + "_" + npcSrc.getEDID());
+		ArrayList<NPC_spec> dups = new ArrayList<NPC_spec>(skinVariants.size());
+		for (ARMO_spec variant : skinVariants) {
+		    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc, variant.armo.getEDID().substring(0, variant.armo.getEDID().lastIndexOf("_ID_")) + "_" + npcSrc.getEDID());
 
 		    if (template != null) {
 			dup.templateTo(template);
 		    }
 
-		    dup.setRace(variant.race.getForm());
-		    dup.setSkin(FormID.NULL);
+		    dup.setSkin(variant.armo.getForm());
 
 		    dups.add(new NPC_spec(dup, variant));
 		}
@@ -1014,18 +1010,18 @@ public class AVFileVars {
 	LVLN out = new LVLN(SPGlobal.getGlobalPatch(), "AV_" + npcEntry.getEDID() + "_llist");
 
 	// Map to store NPC dups just in case there are multiple entries of the same skin
-	Map<FormID, NPC_> raceToNPCdup = new HashMap<FormID, NPC_>();
+	Map<FormID, NPC_> skinToNPCdup = new HashMap<FormID, NPC_>();
 
 	// Make NPC duplicates for each in the template LList.
 	for (LVLO templateEntry : template) {
 	    NPC_ templateNPC = (NPC_) SPGlobal.getGlobalPatch().getNPCs().get(templateEntry.getForm());
+	    NPC_ dupNPC = skinToNPCdup.get(templateNPC.getSkin());
 	    String[] edidSplit = templateNPC.getEDID().split("_");
 	    String edidBase = edidSplit[0] + "_" + edidSplit[1] + "_" + edidSplit[2] + "_" + edidSplit[3];
-	    NPC_ dupNPC = raceToNPCdup.get(templateNPC.getRace());
 	    if (dupNPC == null) {
 		dupNPC = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcEntry, edidBase + "_" + npcEntry.getEDID());
 		dupNPC.templateTo(templateNPC);
-		raceToNPCdup.put(templateNPC.getRace(), dupNPC);
+		skinToNPCdup.put(templateNPC.getSkin(), dupNPC);
 	    }
 	    out.addEntry(new LVLO(dupNPC.getForm(), 1, 1));
 	}
@@ -1264,7 +1260,7 @@ public class AVFileVars {
 	NPC_ npc;
 	int probDiv;
 
-	NPC_spec(NPC_ npc, RACE_spec spec) {
+	NPC_spec(NPC_ npc, ARMO_spec spec) {
 	    this.npc = npc;
 	    probDiv = spec.probDiv;
 	}
