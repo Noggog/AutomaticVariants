@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
-import lev.Ln;
 import lev.debug.LDebug;
 import lev.gui.LSaveFile;
 import skyproc.*;
@@ -58,7 +57,7 @@ public class AV {
     static String extraPath = "";
     static int numSteps = 10;
     static int step = 0;
-    static int debugLevel = 1;
+    static int debugLevel = 2;
     static boolean imported = false;
     static boolean exported = false;
 
@@ -73,17 +72,20 @@ public class AV {
 	    save.init();
 	    AVGUI.open();
 	    // AVGUI runs the program after it's finished displaying.
-
+//	    SPDefaultGUI gui = createGUI();
+//	    importFunction();
+//	    exportFunction();
+//	    gui.finished();
+//	    SPGlobal.closeDebug();
 
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.
 	    System.err.println(e.toString());
 	    SPGlobal.logException(e);
 	    JOptionPane.showMessageDialog(null, "There was an exception thrown during program execution: '" + e + "'  Check the debug logs.");
+	    SPGlobal.closeDebug();
 	}
 
-	// Close debug logs before program exits.
-	SPGlobal.closeDebug();
     }
 
     public static void runProgram() {
@@ -194,7 +196,7 @@ public class AV {
     static public void shufflePackages() {
 	PackageTree tree = SettingsPackagesPanel.tree;
 	if (tree != null) {
-	    if (!((PackageNode) tree.getRoot()).moveNode()){
+	    if (!((PackageNode) tree.getRoot()).moveNode()) {
 		JOptionPane.showMessageDialog(null,
 			"<html>Error moving one of the selected files.  This is probably due to AV being run<br>"
 			+ "inside a 'windows protected' folder where windows is not allowing the moves.  Either<br>"
