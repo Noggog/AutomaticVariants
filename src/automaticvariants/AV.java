@@ -56,7 +56,7 @@ public class AV {
     public static Thread parser;
     static boolean heightOnF = false;
     static String extraPath = "";
-    static int numSteps = 0;
+    static int numSteps = 10;
     static int step = 0;
     static int initDebugLevel = -1;
     static boolean imported = false;
@@ -167,12 +167,6 @@ public class AV {
     static void exportFunction() throws IOException, BadParameter, Uninitialized {
 
 	Mod patch = SPGlobal.getGlobalPatch();
-
-	if (AVFileVars.raceSwitchMethod) {
-	    numSteps += 10;
-	} else {
-	    numSteps += 12;
-	}
 
 	SPGUI.progress.setMax(numSteps);
 	SPGUI.progress.setStatus(step++, numSteps, "Initializing AV");
