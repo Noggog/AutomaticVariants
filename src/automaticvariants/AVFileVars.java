@@ -947,7 +947,7 @@ public class AVFileVars {
     }
 
     static void subInOldLVLNs(Mod source) {
-	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Replacing original NPC entries in your LVLN records.");
+	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Replacing original entries in LVLN records.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Replacing old NPC entries in your mod's LVLNs");
@@ -972,6 +972,7 @@ public class AVFileVars {
     }
 
     static void dupTemplatedLVLNentries(Mod source) {
+	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Replacing templated LVLN entries.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "============================================================================================");
 	    SPGlobal.log(header, "Checking each LVLN entry for traits templating to new variants.  Duplicating and replacing");
@@ -1008,6 +1009,7 @@ public class AVFileVars {
 		SPGlobal.getGlobalPatch().addRecord(llist);
 	    }
 	}
+	SPGUI.progress.incrementBar();
     }
 
     static LVLN createLVLNvariant(NPC_ npcEntry, LVLN template) {
@@ -1034,6 +1036,7 @@ public class AVFileVars {
     }
 
     static void handleUniqueNPCs(Mod source) {
+	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Handling unique NPCs.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Handling unique NPCs not liking LList templates");
@@ -1059,6 +1062,7 @@ public class AVFileVars {
 		}
 	    }
 	}
+	SPGUI.progress.incrementBar();
     }
 
     static void printVariantList() {
