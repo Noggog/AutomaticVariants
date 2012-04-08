@@ -17,15 +17,10 @@ public class LMainMenuConfig extends LCheckBoxConfig {
 
     Color color = AVGUI.green;
 
-    public LMainMenuConfig(String title_, Boolean large, LHelpPanel help_, Point location, Enum setting) {
-        super(title_);
-        init(large, false, help_, location, setting);
-    }
-
-    public LMainMenuConfig(String title_, Boolean large, LHelpPanel help_, Point location, LSaveFile saveFile, Enum setting) {
+    public LMainMenuConfig(String title_, Boolean cBox, Boolean large, LHelpPanel help_, Point location, LSaveFile saveFile, Enum setting) {
         super(title_);
         save = saveFile;
-        init(large, true, help_, location, setting);
+        init(large, cBox, help_, location, setting);
     }
 
     protected final void init(Boolean large, Boolean cBoxPresent, LHelpPanel help_, Point location, Enum setting) {

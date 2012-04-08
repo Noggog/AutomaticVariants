@@ -1,5 +1,6 @@
 package automaticvariants;
 
+import automaticvariants.AVSaveFile.Settings;
 import automaticvariants.gui.AVGUI;
 import automaticvariants.gui.PackageNode;
 import automaticvariants.gui.PackageTree;
@@ -57,7 +58,7 @@ public class AV {
     static String extraPath = "";
     static int numSteps = 10;
     static int step = 0;
-    static int debugLevel = 2;
+    static int initDebugLevel = -1;
     static boolean imported = false;
     static boolean exported = false;
 
@@ -71,6 +72,7 @@ public class AV {
 	    cleanUp();
 	    setGlobals();
 	    save.init();
+	    setDebugLevel();
 	    AVGUI.open();
 	    // AVGUI runs the program after it's finished displaying.
 
@@ -82,6 +84,15 @@ public class AV {
 	    SPGlobal.closeDebug();
 	}
 
+    }
+
+    static void setDebugLevel() {
+	if (initDebugLevel != -1) {
+	    save.saveSettings.get(Settings.DEBUG_LEVEL).setTo(initDebugLevel);
+	}
+	if (save.curSettings.get(Settings.DEBUG_LEVEL).getInt() < 2) {
+	    SPGlobal.logging(false);
+	}
     }
 
     static void cleanUp() {
@@ -121,15 +132,7 @@ public class AV {
 		} else {
 		    return;
 		}
-	    } catch (IOException e) {
-		System.err.println(e.toString());
-		SPGlobal.logException(e);
-		JOptionPane.showMessageDialog(null, "There was an exception thrown during program execution: '" + e + "'  Check the debug logs.");
-	    } catch (Uninitialized e) {
-		System.err.println(e.toString());
-		SPGlobal.logException(e);
-		JOptionPane.showMessageDialog(null, "There was an exception thrown during program execution: '" + e + "'  Check the debug logs.");
-	    } catch (BadParameter e) {
+	    } catch (Exception e) {
 		System.err.println(e.toString());
 		SPGlobal.logException(e);
 		JOptionPane.showMessageDialog(null, "There was an exception thrown during program execution: '" + e + "'  Check the debug logs.");
@@ -169,7 +172,7 @@ public class AV {
 	SPGUI.progress.setStatus(step++, numSteps, "Initializing AV");
 	Mod source = new Mod("Temporary", false);
 	source.addAsOverrides(SPGlobal.getDB());
-	if (debugLevel >= 1) {
+	if (initDebugLevel >= 1) {
 	    SPGlobal.logging(true);
 	}
 
@@ -197,7 +200,7 @@ public class AV {
 	    // If something goes wrong, show an error message.
 	    SPGlobal.logException(ex);
 	    JOptionPane.showMessageDialog(null, "There was an error exporting the custom patch.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
-	    LDebug.wrapUpAndExit();
+	    exitProgram();
 	}
 
 	exported = true;
@@ -300,19 +303,15 @@ public class AV {
 	/*
 	 * Initializing Debug Log and Globals
 	 */
-	if (debugLevel > 0) {
-	    SPGlobal.createGlobalLog(extraPath);
-	    SPGlobal.debugModMerge = false;
-	    SPGlobal.debugExportSummary = false;
-	    SPGlobal.debugBSAimport = false;
-	    SPGlobal.debugNIFimport = false;
-	    LDebug.timeElapsed = true;
-	    LDebug.timeStamp = true;
-	    // Turn Debugging off except for errors
-	    if (debugLevel < 2) {
-		SPGlobal.logging(false);
-	    }
-	}
+	SPGlobal.createGlobalLog(extraPath);
+	SPGlobal.debugModMerge = false;
+	SPGlobal.debugExportSummary = false;
+	SPGlobal.debugBSAimport = false;
+	SPGlobal.debugNIFimport = false;
+	LDebug.timeElapsed = true;
+	LDebug.timeStamp = true;
+	// Turn Debugging off except for errors
+
     }
 
     static void readInExceptions() throws IOException {
@@ -350,8 +349,8 @@ public class AV {
 	    if (s.contains(debug)) {
 		s = s.substring(s.indexOf(debug) + debug.length()).trim();
 		try {
-		    debugLevel = Integer.valueOf(s);
-		    SPGlobal.logMain(header, "Debug level set to: " + debugLevel);
+		    initDebugLevel = Integer.valueOf(s);
+		    SPGlobal.logMain(header, "Debug level set to: " + initDebugLevel);
 		} catch (NumberFormatException e) {
 		    SPGlobal.logError(header, "Error parsing the debug level: '" + s + "'");
 		}
@@ -380,6 +379,7 @@ public class AV {
 
     public static void exitProgram() {
 	SPGlobal.log(header, "Exit requested.");
+	save.saveToFile();
 	LDebug.wrapUpAndExit();
     }
 
@@ -408,12 +408,5 @@ public class AV {
 	    SPGlobal.logException(ex);
 	}
 	return gui;
-    }
-
-    public enum Settings {
-
-	PACKAGES_ON,
-	HEIGHT_ON,
-	HEIGHT_STD;
     }
 }

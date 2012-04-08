@@ -4,8 +4,11 @@
  */
 package automaticvariants;
 
+import java.io.*;
 import java.util.Map;
+import javax.swing.JOptionPane;
 import lev.gui.LSaveFile;
+import skyproc.SPGlobal;
 
 /**
  *
@@ -15,30 +18,104 @@ public class AVSaveFile extends LSaveFile {
 
     @Override
     protected void init(Map m) {
-	Add(m, AV.Settings.PACKAGES_ON, "Packages On", false, true);
-	Add(m, AV.Settings.HEIGHT_ON, "Height Variants On", false, true);
-	Add(m, AV.Settings.HEIGHT_STD, "Height Variants Min", false, 10);
+	Add(m, Settings.PACKAGES_ON, "Packages On", false, true);
+	Add(m, Settings.DEBUG_LEVEL, "Debug Level", false, 1);
+	Add(m, Settings.HEIGHT_ON, "Height Variants On", false, true);
+	Add(m, Settings.HEIGHT_STD, "Height Variants Min", false, 10);
     }
 
     @Override
-    protected void readInSettings() {
+    public void readInSettings() {
+	File f = new File(SPGlobal.pathToInternalFiles + "Savefile");
+	SPGlobal.log("SaveFile Import", "Starting import");
+	if (f.exists()) {
+	    try {
+		BufferedReader input = new BufferedReader(new FileReader(f));
+		input.readLine();  //title
+		String inStr;
+		String settingTitle;
+		while (input.ready()) {
+		    inStr = input.readLine();
+		    settingTitle = inStr.substring(4, inStr.indexOf(" to "));
+		    for (Enum s : saveSettings.keySet()) {
+			if (saveSettings.containsKey(s)) {
+			    if (saveSettings.get(s).getTitle().equals(settingTitle)) {
+				saveSettings.get(s).readSetting(inStr);
+				curSettings.get(s).readSetting(inStr);
+			    }
+			}
+		    }
+		}
+
+	    } catch (Exception e) {
+		JOptionPane.showMessageDialog(null, "Error in reading in save file. Reverting to default settings.");
+		super.init();
+	    }
+	}
     }
 
     @Override
-    protected void saveToFile() {
+    public void saveToFile() {
+	SPGlobal.log("SaveFile Export", "Starting export");
+
+	File f = new File(SPGlobal.pathToInternalFiles);
+	if (!f.isDirectory()) {
+	    f.mkdirs();
+	}
+	f = new File(SPGlobal.pathToInternalFiles + "Savefile");
+	if (f.isFile()) {
+	    f.delete();
+	}
+
+	try {
+	    BufferedWriter output = new BufferedWriter(new FileWriter(f));
+	    output.write("AV savefile used for the application.\n");
+	    for (Enum s : curSettings.keySet()) {
+		if (!curSettings.get(s).get().equals("")) {
+		    SPGlobal.log("SaveFile Export", "Exporting to savefile: ", curSettings.get(s).getTitle());
+		    curSettings.get(s).write(output);
+		} else {
+		    defaultSettings.get(s).write(output);
+		}
+	    }
+	    output.close();
+	} catch (java.io.IOException e) {
+	    JOptionPane.showMessageDialog(null, "The application couldn't open the save file output stream.  Your DLL settings were not saved.");
+	}
     }
 
     @Override
     protected void initHelp() {
-	helpInfo.put(AV.Settings.PACKAGES_ON, "This feature will duplicate and reorganize records to make actors"
+	helpInfo.put(Settings.PACKAGES_ON, "This feature will duplicate and reorganize records to make actors"
 		+ " with different textures spawn."
-
 		+ "\n\nThe variants will be created from the contents your enabled AV Packages."
-
 		+ "\n\nNOTE: If you disable a package that you have been playing with, "
 		+ "make sure to reset the cells of your savegame.");
 
-	helpInfo.put(AV.Settings.HEIGHT_ON, "This variant setup will give each actor "
+	helpInfo.put(Settings.HEIGHT_ON, "This variant setup will give each actor "
 		+ "that spawns a variance in its height.");
+
+	helpInfo.put(Settings.AV_SETTINGS,
+		"These are AV settings related to this patcher program.");
+
+	helpInfo.put(Settings.DEBUG_LEVEL,
+		"This setting will affect which debug messages will be logged. "
+		+ "The less debug messages printed, the quicker it will process.\n\n"
+		+ "NOTE: This setting will not take effect until the next time the program is run.\n\n"
+		+ "AV Debug \n"
+		+ "Print information regarding reading in the AV"
+		+ " Packages, and duplicating and processing records.\n\n"
+		+ "SkyProc Debug \n"
+		+ "Print information regarding the importing of "
+		+ "mods on your load order.");
+    }
+
+    public enum Settings {
+
+	PACKAGES_ON,
+	HEIGHT_ON,
+	HEIGHT_STD,
+	DEBUG_LEVEL,
+	AV_SETTINGS;
     }
 }

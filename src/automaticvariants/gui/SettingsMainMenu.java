@@ -5,6 +5,7 @@
 package automaticvariants.gui;
 
 import automaticvariants.AV;
+import automaticvariants.AVSaveFile.Settings;
 import java.awt.Dimension;
 import java.awt.Point;
 import lev.gui.LPanel;
@@ -20,7 +21,8 @@ public class SettingsMainMenu extends EncompassingPanel {
     SettingsPackagesPanel managePackagesPanel = new SettingsPackagesPanel(this);
     LMainMenuConfig manageHeightButton;
     SettingsHeightPanel manageHeightPanel = new SettingsHeightPanel(this);
-
+    LMainMenuConfig manageSettingsButton;
+    SettingsOther manageSettingsPanel = new SettingsOther(this);
     static int spacing = 35;
 
     public SettingsMainMenu(Dimension d) {
@@ -28,14 +30,18 @@ public class SettingsMainMenu extends EncompassingPanel {
 
 	menu = new LPanel(AVGUI.leftDimensions);
 
-	managePackagesButton = new LMainMenuConfig("Textures", true, helpPanel, new Point(xPlacement, 170), AV.save, AV.Settings.PACKAGES_ON);
+	managePackagesButton = new LMainMenuConfig("Textures", true, true, helpPanel, new Point(xPlacement, 170), AV.save, Settings.PACKAGES_ON);
 	managePackagesButton.addActionListener(managePackagesPanel.getOpenHandler(this));
 	menu.add(managePackagesButton);
 
-	manageHeightButton = new LMainMenuConfig("Height", true, helpPanel, new Point(xPlacement, managePackagesButton.getY() + spacing), AV.save, AV.Settings.HEIGHT_ON);
+
+	manageSettingsButton = new LMainMenuConfig("Other Settings", false, true, helpPanel, new Point(xPlacement, managePackagesButton.getY() + spacing), AV.save, Settings.AV_SETTINGS);
+	manageSettingsButton.addActionListener(manageSettingsPanel.getOpenHandler(this));
+	menu.add(manageSettingsButton);
+
+	manageHeightButton = new LMainMenuConfig("Height", true, true, helpPanel, new Point(xPlacement, manageSettingsButton.getY() + spacing), AV.save, Settings.HEIGHT_ON);
 	manageHeightButton.addActionListener(manageHeightPanel.getOpenHandler(this));
 //	menu.add(manageHeightButton);
-
     }
 
     @Override

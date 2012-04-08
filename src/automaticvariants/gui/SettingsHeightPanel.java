@@ -5,6 +5,7 @@
 package automaticvariants.gui;
 
 import automaticvariants.AV;
+import automaticvariants.AVSaveFile.Settings;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,7 +40,7 @@ public class SettingsHeightPanel extends DefaultsPanel {
 	    chart.addSeries(AVGUI.darkGreen);
 
 	    stdDevSetting = new LNumericSetting("Height Difference", AVGUI.settingsFont, AVGUI.yellow,
-		    0, maxStd, 1, AV.Settings.HEIGHT_STD, AV.save, parent.helpPanel);
+		    0, maxStd, 1, Settings.HEIGHT_STD, AV.save, parent.helpPanel);
 	    last = setPlacement(stdDevSetting, last);
 	    stdDevSetting.addChangeListener(new SettingsHeightPanel.UpdateChartChangeHandler());
 	    AddSetting(stdDevSetting);
@@ -56,7 +57,7 @@ public class SettingsHeightPanel extends DefaultsPanel {
     void updateChart() {
 	AV.save.update();
 	chart.clear();
-	double std = (AV.save.getInt(AV.Settings.HEIGHT_STD) + minStd) / 3.0;
+	double std = (AV.save.getInt(Settings.HEIGHT_STD) + minStd) / 3.0;
 	if (std == 0) {
 	    return;
 	}
