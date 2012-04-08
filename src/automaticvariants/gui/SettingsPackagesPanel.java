@@ -28,9 +28,11 @@ public class SettingsPackagesPanel extends DefaultsPanel {
     LImagePane display;
     LButton enable;
     LButton disable;
+    LButton gatherAndExit;
     LButton editSpec;
     LPanel packagePanel;
     LPanel varSetSpecPanel;
+
 
     public SettingsPackagesPanel(EncompassingPanel parent_) {
 	super("Texture Variants", AV.save, parent_);
@@ -60,6 +62,15 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 		}
 	    });
 
+	    gatherAndExit = new LButton("Gather Files and Exit");
+	    gatherAndExit.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		    AV.exitProgram();
+		}
+	    });
+
 	    editSpec = new LButton("Edit Specs", save.getSize());
 	    editSpec.setLocation(AVGUI.middleDimensions.x / 2 - editSpec.getWidth() / 2, disable.getY() - editSpec.getHeight() - 15);
 	    editSpec.addActionListener(new ActionListener() {
@@ -81,6 +92,8 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	    packagePanel.Add(enable);
 	    packagePanel.Add(disable);
 	    packagePanel.Add(tree);
+	    gatherAndExit.centerIn(packagePanel, defaults.getY() - gatherAndExit.getHeight() - 15);
+	    packagePanel.Add(gatherAndExit);
 //	    packagePanel.Add(editSpec);
 	    Add(packagePanel);
 
