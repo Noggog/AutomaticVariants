@@ -6,7 +6,6 @@ package automaticvariants.gui;
 
 import automaticvariants.AV;
 import automaticvariants.AVSaveFile.Settings;
-import lev.gui.LButton;
 import lev.gui.LComboBox;
 import lev.gui.LLabel;
 

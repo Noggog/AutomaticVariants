@@ -90,7 +90,7 @@ public class AV {
 	if (initDebugLevel != -1) {
 	    save.saveSettings.get(Settings.DEBUG_LEVEL).setTo(initDebugLevel);
 	}
-	if (save.curSettings.get(Settings.DEBUG_LEVEL).getInt() < 2) {
+	if (save.getInt(Settings.DEBUG_LEVEL) < 2) {
 	    SPGlobal.logging(false);
 	}
     }
@@ -172,7 +172,7 @@ public class AV {
 	SPGUI.progress.setStatus(step++, numSteps, "Initializing AV");
 	Mod source = new Mod("Temporary", false);
 	source.addAsOverrides(SPGlobal.getDB());
-	if (initDebugLevel >= 1) {
+	if (save.getInt(Settings.DEBUG_LEVEL) >= 1) {
 	    SPGlobal.logging(true);
 	}
 
