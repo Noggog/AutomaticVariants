@@ -6,8 +6,6 @@ package automaticvariants;
 
 import com.google.gson.JsonSyntaxException;
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +13,6 @@ import java.util.TreeMap;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
-import lev.LShrinkArray;
 import lev.Ln;
 import skyproc.LVLN.LVLO;
 import skyproc.*;
@@ -266,6 +263,7 @@ public class AVFileVars {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Linking packages to .nif files.");
 	for (VariantSet varSet : variantRead) {
 	    ArrayList<FormID> uniqueArmas = new ArrayList<FormID>();
+	    LMergeMap<String, ARMA> uniqueAlt = new LMergeMap<String,ARMA>(true, true);
 	    for (String[] s : varSet.Target_FormIDs) {
 		FormID id = new FormID(s[0], s[1]);
 		String header = id.toString();
@@ -358,9 +356,25 @@ public class AVFileVars {
 		    }
 
 		    if (!uniqueArmas.contains(piece.getForm())) {
-			uniqueArmas.add(piece.getForm());
-			for (Variant v : varSet.variants) {
-			    nifs.get(armaToNif.get(piece.getForm())).variants.add((Variant) Ln.deepCopy(v));
+			String nif = armaToNif.get(piece.getForm());
+			boolean unique = true;
+			if (uniqueAlt.containsKey(nif)) {
+			    ArrayList<ARMA> loggedSkins = uniqueAlt.get(nif);
+			    for (ARMA a : loggedSkins) {
+				if (piece.equalAltTextures(a, Gender.MALE, Perspective.THIRD_PERSON)) {
+				    unique = false;
+				    break;
+				}
+			    }
+			}
+			if (unique) {
+			    uniqueArmas.add(piece.getForm());
+			    uniqueAlt.put(nif,piece);
+			    for (Variant v : varSet.variants) {
+				nifs.get(nif).variants.add((Variant) Ln.deepCopy(v));
+			    }
+			} else if (SPGlobal.logging()) {
+			    SPGlobal.log(header, "  Already logged an arma with the same nif and alt texture set.");
 			}
 		    } else if (SPGlobal.logging()) {
 			SPGlobal.log(header, "  Already logged that arma for this variant set.");
@@ -529,7 +543,7 @@ public class AVFileVars {
 		    }
 		    ArrayList<ARMA_spec> dups = new ArrayList<ARMA_spec>();
 		    for (Variant v : malenif.variants) {
-			ARMA dup = (ARMA) SPGlobal.getGlobalPatch().makeCopy(armaSrc, v.name + "_ID_" + malenif.uniqueName() + "_arma");
+			ARMA dup = (ARMA) SPGlobal.getGlobalPatch().makeCopy(armaSrc, v.name + "_ID_" + armaSrc.getEDID() + "_arma");
 
 			ArrayList<ARMA.AltTexture> alts = dup.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
 			alts.clear();
@@ -586,7 +600,9 @@ public class AVFileVars {
 		}
 		ArrayList<ARMO_spec> dups = new ArrayList<ARMO_spec>(variants.size());
 		for (ARMA_spec variant : variants) {
-		    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, variant.arma.getEDID().substring(0, variant.arma.getEDID().lastIndexOf("_arma")) + "_armo");
+		    String edid = variant.arma.getEDID().substring(0, variant.arma.getEDID().lastIndexOf("_arma"));
+		    edid = edid.substring(0, edid.lastIndexOf("_")) + "_" + armoSrc.getEDID() + "_armo";  // replace ARMA string with ARMO name
+		    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, edid);
 
 		    dup.removeArmature(target);
 		    dup.addArmature(variant.arma.getForm());
@@ -864,7 +880,7 @@ public class AVFileVars {
 		npcs.put(npcSrc.getForm(), dups);
 	    }
 	}
-	
+
 	SPGUI.progress.incrementBar();
     }
 
