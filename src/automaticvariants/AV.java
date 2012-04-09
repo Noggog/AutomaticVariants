@@ -188,7 +188,7 @@ public class AV {
 
 	// For all non-race SWITCHING variants
 	// (such as height variant scripting)
-	setUpInGameScriptBasedVariants(source);
+//	setUpInGameScriptBasedVariants(source);
 
 	/*
 	 * Close up shop.
