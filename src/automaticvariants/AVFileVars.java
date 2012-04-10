@@ -142,12 +142,10 @@ public class AVFileVars {
     static void importVariants(Mod patch) throws Uninitialized, FileNotFoundException {
 	String header = "Import Variants";
 	if (AVPackagesDir.isDirectory()) {
-	    for (File packageFolder : AVPackagesDir.listFiles()) { // Bellyaches Animals
+	    for (File packageFolder : AVPackagesDir.listFiles()) {
 		if (packageFolder.isDirectory()) {
 		    AVPackage avPackage = new AVPackage(packageFolder);
-		    if (!avPackage.sets.isEmpty()) {
-			AVPackages.add(avPackage);
-		    }
+		    AVPackages.add(avPackage);
 		}
 	    }
 	} else {
@@ -159,6 +157,9 @@ public class AVFileVars {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Linking packages to .nif files.");
 	for (AVPackage avPackage : AVPackages) {
 	    for (VariantSet varSet : avPackage.sets) {
+		if (varSet.isEmpty()) {
+		    continue;
+		}
 		ArrayList<FormID> uniqueArmas = new ArrayList<FormID>();
 		LMergeMap<String, ARMA> uniqueAlt = new LMergeMap<String, ARMA>(true, true);
 		for (String[] s : varSet.spec.Target_FormIDs) {
@@ -364,7 +365,7 @@ public class AVFileVars {
 			int j = 0;
 			for (String texture : textureSet.maps) {
 			    if (!texture.equals("") && texture.lastIndexOf('\\') != -1) {
-				String textureName = texture.substring(texture.lastIndexOf('\\'));
+				String textureName = texture.substring(texture.lastIndexOf('\\') + 1);
 				if (textureName.equalsIgnoreCase(f.getName())) {
 				    replacements[i][j] = f.getPath();
 				    needed[i] = true;
@@ -918,7 +919,7 @@ public class AVFileVars {
 	    NPC_ templateNPC = (NPC_) SPGlobal.getGlobalPatch().getNPCs().get(templateEntry.getForm());
 	    NPC_ dupNPC = skinToNPCdup.get(templateNPC.getSkin());
 	    String[] edidSplit = templateNPC.getEDID().split("_");
-	    String edidBase = edidSplit[0] + "_" + edidSplit[1] + "_" + edidSplit[2] + "_" + edidSplit[3];
+	    String edidBase = edidSplit[0] + "_" + edidSplit[1] + "_" + edidSplit[2] + "_" + edidSplit[3] + "_" + edidSplit[4];
 	    if (dupNPC == null) {
 		dupNPC = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcEntry, edidBase + "_" + npcEntry.getEDID());
 		dupNPC.templateTo(templateNPC);
@@ -1189,5 +1190,4 @@ public class AVFileVars {
 	    probDiv = spec.probDiv;
 	}
     }
-
 }

@@ -22,14 +22,14 @@ public class Variant implements Serializable {
     String name;
     ArrayList<File> textures = new ArrayList<File>();
     TextureVariant[] TXSTs;
-    VariantSpec spec;
+    VariantSpec spec = new VariantSpec();
     static String depth = "* +   # ";
 
     Variant(File variantDir) {
 	this.dir = variantDir;
-	this.name = variantDir.getName();
+	this.name = "";
 	String[] tmp = variantDir.getPath().split("\\\\");
-	for (int i = 1; i <= 3; i++) {
+	for (int i = 1; i <= 4 ; i++) {
 	    name = "_" + tmp[tmp.length - i].replaceAll(" ", "") + name;
 	}
 	name = "AV" + name;
@@ -48,7 +48,6 @@ public class Variant implements Serializable {
 	    } else if (AVFileVars.isSpec(f)) {
 		try {
 		    spec = AVGlobal.parser.fromJson(new FileReader(f), VariantSpec.class);
-		    spec.file = f;
 		    if (SPGlobal.logging()) {
 			spec.print(dir.getName());
 		    }
@@ -80,11 +79,9 @@ public class Variant implements Serializable {
 
     public class VariantSpec implements Serializable {
 
-	File file;
 	int Probability_Divider = 1;
 
-	VariantSpec(File f) {
-	    file = f;
+	VariantSpec() {
 	}
 
 	void print(String header) {

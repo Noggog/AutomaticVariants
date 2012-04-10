@@ -101,6 +101,18 @@ public class VariantSet {
 	return out;
     }
 
+    public boolean isEmpty() {
+	if (groups.isEmpty()) {
+	    return true;
+	}
+	for (VariantGroup g : groups) {
+	    if (!g.variants.isEmpty()) {
+		return false;
+	    }
+	}
+	return true;
+    }
+
     public class VariantSetSpec {
 
 	File file;

@@ -89,8 +89,9 @@ public class AV {
     static void setDebugLevel() {
 	if (initDebugLevel != -1) {
 	    save.saveSettings.get(Settings.DEBUG_LEVEL).setTo(initDebugLevel);
+	    save.curSettings.get(Settings.DEBUG_LEVEL).setTo(initDebugLevel);
 	}
-	if (save.curSettings.get(Settings.DEBUG_LEVEL).getInt() < 2) {
+	if (save.getInt(Settings.DEBUG_LEVEL) < 2) {
 	    SPGlobal.logging(false);
 	}
     }
@@ -161,6 +162,9 @@ public class AV {
 	importMods();
 
 	imported = true;
+	if (save.getInt(Settings.DEBUG_LEVEL) >= 1) {
+	    SPGlobal.logging(true);
+	}
 	SPGUI.progress.setStatus("Done importing.");
     }
 
@@ -172,9 +176,6 @@ public class AV {
 	SPGUI.progress.setStatus(step++, numSteps, "Initializing AV");
 	Mod source = new Mod("Temporary", false);
 	source.addAsOverrides(SPGlobal.getDB());
-	if (initDebugLevel >= 1) {
-	    SPGlobal.logging(true);
-	}
 
 
 	alreadySwitchedList = new FLST(patch, "AV_" + alreadySwitched);
