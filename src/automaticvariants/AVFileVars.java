@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.zip.DataFormatException;
+import javax.swing.JOptionPane;
 import lev.LMergeMap;
 import lev.Ln;
 import skyproc.LVLN.LVLO;
@@ -32,10 +33,10 @@ public class AVFileVars {
 
     static String header = "AV_FileVar";
     static ArrayList<BSA> BSAs;
-    public static File AVPackagesDir = new File("AV Packages/");
-    public static File inactiveAVPackagesDir = new File("Inactive AV Packages/");
-    public static File AVTexturesDir = new File(SPGlobal.pathToData + "textures/AV Packages/");
-    public static File AVMeshesDir = new File(SPGlobal.pathToData + "meshes/AV Packages/");
+    public static String AVPackagesDir = "AV Packages/";
+    public static String inactiveAVPackagesDir = "Inactive AV Packages/";
+    public static String AVTexturesDir = SPGlobal.pathToData + "textures/AV Packages/";
+    public static String AVMeshesDir = SPGlobal.pathToData + "meshes/AV Packages/";
     static String changeRaceFormList = "RaceOptions";
     static String changeRaceBoundWeapons = "BoundWeapons";
     static int numSupportedTextures = 8;
@@ -90,6 +91,9 @@ public class AVFileVars {
 	    npcDupMethod(source);
 	}
 
+	for (AVPackage avp : AVPackages) {
+	    avp.moveOut();
+	}
     }
 
     static void npcDupMethod(Mod source) {
@@ -141,8 +145,9 @@ public class AVFileVars {
      */
     static void importVariants(Mod patch) throws Uninitialized, FileNotFoundException {
 	String header = "Import Variants";
-	if (AVPackagesDir.isDirectory()) {
-	    for (File packageFolder : AVPackagesDir.listFiles()) {
+	File AVPackagesDirFile = new File(AVPackagesDir);
+	if (AVPackagesDirFile.isDirectory()) {
+	    for (File packageFolder : AVPackagesDirFile.listFiles()) {
 		if (packageFolder.isDirectory()) {
 		    AVPackage avPackage = new AVPackage(packageFolder);
 		    AVPackages.add(avPackage);
@@ -989,18 +994,21 @@ public class AVFileVars {
     }
 
     public static void gatherFiles() {
-	ArrayList<File> files = Ln.generateFileList(AVTexturesDir, 2, 3, false);
+	gatherFolder(AVTexturesDir);
+	gatherFolder(AVMeshesDir);
+    }
+
+    public static void gatherFolder (String folder) {
+	ArrayList<File> files = Ln.generateFileList(new File(folder), 2, 4, false);
 	for (File file : files) {
-	    Ln.moveFile(file, new File(AVPackagesDir + file.getPath().substring(AVTexturesDir.getPath().length())), false);
-	    if (file.exists()) {
+	    File dest = new File(AVPackagesDir + file.getPath().substring(folder.length()));
+	    if (dest.exists()) {
 		file.delete();
-	    }
-	}
-	files = Ln.generateFileList(AVMeshesDir, 3, 3, false);
-	for (File file : files) {
-	    Ln.moveFile(file, new File(AVPackagesDir + file.getPath().substring(AVMeshesDir.getPath().length())), false);
-	    if (file.exists()) {
-		file.delete();
+	    } else {
+		if (!Ln.moveFile(file, dest, false)) {
+		    JOptionPane.showMessageDialog(null,
+			"<html>Error gathering files back to AV Package folder.</html>");
+		}
 	    }
 	}
     }

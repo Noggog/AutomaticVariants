@@ -101,6 +101,25 @@ public class VariantSet {
 	return out;
     }
 
+    void moveOut() {
+	for (Variant v : flatten()) {
+	    for (File tex : v.textures) {
+		moveOut(tex, AVFileVars.AVTexturesDir);
+	    }
+	}
+	for (File global : commonTextures) {
+	    moveOut(global, AVFileVars.AVTexturesDir);
+	}
+    }
+
+    static void moveOut(File src, String dest) {
+	File destFile = new File(dest + src.getPath().substring(AVFileVars.AVPackagesDir.length()));
+	if (!Ln.moveFile(src, destFile, false)) {
+	    JOptionPane.showMessageDialog(null,
+		    "<html>Error moving files to their in-game locations.</html>");
+	}
+    }
+
     public boolean isEmpty() {
 	if (groups.isEmpty()) {
 	    return true;

@@ -6,6 +6,8 @@ package automaticvariants;
 
 import java.io.File;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import lev.Ln;
 import skyproc.SPGlobal;
 
 /**
@@ -17,12 +19,25 @@ public class AVPackage {
     File packageName;
     ArrayList<VariantSet> sets = new ArrayList<VariantSet>();
     PackageSpec spec;
-
     static String depth = "";
 
     AVPackage(File packageFolder) {
 	packageName = packageFolder;
 	loadSets();
+    }
+
+    ArrayList<Variant> flatten() {
+	ArrayList<Variant> out = new ArrayList<Variant>();
+	for (VariantSet s : sets) {
+	    out.addAll(s.flatten());
+	}
+	return out;
+    }
+
+    public void moveOut() {
+	for (VariantSet v : sets) {
+	    v.moveOut();
+	}
     }
 
     final public void loadSets() {

@@ -355,18 +355,19 @@ public class AV {
 		} catch (NumberFormatException e) {
 		    SPGlobal.logError(header, "Error parsing the debug level: '" + s + "'");
 		}
-	    } else if (s.contains(extraPth)) {
-		s = s.substring(s.indexOf(extraPth) + extraPth.length()).trim();
-		extraPath = s;
-		SPGlobal.pathToData = extraPath + SPGlobal.pathToData;
-		AVFileVars.AVPackagesDir = new File(extraPath + AVFileVars.AVPackagesDir.getPath());
-		AVFileVars.AVMeshesDir = new File(extraPath + AVFileVars.AVMeshesDir.getPath());
-		AVFileVars.AVTexturesDir = new File(extraPath + AVFileVars.AVTexturesDir.getPath());
-		if (SPGlobal.logging()) {
-		    SPGlobal.logMain(header, "Extra Path set to: " + extraPath);
-		    SPGlobal.logMain(header, "Path to data: " + SPGlobal.pathToData);
-		}
 	    }
+//	    else if (s.contains(extraPth)) {
+//		s = s.substring(s.indexOf(extraPth) + extraPth.length()).trim();
+//		extraPath = s;
+//		SPGlobal.pathToData = extraPath + SPGlobal.pathToData;
+//		AVFileVars.AVPackagesDir = new File(extraPath + AVFileVars.AVPackagesDir.getPath());
+//		AVFileVars.AVMeshesDir = new File(extraPath + AVFileVars.AVMeshesDir.getPath());
+//		AVFileVars.AVTexturesDir = new File(extraPath + AVFileVars.AVTexturesDir.getPath());
+//		if (SPGlobal.logging()) {
+//		    SPGlobal.logMain(header, "Extra Path set to: " + extraPath);
+//		    SPGlobal.logMain(header, "Path to data: " + SPGlobal.pathToData);
+//		}
+//	    }
 
 	}
 
