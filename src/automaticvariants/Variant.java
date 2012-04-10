@@ -7,6 +7,7 @@ package automaticvariants;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import skyproc.SPGlobal;
@@ -15,25 +16,33 @@ import skyproc.SPGlobal;
  *
  * @author Justin Swanson
  */
-public class Variant {
+public class Variant implements Serializable {
 
-    File variantName;
+    File dir;
+    String name;
     ArrayList<File> textures = new ArrayList<File>();
+    TextureVariant[] TXSTs;
     VariantSpec spec;
     static String depth = "* +   # ";
 
     Variant(File variantDir) {
-	variantName = variantDir;
+	this.dir = variantDir;
+	this.name = variantDir.getName();
+	String[] tmp = variantDir.getPath().split("\\\\");
+	for (int i = 1; i <= 3; i++) {
+	    name = "_" + tmp[tmp.length - i].replaceAll(" ", "") + name;
+	}
+	name = "AV" + name;
     }
 
     public void load() {
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(variantName.getName(), depth + "  Adding Variant: " + variantName);
+	    SPGlobal.log(dir.getName(), depth + "  Adding Variant: " + dir);
 	}
-	for (File f : variantName.listFiles()) {
+	for (File f : dir.listFiles()) {
 	    if (AVFileVars.isDDS(f)) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(variantName.getName(), depth + "    Added texture: " + f);
+		    SPGlobal.log(dir.getName(), depth + "    Added texture: " + f);
 		}
 		textures.add(f);
 	    } else if (AVFileVars.isSpec(f)) {
@@ -41,7 +50,7 @@ public class Variant {
 		    spec = AVGlobal.parser.fromJson(new FileReader(f), VariantSpec.class);
 		    spec.file = f;
 		    if (SPGlobal.logging()) {
-			spec.print(variantName.getName());
+			spec.print(dir.getName());
 		    }
 		} catch (com.google.gson.JsonSyntaxException ex) {
 		    SPGlobal.logException(ex);
@@ -52,14 +61,6 @@ public class Variant {
 	    }
 	}
     }
-
-//    String setName(File file, int places) {
-//	String[] tmp = file.getPath().split("\\\\");
-//	for (int i = 1; i <= places; i++) {
-//	    name = "_" + tmp[tmp.length - i].replaceAll(" ", "") + name;
-//	}
-//	name = "AV" + name;
-//    }
 
     public void mergeInGlobals(ArrayList<File> globalFiles) {
 	ArrayList<File> toAdd = new ArrayList<File>();
@@ -77,7 +78,7 @@ public class Variant {
 	}
     }
 
-    class VariantSpec {
+    public class VariantSpec implements Serializable {
 
 	File file;
 	int Probability_Divider = 1;

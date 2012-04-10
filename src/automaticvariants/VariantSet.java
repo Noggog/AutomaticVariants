@@ -7,11 +7,16 @@ package automaticvariants;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
+import lev.LMergeMap;
+import lev.Ln;
 import skyproc.*;
+import skyproc.exceptions.BadParameter;
 
 /**
  *
@@ -20,7 +25,7 @@ import skyproc.*;
 public class VariantSet {
 
     File setDir;
-    ArrayList<VariantGroup> variants;
+    ArrayList<VariantGroup> groups;
     ArrayList<File> commonTextures = new ArrayList<File>(2);
     VariantSetSpec spec;
     static String depth = "* +";
@@ -36,7 +41,7 @@ public class VariantSet {
 	    SPGlobal.log(setDir.getName(), depth + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	    SPGlobal.log(setDir.getName(), depth);
 	}
-	variants = new ArrayList<VariantGroup>(setDir.listFiles().length - 1);
+	groups = new ArrayList<VariantGroup>(setDir.listFiles().length - 1);
 
 	for (File f : setDir.listFiles()) {
 	    if (AVFileVars.isSpec(f)) {
@@ -56,7 +61,7 @@ public class VariantSet {
 	    } else if (f.isDirectory()) {
 		VariantGroup v = new VariantGroup(f);
 		v.load();
-		variants.add(v);
+		groups.add(v);
 
 	    } else if (AVFileVars.isDDS(f)) {
 		commonTextures.add(f);
@@ -77,6 +82,10 @@ public class VariantSet {
 	    return false;
 	}
 
+	for (VariantGroup g : groups) {
+	    g.mergeInGlobals(commonTextures);
+	}
+
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(setDir.getName(), depth + "");
 	    SPGlobal.log(setDir.getName(), depth + "++++++ END Variant Set: " + setDir);
@@ -84,7 +93,15 @@ public class VariantSet {
 	return true;
     }
 
-    class VariantSetSpec {
+    ArrayList<Variant> flatten() {
+	ArrayList<Variant> out = new ArrayList<Variant>();
+	for (VariantGroup g : groups) {
+	    out.addAll(g.variants);
+	}
+	return out;
+    }
+
+    public class VariantSetSpec {
 
 	File file;
 	String[][] Target_FormIDs;

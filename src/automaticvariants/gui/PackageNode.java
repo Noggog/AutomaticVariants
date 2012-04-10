@@ -6,6 +6,8 @@ package automaticvariants.gui;
 
 import automaticvariants.AVFileVars;
 import automaticvariants.AVGlobal;
+import automaticvariants.Variant;
+import automaticvariants.VariantSet;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -210,7 +212,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 		    content += "MISSING SPECIFICATION FILE!";
 		} else {
 		    try {
-			AVFileVars.VariantSet specFile = AVGlobal.parser.fromJson(new FileReader(spec), AVFileVars.VariantSet.class);
+			VariantSet.VariantSetSpec specFile = AVGlobal.parser.fromJson(new FileReader(spec), VariantSet.VariantSetSpec.class);
 			content += specFile.printHelpInfo();
 		    } catch (Exception ex) {
 			content += "ERROR LOADING SPEC FILE!";
@@ -221,7 +223,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	    case VAR:
 		if (spec != null) {
 		    try {
-			AVFileVars.VariantSpec specFile = AVGlobal.parser.fromJson(new FileReader(spec), AVFileVars.VariantSpec.class);
+			Variant.VariantSpec specFile = AVGlobal.parser.fromJson(new FileReader(spec), Variant.VariantSpec.class);
 			content += specFile.printHelpInfo();
 		    } catch (Exception ex) {
 			content += "ERROR LOADING SPEC FILE!";

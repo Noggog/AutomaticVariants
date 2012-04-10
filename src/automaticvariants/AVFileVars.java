@@ -4,10 +4,10 @@
  */
 package automaticvariants;
 
+import automaticvariants.Variant.VariantSpec;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,7 +71,7 @@ public class AVFileVars {
 	SPGUI.progress.incrementBar();
 
 	// Locate and load NIFs, and assign their variants
-	linkToNifs(variantRead);
+	linkToNifs();
 
 	// Generate TXSTs
 	generateTXSTvariants();
@@ -155,13 +155,13 @@ public class AVFileVars {
 	}
     }
 
-    static void linkToNifs(ArrayList<VariantSet> variantRead) {
+    static void linkToNifs() {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Linking packages to .nif files.");
 	for (AVPackage avPackage : AVPackages) {
 	    for (VariantSet varSet : avPackage.sets) {
 		ArrayList<FormID> uniqueArmas = new ArrayList<FormID>();
 		LMergeMap<String, ARMA> uniqueAlt = new LMergeMap<String, ARMA>(true, true);
-		for (String[] s : varSet.Target_FormIDs) {
+		for (String[] s : varSet.spec.Target_FormIDs) {
 		    FormID id = new FormID(s[0], s[1]);
 		    String header = id.toString();
 		    if (SPGlobal.logging()) {
@@ -267,7 +267,7 @@ public class AVFileVars {
 			    if (unique) {
 				uniqueArmas.add(piece.getForm());
 				uniqueAlt.put(nif, piece);
-				for (Variant v : varSet.variants) {
+				for (Variant v : varSet.flatten()) {
 				    nifs.get(nif).variants.add((Variant) Ln.deepCopy(v));
 				}
 			    } else if (SPGlobal.logging()) {
@@ -358,17 +358,15 @@ public class AVFileVars {
 		// Find out which TXSTs need to be generated
 		String[][] replacements = new String[n.textureFields.size()][numSupportedTextures];
 		boolean[] needed = new boolean[n.textureFields.size()];
-		for (String s : v.variantTexturePaths) {
-		    String fileName = s;
-		    fileName = fileName.substring(fileName.lastIndexOf('\\'));
+		for (File f : v.textures) {
 		    int i = 0;
 		    for (AV_Nif.TextureField textureSet : n.textureFields) {
 			int j = 0;
 			for (String texture : textureSet.maps) {
 			    if (!texture.equals("") && texture.lastIndexOf('\\') != -1) {
 				String textureName = texture.substring(texture.lastIndexOf('\\'));
-				if (textureName.equalsIgnoreCase(fileName)) {
-				    replacements[i][j] = s;
+				if (textureName.equalsIgnoreCase(f.getName())) {
+				    replacements[i][j] = f.getPath();
 				    needed[i] = true;
 				}
 			    }
@@ -383,7 +381,7 @@ public class AVFileVars {
 		}
 
 		// Make new TXSTs
-		v.textureVariants = new TextureVariant[n.textureFields.size()];
+		v.TXSTs = new TextureVariant[n.textureFields.size()];
 		int i = 0;
 		TXST last = null;
 		for (AV_Nif.TextureField textureSet : n.textureFields) {
@@ -414,7 +412,7 @@ public class AVFileVars {
 			    }
 			    last = tmpTXST;
 			}
-			v.textureVariants[i] = new TextureVariant(last, textureSet.title);
+			v.TXSTs[i] = new TextureVariant(last, textureSet.title);
 		    }
 		    i++;
 		}
@@ -447,7 +445,7 @@ public class AVFileVars {
 			ArrayList<ARMA.AltTexture> alts = dup.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
 			alts.clear();
 			int i = 0;
-			for (TextureVariant texVar : v.textureVariants) {
+			for (TextureVariant texVar : v.TXSTs) {
 			    if (texVar != null) {
 				alts.add(new ARMA.AltTexture(texVar.nifFieldName, texVar.textureRecord.getForm(), i));
 			    }
@@ -458,7 +456,7 @@ public class AVFileVars {
 //			femalealts.clear();
 //			femalealts.addAll(alts);
 
-			dups.add(new ARMA_spec(dup, v.specs));
+			dups.add(new ARMA_spec(dup, v.spec));
 		    }
 		    armatures.put(armaSrc.getForm(), dups);
 		}
@@ -1189,17 +1187,6 @@ public class AVFileVars {
 	RACE_spec(RACE race, ARMO_spec spec) {
 	    this.race = race;
 	    probDiv = spec.probDiv;
-	}
-    }
-
-    static class TextureVariant implements Serializable {
-
-	String nifFieldName;
-	TXST textureRecord;
-
-	TextureVariant(TXST txst, String name) {
-	    textureRecord = txst;
-	    nifFieldName = name;
 	}
     }
 
