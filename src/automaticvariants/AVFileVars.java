@@ -134,7 +134,9 @@ public class AVFileVars {
 	subInSwitcherRaces(source);
     }
 
-    // Shared methods
+    /*
+     * Shared methods
+     */
     static VariantSet importVariantSet(File variantFolder, String header) throws FileNotFoundException, JsonSyntaxException {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "======================================================================");
@@ -145,9 +147,6 @@ public class AVFileVars {
 	VariantSet varSet = new VariantSet();
 	ArrayList<File> commonTexturePaths = new ArrayList<File>();
 	boolean loadedSpecs = false;
-
-
-
 
 	for (File variantFile : variantFolder.listFiles()) {  // Texture folders ("Grey Horker")
 	    if (variantFile.isFile() && variantFile.getName().toUpperCase().endsWith(".JSON")) {
@@ -238,19 +237,20 @@ public class AVFileVars {
 	if (AVPackages.isDirectory()) {
 	    for (File packageFolder : AVPackages.listFiles()) { // Bellyaches Animals
 		if (packageFolder.isDirectory()) {
-		    for (File variantSet : packageFolder.listFiles()) { // Horker
-			if (variantSet.isDirectory()) {
-			    try {
-				VariantSet varSet = importVariantSet(variantSet, header);
-				if (!varSet.isEmpty()) {
-				    out.add(varSet);
-				}
-			    } catch (com.google.gson.JsonSyntaxException ex) {
-				SPGlobal.logException(ex);
-				JOptionPane.showMessageDialog(null, "Variant set " + variantSet.getPath() + " had a bad specifications file.  Skipped.");
-			    }
-			}
-		    }
+		    AVPackage avPackage = new AVPackage(packageFolder);
+//		    for (File variantSet : packageFolder.listFiles()) { // Horker
+//			if (variantSet.isDirectory()) {
+//			    try {
+//				VariantSet varSet = importVariantSet(variantSet, header);
+//				if (!varSet.isEmpty()) {
+//				    out.add(varSet);
+//				}
+//			    } catch (com.google.gson.JsonSyntaxException ex) {
+//				SPGlobal.logException(ex);
+//				JOptionPane.showMessageDialog(null, "Variant set " + variantSet.getPath() + " had a bad specifications file.  Skipped.");
+//			    }
+//			}
+//		    }
 		}
 	    }
 	} else {
@@ -263,7 +263,7 @@ public class AVFileVars {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Linking packages to .nif files.");
 	for (VariantSet varSet : variantRead) {
 	    ArrayList<FormID> uniqueArmas = new ArrayList<FormID>();
-	    LMergeMap<String, ARMA> uniqueAlt = new LMergeMap<String,ARMA>(true, true);
+	    LMergeMap<String, ARMA> uniqueAlt = new LMergeMap<String, ARMA>(true, true);
 	    for (String[] s : varSet.Target_FormIDs) {
 		FormID id = new FormID(s[0], s[1]);
 		String header = id.toString();
@@ -369,7 +369,7 @@ public class AVFileVars {
 			}
 			if (unique) {
 			    uniqueArmas.add(piece.getForm());
-			    uniqueAlt.put(nif,piece);
+			    uniqueAlt.put(nif, piece);
 			    for (Variant v : varSet.variants) {
 				nifs.get(nif).variants.add((Variant) Ln.deepCopy(v));
 			    }
@@ -627,7 +627,9 @@ public class AVFileVars {
 	}
     }
 
-    // Race Switch Methods
+    /*
+     * Race Switch Methods
+     */
     static void generateRACEvariants(Mod source) {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Generating RACE variants.");
 	if (SPGlobal.logging()) {
@@ -820,7 +822,9 @@ public class AVFileVars {
 	}
     }
 
-    //NPC dup methods
+    /*
+     * NPC dup methods
+     */
     static void generateNPCvariants(Mod source) {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Generating NPC variants.");
 	if (SPGlobal.logging()) {
@@ -1074,7 +1078,9 @@ public class AVFileVars {
 	}
     }
 
-    // Other Methods
+    /*
+     * Other Methods
+     */
     static int readjustTXSTindices(int j) {
 	// Because nif fields map 2->3 if facegen flag is on.
 	int set = j;
@@ -1101,7 +1107,17 @@ public class AVFileVars {
 	}
     }
 
-    // Internal Classes
+    static boolean isSpec(File f) {
+	return Ln.isFileType(f, "JSON");
+    }
+
+    static boolean isDDS(File f) {
+	return Ln.isFileType(f, "DDS");
+    }
+
+    /*
+     * Internal Classes
+     */
     static class AV_Nif {
 
 	String name;
