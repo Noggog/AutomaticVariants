@@ -53,6 +53,22 @@ public class Variant {
 	}
     }
 
+    public void mergeInGlobals(ArrayList<File> globalFiles) {
+	ArrayList<File> toAdd = new ArrayList<File>();
+	for (File global : globalFiles) {
+	    boolean exists = false;
+	    for (File src : textures) {
+		if (global.getName().equalsIgnoreCase(src.getName())) {
+		    exists = true;
+		    break;
+		}
+	    }
+	    if (!exists) {
+		toAdd.add(global);
+	    }
+	}
+    }
+
     class VariantSpec {
 
 	File file;

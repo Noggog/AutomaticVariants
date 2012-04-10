@@ -38,4 +38,10 @@ public class VariantGroup {
 	    SPGlobal.log(groupName.getName(), depth + "####################################");
 	}
     }
+
+    public void mergeInGlobals(ArrayList<File> globalFiles) {
+	for (Variant v : variants) {
+	    v.mergeInGlobals(globalFiles);
+	}
+    }
 }

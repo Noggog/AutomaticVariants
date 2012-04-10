@@ -77,13 +77,6 @@ public class VariantSet {
 	    return false;
 	}
 
-	// If no specific variants, but generic files still present (perhaps to make a single variant)
-	if (!commonTextures.isEmpty() && variants.isEmpty()) {
-//	    AVFileVars.Variant variant = new AVFileVars.Variant();
-//	    variant.setName(variantFolder, 2);
-//	    variants.add(variant);
-	}
-
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(setDir.getName(), depth + "");
 	    SPGlobal.log(setDir.getName(), depth + "++++++ END Variant Set: " + setDir);
