@@ -255,9 +255,9 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
     public boolean moveFile(File src) {
 	String prefix;
 	if (disabled) {
-	    prefix = AVFileVars.inactiveAVPackages.getPath();
+	    prefix = AVFileVars.inactiveAVPackagesDir.getPath();
 	} else {
-	    prefix = AVFileVars.AVPackages.getPath();
+	    prefix = AVFileVars.AVPackagesDir.getPath();
 	}
 	File dest = new File(prefix + src.getPath().substring(src.getPath().indexOf("\\")));
 	return Ln.moveFile(src, dest, true);

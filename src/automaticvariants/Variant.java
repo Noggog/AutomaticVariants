@@ -53,6 +53,14 @@ public class Variant {
 	}
     }
 
+//    String setName(File file, int places) {
+//	String[] tmp = file.getPath().split("\\\\");
+//	for (int i = 1; i <= places; i++) {
+//	    name = "_" + tmp[tmp.length - i].replaceAll(" ", "") + name;
+//	}
+//	name = "AV" + name;
+//    }
+
     public void mergeInGlobals(ArrayList<File> globalFiles) {
 	ArrayList<File> toAdd = new ArrayList<File>();
 	for (File global : globalFiles) {
@@ -82,6 +90,10 @@ public class Variant {
 	    SPGlobal.log(header, depth + "    --- Variant Specifications loaded: --");
 	    SPGlobal.log(header, depth + "    |   Probability Div: 1/" + Probability_Divider);
 	    SPGlobal.log(header, depth + "    -------------------------------------");
+	}
+
+	public String printHelpInfo() {
+	    return "Relative Probability: 1/" + Probability_Divider;
 	}
     }
 }

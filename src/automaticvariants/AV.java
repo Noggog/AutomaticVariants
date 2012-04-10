@@ -184,7 +184,7 @@ public class AV {
 
 	// For all race SWITCHING variants
 	// (such as texture variants)
-	AVFileVars.setUpRaceSwitchVariants(source, patch);
+	AVFileVars.setUpFileVariants(source, patch);
 
 	// For all non-race SWITCHING variants
 	// (such as height variant scripting)
@@ -358,9 +358,9 @@ public class AV {
 		s = s.substring(s.indexOf(extraPth) + extraPth.length()).trim();
 		extraPath = s;
 		SPGlobal.pathToData = extraPath + SPGlobal.pathToData;
-		AVFileVars.AVPackages = new File(extraPath + AVFileVars.AVPackages.getPath());
-		AVFileVars.AVMeshes = new File(extraPath + AVFileVars.AVMeshes.getPath());
-		AVFileVars.AVTextures = new File(extraPath + AVFileVars.AVTextures.getPath());
+		AVFileVars.AVPackagesDir = new File(extraPath + AVFileVars.AVPackagesDir.getPath());
+		AVFileVars.AVMeshesDir = new File(extraPath + AVFileVars.AVMeshesDir.getPath());
+		AVFileVars.AVTexturesDir = new File(extraPath + AVFileVars.AVTexturesDir.getPath());
 		if (SPGlobal.logging()) {
 		    SPGlobal.logMain(header, "Extra Path set to: " + extraPath);
 		    SPGlobal.logMain(header, "Path to data: " + SPGlobal.pathToData);

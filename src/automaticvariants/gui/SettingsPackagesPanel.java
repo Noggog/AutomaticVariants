@@ -170,9 +170,9 @@ public class SettingsPackagesPanel extends DefaultsPanel {
     }
 
     public void loadPackageList() {
-	PackageNode AVNode = new PackageNode(AVFileVars.AVPackages, parent.helpPanel);
-	loadPackageList(AVFileVars.AVPackages, AVNode, false);
-	loadPackageList(AVFileVars.inactiveAVPackages, AVNode, true);
+	PackageNode AVNode = new PackageNode(AVFileVars.AVPackagesDir, parent.helpPanel);
+	loadPackageList(AVFileVars.AVPackagesDir, AVNode, false);
+	loadPackageList(AVFileVars.inactiveAVPackagesDir, AVNode, true);
 	AVNode.sort();
 	tree.setModel(new DefaultTreeModel(AVNode));
     }

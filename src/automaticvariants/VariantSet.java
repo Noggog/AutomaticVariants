@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import skyproc.SPGlobal;
+import skyproc.*;
 
 /**
  *
@@ -98,6 +98,20 @@ public class VariantSet {
 	    }
 	    SPGlobal.log(set, depth + "   |   Apply to Similar: " + Apply_To_Similar);
 	    SPGlobal.log(set, depth + "   -------------------------------------");
+	}
+
+	public String printHelpInfo() {
+	    String content = "Seeds:";
+	    for (String[] formID : Target_FormIDs) {
+		content += "\n    ";
+		FormID id = new FormID(formID[0], formID[1]);
+		NPC_ npc = (NPC_) SPDatabase.getMajor(id, GRUP_TYPE.NPC_);
+		if (npc != null) {
+		    content += npc.getEDID() + "  |  ";
+		}
+		content += id.getFormStr();
+	    }
+	    return content;
 	}
     }
 }

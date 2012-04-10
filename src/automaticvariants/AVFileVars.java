@@ -4,14 +4,15 @@
  */
 package automaticvariants;
 
-import com.google.gson.JsonSyntaxException;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.zip.DataFormatException;
-import javax.swing.JOptionPane;
 import lev.LMergeMap;
 import lev.Ln;
 import skyproc.LVLN.LVLO;
@@ -29,12 +30,12 @@ import skyproc.exceptions.Uninitialized;
  */
 public class AVFileVars {
 
-    static String header = "AV_RaceSwitch";
+    static String header = "AV_FileVar";
     static ArrayList<BSA> BSAs;
-    public static File AVPackages = new File("AV Packages/");
-    public static File inactiveAVPackages = new File("Inactive AV Packages/");
-    public static File AVTextures = new File(SPGlobal.pathToData + "textures/AV Packages/");
-    public static File AVMeshes = new File(SPGlobal.pathToData + "meshes/AV Packages/");
+    public static File AVPackagesDir = new File("AV Packages/");
+    public static File inactiveAVPackagesDir = new File("Inactive AV Packages/");
+    public static File AVTexturesDir = new File(SPGlobal.pathToData + "textures/AV Packages/");
+    public static File AVMeshesDir = new File(SPGlobal.pathToData + "meshes/AV Packages/");
     static String changeRaceFormList = "RaceOptions";
     static String changeRaceBoundWeapons = "BoundWeapons";
     static int numSupportedTextures = 8;
@@ -42,6 +43,7 @@ public class AVFileVars {
     /*
      * Variant storage lists/maps
      */
+    static ArrayList<AVPackage> AVPackages = new ArrayList<AVPackage>();
     // AV_Nif name is key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     // ArmaSrc is key
@@ -60,12 +62,12 @@ public class AVFileVars {
     static FLST boundList;
     static boolean raceSwitchMethod = false;
 
-    static void setUpRaceSwitchVariants(Mod source, Mod patch) throws IOException, Uninitialized, BadParameter {
+    static void setUpFileVariants(Mod source, Mod patch) throws IOException, Uninitialized, BadParameter {
 
 	BSAs = BSA.loadInBSAs(BSA.FileType.NIF, BSA.FileType.DDS);
 
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Importing AV Packages");
-	ArrayList<VariantSet> variantRead = importVariants(patch);
+	importVariants(patch);
 	SPGUI.progress.incrementBar();
 
 	// Locate and load NIFs, and assign their variants
@@ -137,267 +139,164 @@ public class AVFileVars {
     /*
      * Shared methods
      */
-    static VariantSet importVariantSet(File variantFolder, String header) throws FileNotFoundException, JsonSyntaxException {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "======================================================================");
-	    SPGlobal.log(header, "Importing variant set: " + variantFolder.getPath());
-	    SPGlobal.log(header, "======================================================================");
-	}
-	ArrayList<Variant> variants = new ArrayList<Variant>();
-	VariantSet varSet = new VariantSet();
-	ArrayList<File> commonTexturePaths = new ArrayList<File>();
-	boolean loadedSpecs = false;
-
-	for (File variantFile : variantFolder.listFiles()) {  // Texture folders ("Grey Horker")
-	    if (variantFile.isFile() && variantFile.getName().toUpperCase().endsWith(".JSON")) {
-		varSet = AVGlobal.parser.fromJson(new FileReader(variantFile), VariantSet.class);
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(variantFile.getName(), "  General Specifications loaded: ");
-		    SPGlobal.log(variantFile.getName(), "    Target FormIDs: ");
-		    for (String[] s : varSet.Target_FormIDs) {
-			SPGlobal.log(variantFile.getName(), "      " + s[0] + " | " + s[1]);
-		    }
-		    SPGlobal.log(variantFile.getName(), "    Apply to Similar: " + varSet.Apply_To_Similar);
-		}
-		loadedSpecs = true;
-	    } else if (variantFile.isFile() && variantFile.getName().toUpperCase().endsWith(".DDS")) {
-		commonTexturePaths.add(variantFile);
-		Ln.moveFile(variantFile, new File(AVTextures + variantFile.getPath().substring(AVPackages.getPath().length())), false);
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(variantFile.getName(), "  Loaded common texture: " + variantFile.getPath());
-		}
-	    } else if (variantFile.isDirectory()) {
-		Variant variant = new Variant();
-		variant.setName(variantFile, 3);
-		for (File file : variantFile.listFiles()) {  // Files .dds, etc
-		    if (file.isFile()) {
-			if (file.getName().endsWith(".dds")) {
-			    variant.variantTexturePaths.add(file.getPath());
-			    Ln.moveFile(file, new File(AVTextures + file.getPath().substring(AVPackages.getPath().length())), false);
-			    if (SPGlobal.logging()) {
-				SPGlobal.log(variantFile.getName(), "  Loaded texture: " + file.getPath());
-			    }
-			} else if (file.getName().endsWith(".json")) {
-			    variant.specs = AVGlobal.parser.fromJson(new FileReader(file), VariantSpec.class);
-			    variant.specs.print();
-			}
-		    }
-		}
-		if (!variant.isEmpty()) {
-		    variants.add(variant);
-		} else if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Variant was empty, skipping.");
-		}
-	    } else if (SPGlobal.logging()) {
-		SPGlobal.log(header, "  Skipped file: " + variantFile);
-	    }
-	    if (SPGlobal.logging()) {
-		SPGlobal.log(header, "  ----------------------------------------------------------");
-	    }
-
-	}
-	// If no specifications file, return empty
-	if (!loadedSpecs) {
-	    if (SPGlobal.logging()) {
-		SPGlobal.log(header, "Variant set " + variantFolder.getPath() + "did not have specifications file.  Skipping.");
-	    }
-	    return varSet;
-	}
-
-	// If no specific variants, but generic files still present (perhaps to make a single variant)
-	if (!commonTexturePaths.isEmpty() && variants.isEmpty()) {
-	    Variant variant = new Variant();
-	    variant.setName(variantFolder, 2);
-	    variants.add(variant);
-	}
-
-	for (Variant v : variants) {
-	    for (File f : commonTexturePaths) {
-		boolean skip = false;
-		// Check to see if deeper folder has a more specialized version of the file
-		for (String s : v.variantTexturePaths) {
-		    if (s.toUpperCase().contains(f.getName().toUpperCase())) {
-			skip = true;
-			break;
-		    }
-		}
-		if (!skip) {
-		    v.variantTexturePaths.add(f.getPath());
-		}
-	    }
-	}
-
-	varSet.variants.addAll(variants);
-	return varSet;
-    }
-
-    static ArrayList<VariantSet> importVariants(Mod patch) throws Uninitialized, FileNotFoundException {
+    static void importVariants(Mod patch) throws Uninitialized, FileNotFoundException {
 	String header = "Import Variants";
-	ArrayList<VariantSet> out = new ArrayList<VariantSet>();
-	if (AVPackages.isDirectory()) {
-	    for (File packageFolder : AVPackages.listFiles()) { // Bellyaches Animals
+	if (AVPackagesDir.isDirectory()) {
+	    for (File packageFolder : AVPackagesDir.listFiles()) { // Bellyaches Animals
 		if (packageFolder.isDirectory()) {
 		    AVPackage avPackage = new AVPackage(packageFolder);
-//		    for (File variantSet : packageFolder.listFiles()) { // Horker
-//			if (variantSet.isDirectory()) {
-//			    try {
-//				VariantSet varSet = importVariantSet(variantSet, header);
-//				if (!varSet.isEmpty()) {
-//				    out.add(varSet);
-//				}
-//			    } catch (com.google.gson.JsonSyntaxException ex) {
-//				SPGlobal.logException(ex);
-//				JOptionPane.showMessageDialog(null, "Variant set " + variantSet.getPath() + " had a bad specifications file.  Skipped.");
-//			    }
-//			}
-//		    }
+		    if (!avPackage.sets.isEmpty()) {
+			AVPackages.add(avPackage);
+		    }
 		}
 	    }
 	} else {
 	    SPGlobal.logError("Package Location", "There was no AV Packages folder.");
 	}
-	return out;
     }
 
     static void linkToNifs(ArrayList<VariantSet> variantRead) {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Linking packages to .nif files.");
-	for (VariantSet varSet : variantRead) {
-	    ArrayList<FormID> uniqueArmas = new ArrayList<FormID>();
-	    LMergeMap<String, ARMA> uniqueAlt = new LMergeMap<String, ARMA>(true, true);
-	    for (String[] s : varSet.Target_FormIDs) {
-		FormID id = new FormID(s[0], s[1]);
-		String header = id.toString();
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "====================================================================");
-		    SPGlobal.log(header, "Locating " + SPDatabase.getMajor(id, GRUP_TYPE.NPC_) + "'s NIF file and analyzing the Skin.");
-		    SPGlobal.log(header, "====================================================================");
-		}
-		String nifPath = "...";
-		try {
-
-		    NPC_ record = (NPC_) SPDatabase.getMajor(id, GRUP_TYPE.NPC_);
-		    if (record == null) {
-			SPGlobal.logError(header, "Could not locate NPC with FormID: " + s);
-			continue;
-		    } else if (SPGlobal.logging()) {
-			SPGlobal.log(header, "  " + record);
+	for (AVPackage avPackage : AVPackages) {
+	    for (VariantSet varSet : avPackage.sets) {
+		ArrayList<FormID> uniqueArmas = new ArrayList<FormID>();
+		LMergeMap<String, ARMA> uniqueAlt = new LMergeMap<String, ARMA>(true, true);
+		for (String[] s : varSet.Target_FormIDs) {
+		    FormID id = new FormID(s[0], s[1]);
+		    String header = id.toString();
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "====================================================================");
+			SPGlobal.log(header, "Locating " + SPDatabase.getMajor(id, GRUP_TYPE.NPC_) + "'s NIF file and analyzing the Skin.");
+			SPGlobal.log(header, "====================================================================");
 		    }
+		    String nifPath = "...";
+		    try {
 
-		    // NPC's skin field
-		    ARMO skin;
-		    skin = (ARMO) SPDatabase.getMajor(record.getSkin(), GRUP_TYPE.ARMO);
-
-		    if (skin == null) {
-			RACE race = (RACE) SPDatabase.getMajor(record.getRace(), GRUP_TYPE.RACE);
-			if (race == null) {
-			    SPGlobal.logError(header, "Could not locate RACE with FormID: " + record.getRace());
+			NPC_ record = (NPC_) SPDatabase.getMajor(id, GRUP_TYPE.NPC_);
+			if (record == null) {
+			    SPGlobal.logError(header, "Could not locate NPC with FormID: " + s);
 			    continue;
 			} else if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "  " + race);
+			    SPGlobal.log(header, "  " + record);
 			}
 
-			skin = (ARMO) SPDatabase.getMajor(race.getWornArmor(), GRUP_TYPE.ARMO);
+			// NPC's skin field
+			ARMO skin;
+			skin = (ARMO) SPDatabase.getMajor(record.getSkin(), GRUP_TYPE.ARMO);
+
 			if (skin == null) {
-			    SPGlobal.logError(header, "Could not locate ARMO with FormID: " + race.getWornArmor());
+			    RACE race = (RACE) SPDatabase.getMajor(record.getRace(), GRUP_TYPE.RACE);
+			    if (race == null) {
+				SPGlobal.logError(header, "Could not locate RACE with FormID: " + record.getRace());
+				continue;
+			    } else if (SPGlobal.logging()) {
+				SPGlobal.log(header, "  " + race);
+			    }
+
+			    skin = (ARMO) SPDatabase.getMajor(race.getWornArmor(), GRUP_TYPE.ARMO);
+			    if (skin == null) {
+				SPGlobal.logError(header, "Could not locate ARMO with FormID: " + race.getWornArmor());
+				continue;
+			    } else if (SPGlobal.logging()) {
+				SPGlobal.log(header, "  " + skin);
+			    }
+			}
+
+			// Didn't have a skin
+			if (skin.getArmatures().isEmpty()) {
+			    SPGlobal.logError(header, skin + " did not have any armatures.");
+			    continue;
+			}
+
+			// Locate armature that matches armor's race
+			ARMA piece = null;
+			for (FormID arma : skin.getArmatures()) {
+			    piece = (ARMA) SPDatabase.getMajor(arma);
+			    if (piece.getRace().equals(skin.getRace())) {
+				break;
+			    }
+			    piece = null;
+			}
+			if (piece == null) {
+			    SPGlobal.logError(header, "Could not locate ARMA matching ARMO's race");
 			    continue;
 			} else if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "  " + skin);
+			    SPGlobal.log(header, "  " + piece);
 			}
-		    }
 
-		    // Didn't have a skin
-		    if (skin.getArmatures().isEmpty()) {
-			SPGlobal.logError(header, skin + " did not have any armatures.");
-			continue;
-		    }
-
-		    // Locate armature that matches armor's race
-		    ARMA piece = null;
-		    for (FormID arma : skin.getArmatures()) {
-			piece = (ARMA) SPDatabase.getMajor(arma);
-			if (piece.getRace().equals(skin.getRace())) {
-			    break;
+			// Locate armature's nif
+			nifPath = piece.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
+			if (nifPath.equals("")) {
+			    SPGlobal.logError(header, piece + " did not have a male third person model.");
+			    continue;
 			}
-			piece = null;
-		    }
-		    if (piece == null) {
-			SPGlobal.logError(header, "Could not locate ARMA matching ARMO's race");
-			continue;
-		    } else if (SPGlobal.logging()) {
-			SPGlobal.log(header, "  " + piece);
-		    }
 
-		    // Locate armature's nif
-		    nifPath = piece.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
-		    if (nifPath.equals("")) {
-			SPGlobal.logError(header, piece + " did not have a male third person model.");
-			continue;
-		    }
+			// Load in and add to maps
+			if (!armaToNif.containsKey(piece.getForm()) && !piece.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON).isEmpty()) {
+			    // Has alt texture, separate
+			    splitVariant(nifPath, piece);
+			} else if (!nifs.containsKey(nifPath)) {
+			    AV_Nif nif = new AV_Nif(nifPath);
+			    nif.load();
 
-		    // Load in and add to maps
-		    if (!armaToNif.containsKey(piece.getForm()) && !piece.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON).isEmpty()) {
-			// Has alt texture, separate
-			splitVariant(nifPath, piece);
-		    } else if (!nifs.containsKey(nifPath)) {
-			AV_Nif nif = new AV_Nif(nifPath);
-			nif.load();
+			    SPGlobal.log(header, "  Nif path: " + nifPath);
+			    nif.print();
 
-			SPGlobal.log(header, "  Nif path: " + nifPath);
-			nif.print();
-
-			nifs.put(nif.name, nif);
-			armaToNif.put(piece.getForm(), nif.name);
-		    } else {
-			if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "  Already a nif with path: " + nifPath);
+			    nifs.put(nif.name, nif);
+			    armaToNif.put(piece.getForm(), nif.name);
+			} else {
+			    if (SPGlobal.logging()) {
+				SPGlobal.log(header, "  Already a nif with path: " + nifPath);
+			    }
+			    // Doesn't have alt texture, just route to existing nif
+			    armaToNif.put(piece.getForm(), nifPath);
 			}
-			// Doesn't have alt texture, just route to existing nif
-			armaToNif.put(piece.getForm(), nifPath);
-		    }
 
-		    if (!uniqueArmas.contains(piece.getForm())) {
-			String nif = armaToNif.get(piece.getForm());
-			boolean unique = true;
-			if (uniqueAlt.containsKey(nif)) {
-			    ArrayList<ARMA> loggedSkins = uniqueAlt.get(nif);
-			    for (ARMA a : loggedSkins) {
-				if (piece.equalAltTextures(a, Gender.MALE, Perspective.THIRD_PERSON)) {
-				    unique = false;
-				    break;
+			if (!uniqueArmas.contains(piece.getForm())) {
+			    String nif = armaToNif.get(piece.getForm());
+			    boolean unique = true;
+			    if (uniqueAlt.containsKey(nif)) {
+				ArrayList<ARMA> loggedSkins = uniqueAlt.get(nif);
+				for (ARMA a : loggedSkins) {
+				    if (piece.equalAltTextures(a, Gender.MALE, Perspective.THIRD_PERSON)) {
+					unique = false;
+					break;
+				    }
 				}
 			    }
-			}
-			if (unique) {
-			    uniqueArmas.add(piece.getForm());
-			    uniqueAlt.put(nif, piece);
-			    for (Variant v : varSet.variants) {
-				nifs.get(nif).variants.add((Variant) Ln.deepCopy(v));
+			    if (unique) {
+				uniqueArmas.add(piece.getForm());
+				uniqueAlt.put(nif, piece);
+				for (Variant v : varSet.variants) {
+				    nifs.get(nif).variants.add((Variant) Ln.deepCopy(v));
+				}
+			    } else if (SPGlobal.logging()) {
+				SPGlobal.log(header, "  Already logged an arma with the same nif and alt texture set.");
 			    }
 			} else if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "  Already logged an arma with the same nif and alt texture set.");
+			    SPGlobal.log(header, "  Already logged that arma for this variant set.");
 			}
-		    } else if (SPGlobal.logging()) {
-			SPGlobal.log(header, "  Already logged that arma for this variant set.");
-		    }
 
-		    //Oh nos
-		} catch (BadParameter ex) {
-		    SPGlobal.logError(id.toString(), "Bad parameter passed to nif texture parser: " + nifPath);
-		    SPGlobal.logException(ex);
-		} catch (FileNotFoundException ex) {
-		    SPGlobal.logError(id.toString(), "Could not find nif file: " + nifPath);
-		    SPGlobal.logException(ex);
-		} catch (IOException ex) {
-		    SPGlobal.logError(id.toString(), "File IO error getting nif file: " + nifPath);
-		    SPGlobal.logException(ex);
-		} catch (DataFormatException ex) {
-		    SPGlobal.logError(id.toString(), "BSA had a bad zipped file: " + nifPath);
-		    SPGlobal.logException(ex);
-		} catch (Exception e) {
-		    SPGlobal.logError(header, "Exception occured while loading nif: " + nifPath);
-		    SPGlobal.logException(e);
+			//Oh nos
+		    } catch (BadParameter ex) {
+			SPGlobal.logError(id.toString(), "Bad parameter passed to nif texture parser: " + nifPath);
+			SPGlobal.logException(ex);
+		    } catch (FileNotFoundException ex) {
+			SPGlobal.logError(id.toString(), "Could not find nif file: " + nifPath);
+			SPGlobal.logException(ex);
+		    } catch (IOException ex) {
+			SPGlobal.logError(id.toString(), "File IO error getting nif file: " + nifPath);
+			SPGlobal.logException(ex);
+		    } catch (DataFormatException ex) {
+			SPGlobal.logError(id.toString(), "BSA had a bad zipped file: " + nifPath);
+			SPGlobal.logException(ex);
+		    } catch (Exception e) {
+			SPGlobal.logError(header, "Exception occured while loading nif: " + nifPath);
+			SPGlobal.logException(e);
+		    }
 		}
 	    }
+
 	}
 	SPGUI.progress.incrementBar();
     }
@@ -1091,16 +990,16 @@ public class AVFileVars {
     }
 
     public static void gatherFiles() {
-	ArrayList<File> files = Ln.generateFileList(AVTextures, 2, 3, false);
+	ArrayList<File> files = Ln.generateFileList(AVTexturesDir, 2, 3, false);
 	for (File file : files) {
-	    Ln.moveFile(file, new File(AVPackages + file.getPath().substring(AVTextures.getPath().length())), false);
+	    Ln.moveFile(file, new File(AVPackagesDir + file.getPath().substring(AVTexturesDir.getPath().length())), false);
 	    if (file.exists()) {
 		file.delete();
 	    }
 	}
-	files = Ln.generateFileList(AVMeshes, 3, 3, false);
+	files = Ln.generateFileList(AVMeshesDir, 3, 3, false);
 	for (File file : files) {
-	    Ln.moveFile(file, new File(AVPackages + file.getPath().substring(AVMeshes.getPath().length())), false);
+	    Ln.moveFile(file, new File(AVPackagesDir + file.getPath().substring(AVMeshesDir.getPath().length())), false);
 	    if (file.exists()) {
 		file.delete();
 	    }
@@ -1293,26 +1192,6 @@ public class AVFileVars {
 	}
     }
 
-    public static class Variant implements Serializable {
-
-	String name = "";
-	ArrayList<String> variantTexturePaths = new ArrayList<String>();
-	TextureVariant[] textureVariants;
-	VariantSpec specs = new VariantSpec();
-
-	void setName(File file, int places) {
-	    String[] tmp = file.getPath().split("\\\\");
-	    for (int i = 1; i <= places; i++) {
-		name = "_" + tmp[tmp.length - i].replaceAll(" ", "") + name;
-	    }
-	    name = "AV" + name;
-	}
-
-	boolean isEmpty() {
-	    return variantTexturePaths.isEmpty();
-	}
-    }
-
     static class TextureVariant implements Serializable {
 
 	String nifFieldName;
@@ -1324,44 +1203,4 @@ public class AVFileVars {
 	}
     }
 
-    public static class VariantSet {
-
-	String[][] Target_FormIDs;
-	Boolean Apply_To_Similar = true;
-	ArrayList<Variant> variants = new ArrayList<Variant>();
-
-	boolean isEmpty() {
-	    return variants.isEmpty();
-	}
-
-	public String printHelpInfo() {
-	    String content = "Seeds:";
-	    for (String[] formID : Target_FormIDs) {
-		content += "\n    ";
-		FormID id = new FormID(formID[0], formID[1]);
-		NPC_ npc = (NPC_) SPDatabase.getMajor(id, GRUP_TYPE.NPC_);
-		if (npc != null) {
-		    content += npc.getEDID() + "  |  ";
-		}
-		content += id.getFormStr();
-	    }
-	    return content;
-	}
-    }
-
-    public static class VariantSpec implements Serializable {
-
-	int Probability_Divider = 1;
-
-	void print() {
-	    if (SPGlobal.logging()) {
-		SPGlobal.log("VariantSpec", "  Loaded specs: ");
-		SPGlobal.log("VariantSpec", "    Prob Div: 1/" + Probability_Divider);
-	    }
-	}
-
-	public String printHelpInfo() {
-	    return "Relative Probability: 1/" + Probability_Divider;
-	}
-    }
 }
