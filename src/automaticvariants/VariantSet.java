@@ -7,49 +7,42 @@ package automaticvariants;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
-import lev.LMergeMap;
-import lev.Ln;
 import skyproc.*;
-import skyproc.exceptions.BadParameter;
 
 /**
  *
  * @author Justin Swanson
  */
-public class VariantSet {
+public class VariantSet extends PackageComponent implements Serializable  {
 
-    File setDir;
     ArrayList<VariantGroup> groups;
-    ArrayList<File> commonTextures = new ArrayList<File>(2);
+    ArrayList<PackageComponent> commonTextures = new ArrayList<PackageComponent>(2);
     VariantSetSpec spec;
     static String depth = "* +";
 
     VariantSet(File setDir) {
-	this.setDir = setDir;
+	super(setDir, Type.VARSET);
     }
 
     final public boolean loadVariants() {
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(setDir.getName(), depth + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-	    SPGlobal.log(setDir.getName(), depth + " Adding Variant Set: " + setDir);
-	    SPGlobal.log(setDir.getName(), depth + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-	    SPGlobal.log(setDir.getName(), depth);
+	    SPGlobal.log(src.getName(), depth + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+	    SPGlobal.log(src.getName(), depth + " Adding Variant Set: " + src);
+	    SPGlobal.log(src.getName(), depth + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+	    SPGlobal.log(src.getName(), depth);
 	}
-	groups = new ArrayList<VariantGroup>(setDir.listFiles().length - 1);
+	groups = new ArrayList<VariantGroup>(src.listFiles().length - 1);
 
-	for (File f : setDir.listFiles()) {
+	for (File f : src.listFiles()) {
 	    if (AVFileVars.isSpec(f)) {
 		try {
 		    spec = AVGlobal.parser.fromJson(new FileReader(f), VariantSetSpec.class);
 		    spec.file = f;
 		    if (SPGlobal.logging()) {
-			spec.print(setDir.getName());
+			spec.print(src.getName());
 		    }
 		} catch (com.google.gson.JsonSyntaxException ex) {
 		    SPGlobal.logException(ex);
@@ -62,22 +55,25 @@ public class VariantSet {
 		VariantGroup v = new VariantGroup(f);
 		v.load();
 		groups.add(v);
+		add(v);
 
 	    } else if (AVFileVars.isDDS(f)) {
-		commonTextures.add(f);
+		PackageComponent c = new PackageComponent(f, Type.GENTEXTURE);
+		commonTextures.add(c);
+		add(c);
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(setDir.getName(), depth + "   Loaded common texture: " + f);
+		    SPGlobal.log(src.getName(), depth + "   Loaded common texture: " + f);
 		}
 
 	    } else if (SPGlobal.logging()) {
-		SPGlobal.log(setDir.getName(), depth + "   Skipped file: " + f);
+		SPGlobal.log(src.getName(), depth + "   Skipped file: " + f);
 	    }
 	}
 
 	if (spec == null) {
 	    if (SPGlobal.logging()) {
-		SPGlobal.log(setDir.getName(), depth + "");
-		SPGlobal.log(setDir.getName(), depth + "!!++++ Variant set " + setDir.getPath() + "did not have specifications file.  Skipping.");
+		SPGlobal.log(src.getName(), depth + "");
+		SPGlobal.log(src.getName(), depth + "!!++++ Variant set " + src.getPath() + "did not have specifications file.  Skipping.");
 	    }
 	    return false;
 	}
@@ -87,8 +83,8 @@ public class VariantSet {
 	}
 
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(setDir.getName(), depth + "");
-	    SPGlobal.log(setDir.getName(), depth + "++++++ END Variant Set: " + setDir);
+	    SPGlobal.log(src.getName(), depth + "");
+	    SPGlobal.log(src.getName(), depth + "++++++ END Variant Set: " + src);
 	}
 	return true;
     }
@@ -99,25 +95,6 @@ public class VariantSet {
 	    out.addAll(g.variants);
 	}
 	return out;
-    }
-
-    void moveOut() {
-	for (Variant v : flatten()) {
-	    for (File tex : v.textures) {
-		moveOut(tex, AVFileVars.AVTexturesDir);
-	    }
-	}
-	for (File global : commonTextures) {
-	    moveOut(global, AVFileVars.AVTexturesDir);
-	}
-    }
-
-    static void moveOut(File src, String dest) {
-	File destFile = new File(dest + src.getPath().substring(AVFileVars.AVPackagesDir.length()));
-	if (!Ln.moveFile(src, destFile, false)) {
-	    JOptionPane.showMessageDialog(null,
-		    "<html>Error moving files to their in-game locations.</html>");
-	}
     }
 
     public boolean isEmpty() {
@@ -132,7 +109,7 @@ public class VariantSet {
 	return true;
     }
 
-    public class VariantSetSpec {
+    public class VariantSetSpec implements Serializable {
 
 	File file;
 	String[][] Target_FormIDs;

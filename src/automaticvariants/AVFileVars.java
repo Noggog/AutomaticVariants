@@ -364,15 +364,15 @@ public class AVFileVars {
 		// Find out which TXSTs need to be generated
 		String[][] replacements = new String[n.textureFields.size()][numSupportedTextures];
 		boolean[] needed = new boolean[n.textureFields.size()];
-		for (File f : v.textures) {
+		for (PackageComponent f : v.textures) {
 		    int i = 0;
 		    for (AV_Nif.TextureField textureSet : n.textureFields) {
 			int j = 0;
 			for (String texture : textureSet.maps) {
 			    if (!texture.equals("") && texture.lastIndexOf('\\') != -1) {
 				String textureName = texture.substring(texture.lastIndexOf('\\') + 1);
-				if (textureName.equalsIgnoreCase(f.getName())) {
-				    replacements[i][j] = f.getPath();
+				if (textureName.equalsIgnoreCase(f.src.getName())) {
+				    replacements[i][j] = f.src.getPath();
 				    needed[i] = true;
 				}
 			    }

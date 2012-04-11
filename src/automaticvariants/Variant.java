@@ -16,17 +16,16 @@ import skyproc.SPGlobal;
  *
  * @author Justin Swanson
  */
-public class Variant implements Serializable {
+public class Variant extends PackageComponent implements Serializable {
 
-    File dir;
     String name;
-    ArrayList<File> textures = new ArrayList<File>();
+    ArrayList<PackageComponent> textures = new ArrayList<PackageComponent>();
     TextureVariant[] TXSTs;
     VariantSpec spec = new VariantSpec();
     static String depth = "* +   # ";
 
     Variant(File variantDir) {
-	this.dir = variantDir;
+	super(variantDir, Type.VAR);
 	this.name = "";
 	String[] tmp = variantDir.getPath().split("\\\\");
 	for (int i = 1; i <= 4 ; i++) {
@@ -37,19 +36,21 @@ public class Variant implements Serializable {
 
     public void load() {
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(dir.getName(), depth + "  Adding Variant: " + dir);
+	    SPGlobal.log(src.getName(), depth + "  Adding Variant: " + src);
 	}
-	for (File f : dir.listFiles()) {
+	for (File f : src.listFiles()) {
 	    if (AVFileVars.isDDS(f)) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(dir.getName(), depth + "    Added texture: " + f);
+		    SPGlobal.log(src.getName(), depth + "    Added texture: " + f);
 		}
-		textures.add(f);
+		PackageComponent c = new PackageComponent(f, Type.TEXTURE);
+		textures.add(c);
+		add(c);
 	    } else if (AVFileVars.isSpec(f)) {
 		try {
 		    spec = AVGlobal.parser.fromJson(new FileReader(f), VariantSpec.class);
 		    if (SPGlobal.logging()) {
-			spec.print(dir.getName());
+			spec.print(src.getName());
 		    }
 		} catch (com.google.gson.JsonSyntaxException ex) {
 		    SPGlobal.logException(ex);
@@ -61,19 +62,23 @@ public class Variant implements Serializable {
 	}
     }
 
-    public void mergeInGlobals(ArrayList<File> globalFiles) {
+    public void mergeInGlobals(ArrayList<PackageComponent> globalFiles) {
 	ArrayList<File> toAdd = new ArrayList<File>();
-	for (File global : globalFiles) {
+	for (PackageComponent global : globalFiles) {
 	    boolean exists = false;
-	    for (File src : textures) {
-		if (global.getName().equalsIgnoreCase(src.getName())) {
+	    for (PackageComponent tex : textures) {
+		if (global.src.getName().equalsIgnoreCase(tex.src.getName())) {
 		    exists = true;
 		    break;
 		}
 	    }
 	    if (!exists) {
-		toAdd.add(global);
+		toAdd.add(global.src);
 	    }
+	}
+
+	for (File f : toAdd) {
+	    textures.add(new PackageComponent(f, Type.TEXTURE));
 	}
     }
 

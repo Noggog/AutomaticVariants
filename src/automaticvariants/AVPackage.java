@@ -14,15 +14,14 @@ import skyproc.SPGlobal;
  *
  * @author Justin Swanson
  */
-public class AVPackage {
+public class AVPackage extends PackageComponent {
 
-    File packageName;
     ArrayList<VariantSet> sets = new ArrayList<VariantSet>();
     PackageSpec spec;
     static String depth = "";
 
     AVPackage(File packageFolder) {
-	packageName = packageFolder;
+	super(packageFolder, Type.PACKAGE);
 	loadSets();
     }
 
@@ -34,30 +33,25 @@ public class AVPackage {
 	return out;
     }
 
-    public void moveOut() {
-	for (VariantSet v : sets) {
-	    v.moveOut();
-	}
-    }
-
     final public void loadSets() {
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(packageName.getName(), depth + "************************************************************");
-	    SPGlobal.log(packageName.getName(), depth + "* Loading package: " + packageName);
-	    SPGlobal.log(packageName.getName(), depth + "************************************************************");
+	    SPGlobal.log(src.getName(), depth + "************************************************************");
+	    SPGlobal.log(src.getName(), depth + "* Loading package: " + src);
+	    SPGlobal.log(src.getName(), depth + "************************************************************");
 	}
-	for (File f : packageName.listFiles()) {
+	for (File f : src.listFiles()) {
 	    if (f.isDirectory()) {
 		VariantSet set = new VariantSet(f);
 		if (set.loadVariants()) {
 		    sets.add(set);
+		    add(set);
 		}
 	    } else if (AVFileVars.isSpec(f)) {
 		spec = new PackageSpec(f);
 	    }
 	}
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(packageName.getName(), depth + "*** END package: " + packageName);
+	    SPGlobal.log(src.getName(), depth + "*** END package: " + src);
 	}
     }
 

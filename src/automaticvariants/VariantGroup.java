@@ -12,34 +12,34 @@ import skyproc.SPGlobal;
  *
  * @author Justin Swanson
  */
-public class VariantGroup {
+public class VariantGroup extends PackageComponent {
 
-    File groupName;
     ArrayList<Variant> variants = new ArrayList<Variant>();
 
     static String depth = "* +   ";
 
     VariantGroup(File groupDir) {
-	groupName = groupDir;
+	super(groupDir, Type.VARGROUP);
     }
 
     public void load() {
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(groupName.getName(), depth + "### Adding Variant Group: " + groupName);
+	    SPGlobal.log(src.getName(), depth + "### Adding Variant Group: " + src);
 	}
-	for (File f : groupName.listFiles()) {
+	for (File f : src.listFiles()) {
 	    if (f.isDirectory()) {
 		Variant v = new Variant(f);
 		v.load();
 		variants.add(v);
+		add(v);
 	    }
 	}
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(groupName.getName(), depth + "####################################");
+	    SPGlobal.log(src.getName(), depth + "####################################");
 	}
     }
 
-    public void mergeInGlobals(ArrayList<File> globalFiles) {
+    public void mergeInGlobals(ArrayList<PackageComponent> globalFiles) {
 	for (Variant v : variants) {
 	    v.mergeInGlobals(globalFiles);
 	}
