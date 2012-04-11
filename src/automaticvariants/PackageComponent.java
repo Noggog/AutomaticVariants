@@ -30,10 +30,12 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
     public Type type;
 
     public PackageComponent(File source, Type type) {
-	src = source;
-	if (source.getPath().contains(AVFileVars.inactiveAVPackagesDir)) {
-	    disabledOrig = true;
-	    disabled = true;
+	if (source != null) {
+	    src = source;
+	    if (source.getPath().contains(AVFileVars.inactiveAVPackagesDir)) {
+		disabledOrig = true;
+		disabled = true;
+	    }
 	}
 	this.type = type;
     }

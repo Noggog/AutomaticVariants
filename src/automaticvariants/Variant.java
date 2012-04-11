@@ -34,6 +34,10 @@ public class Variant extends PackageComponent implements Serializable {
 	name = "AV" + name;
     }
 
+    Variant () {
+	super(null, Type.VAR);
+    }
+
     public void load() {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(src.getName(), depth + "  Adding Variant: " + src);
@@ -98,6 +102,19 @@ public class Variant extends PackageComponent implements Serializable {
 	public String printHelpInfo() {
 	    return "Relative Probability: 1/" + Probability_Divider;
 	}
+    }
+
+    public Variant merge (Variant rhs) {
+	Variant out = new Variant();
+	out.name = name + "_" + rhs.src.getName();
+	out.textures.addAll(textures);
+	for (PackageComponent p : rhs.textures) {
+	    if (!out.textures.contains(p)) {
+		out.textures.add(p);
+	    }
+}
+	spec.Probability_Divider *= rhs.spec.Probability_Divider;
+	return out;
     }
 
     @Override

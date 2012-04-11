@@ -22,6 +22,7 @@ public class VariantSet extends PackageComponent implements Serializable {
     ArrayList<PackageComponent> commonTextures = new ArrayList<PackageComponent>(2);
     public VariantSetSpec spec;
     static String depth = "* +";
+    ArrayList<Variant> flat;
 
     VariantSet(File setDir) {
 	super(setDir, Type.VARSET);
@@ -78,11 +79,22 @@ public class VariantSet extends PackageComponent implements Serializable {
     }
 
     ArrayList<Variant> flatten() {
-	ArrayList<Variant> out = new ArrayList<Variant>();
-	for (VariantGroup g : groups) {
-	    out.addAll(g.variants);
+	if (flat == null) {
+	    flat = new ArrayList<Variant>();
+	    if (!groups.isEmpty()) {
+		flat.addAll(groups.get(0).variants);
+		for (int i = 1; i < groups.size(); i++) {
+		    ArrayList<Variant> tmp = new ArrayList<Variant>(flat.size() * groups.get(i).variants.size());
+		    for (Variant a : flat) {
+			for (Variant b : groups.get(i).variants) {
+			    tmp.add(a.merge(b));
+			}
+		    }
+		    flat = tmp;
+		}
+	    }
 	}
-	return out;
+	return flat;
     }
 
     public boolean isEmpty() {
