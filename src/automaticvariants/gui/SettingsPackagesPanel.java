@@ -6,13 +6,13 @@ package automaticvariants.gui;
 
 import automaticvariants.AV;
 import automaticvariants.AVFileVars;
+import automaticvariants.AVPackage;
+import automaticvariants.PackageComponent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
-import lev.Ln;
 import lev.gui.LButton;
 import lev.gui.LImagePane;
 import lev.gui.LPanel;
@@ -82,7 +82,7 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	    });
 
 	    tree = new PackageTree(AVGUI.middleDimensions.width - 30,
-		    AVGUI.middleDimensions.height - 200);
+		    AVGUI.middleDimensions.height - 200, parent.helpPanel);
 	    tree.setLocation(AVGUI.middleDimensions.width / 2 - tree.getWidth() / 2, last.y + 10);
 	    tree.setMargin(10, 5);
 	    tree.removeBorder();
@@ -126,16 +126,16 @@ public class SettingsPackagesPanel extends DefaultsPanel {
     public void enableSelection(boolean enable) {
 	TreePath[] paths = tree.getSelectionPaths();
 	for (TreePath p : paths) {
-	    enable((PackageNode) p.getLastPathComponent(), enable);
+	    enable((PackageComponent) p.getLastPathComponent(), enable);
 	}
 
 	// adjust folders to enable/disable based on their contents
 	for (TreePath p : paths) {
 	    for (int i = p.getPathCount() - 1 ; i >= 0 ; i--) {
-		PackageNode node = (PackageNode) p.getPathComponent(i);
+		PackageComponent node = (PackageComponent) p.getPathComponent(i);
 		if (node.src.isDirectory()) {
 		    if (node.disabled) {
-			for (PackageNode child : node.getAll()) {
+			for (PackageComponent child : node.getAll()) {
 			    if (!child.disabled) {
 				node.disabled = false;
 				break;
@@ -143,7 +143,7 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 			}
 		    } else {
 			boolean allDisabled = true;
-			for (PackageNode child : node.getAll()) {
+			for (PackageComponent child : node.getAll()) {
 			    if (!child.disabled) {
 				allDisabled = false;
 				break;
@@ -159,9 +159,9 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	tree.repaint();
     }
 
-    public void enable(PackageNode node, boolean enable) {
+    public void enable(PackageComponent node, boolean enable) {
 	node.disabled = !enable;
-	for (PackageNode n : node.getAll()) {
+	for (PackageComponent n : node.getAll()) {
 	    enable(n, enable);
 	}
     }
@@ -171,67 +171,75 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 
     public void loadPackageList() {
 	File AVPackagesDir = new File(AVFileVars.AVPackagesDir);
-	File inactiveAVPackagesDir = new File(AVFileVars.inactiveAVPackagesDir);
-	PackageNode AVNode = new PackageNode(AVPackagesDir, parent.helpPanel);
-	loadPackageList(AVPackagesDir, AVNode, false);
-	loadPackageList(inactiveAVPackagesDir, AVNode, true);
-	AVNode.sort();
+//	File inactiveAVPackagesDir = new File(AVFileVars.inactiveAVPackagesDir);
+	PackageComponent AVNode = new PackageComponent(AVPackagesDir, PackageComponent.Type.ROOT);
+	if (AVFileVars.AVPackages.isEmpty()) {
+	    AVFileVars.importVariants();
+	}
+
+	for (AVPackage p : AVFileVars.AVPackages) {
+	    AVNode.add(p);
+	}
+//	loadPackageList(AVPackagesDir, AVNode, false);
+//	loadPackageList(inactiveAVPackagesDir, AVNode, true);
+//	AVNode.sort();
+
 	tree.setModel(new DefaultTreeModel(AVNode));
     }
+//
+//    public void loadPackageList(File dir, PackageComponent root, boolean disabled) {
+//	if (!dir.exists()) {
+//	    return;
+//	}
+//
+//	for (File packageDir : dir.listFiles()) {
+//	    if (packageDir.isDirectory()) {
+//		PackageComponent PackageComponent = findAndReplace(root, packageDir, disabled);
+//		PackageComponent.type = PackageComponent.Type.PACKAGE;
+//		for (File set : packageDir.listFiles()) {
+//		    if (set.isDirectory()) {
+//			PackageComponent setNode = findAndReplace(PackageComponent, set, disabled);
+//			setNode.type = PackageComponent.Type.VARSET;
+//			for (File var : set.listFiles()) {
+//			    PackageComponent varNode = findAndReplace(setNode, var, disabled);
+//			    if (var.isDirectory()) {
+//				varNode.type = PackageComponent.Type.VAR;
+//				for (File f : var.listFiles()) {
+//				    if (f.getName().toUpperCase().endsWith(".DDS")) {
+//					PackageComponent fileNode = new PackageComponent(f, parent.helpPanel);
+//					fileNode.type = PackageComponent.Type.TEXTURE;
+//					fileNode.disabled = varNode.disabled;
+//					varNode.add(fileNode);
+//				    } else if (var.getName().toUpperCase().endsWith(".JSON")) {
+//					varNode.spec = f;
+//				    }
+//				}
+//				setNode.add(varNode);
+//			    } else if (var.getName().toUpperCase().endsWith(".DDS")) {
+//				varNode.type = PackageComponent.Type.GENTEXTURE;
+//				setNode.add(varNode);
+//			    } else if (var.getName().toUpperCase().endsWith(".JSON")) {
+//				setNode.spec = var;
+//			    }
+//			}
+//			PackageComponent.add(setNode);
+//		    }
+//		}
+//		root.add(PackageComponent);
+//	    }
+//	}
+//    }
 
-    public void loadPackageList(File dir, PackageNode root, boolean disabled) {
-	if (!dir.exists()) {
-	    return;
-	}
-
-	for (File packageDir : dir.listFiles()) {
-	    if (packageDir.isDirectory()) {
-		PackageNode packageNode = findAndReplace(root, packageDir, disabled);
-		packageNode.type = PackageNode.Type.PACKAGE;
-		for (File set : packageDir.listFiles()) {
-		    if (set.isDirectory()) {
-			PackageNode setNode = findAndReplace(packageNode, set, disabled);
-			setNode.type = PackageNode.Type.VARSET;
-			for (File var : set.listFiles()) {
-			    PackageNode varNode = findAndReplace(setNode, var, disabled);
-			    if (var.isDirectory()) {
-				varNode.type = PackageNode.Type.VAR;
-				for (File f : var.listFiles()) {
-				    if (f.getName().toUpperCase().endsWith(".DDS")) {
-					PackageNode fileNode = new PackageNode(f, parent.helpPanel);
-					fileNode.type = PackageNode.Type.TEXTURE;
-					fileNode.disabled = varNode.disabled;
-					varNode.add(fileNode);
-				    } else if (var.getName().toUpperCase().endsWith(".JSON")) {
-					varNode.spec = f;
-				    }
-				}
-				setNode.add(varNode);
-			    } else if (var.getName().toUpperCase().endsWith(".DDS")) {
-				varNode.type = PackageNode.Type.GENTEXTURE;
-				setNode.add(varNode);
-			    } else if (var.getName().toUpperCase().endsWith(".JSON")) {
-				setNode.spec = var;
-			    }
-			}
-			packageNode.add(setNode);
-		    }
-		}
-		root.add(packageNode);
-	    }
-	}
-    }
-
-    public PackageNode findAndReplace(PackageNode parent, File f, boolean disabled) {
-	PackageNode newPackage = new PackageNode(f, parent.help);
-	newPackage.display = display;
-	PackageNode old = parent.get(newPackage);
-	if (old != null) {
-	    return old;
-	} else {
-	    newPackage.disabled = disabled;
-	    newPackage.disabledOrig = disabled;
-	    return newPackage;
-	}
-    }
+//    public PackageComponent findAndReplace(PackageComponent parent, File f, boolean disabled) {
+//	PackageComponent newPackage = new PackageComponent(f, parent.help);
+//	newPackage.display = display;
+//	PackageComponent old = parent.get(newPackage);
+//	if (old != null) {
+//	    return old;
+//	} else {
+//	    newPackage.disabled = disabled;
+//	    newPackage.disabledOrig = disabled;
+//	    return newPackage;
+//	}
+//    }
 }

@@ -44,4 +44,6 @@ public class VariantGroup extends PackageComponent {
 	    v.mergeInGlobals(globalFiles);
 	}
     }
+
+
 }

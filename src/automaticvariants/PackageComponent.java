@@ -4,6 +4,7 @@
  */
 package automaticvariants;
 
+import automaticvariants.gui.AVGUI;
 import java.io.File;
 import java.util.ArrayList;
 import lev.Ln;
@@ -21,12 +22,13 @@ public class PackageComponent extends LSwingTreeNode {
     static LHelpPanel help;
     static LImagePane display;
     static String divider = "\n\n";
-    File src;
-    boolean disabled = false;
-    boolean disabledOrig = false;
-    Type type;
 
-    PackageComponent(File source, Type type) {
+    public File src;
+    public boolean disabled = false;
+    public boolean disabledOrig = false;
+    public Type type;
+
+    public PackageComponent(File source, Type type) {
 	src = source;
 	if (source.getPath().contains(AVFileVars.inactiveAVPackagesDir)) {
 	    disabledOrig = true;
@@ -83,6 +85,88 @@ public class PackageComponent extends LSwingTreeNode {
 	    }
 	}
 	return out;
+    }
+
+    @Override
+    public String toString() {
+	return src.getName();
+    }
+
+    public void updateHelp(LHelpPanel help) {
+
+	String content = "";
+	if (disabled) {
+	    content += "DISABLED - ";
+	}
+	ArrayList<PackageComponent> genTextures;
+	help.setBottomAreaVisible(false);
+	switch (type) {
+	    case PACKAGE:
+		help.setSetting(src.getName());
+		break;
+	    case VARSET:
+		help.setSetting(((PackageComponent) parent).src.getName());
+		content += src.getName() + divider;
+
+		content += printSpec();
+
+		genTextures = getAll(Type.GENTEXTURE);
+		if (genTextures.size() > 0) {
+		    content += "Shared files:\n";
+		    for (PackageComponent child : getAll(Type.GENTEXTURE)) {
+			content += "    " + child.src.getName() + "\n";
+		    }
+		}
+		break;
+	    case GENTEXTURE:
+		((PackageComponent) parent).updateHelp(help);
+		return;
+	    case VAR:
+		PackageComponent p = ((PackageComponent) parent);
+		content += p.src.getName() + " => " + src.getName() + divider;
+
+		content += p.printSpec();
+
+		content += printSpec();
+
+		genTextures = p.getAll(Type.GENTEXTURE);
+		if (genTextures.size() > 0) {
+		    content += "Inherited files:";
+		    for (PackageComponent gen : genTextures) {
+			content += "\n    " + gen.src.getName();
+		    }
+		    content += divider;
+		}
+
+
+		content += "Exclusive files:\n";
+		for (PackageComponent child : getAll(Type.TEXTURE)) {
+		    content += "    " + child.src.getName() + "\n";
+		}
+
+		break;
+	    case TEXTURE:
+//		if (!equals(lastDisplayed)) {
+//		    try {
+//			BufferedImage image = SettingsPackagesPanel.reader.read(src.toURL());
+//			display.setImage(image);
+//			help.setBottomAreaVisible(true);
+//			lastDisplayed = this;
+//		    } catch (Exception ex) {
+//			SPGlobal.logError("PackageComponent", "Could not display " + src);
+//		    }
+//		}
+		((PackageComponent) parent).updateHelp(help);
+		return;
+	    default:
+		AVGUI.settingsMenu.managePackagesButton.updateHelp();
+	}
+    }
+
+
+
+    public String printSpec() {
+	return "";
     }
 
     public enum Type {

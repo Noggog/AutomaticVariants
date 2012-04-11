@@ -17,7 +17,7 @@ import lev.gui.LPanel;
 public class SettingsMainMenu extends EncompassingPanel {
 
     private LPanel menu;
-    LMainMenuConfig managePackagesButton;
+    public LMainMenuConfig managePackagesButton;
     SettingsPackagesPanel managePackagesPanel = new SettingsPackagesPanel(this);
     LMainMenuConfig manageHeightButton;
     SettingsHeightPanel manageHeightPanel = new SettingsHeightPanel(this);

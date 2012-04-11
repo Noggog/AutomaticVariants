@@ -44,7 +44,7 @@ public class AVFileVars {
     /*
      * Variant storage lists/maps
      */
-    static ArrayList<AVPackage> AVPackages = new ArrayList<AVPackage>();
+    public static ArrayList<AVPackage> AVPackages = new ArrayList<AVPackage>();
     // AV_Nif name is key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     // ArmaSrc is key
@@ -68,7 +68,9 @@ public class AVFileVars {
 	BSAs = BSA.loadInBSAs(BSA.FileType.NIF, BSA.FileType.DDS);
 
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Importing AV Packages");
-	importVariants(patch);
+	if (AVPackages.isEmpty()) {
+	    importVariants();
+	}
 	SPGUI.progress.incrementBar();
 
 	// Locate and load NIFs, and assign their variants
@@ -143,7 +145,7 @@ public class AVFileVars {
     /*
      * Shared methods
      */
-    static void importVariants(Mod patch) throws Uninitialized, FileNotFoundException {
+    public static void importVariants() {
 	String header = "Import Variants";
 	File AVPackagesDirFile = new File(AVPackagesDir);
 	if (AVPackagesDirFile.isDirectory()) {
@@ -998,7 +1000,7 @@ public class AVFileVars {
 	gatherFolder(AVMeshesDir);
     }
 
-    public static void gatherFolder (String folder) {
+    public static void gatherFolder(String folder) {
 	ArrayList<File> files = Ln.generateFileList(new File(folder), 2, 4, false);
 	for (File file : files) {
 	    File dest = new File(AVPackagesDir + file.getPath().substring(folder.length()));
@@ -1007,7 +1009,7 @@ public class AVFileVars {
 	    } else {
 		if (!Ln.moveFile(file, dest, false)) {
 		    JOptionPane.showMessageDialog(null,
-			"<html>Error gathering files back to AV Package folder.</html>");
+			    "<html>Error gathering files back to AV Package folder.</html>");
 		}
 	    }
 	}

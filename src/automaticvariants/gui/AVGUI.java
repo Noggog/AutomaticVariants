@@ -56,7 +56,7 @@ public class AVGUI extends JFrame {
     LImagePane backgroundPanel;
     LLabel willMakePatch;
     JTextArea statusUpdate;
-    static SettingsMainMenu settingsMenu;
+    public static SettingsMainMenu settingsMenu;
 
     private AVGUI() {
 	super("Automatic Variants");

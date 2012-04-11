@@ -16,11 +16,11 @@ import skyproc.*;
  *
  * @author Justin Swanson
  */
-public class VariantSet extends PackageComponent implements Serializable  {
+public class VariantSet extends PackageComponent implements Serializable {
 
     ArrayList<VariantGroup> groups;
     ArrayList<PackageComponent> commonTextures = new ArrayList<PackageComponent>(2);
-    VariantSetSpec spec;
+    public VariantSetSpec spec;
     static String depth = "* +";
 
     VariantSet(File setDir) {
@@ -138,5 +138,10 @@ public class VariantSet extends PackageComponent implements Serializable  {
 	    }
 	    return content;
 	}
+    }
+
+    @Override
+    public String printSpec() {
+	return spec.printHelpInfo() + divider;
     }
 }

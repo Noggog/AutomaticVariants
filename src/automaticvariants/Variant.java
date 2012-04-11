@@ -99,4 +99,9 @@ public class Variant extends PackageComponent implements Serializable {
 	    return "Relative Probability: 1/" + Probability_Divider;
 	}
     }
+
+    @Override
+    public String printSpec() {
+	return spec.printHelpInfo() + divider;
+    }
 }
