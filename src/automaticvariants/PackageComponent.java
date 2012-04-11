@@ -7,6 +7,8 @@ package automaticvariants;
 import automaticvariants.gui.AVGUI;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import lev.Ln;
 import lev.gui.LHelpPanel;
 import lev.gui.LImagePane;
@@ -16,13 +18,12 @@ import lev.gui.LSwingTreeNode;
  *
  * @author Justin Swanson
  */
-public class PackageComponent extends LSwingTreeNode {
+public class PackageComponent extends LSwingTreeNode implements Comparable {
 
     static PackageComponent lastDisplayed;
     static LHelpPanel help;
     static LImagePane display;
     static String divider = "\n\n";
-
     public File src;
     public boolean disabled = false;
     public boolean disabledOrig = false;
@@ -90,6 +91,72 @@ public class PackageComponent extends LSwingTreeNode {
     @Override
     public String toString() {
 	return src.getName();
+    }
+
+    public boolean moveNode() {
+	boolean proper = true;
+	if (disabled != disabledOrig) {
+	    if (src.isFile()) {
+		proper = proper && moveFile(src);
+	    } else if (src.isDirectory()) {
+		for (File f : src.listFiles()) {
+		    if (f.getPath().toUpperCase().endsWith(".JSON")) {
+			proper = proper && moveFile(f);
+		    }
+		}
+	    }
+	}
+	for (PackageComponent p : getAll()) {
+	    proper = proper && p.moveNode();
+	}
+	return proper;
+    }
+
+    public boolean moveFile(File src) {
+	String prefix;
+	if (disabled) {
+	    prefix = AVFileVars.inactiveAVPackagesDir;
+	} else {
+	    prefix = AVFileVars.AVPackagesDir;
+	}
+	File dest = new File(prefix + src.getPath().substring(src.getPath().indexOf("\\")));
+	return Ln.moveFile(src, dest, true);
+    }
+
+    public void pruneDisabled() {
+	if (children != null) {
+	    ArrayList<Object> remove = new ArrayList<Object>();
+	    for (Object o : children) {
+		PackageComponent p = (PackageComponent) o;
+		if (p.disabled) {
+		    remove.add(o);
+		} else {
+		    p.pruneDisabled();
+		}
+	    }
+	    for (Object o : remove) {
+		children.remove(o);
+	    }
+	}
+    }
+
+    public void finalizeComponent () {
+	for (PackageComponent c : getAll()) {
+	    c.finalizeComponent();
+	}
+    }
+
+    public void mergeIn(PackageComponent rhs) {
+	for (PackageComponent c : getAll()) {
+	    if (c.equals(rhs)) {
+		for (PackageComponent rhsChild : rhs.getAll()) {
+		    c.mergeIn(rhsChild);
+		}
+		return;
+	    }
+	}
+	// else
+	add(rhs);
     }
 
     public void updateHelp(LHelpPanel help) {
@@ -163,7 +230,62 @@ public class PackageComponent extends LSwingTreeNode {
 	}
     }
 
+    public void enable(boolean enable) {
+	disabled = !enable;
+	for (PackageComponent n : getAll()) {
+	    n.enable(enable);
+	}
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+	if (obj == null) {
+	    return false;
+	}
+	if (getClass() != obj.getClass()) {
+	    return false;
+	}
+	final PackageComponent other = (PackageComponent) obj;
+	if (this.src != other.src && (this.src == null || !this.src.getName().equalsIgnoreCase(other.src.getName()))) {
+	    return false;
+	}
+	return true;
+    }
+
+    @Override
+    public int hashCode() {
+	return src.getName().toUpperCase().hashCode();
+    }
+
+    @Override
+    public int compareTo(Object arg0) {
+	PackageComponent rhs = (PackageComponent) arg0;
+	if (!src.isDirectory() && rhs.src.isDirectory()) {
+	    return -1;
+	}
+	if (src.isDirectory() && !rhs.src.isDirectory()) {
+	    return 1;
+	}
+
+	return src.getName().compareTo(rhs.src.getName());
+    }
+
+    public void sort() {
+	if (this.children == null) {
+	    return;
+	}
+	Collections.sort(this.children, new Comparator() {
+
+	    @Override
+	    public int compare(Object arg0, Object arg1) {
+		PackageComponent node = (PackageComponent) arg0;
+		return node.compareTo(arg1);
+	    }
+	});
+	for (Object child : this.children) {
+	    ((PackageComponent) child).sort();
+	}
+    }
 
     public String printSpec() {
 	return "";

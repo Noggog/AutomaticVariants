@@ -16,6 +16,9 @@ import javax.swing.tree.TreePath;
 import lev.gui.LButton;
 import lev.gui.LImagePane;
 import lev.gui.LPanel;
+import skyproc.GRUP_TYPE;
+import skyproc.SPDatabase;
+import skyproc.SPGlobal;
 
 /**
  *
@@ -32,7 +35,6 @@ public class SettingsPackagesPanel extends DefaultsPanel {
     LButton editSpec;
     LPanel packagePanel;
     LPanel varSetSpecPanel;
-
 
     public SettingsPackagesPanel(EncompassingPanel parent_) {
 	super("Texture Variants", AV.save, parent_);
@@ -126,12 +128,12 @@ public class SettingsPackagesPanel extends DefaultsPanel {
     public void enableSelection(boolean enable) {
 	TreePath[] paths = tree.getSelectionPaths();
 	for (TreePath p : paths) {
-	    enable((PackageComponent) p.getLastPathComponent(), enable);
+	    ((PackageComponent) p.getLastPathComponent()).enable(enable);
 	}
 
 	// adjust folders to enable/disable based on their contents
 	for (TreePath p : paths) {
-	    for (int i = p.getPathCount() - 1 ; i >= 0 ; i--) {
+	    for (int i = p.getPathCount() - 1; i >= 0; i--) {
 		PackageComponent node = (PackageComponent) p.getPathComponent(i);
 		if (node.src.isDirectory()) {
 		    if (node.disabled) {
@@ -159,87 +161,35 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	tree.repaint();
     }
 
-    public void enable(PackageComponent node, boolean enable) {
-	node.disabled = !enable;
-	for (PackageComponent n : node.getAll()) {
-	    enable(n, enable);
-	}
-    }
-
     public void editSpec() {
     }
 
     public void loadPackageList() {
-	File AVPackagesDir = new File(AVFileVars.AVPackagesDir);
-//	File inactiveAVPackagesDir = new File(AVFileVars.inactiveAVPackagesDir);
-	PackageComponent AVNode = new PackageComponent(AVPackagesDir, PackageComponent.Type.ROOT);
-	if (AVFileVars.AVPackages.isEmpty()) {
-	    AVFileVars.importVariants();
+
+	if (SPGlobal.logging()) {
+	    SPGlobal.log("AVGUI", "====================================================================");
+	    SPGlobal.log("AVGUI", "Called for an early package import to display on the GUI.");
+	    SPGlobal.log("AVGUI", "====================================================================");
 	}
 
-	for (AVPackage p : AVFileVars.AVPackages) {
-	    AVNode.add(p);
-	}
-//	loadPackageList(AVPackagesDir, AVNode, false);
-//	loadPackageList(inactiveAVPackagesDir, AVNode, true);
-//	AVNode.sort();
+	boolean logging = SPGlobal.logging();
+	SPGlobal.logging(false);
 
-	tree.setModel(new DefaultTreeModel(AVNode));
+	AVFileVars.importVariants();
+
+	File inactivePackages = new File(AVFileVars.inactiveAVPackagesDir);
+	if (inactivePackages.isDirectory()) {
+	    for (File packageFolder : inactivePackages.listFiles()) {
+		if (packageFolder.isDirectory()) {
+		    AVPackage avPackage = new AVPackage(packageFolder);
+		    AVFileVars.AVPackages.mergeIn(avPackage);
+		}
+	    }
+	}
+
+	SPGlobal.logging(logging);
+
+	AVFileVars.AVPackages.sort();
+	tree.setModel(new DefaultTreeModel(AVFileVars.AVPackages));
     }
-//
-//    public void loadPackageList(File dir, PackageComponent root, boolean disabled) {
-//	if (!dir.exists()) {
-//	    return;
-//	}
-//
-//	for (File packageDir : dir.listFiles()) {
-//	    if (packageDir.isDirectory()) {
-//		PackageComponent PackageComponent = findAndReplace(root, packageDir, disabled);
-//		PackageComponent.type = PackageComponent.Type.PACKAGE;
-//		for (File set : packageDir.listFiles()) {
-//		    if (set.isDirectory()) {
-//			PackageComponent setNode = findAndReplace(PackageComponent, set, disabled);
-//			setNode.type = PackageComponent.Type.VARSET;
-//			for (File var : set.listFiles()) {
-//			    PackageComponent varNode = findAndReplace(setNode, var, disabled);
-//			    if (var.isDirectory()) {
-//				varNode.type = PackageComponent.Type.VAR;
-//				for (File f : var.listFiles()) {
-//				    if (f.getName().toUpperCase().endsWith(".DDS")) {
-//					PackageComponent fileNode = new PackageComponent(f, parent.helpPanel);
-//					fileNode.type = PackageComponent.Type.TEXTURE;
-//					fileNode.disabled = varNode.disabled;
-//					varNode.add(fileNode);
-//				    } else if (var.getName().toUpperCase().endsWith(".JSON")) {
-//					varNode.spec = f;
-//				    }
-//				}
-//				setNode.add(varNode);
-//			    } else if (var.getName().toUpperCase().endsWith(".DDS")) {
-//				varNode.type = PackageComponent.Type.GENTEXTURE;
-//				setNode.add(varNode);
-//			    } else if (var.getName().toUpperCase().endsWith(".JSON")) {
-//				setNode.spec = var;
-//			    }
-//			}
-//			PackageComponent.add(setNode);
-//		    }
-//		}
-//		root.add(PackageComponent);
-//	    }
-//	}
-//    }
-
-//    public PackageComponent findAndReplace(PackageComponent parent, File f, boolean disabled) {
-//	PackageComponent newPackage = new PackageComponent(f, parent.help);
-//	newPackage.display = display;
-//	PackageComponent old = parent.get(newPackage);
-//	if (old != null) {
-//	    return old;
-//	} else {
-//	    newPackage.disabled = disabled;
-//	    newPackage.disabledOrig = disabled;
-//	    return newPackage;
-//	}
-//    }
 }

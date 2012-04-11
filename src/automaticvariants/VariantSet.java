@@ -34,7 +34,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 	    SPGlobal.log(src.getName(), depth + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	    SPGlobal.log(src.getName(), depth);
 	}
-	groups = new ArrayList<VariantGroup>(src.listFiles().length - 1);
+	groups = new ArrayList<VariantGroup>();
 
 	for (File f : src.listFiles()) {
 	    if (AVFileVars.isSpec(f)) {
@@ -68,18 +68,6 @@ public class VariantSet extends PackageComponent implements Serializable {
 	    } else if (SPGlobal.logging()) {
 		SPGlobal.log(src.getName(), depth + "   Skipped file: " + f);
 	    }
-	}
-
-	if (spec == null) {
-	    if (SPGlobal.logging()) {
-		SPGlobal.log(src.getName(), depth + "");
-		SPGlobal.log(src.getName(), depth + "!!++++ Variant set " + src.getPath() + "did not have specifications file.  Skipping.");
-	    }
-	    return false;
-	}
-
-	for (VariantGroup g : groups) {
-	    g.mergeInGlobals(commonTextures);
 	}
 
 	if (SPGlobal.logging()) {
@@ -137,6 +125,18 @@ public class VariantSet extends PackageComponent implements Serializable {
 		content += id.getFormStr();
 	    }
 	    return content;
+	}
+    }
+
+    @Override
+    public void finalizeComponent() {
+	mergeInGlobals();
+	super.finalizeComponent();
+    }
+
+    public void mergeInGlobals() {
+	for (VariantGroup g : groups) {
+	    g.mergeInGlobals(commonTextures);
 	}
     }
 

@@ -6,8 +6,6 @@ package automaticvariants;
 
 import java.io.File;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
-import lev.Ln;
 import skyproc.SPGlobal;
 
 /**
@@ -20,7 +18,7 @@ public class AVPackage extends PackageComponent {
     PackageSpec spec;
     static String depth = "";
 
-    AVPackage(File packageFolder) {
+    public AVPackage(File packageFolder) {
 	super(packageFolder, Type.PACKAGE);
 	loadSets();
     }

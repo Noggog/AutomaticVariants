@@ -5,6 +5,8 @@
 package automaticvariants;
 
 import automaticvariants.Variant.VariantSpec;
+import automaticvariants.gui.PackageTree;
+import automaticvariants.gui.SettingsPackagesPanel;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,10 +35,10 @@ public class AVFileVars {
 
     static String header = "AV_FileVar";
     static ArrayList<BSA> BSAs;
-    public static String AVPackagesDir = "AV Packages/";
-    public static String inactiveAVPackagesDir = "Inactive AV Packages/";
-    public static String AVTexturesDir = SPGlobal.pathToData + "textures/AV Packages/";
-    public static String AVMeshesDir = SPGlobal.pathToData + "meshes/AV Packages/";
+    final public static String AVPackagesDir = "AV Packages\\";
+    public static String inactiveAVPackagesDir = "Inactive AV Packages\\";
+    public static String AVTexturesDir = SPGlobal.pathToData + "textures\\AV Packages\\";
+    public static String AVMeshesDir = SPGlobal.pathToData + "meshes\\AV Packages\\";
     static String changeRaceFormList = "RaceOptions";
     static String changeRaceBoundWeapons = "BoundWeapons";
     static int numSupportedTextures = 8;
@@ -44,7 +46,7 @@ public class AVFileVars {
     /*
      * Variant storage lists/maps
      */
-    public static ArrayList<AVPackage> AVPackages = new ArrayList<AVPackage>();
+    public static PackageComponent AVPackages = new PackageComponent(new File(AVPackagesDir), PackageComponent.Type.ROOT);
     // AV_Nif name is key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     // ArmaSrc is key
@@ -68,9 +70,13 @@ public class AVFileVars {
 	BSAs = BSA.loadInBSAs(BSA.FileType.NIF, BSA.FileType.DDS);
 
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Importing AV Packages");
-	if (AVPackages.isEmpty()) {
-	    importVariants();
+	if (!AVPackages.isLeaf()) {
+	    // Change packages to enabled/disabled based on GUI requests
+	    shufflePackages();
+	    // wipe
+	    AVPackages = new PackageComponent(new File(AVPackagesDir), PackageComponent.Type.ROOT);
 	}
+	importVariants();
 	SPGUI.progress.incrementBar();
 
 	// Locate and load NIFs, and assign their variants
@@ -93,8 +99,8 @@ public class AVFileVars {
 	    npcDupMethod(source);
 	}
 
-	for (AVPackage avp : AVPackages) {
-	    avp.moveOut();
+	for (PackageComponent p : AVPackages.getAll()) {
+	    p.moveOut();
 	}
     }
 
@@ -148,6 +154,7 @@ public class AVFileVars {
     public static void importVariants() {
 	String header = "Import Variants";
 	File AVPackagesDirFile = new File(AVPackagesDir);
+
 	if (AVPackagesDirFile.isDirectory()) {
 	    for (File packageFolder : AVPackagesDirFile.listFiles()) {
 		if (packageFolder.isDirectory()) {
@@ -162,9 +169,11 @@ public class AVFileVars {
 
     static void linkToNifs() {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Linking packages to .nif files.");
-	for (AVPackage avPackage : AVPackages) {
+	for (PackageComponent avPackageC : AVPackages.getAll(PackageComponent.Type.PACKAGE)) {
+	    AVPackage avPackage = (AVPackage) avPackageC;
 	    for (VariantSet varSet : avPackage.sets) {
-		if (varSet.isEmpty()) {
+		if (varSet.spec == null || varSet.isEmpty()) {
+		    SPGlobal.logError(header, "Skipping " + varSet.src + " because it was empty or missing a spec file.");
 		    continue;
 		}
 		ArrayList<FormID> uniqueArmas = new ArrayList<FormID>();
@@ -986,6 +995,21 @@ public class AVFileVars {
     /*
      * Other Methods
      */
+    static public void shufflePackages() {
+	PackageTree tree = SettingsPackagesPanel.tree;
+	if (tree != null) {
+	    PackageComponent root = (PackageComponent) tree.getRoot();
+	    if (!root.moveNode()) {
+		JOptionPane.showMessageDialog(null,
+			"<html>Error moving one of the selected files.  This is probably due to AV being run<br>"
+			+ "inside a 'windows protected' folder where windows is not allowing the moves.  Either<br>"
+			+ "move your Skyrim to an unprotected folder location (outside Program Files), or manually<br>"
+			+ "install/uninstall packages by moving them in/out of the AV Packages folder yourself.</html>");
+	    }
+	    root.pruneDisabled();
+	}
+    }
+
     static int readjustTXSTindices(int j) {
 	// Because nif fields map 2->3 if facegen flag is on.
 	int set = j;

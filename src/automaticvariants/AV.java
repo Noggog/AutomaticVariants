@@ -91,6 +91,8 @@ public class AV {
 	    save.curSettings.get(Settings.DEBUG_LEVEL).setTo(initDebugLevel);
 	}
 	if (save.getInt(Settings.DEBUG_LEVEL) < 2) {
+	    SPGlobal.loggingSync(false);
+	} else if (save.getInt(Settings.DEBUG_LEVEL) < 1) {
 	    SPGlobal.logging(false);
 	}
     }
@@ -161,13 +163,13 @@ public class AV {
 	importMods();
 
 	imported = true;
-	if (save.getInt(Settings.DEBUG_LEVEL) >= 1) {
-	    SPGlobal.logging(true);
-	}
 	SPGUI.progress.setStatus("Done importing.");
     }
 
     static void exportFunction() throws IOException, BadParameter, Uninitialized {
+
+	SPGlobal.loggingSync(true);
+	SPGlobal.logging(true);
 
 	Mod patch = SPGlobal.getGlobalPatch();
 
@@ -178,9 +180,6 @@ public class AV {
 
 
 	alreadySwitchedList = new FLST(patch, "AV_" + alreadySwitched);
-
-	// Change packages to enabled/disabled based on GUI requests
-	shufflePackages();
 
 	// For all race SWITCHING variants
 	// (such as texture variants)
@@ -205,19 +204,6 @@ public class AV {
 
 	exported = true;
 	AVGUI.progress.done();
-    }
-
-    static public void shufflePackages() {
-	PackageTree tree = SettingsPackagesPanel.tree;
-//	if (tree != null) {
-//	    if (!((PackageNode) tree.getRoot()).moveNode()) {
-//		JOptionPane.showMessageDialog(null,
-//			"<html>Error moving one of the selected files.  This is probably due to AV being run<br>"
-//			+ "inside a 'windows protected' folder where windows is not allowing the moves.  Either<br>"
-//			+ "move your Skyrim to an unprotected folder location (outside Program Files), or manually<br>"
-//			+ "install/uninstall packages by moving them in/out of the AV Packages folder yourself.</html>");
-//	    }
-//	}
     }
 
     static void setUpInGameScriptBasedVariants(Mod source) {
