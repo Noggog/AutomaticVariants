@@ -140,7 +140,7 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	}
     }
 
-    public void finalizeComponent () {
+    public void finalizeComponent() {
 	for (PackageComponent c : getAll()) {
 	    c.finalizeComponent();
 	}
@@ -162,6 +162,8 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
     public void updateHelp(LHelpPanel help) {
 
 	String content = "";
+	PackageComponent set;
+	PackageComponent group;
 	if (disabled) {
 	    content += "DISABLED - ";
 	}
@@ -171,32 +173,37 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	    case PACKAGE:
 		help.setSetting(src.getName());
 		break;
+	    case GENTEXTURE:
+		((PackageComponent) parent).updateHelp(help);
+		return;
 	    case VARSET:
 		help.setSetting(((PackageComponent) parent).src.getName());
 		content += src.getName() + divider;
 
 		content += printSpec();
 
-		genTextures = getAll(Type.GENTEXTURE);
-		if (genTextures.size() > 0) {
-		    content += "Shared files:\n";
-		    for (PackageComponent child : getAll(Type.GENTEXTURE)) {
-			content += "    " + child.src.getName() + "\n";
-		    }
-		}
-		break;
-	    case GENTEXTURE:
-		((PackageComponent) parent).updateHelp(help);
-		return;
-	    case VAR:
-		PackageComponent p = ((PackageComponent) parent);
-		content += p.src.getName() + " => " + src.getName() + divider;
+		content += printGenTextures();
 
-		content += p.printSpec();
+		break;
+	    case VARGROUP:
+		set = (PackageComponent) parent;
+		content += set.src.getName() + " => " + src.getName() + divider;
+
+		content += set.printSpec();
+
+		content += set.printGenTextures();
+
+		break;
+	    case VAR:
+		group = ((PackageComponent) parent);
+		set = ((PackageComponent) group.parent);
+		content += set.src.getName() + " => " + group.src.getName() + " => " + src.getName() + divider;
+
+		content += group.printSpec();
 
 		content += printSpec();
 
-		genTextures = p.getAll(Type.GENTEXTURE);
+		genTextures = set.getAll(Type.GENTEXTURE);
 		if (genTextures.size() > 0) {
 		    content += "Inherited files:";
 		    for (PackageComponent gen : genTextures) {
@@ -228,6 +235,20 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	    default:
 		AVGUI.settingsMenu.managePackagesButton.updateHelp();
 	}
+	help.setContent(content);
+	help.hideArrow();
+    }
+
+    public String printGenTextures() {
+	String content = "";
+	ArrayList<PackageComponent> genTextures = getAll(Type.GENTEXTURE);
+	if (genTextures.size() > 0) {
+	    content += "Shared files:\n";
+	    for (PackageComponent child : getAll(Type.GENTEXTURE)) {
+		content += "    " + child.src.getName() + "\n";
+	    }
+	}
+	return content;
     }
 
     public void enable(boolean enable) {
