@@ -30,7 +30,7 @@ public abstract class EncompassingPanel extends JPanel {
         this.setLayout(null);
         setSize(d);
         setLocation(0, 0);
-	helpPanel = new LHelpPanel(AVGUI.rightDimensions, new Font("Serif", Font.BOLD, 25), AVGUI.green, AVGUI.lightGray, true, 5);
+	helpPanel = new LHelpPanel(AVGUI.rightDimensions, new Font("Serif", Font.BOLD, 25), AVGUI.green, AVGUI.lightGray, true, 10);
         setOpaque(false);
     }
 

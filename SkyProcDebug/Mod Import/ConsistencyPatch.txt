@@ -1,2 +1,0 @@
-[1][0m:0s][2816]               [OPEN DEBUG FILE]  Opening Debug File
-[2][0m:0s][18120]                        [DEBUG]  Closing Debug File.  Time was: 18
