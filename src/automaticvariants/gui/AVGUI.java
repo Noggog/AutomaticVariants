@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -19,6 +20,7 @@ import lev.gui.LImagePane;
 import lev.gui.LLabel;
 import lev.gui.LProgressBarFrame;
 import lev.gui.LProgressBarInterface;
+import skyproc.SPDefaultGUI;
 import skyproc.SPGUI;
 import skyproc.SPGlobal;
 
@@ -52,6 +54,7 @@ public class AVGUI extends JFrame {
     // Non static
     LImagePane backgroundPanel;
     LLabel willMakePatch;
+    LImagePane skyProcLogo;
     JTextArea statusUpdate;
     public static SettingsMainMenu settingsMenu;
 
@@ -114,6 +117,10 @@ public class AVGUI extends JFrame {
 	    statusUpdate.setEditable(false);
 	    statusUpdate.setVisible(true);
 	    backgroundPanel.add(statusUpdate);
+
+	    skyProcLogo = new LImagePane(SPDefaultGUI.class.getResource("SkyProc Logo Small.png"));
+	    skyProcLogo.setLocation(5, statusUpdate.getY() - skyProcLogo.getHeight() - 5);
+	    backgroundPanel.add(skyProcLogo);
 
 	    SPGUI.progress = new AVProgress();
 
