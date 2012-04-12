@@ -5,6 +5,8 @@
 package automaticvariants;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import skyproc.SPGlobal;
 
@@ -29,6 +31,18 @@ public class AVPackage extends PackageComponent {
 	    out.addAll(s.flatten());
 	}
 	return out;
+    }
+
+    public void compress() throws FileNotFoundException, IOException {
+	if(SPGlobal.logging()) {
+	   SPGlobal.log(src.getName(), "==============================================");
+	   SPGlobal.log(src.getName(), "Compressing " + src);
+	   SPGlobal.log(src.getName(), "==============================================");
+	   SPGlobal.flush();
+	}
+	for (VariantSet set : sets) {
+	    set.consolidateCommonFiles();
+	}
     }
 
     final public void loadSets() {

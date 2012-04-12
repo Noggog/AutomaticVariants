@@ -73,8 +73,6 @@ public class AVFileVars {
 	if (!AVPackages.isLeaf()) {
 	    // Change packages to enabled/disabled based on GUI requests
 	    shufflePackages();
-	    // wipe
-	    AVPackages = new PackageComponent(new File(AVPackagesDir), PackageComponent.Type.ROOT);
 	}
 	importVariants();
 	SPGUI.progress.incrementBar();
@@ -155,6 +153,8 @@ public class AVFileVars {
 	String header = "Import Variants";
 	File AVPackagesDirFile = new File(AVPackagesDir);
 
+	// wipe
+	AVPackages = new PackageComponent(new File(AVPackagesDir), PackageComponent.Type.ROOT);
 	if (AVPackagesDirFile.isDirectory()) {
 	    for (File packageFolder : AVPackagesDirFile.listFiles()) {
 		if (packageFolder.isDirectory()) {

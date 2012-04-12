@@ -6,6 +6,8 @@ package automaticvariants;
 
 import automaticvariants.gui.AVGUI;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -258,6 +260,14 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	for (PackageComponent n : getAll()) {
 	    n.enable(enable);
 	}
+    }
+
+    public static ArrayList<File> toFiles(ArrayList<PackageComponent> files) throws FileNotFoundException, IOException {
+	ArrayList<File> tmp = new ArrayList<File>(files.size());
+	for (PackageComponent c : files) {
+	    tmp.add(c.src);
+	}
+	return tmp;
     }
 
     @Override

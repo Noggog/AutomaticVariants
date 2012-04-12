@@ -5,7 +5,12 @@
 package automaticvariants;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import lev.Ln;
 import skyproc.SPGlobal;
 
 /**
@@ -15,7 +20,6 @@ import skyproc.SPGlobal;
 public class VariantGroup extends PackageComponent {
 
     ArrayList<Variant> variants = new ArrayList<Variant>();
-
     static String depth = "* +   ";
 
     VariantGroup(File groupDir) {
@@ -45,5 +49,90 @@ public class VariantGroup extends PackageComponent {
 	}
     }
 
+    public void deleteMatches(ArrayList<File> files) throws FileNotFoundException, IOException {
+	for (File common : files) {
+	    for (Variant v : variants) {
+		for (PackageComponent c : v.textures) {
+		    if (common.getName().equalsIgnoreCase(c.src.getName())) {
+			if (SPGlobal.logging()) {
+			    SPGlobal.log(src.getName(), "  ------------------------------");
+			    SPGlobal.log(src.getName(), "  Comparing");
+			    SPGlobal.log("Consoldiate", "  " + common);
+			    SPGlobal.log(src.getName(), "    and");
+			    SPGlobal.log("Consoldiate", "  " + c.src);
+			    SPGlobal.flush();
+			}
+			if (Ln.validateCompare(common, c.src, 0)) {
+			    c.src.delete();
+			    if (SPGlobal.logging()) {
+				SPGlobal.log(src.getName(), "  !!! Deleted " + c + " because it was a common file.");
+			    }
+			}
+		    }
+		}
+	    }
+	}
+    }
 
+    public ArrayList<PackageComponent> consolidateCommonFiles() throws FileNotFoundException, IOException {
+	ArrayList<PackageComponent> out = new ArrayList<PackageComponent>();
+	if (variants.size() > 1) {
+	    Variant first = variants.get(0);
+	    // For each texture in the first variant
+	    for (PackageComponent tex : first.textures) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(src.getName(), "  ===============");
+		    SPGlobal.log(src.getName(), "  CHECKING " + tex.src);
+		    SPGlobal.log(src.getName(), "  ===============");
+		}
+		boolean textureCommon = true;
+		ArrayList<PackageComponent> delete = new ArrayList<PackageComponent>();
+		// Check each other variant's textures.
+		for (int i = 1; i < variants.size(); i++) {
+		    boolean variantContained = false;
+		    for (PackageComponent texRhs : variants.get(i).textures) {
+			// If other variant had texture, move on to next and
+			// mark that texture for deletion
+			if (SPGlobal.logging()) {
+			    SPGlobal.log(src.getName(), "    ------------------------------");
+			    SPGlobal.log(src.getName(), "    Comparing");
+			    SPGlobal.log("Consoldiate", "    " + tex.src);
+			    SPGlobal.log(src.getName(), "      and");
+			    SPGlobal.log("Consoldiate", "    " + texRhs.src);
+			    SPGlobal.flush();
+			}
+			if (tex.src.getName().equalsIgnoreCase(texRhs.src.getName())
+				&& Ln.validateCompare(tex.src, texRhs.src, 0)) {
+			    SPGlobal.log(src.getName(), "      Matched");
+			    delete.add(texRhs);
+			    variantContained = true;
+			    break;
+			} else {
+			    SPGlobal.log(src.getName(), "      DID NOT match.");
+			}
+		    }
+		    SPGlobal.log(src.getName(), "  ===============");
+		    // If one variant in group did not have texture, then
+		    // it is not a common texture
+		    if (!variantContained) {
+			SPGlobal.log(src.getName(), "== Was NOT a common texture: " + tex.src);
+			textureCommon = false;
+			break;
+		    }
+		}
+		// If common texture, return it and delete
+		// the duplicate textures
+		if (textureCommon) {
+		    SPGlobal.log(src.getName(), "== WAS a common texture: " + tex.src);
+		    out.add(tex);
+		    for (PackageComponent p : delete) {
+			if (p.src.isFile()) {
+			    p.src.delete();
+			}
+		    }
+		}
+	    }
+	}
+	return out;
+    }
 }

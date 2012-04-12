@@ -4,12 +4,12 @@
  */
 package automaticvariants;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import lev.Ln;
 import skyproc.*;
 
 /**
@@ -95,6 +95,37 @@ public class VariantSet extends PackageComponent implements Serializable {
 	    }
 	}
 	return flat;
+    }
+
+    public void consolidateCommonFiles() throws FileNotFoundException, IOException {
+	// First, check current common textures and see if any groups have them
+	SPGlobal.log(src.getName(), "Consolidating common files");
+	SPGlobal.flush();
+	for (VariantGroup g : groups) {
+	    g.deleteMatches(toFiles(commonTextures));
+	}
+
+	// Check each Variant against each other and return any files that are common to all.
+	ArrayList<PackageComponent> commonFiles = new ArrayList<PackageComponent>();
+	ArrayList<File> moved = new ArrayList<File>();
+	for (VariantGroup g : groups) {
+	    commonFiles.addAll(g.consolidateCommonFiles());
+	}
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(src.getName(), "Common Files:");
+	    for (PackageComponent c : commonFiles) {
+		SPGlobal.log(src.getName(), "  " + c.src.getName());
+	    }
+	}
+	for (PackageComponent c : commonFiles) {
+	    File dest = new File(c.src.getParentFile().getParent());
+	    Ln.moveFile(c.src, dest, true);
+	    moved.add(dest);
+	}
+
+	for (VariantGroup g : groups) {
+	    g.deleteMatches(moved);
+	}
     }
 
     public boolean isEmpty() {

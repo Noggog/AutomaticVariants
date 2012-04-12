@@ -11,6 +11,10 @@ import automaticvariants.PackageComponent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import lev.gui.LButton;
@@ -32,6 +36,7 @@ public class SettingsPackagesPanel extends DefaultsPanel {
     LButton enable;
     LButton disable;
     LButton gatherAndExit;
+    LButton compress;
     LButton editSpec;
     LPanel packagePanel;
     LPanel varSetSpecPanel;
@@ -73,6 +78,24 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 		}
 	    });
 
+
+	    compress = new LButton("Compress");
+	    compress.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		    for (PackageComponent p : AVFileVars.AVPackages.getAll(PackageComponent.Type.PACKAGE)) {
+			try {
+			    ((AVPackage)p).compress();
+			} catch (FileNotFoundException ex) {
+			    SPGlobal.logException(ex);
+			} catch (IOException ex) {
+			    SPGlobal.logException(ex);
+			}
+		    }
+		}
+	    });
+
 	    editSpec = new LButton("Edit Specs", save.getSize());
 	    editSpec.setLocation(AVGUI.middleDimensions.x / 2 - editSpec.getWidth() / 2, disable.getY() - editSpec.getHeight() - 15);
 	    editSpec.addActionListener(new ActionListener() {
@@ -96,7 +119,8 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	    packagePanel.Add(tree);
 	    gatherAndExit.centerIn(packagePanel, defaults.getY() - gatherAndExit.getHeight() - 15);
 	    packagePanel.Add(gatherAndExit);
-//	    packagePanel.Add(editSpec);
+	    compress.centerIn(packagePanel, gatherAndExit.getY() - compress.getHeight() - 15);
+	    packagePanel.Add(compress);
 	    Add(packagePanel);
 
 
@@ -165,12 +189,6 @@ public class SettingsPackagesPanel extends DefaultsPanel {
     }
 
     public void loadPackageList() {
-
-	if (SPGlobal.logging()) {
-	    SPGlobal.log("AVGUI", "====================================================================");
-	    SPGlobal.log("AVGUI", "Called for an early package import to display on the GUI.");
-	    SPGlobal.log("AVGUI", "====================================================================");
-	}
 
 	boolean logging = SPGlobal.logging();
 	SPGlobal.logging(false);
