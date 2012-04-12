@@ -1,0 +1,6 @@
+AV savefile used for the application.
+set Packages On to 1
+set Height Variants On to 1
+set Height Variants Min to 10
+set Debug Level to 1
+set Import at Start to 0

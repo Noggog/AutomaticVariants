@@ -20,6 +20,7 @@ public class AVSaveFile extends LSaveFile {
     protected void init(Map m) {
 	Add(m, Settings.PACKAGES_ON, "Packages On", false, true);
 	Add(m, Settings.DEBUG_LEVEL, "Debug Level", false, 1);
+	Add(m, Settings.IMPORT_AT_START, "Import at Start", false, false);
 	Add(m, Settings.HEIGHT_ON, "Height Variants On", false, true);
 	Add(m, Settings.HEIGHT_STD, "Height Variants Min", false, 10);
     }
@@ -99,7 +100,7 @@ public class AVSaveFile extends LSaveFile {
 		"These are AV settings related to this patcher program.");
 
 	helpInfo.put(Settings.DEBUG_LEVEL,
-		"This setting will affect which debug messages will be logged. "
+		"This affects which debug messages will be logged. "
 		+ "The less debug messages printed, the quicker it will process.\n\n"
 		+ "NOTE: This setting will not take effect until the next time the program is run.\n\n"
 		+ "AV Debug \n"
@@ -108,6 +109,17 @@ public class AVSaveFile extends LSaveFile {
 		+ "SkyProc Debug \n"
 		+ "Print information regarding the importing of "
 		+ "mods on your load order.");
+	
+	helpInfo.put(Settings.IMPORT_AT_START,
+		"If enabled, AV will begin importing your mods when the program starts. "
+		+ "This makes the final patch creation quicker.\n\n"
+		
+		+ "NOTE: This setting will not take effect until the next time the program is run.\n\n"
+		
+		+ "Having this on might make the GUI respond sluggishly depending on your "
+		+ "computer.\n\n"
+		
+		+ "If turned off, the program will wait until it is necessary before importing.");
     }
 
     public enum Settings {
@@ -116,6 +128,7 @@ public class AVSaveFile extends LSaveFile {
 	HEIGHT_ON,
 	HEIGHT_STD,
 	DEBUG_LEVEL,
+	IMPORT_AT_START,
 	AV_SETTINGS;
     }
 }

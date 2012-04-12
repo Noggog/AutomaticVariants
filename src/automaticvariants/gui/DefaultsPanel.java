@@ -146,7 +146,7 @@ public abstract class DefaultsPanel extends LPanel {
         if (c.getX() + c.getWidth() > rightMost) {
             rightMost = c.getX() + c.getWidth();
         }
-        return new Point(x, c.getY() + c.getHeight());
+        return new Point(last.x, c.getY() + c.getHeight());
     }
 
     public void alignRight() {
