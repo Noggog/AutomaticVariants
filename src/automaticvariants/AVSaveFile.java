@@ -109,17 +109,21 @@ public class AVSaveFile extends LSaveFile {
 		+ "SkyProc Debug \n"
 		+ "Print information regarding the importing of "
 		+ "mods on your load order.");
-	
+
 	helpInfo.put(Settings.IMPORT_AT_START,
-		"If enabled, AV will begin importing your mods when the program starts. "
-		+ "This makes the final patch creation quicker.\n\n"
-		
+		"If enabled, AV will begin importing your mods when the program starts.\n"
+		+ "If turned off, the program will wait until it is necessary before importing.\n\n"
+
 		+ "NOTE: This setting will not take effect until the next time the program is run.\n\n"
-		
-		+ "Having this on might make the GUI respond sluggishly depending on your "
-		+ "computer.\n\n"
-		
-		+ "If turned off, the program will wait until it is necessary before importing.");
+
+		+ "Benefits:\n"
+		+ "- Faster patching when you close the program."
+		+ "- More information displayed in GUI, as it will have access to the records."
+		+ "\n\n"
+
+		+ "Downsides:\n"
+		+ "Having this on might make the GUI respond sluggishly while it processes in the"
+		+ "background.");
     }
 
     public enum Settings {
