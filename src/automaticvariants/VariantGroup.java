@@ -24,7 +24,7 @@ public class VariantGroup extends PackageComponent {
 	super(groupDir, Type.VARGROUP);
     }
 
-    public void load() {
+    public void load() throws FileNotFoundException, IOException {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(src.getName(), depth + "### Adding Variant Group: " + src);
 	}

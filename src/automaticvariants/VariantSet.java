@@ -6,8 +6,6 @@ package automaticvariants;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import lev.Ln;
 import skyproc.*;
@@ -28,7 +26,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 	super(setDir, Type.VARSET);
     }
 
-    final public boolean loadVariants() {
+    final public boolean loadVariants() throws FileNotFoundException, IOException {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(src.getName(), depth + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	    SPGlobal.log(src.getName(), depth + " Adding Variant Set: " + src);
@@ -66,6 +64,15 @@ public class VariantSet extends PackageComponent implements Serializable {
 		    SPGlobal.log(src.getName(), depth + "   Loaded common texture: " + f);
 		}
 
+	    } else if (AVFileVars.isReroute(f)) {
+		RerouteFile c = new RerouteFile(f);
+		if (AVFileVars.isDDS(c.src)) {
+		    c.type = PackageComponent.Type.GENTEXTURE;
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(src.getName(), depth + "   Loaded ROUTED common texture: " + c.src);
+		    }
+		}
+		add(c);
 	    } else if (SPGlobal.logging()) {
 		SPGlobal.log(src.getName(), depth + "   Skipped file: " + f);
 	    }
@@ -78,8 +85,9 @@ public class VariantSet extends PackageComponent implements Serializable {
 	return true;
     }
 
-    ArrayList<Variant> flatten() {
+    ArrayList<Variant> multiplyAndFlatten() {
 	if (flat == null) {
+	    mergeInGlobals();
 	    flat = new ArrayList<Variant>();
 	    if (!groups.isEmpty()) {
 		flat.addAll(groups.get(0).variants);

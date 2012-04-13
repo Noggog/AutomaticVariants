@@ -13,6 +13,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import lev.gui.LButton;
@@ -83,7 +85,10 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 		public void actionPerformed(ActionEvent e) {
 		    for (PackageComponent p : AVFileVars.AVPackages.getAll(PackageComponent.Type.PACKAGE)) {
 			try {
-			    ((AVPackage)p).compress();
+			    ((AVPackage) p).consolidateCommonFiles();
+			    loadPackageList();
+			    ((AVPackage) p).rerouteFiles();
+			    loadPackageList();
 			} catch (FileNotFoundException ex) {
 			    SPGlobal.logException(ex);
 			} catch (IOException ex) {
@@ -125,15 +130,21 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	    varSetSpecPanel.setLocation(0, 0);
 	    Add(varSetSpecPanel);
 
-//	    reader = new DDSreader();
-//	    display = new LImagePane();
-//	    display.setMaxSize(AVGUI.rightDimensions.width - 50, 0);
-//	    display.setVisible(true);
+	    //	    reader = new DDSreader();
+	    //	    display = new LImagePane();
+	    //	    display.setMaxSize(AVGUI.rightDimensions.width - 50, 0);
+	    //	    display.setVisible(true);
 
-//	    parent.helpPanel.addToBottomArea(display);
-//	    parent.helpPanel.setBottomAreaHeight(250);
+	    //	    parent.helpPanel.addToBottomArea(display);
+	    //	    display.setVisible(true);
 
-	    loadPackageList();
+	    try {
+		loadPackageList();
+	    } catch (FileNotFoundException ex) {
+		SPGlobal.logException(ex);
+	    } catch (IOException ex) {
+		SPGlobal.logException(ex);
+	    }
 
 	    return true;
 	}
@@ -185,7 +196,7 @@ public class SettingsPackagesPanel extends DefaultsPanel {
     public void editSpec() {
     }
 
-    public void loadPackageList() {
+    public void loadPackageList() throws FileNotFoundException, IOException {
 
 	boolean logging = SPGlobal.logging();
 	SPGlobal.logging(false);

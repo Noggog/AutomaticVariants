@@ -57,7 +57,7 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 		break;
 	}
 
-	if (dest != null) {
+	if (dest != null && !this.getClass().equals(RerouteFile.class)) {
 	    File destFile = new File(dest + src.getPath().substring(src.getPath().indexOf("\\") + 1));
 	    pass = Ln.moveFile(src, destFile, false);
 	    src = destFile;
@@ -333,6 +333,7 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	VARGROUP,
 	VAR,
 	TEXTURE,
-	GENTEXTURE;
+	GENTEXTURE,
+	REROUTE;
     }
 }

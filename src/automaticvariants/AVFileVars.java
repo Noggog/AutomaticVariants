@@ -148,7 +148,7 @@ public class AVFileVars {
     /*
      * Shared methods
      */
-    public static void importVariants() {
+    public static void importVariants() throws FileNotFoundException, IOException {
 	String header = "Import Variants";
 	File AVPackagesDirFile = new File(AVPackagesDir);
 
@@ -283,7 +283,7 @@ public class AVFileVars {
 			    if (unique) {
 				uniqueArmas.add(piece.getForm());
 				uniqueAlt.put(nif, piece);
-				for (Variant v : varSet.flatten()) {
+				for (Variant v : varSet.multiplyAndFlatten()) {
 				    nifs.get(nif).variants.add((Variant) Ln.deepCopy(v));
 				}
 			    } else if (SPGlobal.logging()) {
@@ -432,7 +432,9 @@ public class AVFileVars {
 		    }
 		    i++;
 		}
-
+		if (SPGlobal.logging()) {
+		    SPGlobal.log("Variant", "  --------------------------------------------------------------------------------");
+		}
 	    }
 	    n.textureFields = null; // Not needed anymore
 	}
@@ -1044,6 +1046,10 @@ public class AVFileVars {
 
     static boolean isDDS(File f) {
 	return Ln.isFileType(f, "DDS");
+    }
+
+    static boolean isReroute(File f) {
+	return Ln.isFileType(f, "reroute");
     }
 
     /*
