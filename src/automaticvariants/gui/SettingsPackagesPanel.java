@@ -13,15 +13,11 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import lev.gui.LButton;
 import lev.gui.LImagePane;
 import lev.gui.LPanel;
-import skyproc.GRUP_TYPE;
-import skyproc.SPDatabase;
 import skyproc.SPGlobal;
 
 /**

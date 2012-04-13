@@ -72,6 +72,7 @@ public class AV {
 	    setGlobals();
 	    save.init();
 	    setDebugLevel();
+	    AVFileVars.gatherFiles();
 	    AVGUI.open();
 	    // AVGUI runs the program after it's finished displaying.
 
@@ -150,8 +151,6 @@ public class AV {
     }
 
     static void importFunction() throws IOException, Uninitialized, BadParameter {
-
-	AVFileVars.gatherFiles();
 
 	Mod patch = new Mod("Automatic Variants", false);
 	patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
