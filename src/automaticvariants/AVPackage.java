@@ -57,26 +57,28 @@ public class AVPackage extends PackageComponent {
 	    for (VariantGroup group : set.groups) {
 		for (Variant var : group.variants) {
 		    for (PackageComponent tex : var.textures) {
-			boolean found = false;
-			for (File key : duplicates.keySet()) {
-			    if (Ln.validateCompare(tex.src, key, 0)) {
-				if (SPGlobal.logging()) {
-				    SPGlobal.log(src.getName(), "  " + tex.src);
-				    SPGlobal.log(src.getName(), "  was the same as ");
-				    SPGlobal.log(src.getName(), "  " + key);
+			if (!tex.getClass().equals(RerouteFile.class)) {
+			    boolean found = false;
+			    for (File key : duplicates.keySet()) {
+				if (Ln.validateCompare(tex.src, key, 0)) {
+				    if (SPGlobal.logging()) {
+					SPGlobal.log(src.getName(), "  " + tex.src);
+					SPGlobal.log(src.getName(), "  was the same as ");
+					SPGlobal.log(src.getName(), "  " + key);
+				    }
+				    duplicates.put(key, tex.src);
+				    found = true;
+				    break;
 				}
-				duplicates.put(key, tex.src);
-				found = true;
-				break;
 			    }
-			}
-			if (!found) {
-			    if (SPGlobal.logging()) {
-				SPGlobal.log(src.getName(), "  UNIQUE: " + tex.src);
+			    if (!found) {
+				if (SPGlobal.logging()) {
+				    SPGlobal.log(src.getName(), "  UNIQUE: " + tex.src);
+				}
+				duplicates.put(tex.src, tex.src);
 			    }
-			    duplicates.put(tex.src, tex.src);
+			    SPGlobal.log(src.getName(), "  --------------------------");
 			}
-			SPGlobal.log(src.getName(), "  --------------------------");
 		    }
 		}
 	    }

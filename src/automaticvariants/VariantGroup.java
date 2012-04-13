@@ -61,7 +61,9 @@ public class VariantGroup extends PackageComponent {
 			    SPGlobal.flush();
 			}
 			if (Ln.validateCompare(common, c.src, 0)) {
-			    c.src.delete();
+			    if (isReroute()) {
+				c.src.delete();
+			    }
 			    if (SPGlobal.logging()) {
 				SPGlobal.log(src.getName(), "  Deleted " + c + " because it was a common file.");
 			    }
@@ -89,8 +91,6 @@ public class VariantGroup extends PackageComponent {
 		for (int i = 1; i < variants.size(); i++) {
 		    boolean variantContained = false;
 		    for (PackageComponent texRhs : variants.get(i).textures) {
-			// If other variant had texture, move on to next and
-			// mark that texture for deletion
 			if (SPGlobal.logging()) {
 			    SPGlobal.log(src.getName(), "    ------------------------------");
 			    SPGlobal.log(src.getName(), "    Comparing");
@@ -99,6 +99,8 @@ public class VariantGroup extends PackageComponent {
 			    SPGlobal.log("Consoldiate", "    " + texRhs.src);
 			    SPGlobal.flush();
 			}
+			// If other variant had texture, move on to next and
+			// mark that texture for deletion
 			if (tex.src.getName().equalsIgnoreCase(texRhs.src.getName())
 				&& Ln.validateCompare(tex.src, texRhs.src, 0)) {
 			    SPGlobal.log(src.getName(), "      Matched");
@@ -123,7 +125,7 @@ public class VariantGroup extends PackageComponent {
 		    SPGlobal.log(src.getName(), "  == WAS a common texture: " + tex.src);
 		    out.add(tex);
 		    for (PackageComponent p : delete) {
-			if (p.src.delete()) {
+			if (!p.isReroute() && p.src.delete()) {
 			    SPGlobal.log(src.getName(), "  " + p.src + " was deleted.");
 			} else {
 			    SPGlobal.logError(src.getName(), "  !!!" + p.src + " was NOT successfully deleted.");

@@ -163,6 +163,10 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	add(rhs);
     }
 
+    public boolean isReroute () {
+	return false;
+    }
+
     public void updateHelp(LHelpPanel help) {
 
 	String content = "";

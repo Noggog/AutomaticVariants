@@ -22,4 +22,9 @@ public class RerouteFile extends PackageComponent {
 	routeFile = src;
 	this.src = to;
     }
+
+    @Override
+    public boolean isReroute () {
+	return true;
+    }
 }
