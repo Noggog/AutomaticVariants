@@ -18,7 +18,6 @@ import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
 import lev.Ln;
-import skyproc.LVLN.LVLO;
 import skyproc.*;
 import skyproc.exceptions.BadParameter;
 import skyproc.exceptions.Uninitialized;
@@ -867,7 +866,7 @@ public class AVFileVars {
 	    SPGlobal.log(header, "Replacing old NPC entries in your mod's LVLNs");
 	    SPGlobal.log(header, "====================================================================");
 	}
-	for (LVLN llistSrc : source.getLeveledLists()) {
+	for (LVLN llistSrc : source.getLeveledCreatures()) {
 	    boolean add = false;
 	    for (LVLO entry : llistSrc) {
 		if (llists.containsKey(entry.getForm())) {
@@ -891,7 +890,7 @@ public class AVFileVars {
 	    SPGlobal.log(header, "Checking each LVLN entry for traits templating to new variants.  Duplicating and replacing");
 	    SPGlobal.log(header, "============================================================================================");
 	}
-	for (LVLN llist : source.getLeveledLists()) {
+	for (LVLN llist : source.getLeveledCreatures()) {
 
 	    boolean add = false;
 	    for (LVLO entry : llist) {

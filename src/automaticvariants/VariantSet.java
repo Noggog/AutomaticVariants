@@ -118,11 +118,14 @@ public class VariantSet extends PackageComponent implements Serializable {
 	    }
 	}
 	for (PackageComponent c : commonFiles) {
-	    File dest = new File(c.src.getParentFile().getParent());
-	    Ln.moveFile(c.src, dest, true);
+	    File dest = new File(c.src.getParentFile().getParentFile().getParent() + "/" + c.src.getName());
+	    if (!Ln.moveFile(c.src, dest, true)) {
+		SPGlobal.logError(src.getName(), "!!!" + c.src + " was NOT successfully moved.");
+	    }
 	    moved.add(dest);
 	}
 
+	// See if any new common textures are present in other groups
 	for (VariantGroup g : groups) {
 	    g.deleteMatches(moved);
 	}

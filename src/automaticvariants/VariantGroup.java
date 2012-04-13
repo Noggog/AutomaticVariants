@@ -8,8 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lev.Ln;
 import skyproc.SPGlobal;
 
@@ -65,7 +63,7 @@ public class VariantGroup extends PackageComponent {
 			if (Ln.validateCompare(common, c.src, 0)) {
 			    c.src.delete();
 			    if (SPGlobal.logging()) {
-				SPGlobal.log(src.getName(), "  !!! Deleted " + c + " because it was a common file.");
+				SPGlobal.log(src.getName(), "  Deleted " + c + " because it was a common file.");
 			    }
 			}
 		    }
@@ -81,9 +79,9 @@ public class VariantGroup extends PackageComponent {
 	    // For each texture in the first variant
 	    for (PackageComponent tex : first.textures) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(src.getName(), "  ===============");
+		    SPGlobal.log(src.getName(), "  ---------------");
 		    SPGlobal.log(src.getName(), "  CHECKING " + tex.src);
-		    SPGlobal.log(src.getName(), "  ===============");
+		    SPGlobal.log(src.getName(), "  ---------------");
 		}
 		boolean textureCommon = true;
 		ArrayList<PackageComponent> delete = new ArrayList<PackageComponent>();
@@ -111,11 +109,10 @@ public class VariantGroup extends PackageComponent {
 			    SPGlobal.log(src.getName(), "      DID NOT match.");
 			}
 		    }
-		    SPGlobal.log(src.getName(), "  ===============");
 		    // If one variant in group did not have texture, then
 		    // it is not a common texture
 		    if (!variantContained) {
-			SPGlobal.log(src.getName(), "== Was NOT a common texture: " + tex.src);
+			SPGlobal.log(src.getName(), "  == Was NOT a common texture: " + tex.src);
 			textureCommon = false;
 			break;
 		    }
@@ -123,11 +120,13 @@ public class VariantGroup extends PackageComponent {
 		// If common texture, return it and delete
 		// the duplicate textures
 		if (textureCommon) {
-		    SPGlobal.log(src.getName(), "== WAS a common texture: " + tex.src);
+		    SPGlobal.log(src.getName(), "  == WAS a common texture: " + tex.src);
 		    out.add(tex);
 		    for (PackageComponent p : delete) {
-			if (p.src.isFile()) {
-			    p.src.delete();
+			if (p.src.delete()) {
+			    SPGlobal.log(src.getName(), "  " + p.src + " was deleted.");
+			} else {
+			    SPGlobal.logError(src.getName(), "  !!!" + p.src + " was NOT successfully deleted.");
 			}
 		    }
 		}
