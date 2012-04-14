@@ -33,4 +33,9 @@ public class RerouteFile extends PackageComponent {
 	return routeFile.length();
     }
 
+    @Override
+    public boolean moveFile(File src) {
+	return super.moveFile(routeFile);
+    }
+
 }
