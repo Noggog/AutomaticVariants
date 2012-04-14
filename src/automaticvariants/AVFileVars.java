@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
@@ -1000,13 +1002,21 @@ public class AVFileVars {
 	PackageTree tree = SettingsPackagesPanel.tree;
 	if (tree != null) {
 	    PackageComponent root = (PackageComponent) tree.getRoot();
-	    if (!root.moveNode()) {
+	    boolean fail;
+	    try {
+		fail = !root.moveNode();
+	    } catch (IOException ex) {
+		fail = true;
+	    }
+
+	    if (fail) {
 		JOptionPane.showMessageDialog(null,
 			"<html>Error moving one of the selected files.  This is probably due to AV being run<br>"
 			+ "inside a 'windows protected' folder where windows is not allowing the moves.  Either<br>"
 			+ "move your Skyrim to an unprotected folder location (outside Program Files), or manually<br>"
 			+ "install/uninstall packages by moving them in/out of the AV Packages folder yourself.</html>");
 	    }
+
 	    root.pruneDisabled();
 	}
     }

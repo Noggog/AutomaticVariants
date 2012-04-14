@@ -97,7 +97,7 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	return src.getName();
     }
 
-    public boolean moveNode() {
+    public boolean moveNode() throws IOException {
 	boolean proper = true;
 	if (disabled != disabledOrig) {
 	    if (src.isFile()) {
@@ -116,7 +116,7 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	return proper;
     }
 
-    public boolean moveFile(File src) {
+    public boolean moveFile(File src) throws IOException {
 	String prefix;
 	if (disabled) {
 	    prefix = AVFileVars.inactiveAVPackagesDir;
@@ -124,6 +124,24 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	    prefix = AVFileVars.AVPackagesDir;
 	}
 	File dest = new File(prefix + src.getPath().substring(src.getPath().indexOf("\\")));
+	// Check to see if any enabled reroute file was referring to this node
+	if (RerouteFile.reroutes.containsKey(src)) {
+	    for (RerouteFile r : RerouteFile.reroutes.get(src)) {
+		// If a single reroute file is left enabled
+		// Swap real texture with reroutes to keep real texture in enabled set
+		if (!r.disabled) {
+		    boolean passed = true;
+		    dest = new File(dest.getPath() + ".reroute");
+		    File newPrototype = new File(r.routeFile.getPath().substring(0, r.routeFile.getPath().indexOf(".reroute")));
+		    for (RerouteFile r2 : RerouteFile.reroutes.get(src)) {
+			r2.changeRouteTo(newPrototype);
+		    }
+		    passed = passed && Ln.moveFile(r.routeFile, dest, true);
+		    return passed && Ln.moveFile(src, newPrototype, true);
+		}
+	    }
+	}
+	// else
 	return Ln.moveFile(src, dest, true);
     }
 
@@ -308,24 +326,10 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	    if (!values.isEmpty()) {
 		File prototype = values.get(0);
 		for (int i = 1; i < values.size(); i++) {
-		    createRerouteFile(values.get(i), prototype);
+		    RerouteFile.createRerouteFile(values.get(i), prototype);
 		}
 	    }
 	}
-    }
-
-    public static File createRerouteFile(File from, File to) throws IOException {
-	File reroute = new File(from.getPath() + ".reroute");
-	if (!from.delete()) {
-	    SPGlobal.logError("Create Reroute", "Could not delete routed file " + from);
-	}
-	if (reroute.isFile()) {
-	    reroute.delete();
-	}
-	BufferedWriter out = new BufferedWriter(new FileWriter(reroute));
-	out.write(to.getPath());
-	out.close();
-	return reroute;
     }
 
     @Override

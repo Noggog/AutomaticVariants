@@ -5,6 +5,8 @@
 package automaticvariants;
 
 import java.io.*;
+import lev.LMergeMap;
+import skyproc.SPGlobal;
 
 /**
  *
@@ -13,6 +15,7 @@ import java.io.*;
 public class RerouteFile extends PackageComponent {
 
     File routeFile;
+    static LMergeMap<File, RerouteFile> reroutes = new LMergeMap<File, RerouteFile>(false, false);
 
     public RerouteFile (File src) throws FileNotFoundException, IOException {
 	super(src, Type.REROUTE);
@@ -21,6 +24,7 @@ public class RerouteFile extends PackageComponent {
 	in.close();
 	routeFile = src;
 	this.src = to;
+	reroutes.put(this.src, this);
     }
 
     @Override
@@ -34,8 +38,33 @@ public class RerouteFile extends PackageComponent {
     }
 
     @Override
-    public boolean moveFile(File src) {
+    public boolean moveFile(File src) throws IOException {
 	return super.moveFile(routeFile);
+    }
+
+
+    public static File createRerouteFile(File from, File to) throws IOException {
+	File reroute = new File(from.getPath() + ".reroute");
+	if (!from.delete()) {
+	    SPGlobal.logError("Create Reroute", "Could not delete routed file " + from);
+	}
+	if (reroute.isFile()) {
+	    reroute.delete();
+	}
+	BufferedWriter out = new BufferedWriter(new FileWriter(reroute));
+	out.write(to.getPath());
+	out.close();
+	return reroute;
+    }
+
+    void writeRouteTo (File from, File to) throws IOException {
+	BufferedWriter out = new BufferedWriter(new FileWriter(from));
+	out.write(to.getPath());
+	out.close();
+    }
+
+    public void changeRouteTo(File f) throws IOException {
+	writeRouteTo(routeFile, f);
     }
 
 }
