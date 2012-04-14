@@ -7,6 +7,7 @@ package automaticvariants;
 import java.io.*;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import lev.LMergeMap;
 import lev.Ln;
 import skyproc.*;
 
@@ -105,6 +106,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 	return flat;
     }
 
+    @Override
     public void consolidateCommonFiles() throws FileNotFoundException, IOException {
 	// First, check current common textures and see if any groups have them
 	SPGlobal.log(src.getName(), "Consolidating common files");
@@ -117,7 +119,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 	ArrayList<PackageComponent> commonFiles = new ArrayList<PackageComponent>();
 	ArrayList<File> moved = new ArrayList<File>();
 	for (VariantGroup g : groups) {
-	    commonFiles.addAll(g.consolidateCommonFiles());
+	    commonFiles.addAll(g.consolidateCommonFilesInternal());
 	}
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(src.getName(), "Common Files:");
@@ -137,6 +139,40 @@ public class VariantSet extends PackageComponent implements Serializable {
 	for (VariantGroup g : groups) {
 	    g.deleteMatches(moved);
 	}
+    }
+
+    @Override
+    public LMergeMap<File, File> getDuplicateFiles() throws FileNotFoundException, IOException {
+	LMergeMap<File, File> duplicates = new LMergeMap<File, File>(false);
+	for (VariantGroup group : groups) {
+	    for (Variant var : group.variants) {
+		for (PackageComponent tex : var.textures) {
+		    if (!tex.getClass().equals(RerouteFile.class)) {
+			boolean found = false;
+			for (File key : duplicates.keySet()) {
+			    if (Ln.validateCompare(tex.src, key, 0)) {
+				if (SPGlobal.logging()) {
+				    SPGlobal.log(src.getName(), "  " + tex.src);
+				    SPGlobal.log(src.getName(), "  was the same as ");
+				    SPGlobal.log(src.getName(), "  " + key);
+				}
+				duplicates.put(key, tex.src);
+				found = true;
+				break;
+			    }
+			}
+			if (!found) {
+			    if (SPGlobal.logging()) {
+				SPGlobal.log(src.getName(), "  UNIQUE: " + tex.src);
+			    }
+			    duplicates.put(tex.src, tex.src);
+			}
+			SPGlobal.log(src.getName(), "  --------------------------");
+		    }
+		}
+	    }
+	}
+	return duplicates;
     }
 
     public boolean isEmpty() {

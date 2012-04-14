@@ -5,16 +5,16 @@
 package automaticvariants;
 
 import automaticvariants.gui.AVGUI;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import lev.LMergeMap;
 import lev.Ln;
 import lev.gui.LHelpPanel;
 import lev.gui.LImagePane;
 import lev.gui.LSwingTreeNode;
+import skyproc.SPGlobal;
 
 /**
  *
@@ -163,7 +163,7 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	add(rhs);
     }
 
-    public boolean isReroute () {
+    public boolean isReroute() {
 	return false;
     }
 
@@ -272,6 +272,60 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	    tmp.add(c.src);
 	}
 	return tmp;
+    }
+
+    public long fileSize() {
+	long out = src.length();
+	for (PackageComponent p : getAll()) {
+	    out += p.fileSize();
+	}
+	return out;
+    }
+
+    public void consolidateCommonFiles() throws FileNotFoundException, IOException {
+	if (type == Type.ROOT) {
+	    for (PackageComponent c : getAll(Type.PACKAGE)) {
+		c.consolidateCommonFiles();
+	    }
+	}
+    }
+
+    public LMergeMap<File, File> getDuplicateFiles() throws FileNotFoundException, IOException {
+	LMergeMap<File, File> duplicates = new LMergeMap<File, File>(false);
+	if (type == Type.ROOT) {
+	    for (PackageComponent c : getAll(Type.PACKAGE)) {
+		duplicates.addAll(c.getDuplicateFiles());
+	    }
+	}
+	return duplicates;
+    }
+
+    public static void rerouteFiles(LMergeMap<File, File> duplicates) throws IOException {
+
+	// Route duplicates to first on the list
+	for (File key : duplicates.keySet()) {
+	    ArrayList<File> values = duplicates.get(key);
+	    if (!values.isEmpty()) {
+		File prototype = values.get(0);
+		for (int i = 1; i < values.size(); i++) {
+		    createRerouteFile(values.get(i), prototype);
+		}
+	    }
+	}
+    }
+
+    public static File createRerouteFile(File from, File to) throws IOException {
+	File reroute = new File(from.getPath() + ".reroute");
+	if (!from.delete()) {
+	    SPGlobal.logError("Create Reroute", "Could not delete routed file " + from);
+	}
+	if (reroute.isFile()) {
+	    reroute.delete();
+	}
+	BufferedWriter out = new BufferedWriter(new FileWriter(reroute));
+	out.write(to.getPath());
+	out.close();
+	return reroute;
     }
 
     @Override

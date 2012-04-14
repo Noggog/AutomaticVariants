@@ -27,4 +27,10 @@ public class RerouteFile extends PackageComponent {
     public boolean isReroute () {
 	return true;
     }
+
+    @Override
+    public long fileSize() {
+	return routeFile.length();
+    }
+
 }

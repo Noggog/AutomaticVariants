@@ -2,8 +2,6 @@ package automaticvariants;
 
 import automaticvariants.AVSaveFile.Settings;
 import automaticvariants.gui.AVGUI;
-import automaticvariants.gui.PackageTree;
-import automaticvariants.gui.SettingsPackagesPanel;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;

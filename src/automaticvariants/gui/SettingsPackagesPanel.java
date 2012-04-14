@@ -10,13 +10,18 @@ import automaticvariants.AVPackage;
 import automaticvariants.PackageComponent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+import lev.Ln;
 import lev.gui.LButton;
 import lev.gui.LImagePane;
 import lev.gui.LPanel;
@@ -31,13 +36,15 @@ public class SettingsPackagesPanel extends DefaultsPanel {
     public static PackageTree tree;
 //    static DDSreader reader;
     LImagePane display;
-    LButton enable;
-    LButton disable;
+    LButton enableButton;
+    LButton disableButton;
     LButton gatherAndExit;
-    LButton compress;
     LButton editSpec;
     LPanel packagePanel;
     LPanel varSetSpecPanel;
+    JPopupMenu optionsMenu;
+    JMenuItem enable;
+    JMenuItem compress;
 
     public SettingsPackagesPanel(EncompassingPanel parent_) {
 	super("Texture Variants", AV.save, parent_);
@@ -48,8 +55,8 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	if (super.initialize()) {
 
 	    defaults.setVisible(false);
-	    enable = new LButton("Enable", defaults.getSize(), defaults.getLocation());
-	    enable.addActionListener(new ActionListener() {
+	    enableButton = new LButton("Enable", defaults.getSize(), defaults.getLocation());
+	    enableButton.addActionListener(new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -58,8 +65,8 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	    });
 
 	    save.setVisible(false);
-	    disable = new LButton("Disable", save.getSize(), save.getLocation());
-	    disable.addActionListener(new ActionListener() {
+	    disableButton = new LButton("Disable", save.getSize(), save.getLocation());
+	    disableButton.addActionListener(new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -78,28 +85,8 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	    });
 
 
-	    compress = new LButton("Compress");
-	    compress.addActionListener(new ActionListener() {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-		    for (PackageComponent p : AVFileVars.AVPackages.getAll(PackageComponent.Type.PACKAGE)) {
-			try {
-			    ((AVPackage) p).consolidateCommonFiles();
-			    loadPackageList();
-			    ((AVPackage) p).rerouteFiles();
-			    loadPackageList();
-			} catch (FileNotFoundException ex) {
-			    SPGlobal.logException(ex);
-			} catch (IOException ex) {
-			    SPGlobal.logException(ex);
-			}
-		    }
-		}
-	    });
-
 	    editSpec = new LButton("Edit Specs", save.getSize());
-	    editSpec.setLocation(AVGUI.middleDimensions.x / 2 - editSpec.getWidth() / 2, disable.getY() - editSpec.getHeight() - 15);
+	    editSpec.setLocation(AVGUI.middleDimensions.x / 2 - editSpec.getWidth() / 2, disableButton.getY() - editSpec.getHeight() - 15);
 	    editSpec.addActionListener(new ActionListener() {
 
 		@Override
@@ -116,19 +103,81 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 
 	    packagePanel = new LPanel(AVGUI.middleDimensions);
 	    packagePanel.setLocation(0, 0);
-	    packagePanel.Add(enable);
-	    packagePanel.Add(disable);
+	    packagePanel.Add(enableButton);
+	    packagePanel.Add(disableButton);
 	    packagePanel.Add(tree);
 	    gatherAndExit.centerIn(packagePanel, defaults.getY() - gatherAndExit.getHeight() - 15);
 	    packagePanel.Add(gatherAndExit);
-	    compress.centerIn(packagePanel, gatherAndExit.getY() - compress.getHeight() - 15);
-	    packagePanel.Add(compress);
 	    Add(packagePanel);
 
 
 	    varSetSpecPanel = new LPanel(AVGUI.middleDimensions);
 	    varSetSpecPanel.setLocation(0, 0);
 	    Add(varSetSpecPanel);
+
+	    optionsMenu = new JPopupMenu();
+	    enable = new JMenuItem("Enable");
+	    enable.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		    enableSelection(enable.getText().equals("Enable"));
+		}
+	    });
+	    optionsMenu.add(enable);
+	    compress = new JMenuItem("Compress");
+	    compress.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		    compress();
+		}
+	    });
+	    optionsMenu.add(compress);
+
+	    //Add popup listener
+	    MouseAdapter ma = new MouseAdapter() {
+
+		private void myPopupEvent(MouseEvent e) {
+		    int x = e.getX();
+		    int y = e.getY();
+		    JTree tree = (JTree) e.getSource();
+		    TreePath path = tree.getPathForLocation(x, y);
+		    if (path == null) {
+			return;
+		    }
+
+		    tree.setSelectionPath(path);
+		    PackageComponent sel = (PackageComponent) path.getLastPathComponent();
+
+		    compress.setVisible(sel.type == PackageComponent.Type.PACKAGE
+			    || sel.type == PackageComponent.Type.VARSET
+			    || sel.type == PackageComponent.Type.ROOT);
+
+		    if (sel.disabled) {
+			enable.setText("Enable");
+		    } else {
+			enable.setText("Disable");
+		    }
+
+		    optionsMenu.show(tree, x + 10, y);
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+		    if (e.isPopupTrigger()) {
+			myPopupEvent(e);
+		    }
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+		    if (e.isPopupTrigger()) {
+			myPopupEvent(e);
+		    }
+		}
+	    };
+	    tree.addMouseListener(ma);
 
 	    //	    reader = new DDSreader();
 	    //	    display = new LImagePane();
@@ -191,6 +240,38 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 	    }
 	}
 	tree.repaint();
+    }
+
+    public void compress() {
+	try {
+	    PackageComponent p = (PackageComponent) tree.getSelectionPaths()[0].getLastPathComponent();
+	    long before = p.fileSize();
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(p.src.getName(), "Current file size: " + before + "->" + Ln.toMB(before) + "MB");
+	    }
+
+	    p.consolidateCommonFiles();
+	    loadPackageList();
+	    PackageComponent.rerouteFiles(p.getDuplicateFiles());
+	    loadPackageList();
+
+	    long after = p.fileSize();
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(p.src.getName(), "After file size: " + after + "->" + Ln.toMB(after) + "MB");
+		SPGlobal.log(p.src.getName(), "Reduced size by: " + (before - after) + "->" + Ln.toMB(before - after) + "MB");
+	    }
+	    JOptionPane.showMessageDialog(null, "<html>"
+		    + "Compressed: " + p.src.getPath() + "<br>"
+		    + "  Starting size: " + Ln.toMB(before) + " MB<br>"
+		    + "    Ending size: " + Ln.toMB(after) + " MB<br>"
+		    + "    Saved space: " + Ln.toMB(before - after) + " MB"
+		    + "</html>"
+		    );
+	} catch (FileNotFoundException ex) {
+	    SPGlobal.logException(ex);
+	} catch (IOException ex) {
+	    SPGlobal.logException(ex);
+	}
     }
 
     public void editSpec() {

@@ -74,7 +74,7 @@ public class VariantGroup extends PackageComponent {
 	}
     }
 
-    public ArrayList<PackageComponent> consolidateCommonFiles() throws FileNotFoundException, IOException {
+    public ArrayList<PackageComponent> consolidateCommonFilesInternal() throws FileNotFoundException, IOException {
 	ArrayList<PackageComponent> out = new ArrayList<PackageComponent>();
 	if (variants.size() > 1) {
 	    Variant first = variants.get(0);
