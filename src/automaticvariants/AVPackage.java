@@ -4,10 +4,11 @@
  */
 package automaticvariants;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import lev.LMergeMap;
-import lev.Ln;
 import skyproc.SPGlobal;
 
 /**

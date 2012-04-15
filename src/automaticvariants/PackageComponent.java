@@ -5,7 +5,9 @@
 package automaticvariants;
 
 import automaticvariants.gui.AVGUI;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,7 +16,6 @@ import lev.Ln;
 import lev.gui.LHelpPanel;
 import lev.gui.LImagePane;
 import lev.gui.LSwingTreeNode;
-import skyproc.SPGlobal;
 
 /**
  *
@@ -100,10 +101,6 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
     }
 
     public boolean moveNode() throws IOException {
-	if (type.equals(Type.REROUTE)) {
-	    int wer = 23;
-	}
-
 	boolean proper = true;
 	if (disabled != disabledOrig) {
 	    if (src.isDirectory()) {

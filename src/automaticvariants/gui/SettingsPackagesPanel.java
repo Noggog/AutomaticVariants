@@ -81,6 +81,7 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+		    AVFileVars.shufflePackages();
 		    AVFileVars.gatherFiles();
 		    AV.exitProgram();
 		}

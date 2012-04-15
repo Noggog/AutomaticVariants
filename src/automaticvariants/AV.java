@@ -16,7 +16,8 @@ import skyproc.exceptions.BadParameter;
 import skyproc.exceptions.Uninitialized;
 
 /**
- *
+ * ToDo:
+ * - Make compress work for disabled files
  * @author Leviathan1753
  */
 public class AV {
