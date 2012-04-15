@@ -1006,6 +1006,7 @@ public class AVFileVars {
 	    try {
 		fail = !root.moveNode();
 	    } catch (IOException ex) {
+		SPGlobal.logException(ex);
 		fail = true;
 	    }
 

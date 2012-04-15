@@ -232,6 +232,10 @@ public class VariantSet extends PackageComponent implements Serializable {
 
     @Override
     public String printSpec() {
-	return spec.printHelpInfo() + divider;
+	if (spec != null) {
+	    return spec.printHelpInfo() + divider;
+	} else {
+	    return "MISSING SPEC FILE!" + divider;
+	}
     }
 }

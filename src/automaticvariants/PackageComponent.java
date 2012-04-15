@@ -72,10 +72,12 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 
     public ArrayList<PackageComponent> getAll(Type type) {
 	ArrayList<PackageComponent> out = new ArrayList<PackageComponent>();
-	for (Object o : children) {
-	    PackageComponent child = (PackageComponent) o;
-	    if (child.type == type) {
-		out.add(child);
+	if (children != null) {
+	    for (Object o : children) {
+		PackageComponent child = (PackageComponent) o;
+		if (child.type == type) {
+		    out.add(child);
+		}
 	    }
 	}
 	return out;
@@ -98,16 +100,20 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
     }
 
     public boolean moveNode() throws IOException {
+	if (type.equals(Type.REROUTE)) {
+	    int wer = 23;
+	}
+
 	boolean proper = true;
 	if (disabled != disabledOrig) {
-	    if (src.isFile()) {
-		proper = proper && moveFile(src);
-	    } else if (src.isDirectory()) {
+	    if (src.isDirectory()) {
 		for (File f : src.listFiles()) {
 		    if (f.getPath().toUpperCase().endsWith(".JSON")) {
 			proper = proper && moveFile(f);
 		    }
 		}
+	    } else {
+		proper = proper && moveFile(src);
 	    }
 	}
 	for (PackageComponent p : getAll()) {
@@ -117,6 +123,9 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
     }
 
     public boolean moveFile(File src) throws IOException {
+	if (!src.isFile()) {
+	    return false;
+	}
 	String prefix;
 	if (disabled) {
 	    prefix = AVFileVars.inactiveAVPackagesDir;

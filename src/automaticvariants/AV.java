@@ -176,7 +176,9 @@ public class AV {
 	source.addAsOverrides(SPGlobal.getDB());
 
 
-	alreadySwitchedList = new FLST(patch, "AV_" + alreadySwitched);
+	if (AVFileVars.raceSwitchMethod) {
+	    alreadySwitchedList = new FLST(patch, "AV_" + alreadySwitched);
+	}
 
 	// For all race SWITCHING variants
 	// (such as texture variants)
