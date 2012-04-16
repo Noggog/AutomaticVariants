@@ -50,6 +50,8 @@ public class AVFileVars {
     public static PackageComponent AVPackages = new PackageComponent(new File(AVPackagesDir), PackageComponent.Type.ROOT);
     // AV_Nif name is key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
+    static LMergeMap<String, ARMA> nifToARMA = new LMergeMap<String, ARMA>(false);
+    static LMergeMap<String, AV_Nif> nifToRace = new LMergeMap<String, AV_Nif>(false);
     // ArmaSrc is key
     static Map<FormID, String> armaToNif = new HashMap<FormID, String>();
     static LMergeMap<FormID, ARMA_spec> armatures = new LMergeMap<FormID, ARMA_spec>(false);
@@ -250,7 +252,7 @@ public class AVFileVars {
 			}
 
 			// Load in and add to maps
-			if (!armaToNif.containsKey(piece.getForm()) && !piece.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON).isEmpty()) {
+			if (shouldSplit(nifPath, piece, skin)) {
 			    // Has alt texture, separate
 			    splitVariant(nifPath, piece);
 			} else if (!nifs.containsKey(nifPath)) {
@@ -272,6 +274,7 @@ public class AVFileVars {
 
 			if (!uniqueArmas.contains(piece.getForm())) {
 			    String nif = armaToNif.get(piece.getForm());
+			    nifToARMA.put(nif, piece);
 			    boolean unique = true;
 			    if (uniqueAlt.containsKey(nif)) {
 				ArrayList<ARMA> loggedSkins = uniqueAlt.get(nif);
@@ -317,6 +320,23 @@ public class AVFileVars {
 
 	}
 	SPGUI.progress.incrementBar();
+    }
+
+    static boolean shouldSplit(String nifPath, ARMA piece, ARMO skin) {
+	if (armaToNif.containsKey(piece.getForm())) {
+	    return false;
+	}
+	if (!piece.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON).isEmpty()) {
+	    if (nifToARMA.containsKey(nifPath)) {
+		for (ARMA rhs : nifToARMA.get(nifPath)) {
+		    if (piece.equalAltTextures(rhs, Gender.MALE, Perspective.THIRD_PERSON)) {
+			return false;
+		    }
+		}
+	    }
+	    return true;
+	}
+	return false;
     }
 
     static void splitVariant(String nifPath, ARMA piece) throws IOException, BadParameter, DataFormatException {
