@@ -22,6 +22,9 @@ import skyproc.exceptions.Uninitialized;
  */
 public class AV {
 
+    // Version
+    public static String version = "1.3 Alpha";
+
     /*
      * Static Strings
      */
