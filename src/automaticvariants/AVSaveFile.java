@@ -23,6 +23,7 @@ public class AVSaveFile extends LSaveFile {
 	Add(m, Settings.IMPORT_AT_START, "Import at Start", false, false);
 	Add(m, Settings.HEIGHT_ON, "Height Variants On", false, true);
 	Add(m, Settings.HEIGHT_STD, "Height Variants Min", false, 10);
+	Add(m, Settings.MINIMIZE_PATCH, "Height Variants On", false, true);
     }
 
     @Override
@@ -129,10 +130,13 @@ public class AVSaveFile extends LSaveFile {
     public enum Settings {
 
 	PACKAGES_ON,
+
 	HEIGHT_ON,
 	HEIGHT_STD,
+
 	DEBUG_LEVEL,
 	IMPORT_AT_START,
+	MINIMIZE_PATCH,
 	AV_SETTINGS;
     }
 }

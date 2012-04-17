@@ -4,18 +4,14 @@
  */
 package automaticvariants;
 
+import automaticvariants.AVSaveFile.Settings;
 import automaticvariants.Variant.VariantSpec;
 import automaticvariants.gui.PackageTree;
 import automaticvariants.gui.SettingsPackagesPanel;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
@@ -48,10 +44,12 @@ public class AVFileVars {
      * Variant storage lists/maps
      */
     public static PackageComponent AVPackages = new PackageComponent(new File(AVPackagesDir), PackageComponent.Type.ROOT);
+    static HashSet<FormID> unusedRaces;
+    static HashSet<FormID> unusedSkins;
     // AV_Nif name is key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     static LMergeMap<String, ARMA> nifToARMA = new LMergeMap<String, ARMA>(false);
-    static LMergeMap<String, AV_Nif> nifToRace = new LMergeMap<String, AV_Nif>(false);
+    static LMergeMap<ARMO, FormID> ARMOToRace = new LMergeMap<ARMO, FormID>(false);
     // ArmaSrc is key
     static Map<FormID, String> armaToNif = new HashMap<FormID, String>();
     static LMergeMap<FormID, ARMA_spec> armatures = new LMergeMap<FormID, ARMA_spec>(false);
@@ -79,6 +77,9 @@ public class AVFileVars {
 	}
 	importVariants();
 	SPGUI.progress.incrementBar();
+
+	// Locate unused Races/Skins
+	locateUnused(source);
 
 	// Locate and load NIFs, and assign their variants
 	linkToNifs();
@@ -170,6 +171,32 @@ public class AVFileVars {
 	}
     }
 
+    public static void locateUnused(Mod source) {
+	if (!AV.save.getBool(Settings.MINIMIZE_PATCH)) {
+	    return;
+	}
+
+	unusedRaces = new HashSet<FormID>(source.getRaces().numRecords());
+	for (RACE race : source.getRaces()) {
+	    unusedRaces.add(race.getForm());
+	}
+	unusedSkins = new HashSet<FormID>(source.getArmors().numRecords());
+	for (ARMO armor : source.getArmors()) {
+	    unusedSkins.add(armor.getForm());
+	}
+
+	for (NPC_ n : source.getNPCs()) {
+	    unusedRaces.remove(n.getRace());
+	    unusedSkins.remove(n.getSkin());
+	}
+
+	for (RACE r : source.getRaces()) {
+	    if (!unusedRaces.contains(r.getForm())) {
+		unusedSkins.remove(r.getWornArmor());
+	    }
+	}
+    }
+
     static void linkToNifs() {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Linking packages to .nif files.");
 	for (PackageComponent avPackageC : AVPackages.getAll(PackageComponent.Type.PACKAGE)) {
@@ -180,7 +207,6 @@ public class AVFileVars {
 		    continue;
 		}
 		ArrayList<FormID> uniqueArmas = new ArrayList<FormID>();
-		LMergeMap<String, ARMA> uniqueAlt = new LMergeMap<String, ARMA>(true, true);
 		for (String[] s : varSet.spec.Target_FormIDs) {
 		    FormID id = new FormID(s[0], s[1]);
 		    String header = id.toString();
@@ -232,13 +258,16 @@ public class AVFileVars {
 			ARMA piece = null;
 			for (FormID arma : skin.getArmatures()) {
 			    piece = (ARMA) SPDatabase.getMajor(arma);
-			    if (piece.getRace().equals(skin.getRace())) {
+			    if (piece.getRace().equals(record.getRace())) {
 				break;
 			    }
 			    piece = null;
 			}
 			if (piece == null) {
 			    SPGlobal.logError(header, "Could not locate ARMA matching ARMO's race");
+			    continue;
+			} else if (uniqueArmas.contains(piece.getForm())) {
+			    SPGlobal.log(header, "  Already logged " + piece + " for this variant set.");
 			    continue;
 			} else if (SPGlobal.logging()) {
 			    SPGlobal.log(header, "  " + piece);
@@ -252,7 +281,7 @@ public class AVFileVars {
 			}
 
 			// Load in and add to maps
-			if (shouldSplit(nifPath, piece, skin)) {
+			if (!armaToNif.containsKey(piece.getForm()) && shouldSplit(nifPath, piece, skin)) {
 			    // Has alt texture, separate
 			    splitVariant(nifPath, piece);
 			} else if (!nifs.containsKey(nifPath)) {
@@ -272,30 +301,13 @@ public class AVFileVars {
 			    armaToNif.put(piece.getForm(), nifPath);
 			}
 
-			if (!uniqueArmas.contains(piece.getForm())) {
-			    String nif = armaToNif.get(piece.getForm());
-			    nifToARMA.put(nif, piece);
-			    boolean unique = true;
-			    if (uniqueAlt.containsKey(nif)) {
-				ArrayList<ARMA> loggedSkins = uniqueAlt.get(nif);
-				for (ARMA a : loggedSkins) {
-				    if (piece.equalAltTextures(a, Gender.MALE, Perspective.THIRD_PERSON)) {
-					unique = false;
-					break;
-				    }
-				}
-			    }
-			    if (unique) {
-				uniqueArmas.add(piece.getForm());
-				uniqueAlt.put(nif, piece);
-				for (Variant v : varSet.multiplyAndFlatten()) {
-				    nifs.get(nif).variants.add((Variant) Ln.deepCopy(v));
-				}
-			    } else if (SPGlobal.logging()) {
-				SPGlobal.log(header, "  Already logged an arma with the same nif and alt texture set.");
-			    }
-			} else if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "  Already logged that arma for this variant set.");
+			String nif = armaToNif.get(piece.getForm());
+			nifToARMA.put(nif, piece);
+			ARMOToRace.put(skin, piece.getRace());
+
+			uniqueArmas.add(piece.getForm());
+			for (Variant v : varSet.multiplyAndFlatten()) {
+			    nifs.get(nif).variants.add((Variant) Ln.deepCopy(v));
 			}
 
 			//Oh nos
@@ -323,9 +335,8 @@ public class AVFileVars {
     }
 
     static boolean shouldSplit(String nifPath, ARMA piece, ARMO skin) {
-	if (armaToNif.containsKey(piece.getForm())) {
-	    return false;
-	}
+
+	// If has alt texture set and they aren't logged
 	if (!piece.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON).isEmpty()) {
 	    if (nifToARMA.containsKey(nifPath)) {
 		for (ARMA rhs : nifToARMA.get(nifPath)) {
@@ -334,15 +345,27 @@ public class AVFileVars {
 		    }
 		}
 	    }
+	    if (SPGlobal.logging()) {
+		SPGlobal.log("SplitVar", "  Record warrents split due to alt textures in ARMA.");
+	    }
 	    return true;
 	}
+
+	// If different race
+	if (!skin.getRace().equals(piece.getRace())) {
+	    if (!ARMOToRace.containsKey(skin)
+		    || !ARMOToRace.get(skin).contains(piece.getRace())) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log("SplitVar", "  Record warrents split due to alt race.");
+		}
+		return true;
+	    }
+	}
+
 	return false;
     }
 
     static void splitVariant(String nifPath, ARMA piece) throws IOException, BadParameter, DataFormatException {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log("SplitVar", "  Record warrents split due to alt textures in ARMA.");
-	}
 	AV_Nif nif = new AV_Nif(nifPath);
 	nif.load();
 	SPGlobal.log(header, "  Nif path: " + nifPath);
@@ -513,37 +536,48 @@ public class AVFileVars {
 	    SPGlobal.log(header, "====================================================================");
 	}
 	for (ARMO armoSrc : source.getArmors()) {
-	    ArrayList<ARMA_spec> variants = null;
-	    FormID target = null;
+	    if (AV.block.contains(armoSrc.getForm())) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "Skipping " + armoSrc + " because it is on the block list");
+		}
+		continue;
+	    }
+
+	    LMergeMap<FormID, ARMA_spec> targets = new LMergeMap<FormID, ARMA_spec>(false);
+	    int largest = 0;
 	    for (FormID armaForm : armoSrc.getArmatures()) {
 		ARMA arma = (ARMA) SPDatabase.getMajor(armaForm);
-		if (arma != null && arma.getRace().equals(armoSrc.getRace())) {
-		    target = armaForm;
-		    variants = armatures.get(target);
-		    if (variants != null) {
-			break;
+		if (arma != null) {
+		    if (armatures.containsKey(armaForm)) {
+			if (largest < armatures.get(armaForm).size()) {
+			    largest = armatures.get(armaForm).size();
+			}
+			targets.put(armaForm, armatures.get(armaForm));
 		    }
 		}
 	    }
 
-	    if (variants != null) {
-		if (AV.block.contains(armoSrc.getForm())) {
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "Skipping " + armoSrc + " because it is on the block list");
-		    }
-		    continue;
-		} else if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(target, GRUP_TYPE.ARMA));
+	    if (AV.save.getBool(Settings.MINIMIZE_PATCH)
+		    && !targets.isEmpty() && unusedSkins.contains(armoSrc.getForm())) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "Skipping " + armoSrc + " because it is unused.");
 		}
-		ArrayList<ARMO_spec> dups = new ArrayList<ARMO_spec>(variants.size());
-		for (ARMA_spec variant : variants) {
+		continue;
+	    }
+
+	    for (FormID arma : targets.keySet()) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(arma, GRUP_TYPE.ARMA));
+		}
+		ArrayList<ARMO_spec> dups = new ArrayList<ARMO_spec>(targets.numVals());
+		for (ARMA_spec variant : targets.get(arma)) {
 		    String edid = variant.arma.getEDID().substring(0, variant.arma.getEDID().lastIndexOf("_arma"));
 		    edid = edid.substring(0, edid.lastIndexOf("_")) + "_" + armoSrc.getEDID() + "_armo";  // replace ARMA string with ARMO name
 		    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, edid);
 
-		    dup.removeArmature(target);
+		    dup.removeArmature(arma);
 		    dup.addArmature(variant.arma.getForm());
-		    dups.add(new ARMO_spec(dup, variant));
+		    dups.add(new ARMO_spec(dup, variant, variant.arma.getRace()));
 		}
 		armors.put(armoSrc.getForm(), dups);
 	    }
@@ -808,6 +842,10 @@ public class AVFileVars {
 
 		ArrayList<NPC_spec> dups = new ArrayList<NPC_spec>(skinVariants.size());
 		for (ARMO_spec variant : skinVariants) {
+		    if (!npcSrc.getRace().equals(variant.targetRace)) {
+			continue;
+		    }
+
 		    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc, variant.armo.getEDID().substring(0, variant.armo.getEDID().lastIndexOf("_ID_")) + "_" + npcSrc.getEDID());
 
 		    if (template != null) {
@@ -839,6 +877,12 @@ public class AVFileVars {
 
 	    LVLN llist = new LVLN(SPGlobal.getGlobalPatch(), "AV_" + source.getNPCs().get(srcNpc).getEDID() + "_llist");
 	    ArrayList<NPC_spec> npcVars = npcs.get(srcNpc);
+	    if (npcVars.isEmpty()) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "  Skipping because variant list was empty");
+		}
+		continue;
+	    }
 	    int[] divs = new int[npcVars.size()];
 	    for (int i = 0; i < divs.length; i++) {
 		divs[i] = npcVars.get(i).probDiv;
@@ -1231,10 +1275,12 @@ public class AVFileVars {
 	ARMO armo;
 	int probDiv;
 	ARMA targetArma;
+	FormID targetRace;
 
-	ARMO_spec(ARMO armo, ARMA_spec spec) {
+	ARMO_spec(ARMO armo, ARMA_spec spec, FormID targetRace) {
 	    this.armo = armo;
 	    targetArma = spec.arma;
+	    this.targetRace = targetRace;
 	    probDiv = spec.probDiv;
 	}
     }
