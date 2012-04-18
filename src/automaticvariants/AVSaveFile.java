@@ -20,6 +20,7 @@ public class AVSaveFile extends LSaveFile {
     protected void init(Map m) {
 	Add(m, Settings.PACKAGES_ON, "Packages On", false, true);
 	Add(m, Settings.PACKAGES_PREP, "Package Prep", false, true);
+	Add(m, Settings.PACKAGES_ORIG_AS_VAR, "Orig as Var", false, true);
 	Add(m, Settings.DEBUG_LEVEL, "Debug Level", false, 1);
 	Add(m, Settings.IMPORT_AT_START, "Import at Start", false, false);
 	Add(m, Settings.HEIGHT_ON, "Height Variants On", false, true);
@@ -105,6 +106,9 @@ public class AVSaveFile extends LSaveFile {
 
 		+ "It is highly recommended that you keep this setting on.");
 
+	helpInfo.put(Settings.PACKAGES_ORIG_AS_VAR, "This will add the non-AV actor setup as a variant, and add it to the list of options. \n\n"
+		+ "If turned off, then only variants explicitly part of an AV Package will spawn.");
+
 	helpInfo.put(Settings.PACKAGES_GATHER, "This is a utility function that should only be used if you want to modify AV Package contents "
 		+ "manually.\n\n"
 		+ "NOTE:  This will not generate a working patch.  Just close the program normally to do that.\n\n"
@@ -151,6 +155,7 @@ public class AVSaveFile extends LSaveFile {
 	PACKAGES_ON,
 	PACKAGES_PREP,
 	PACKAGES_GATHER,
+	PACKAGES_ORIG_AS_VAR,
 
 	HEIGHT_ON,
 	HEIGHT_STD,

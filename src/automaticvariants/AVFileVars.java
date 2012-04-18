@@ -93,6 +93,9 @@ public class AVFileVars {
 	// Generate ARMO dups that use ARMAs
 	generateARMOvariants(source);
 
+	// Prep AV and/or add Originals as Variants
+//	prepAndAddOriginals(source);
+
 	// Split between two methods of achiving variants in-game.
 	// Currently using NPC dup method
 	if (raceSwitchMethod) {
@@ -586,6 +589,58 @@ public class AVFileVars {
 	SPGUI.progress.incrementBar();
     }
 
+    static void prepAndAddOriginals(Mod source) {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(header, "====================================================================================================");
+	    SPGlobal.log(header, "AV Prepping and Adding Originals as Variants");
+	    SPGlobal.log(header, "====================================================================================================");
+	}
+
+	for (ARMO armoSrc : source.getArmors()) {
+
+	    ArrayList<ARMO_spec> skinVariants = armors.get(armoSrc.getForm());
+
+	    // If no variants, but prepping is on, make it a variant of one
+	    // Else if orig as var is on, add original as variant
+	    if (skinVariants == null) {
+		if (AV.save.getBool(Settings.PACKAGES_PREP)) {
+		    skinVariants = new ArrayList<ARMO_spec>();
+		} else {
+		    continue;
+		}
+		skinVariants.add(new ARMO_spec(armoSrc));
+		armors.put(armoSrc.getForm(), skinVariants);
+		SPGlobal.log(header, "Prepped " + armoSrc);
+	    } else if (AV.save.getBool(Settings.PACKAGES_ORIG_AS_VAR)) {
+		skinVariants.add(new ARMO_spec(armoSrc));
+		SPGlobal.log(header, "Added original " + armoSrc);
+	    }
+	}
+
+
+//	for (NPC_ npcSrc : source.getNPCs()) {
+//
+//	    ArrayList<ARMO_spec> skinVariants = armors.get(getUsedSkin(npcSrc));
+//
+//	    // If no variants, but prepping is on, make it a variant of one
+//	    // Else if orig as var is on, add original as variant
+//	    if (skinVariants == null && AV.save.getBool(Settings.PACKAGES_PREP)) {
+//		skinVariants = new ArrayList<ARMO_spec>(1);
+//		skinVariants.add(new ARMO_spec(npcSrc));
+//		armors.put(armoSrc.getForm(), skinVariants);
+//		if (SPGlobal.logging()) {
+//		    SPGlobal.log(header, "Prepped " + armoSrc);
+//		}
+//	    } else if (AV.save.getBool(Settings.PACKAGES_ORIG_AS_VAR)) {
+//		skinVariants.add(new ARMO_spec(armoSrc));
+//		if (SPGlobal.logging()) {
+//		    SPGlobal.log(header, "Added original " + armoSrc);
+//		}
+//	    }
+//	}
+
+    }
+
     static void printVariants() {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "Variants loaded: ");
@@ -807,25 +862,26 @@ public class AVFileVars {
 	for (NPC_ npcSrc : source.getNPCs()) {
 
 	    // Locate if any variants are available
-	    FormID armorForm = npcSrc.getSkin();
-	    if (npcSrc.getSkin().equals(FormID.NULL)) {
-		RACE race = (RACE) SPDatabase.getMajor(npcSrc.getRace());
-		if (race == null) {
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "Skipping " + npcSrc + " : did not have a worn armor or race.");
-		    }
-		    continue;
+	    FormID armorForm = getUsedSkin(npcSrc);
+	    if (armorForm == null) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "Skipping " + npcSrc + " : did not have a worn armor or race.");
 		}
-		armorForm = race.getWornArmor();
+		continue;
 	    }
+
 	    ArrayList<ARMO_spec> skinVariants = armors.get(armorForm);
+
+	    // If npc has variant
 	    if (skinVariants != null) {
 
+		// Check if this is an NPC to skip
 		if (AV.checkNPCskip(npcSrc, last)) {
 		    last = false;
 		    continue;
 		}
 
+		// Find if NPC has a template
 		NPC_ template = null;
 		if (!npcSrc.getTemplate().equals(FormID.NULL)) {
 		    template = (NPC_) SPDatabase.getMajor(npcSrc.getTemplate(), GRUP_TYPE.NPC_);
@@ -842,16 +898,26 @@ public class AVFileVars {
 
 		ArrayList<NPC_spec> dups = new ArrayList<NPC_spec>(skinVariants.size());
 		for (ARMO_spec variant : skinVariants) {
+		    // If skin's target race does not match npc's, skip.
 		    if (!npcSrc.getRace().equals(variant.targetRace)) {
 			continue;
 		    }
 
-		    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc, variant.armo.getEDID().substring(0, variant.armo.getEDID().lastIndexOf("_ID_")) + "_" + npcSrc.getEDID());
+		    // Duplicate the source NPC
+		    String newEDID;
+		    if (variant.armo.getForm().getMaster().equals(SPGlobal.getGlobalPatch().getInfo())) {
+			newEDID = variant.armo.getEDID().substring(0, variant.armo.getEDID().lastIndexOf("_ID_")) + "_" + npcSrc.getEDID();
+		    } else {
+			newEDID = "AV_OriginalVar_" + npcSrc.getEDID();
+		    }
+		    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc, newEDID);
 
+		    // Flatten the dup's template chain so it has no template.
 		    if (template != null) {
 			dup.templateTo(template);
 		    }
 
+		    // Set skin to AV's variant
 		    dup.setSkin(variant.armo.getForm());
 
 		    dups.add(new NPC_spec(dup, variant));
@@ -861,6 +927,22 @@ public class AVFileVars {
 	}
 
 	SPGUI.progress.incrementBar();
+    }
+
+    static FormID getUsedSkin(NPC_ npcSrc) {
+	if (!npcSrc.getSkin().equals(FormID.NULL)) {
+	    return npcSrc.getSkin();
+	} else {
+	    RACE race = (RACE) SPDatabase.getMajor(npcSrc.getRace());
+	    if (race == null) {
+		return null;
+	    }
+	    if (!race.getWornArmor().equals(FormID.NULL)) {
+		return race.getWornArmor();
+	    } else {
+		return null;
+	    }
+	}
     }
 
     static void generateLVLNs(Mod source) {
@@ -1000,9 +1082,17 @@ public class AVFileVars {
 	// Make NPC duplicates for each in the template LList.
 	for (LVLO templateEntry : template) {
 	    NPC_ templateNPC = (NPC_) SPGlobal.getGlobalPatch().getNPCs().get(templateEntry.getForm());
-	    NPC_ dupNPC = skinToNPCdup.get(templateNPC.getSkin());
 	    String[] edidSplit = templateNPC.getEDID().split("_");
-	    String edidBase = edidSplit[0] + "_" + edidSplit[1] + "_" + edidSplit[2] + "_" + edidSplit[3] + "_" + edidSplit[4];
+	    String edidBase;
+	    if (templateNPC.getForm().getMaster().equals(SPGlobal.getGlobalPatch().getInfo())) {
+		// If normal AV variant
+		edidBase = edidSplit[0] + "_" + edidSplit[1] + "_" + edidSplit[2] + "_" + edidSplit[3] + "_" + edidSplit[4];
+	    } else {
+		// If orig as var variant
+		edidBase = templateNPC.getEDID().substring(0, templateNPC.getEDID().lastIndexOf("_")) + "_TEST";
+	    }
+
+	    NPC_ dupNPC = skinToNPCdup.get(templateNPC.getSkin());
 	    if (dupNPC == null) {
 		dupNPC = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcEntry, edidBase + "_" + npcEntry.getEDID());
 		dupNPC.templateTo(templateNPC);
@@ -1276,6 +1366,18 @@ public class AVFileVars {
 	int probDiv;
 	ARMA targetArma;
 	FormID targetRace;
+
+	ARMO_spec(NPC_ src) {
+	    armo = (ARMO) SPDatabase.getMajor(getUsedSkin(src), GRUP_TYPE.ARMO);
+	    probDiv = 1;
+	    targetRace = src.getRace();
+	}
+
+	ARMO_spec(ARMO armoSrc) {
+	    this.armo = armoSrc;
+	    this.targetRace = armoSrc.getRace();
+	    probDiv = 1;
+	}
 
 	ARMO_spec(ARMO armo, ARMA_spec spec, FormID targetRace) {
 	    this.armo = armo;

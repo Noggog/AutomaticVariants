@@ -20,6 +20,7 @@ public class SettingsPackagesOther extends DefaultsPanel {
 
     LButton gatherAndExit;
     LCheckBox prepAV;
+    LCheckBox origAsVar;
     LButton packageManager;
 
     public SettingsPackagesOther(EncompassingPanel parent_) {
@@ -38,6 +39,12 @@ public class SettingsPackagesOther extends DefaultsPanel {
 	    prepAV.tie(AVSaveFile.Settings.PACKAGES_PREP, AV.save, parent.helpPanel, true);
 	    last = setPlacement(prepAV, last);
 	    Add(prepAV);
+
+	    origAsVar = new LCheckBox ("Original As Variant", AVGUI.settingsFont, AVGUI.yellow);
+	    origAsVar.setOffset(0);
+	    origAsVar.tie(AVSaveFile.Settings.PACKAGES_ORIG_AS_VAR, AV.save, parent.helpPanel, true);
+	    last = setPlacement(origAsVar, last);
+	    Add(origAsVar);
 
 	    gatherAndExit = new LButton("Gather Files and Exit");
 	    gatherAndExit.addActionListener(new ActionListener() {
