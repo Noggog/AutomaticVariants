@@ -19,6 +19,7 @@ public class AVSaveFile extends LSaveFile {
     @Override
     protected void init(Map m) {
 	Add(m, Settings.PACKAGES_ON, "Packages On", false, true);
+	Add(m, Settings.PACKAGES_PREP, "Package Prep", false, true);
 	Add(m, Settings.DEBUG_LEVEL, "Debug Level", false, 1);
 	Add(m, Settings.IMPORT_AT_START, "Import at Start", false, false);
 	Add(m, Settings.HEIGHT_ON, "Height Variants On", false, true);
@@ -94,6 +95,24 @@ public class AVSaveFile extends LSaveFile {
 		+ "\n\nNOTE: If you disable a package that you have been playing with, "
 		+ "make sure to reset the cells of your savegame.");
 
+	helpInfo.put(Settings.PACKAGES_PREP, "This will prep AV to be able to safely add/remove packages "
+		+ "without bugging out.  It is still highly recommended that you start a new game when installing "
+		+ "AV;  However, once a game is 'established' with AV Prepping, then it should be safe to enable/disable "
+		+ "new packages without consequence.\n\n"
+
+		+ "This will make every NPC a \"variant of one\" so that variants can be added/removed from the list without "
+		+ "drastically changing the record structure.\n\n"
+
+		+ "It is highly recommended that you keep this setting on.");
+
+	helpInfo.put(Settings.PACKAGES_GATHER, "This is a utility function that should only be used if you want to modify AV Package contents "
+		+ "manually.\n\n"
+		+ "NOTE:  This will not generate a working patch.  Just close the program normally to do that.\n\n"
+		+ "In normal operation, AV moves all of the variant textures out of the AV Packages folder and into "
+		+ "the 'Data/Textures/' folder for in-game use.\n"
+		+ "This button will simply gather them back to the AV Packages folder and quit, so that you can modify "
+		+ "AV Packages manually in windows.  Make sure to re-run the patcher before attemting to play with AV again.");
+
 	helpInfo.put(Settings.HEIGHT_ON, "This variant setup will give each actor "
 		+ "that spawns a variance in its height.");
 
@@ -130,6 +149,8 @@ public class AVSaveFile extends LSaveFile {
     public enum Settings {
 
 	PACKAGES_ON,
+	PACKAGES_PREP,
+	PACKAGES_GATHER,
 
 	HEIGHT_ON,
 	HEIGHT_STD,

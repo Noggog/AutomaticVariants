@@ -40,7 +40,7 @@ public class LMainMenuConfig extends LCheckBoxConfig {
 
         if (cBoxPresent) {
             cbox = new LSpecialCheckBox(title, new Font("Serif",Font.PLAIN, size), color, this);
-            cbox.tie(setting, save, help);
+            cbox.tie(setting, save, help, false);
             cbox.setFocusable(false);
             button.setLocation(new Point(cbox.getWidth() + spacing, 0));
         } else {

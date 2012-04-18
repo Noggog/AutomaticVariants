@@ -18,7 +18,8 @@ public class SettingsMainMenu extends EncompassingPanel {
 
     private LPanel menu;
     public LMainMenuConfig managePackagesButton;
-    SettingsPackagesPanel managePackagesPanel = new SettingsPackagesPanel(this);
+    public SettingsPackagesManager managePackagesPanel = new SettingsPackagesManager(this);
+    public SettingsPackagesOther packagesOtherPanel = new SettingsPackagesOther (this);
     LMainMenuConfig manageHeightButton;
     SettingsHeightPanel manageHeightPanel = new SettingsHeightPanel(this);
     LMainMenuConfig manageSettingsButton;

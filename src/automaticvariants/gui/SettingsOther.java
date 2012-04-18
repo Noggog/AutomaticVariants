@@ -28,24 +28,24 @@ public class SettingsOther extends DefaultsPanel {
     @Override
     public boolean initialize() {
 	if (super.initialize()) {
-	    
+
 	    importOnStartup = new LCheckBox("Import Mods on Startup", AVGUI.settingsFont, AVGUI.yellow);
-	    importOnStartup.tie(AVSaveFile.Settings.IMPORT_AT_START, saveFile, parent.helpPanel);
+	    importOnStartup.tie(AVSaveFile.Settings.IMPORT_AT_START, saveFile, parent.helpPanel, true);
 	    importOnStartup.setOffset(2);
 	    last = setPlacement(importOnStartup, last);
 	    AddSetting(importOnStartup);
-	    
+
 	    debugLabel = new LLabel ("Debug Level", AVGUI.settingsFont, AVGUI.yellow);
-	    
+
 	    debugLevel = new LComboBox("Debug Level");
 	    debugLevel.setSize(150, 25);
 	    debugLevel.addItem("Off");
 	    debugLevel.addItem("AV Debug");
 	    debugLevel.addItem("AV + SkyProc Debug");
-	    debugLevel.tie(Settings.DEBUG_LEVEL, saveFile, parent.helpPanel);
+	    debugLevel.tie(Settings.DEBUG_LEVEL, saveFile, parent.helpPanel, true);
 	    last = setPlacement(debugLevel, last.x + debugLabel.getWidth() + 15,last.y);
 	    AddSetting(debugLevel);
-	    
+
 	    debugLabel.setLocation(debugLevel.getX() - debugLabel.getWidth() - 15, debugLevel.getY());
 	    Add(debugLabel);
 

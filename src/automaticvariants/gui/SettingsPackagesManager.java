@@ -15,8 +15,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -26,29 +24,25 @@ import javax.swing.tree.TreePath;
 import lev.Ln;
 import lev.gui.LButton;
 import lev.gui.LImagePane;
-import lev.gui.LPanel;
 import skyproc.SPGlobal;
 
 /**
  *
  * @author Justin Swanson
  */
-public class SettingsPackagesPanel extends DefaultsPanel {
+public class SettingsPackagesManager extends DefaultsPanel {
 
     public static PackageTree tree;
 //    static DDSreader reader;
     LImagePane display;
     LButton enableButton;
     LButton disableButton;
-    LButton gatherAndExit;
-    LButton editSpec;
-    LPanel packagePanel;
-    LPanel varSetSpecPanel;
+    LButton otherSettings;
     JPopupMenu optionsMenu;
     JMenuItem enable;
     JMenuItem compress;
 
-    public SettingsPackagesPanel(EncompassingPanel parent_) {
+    public SettingsPackagesManager(EncompassingPanel parent_) {
 	super("Texture Variants", AV.save, parent_);
     }
 
@@ -56,8 +50,17 @@ public class SettingsPackagesPanel extends DefaultsPanel {
     public boolean initialize() {
 	if (super.initialize()) {
 
+	    tree = new PackageTree(AVGUI.middleDimensions.width - 30,
+		    AVGUI.middleDimensions.height - 165, parent.helpPanel);
+	    tree.setLocation(AVGUI.middleDimensions.width / 2 - tree.getWidth() / 2, last.y + 10);
+	    tree.setMargin(10, 5);
+	    tree.removeBorder();
+	    Add(tree);
+
+
 	    defaults.setVisible(false);
 	    enableButton = new LButton("Enable", defaults.getSize(), defaults.getLocation());
+	    enableButton.setLocation(enableButton.getX(), tree.getY() + tree.getHeight() + 15);
 	    enableButton.addActionListener(new ActionListener() {
 
 		@Override
@@ -65,9 +68,12 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 		    enableSelection(true);
 		}
 	    });
+	    Add(enableButton);
+
 
 	    save.setVisible(false);
 	    disableButton = new LButton("Disable", save.getSize(), save.getLocation());
+	    disableButton.setLocation(disableButton.getX(), tree.getY() + tree.getHeight() + 15);
 	    disableButton.addActionListener(new ActionListener() {
 
 		@Override
@@ -75,48 +81,13 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 		    enableSelection(false);
 		}
 	    });
-
-	    gatherAndExit = new LButton("Gather Files and Exit");
-	    gatherAndExit.addActionListener(new ActionListener() {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-		    AVFileVars.shufflePackages();
-		    AVFileVars.gatherFiles();
-		    AV.exitProgram();
-		}
-	    });
+	    Add(disableButton);
 
 
-	    editSpec = new LButton("Edit Specs", save.getSize());
-	    editSpec.setLocation(AVGUI.middleDimensions.x / 2 - editSpec.getWidth() / 2, disableButton.getY() - editSpec.getHeight() - 15);
-	    editSpec.addActionListener(new ActionListener() {
+	    otherSettings = new LButton("Other Settings");
+	    otherSettings.centerIn(settingsPanel, defaults.getY());
+	    Add(otherSettings);
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-		    editSpec();
-		}
-	    });
-
-	    tree = new PackageTree(AVGUI.middleDimensions.width - 30,
-		    AVGUI.middleDimensions.height - 200, parent.helpPanel);
-	    tree.setLocation(AVGUI.middleDimensions.width / 2 - tree.getWidth() / 2, last.y + 10);
-	    tree.setMargin(10, 5);
-	    tree.removeBorder();
-
-	    packagePanel = new LPanel(AVGUI.middleDimensions);
-	    packagePanel.setLocation(0, 0);
-	    packagePanel.Add(enableButton);
-	    packagePanel.Add(disableButton);
-	    packagePanel.Add(tree);
-	    gatherAndExit.centerIn(packagePanel, defaults.getY() - gatherAndExit.getHeight() - 15);
-	    packagePanel.Add(gatherAndExit);
-	    Add(packagePanel);
-
-
-	    varSetSpecPanel = new LPanel(AVGUI.middleDimensions);
-	    varSetSpecPanel.setLocation(0, 0);
-	    Add(varSetSpecPanel);
 
 	    optionsMenu = new JPopupMenu();
 	    enable = new JMenuItem("Enable");
@@ -137,6 +108,7 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 		}
 	    });
 	    optionsMenu.add(compress);
+
 
 	    //Add popup listener
 	    MouseAdapter ma = new MouseAdapter() {
@@ -207,6 +179,8 @@ public class SettingsPackagesPanel extends DefaultsPanel {
     public void specialOpen(EncompassingPanel parent) {
 //	parent.helpPanel.addToBottomArea(display);
 	parent.helpPanel.setBottomAreaHeight(AVGUI.rightDimensions.width - 50);
+
+	otherSettings.addActionListener(((SettingsMainMenu)parent).packagesOtherPanel.getOpenHandler(parent));
     }
 
     public void enableSelection(boolean enable) {
@@ -268,8 +242,7 @@ public class SettingsPackagesPanel extends DefaultsPanel {
 		    + "  Starting size: " + Ln.toMB(before) + " MB<br>"
 		    + "    Ending size: " + Ln.toMB(after) + " MB<br>"
 		    + "    Saved space: " + Ln.toMB(before - after) + " MB"
-		    + "</html>"
-		    );
+		    + "</html>");
 	} catch (FileNotFoundException ex) {
 	    SPGlobal.logException(ex);
 	} catch (IOException ex) {

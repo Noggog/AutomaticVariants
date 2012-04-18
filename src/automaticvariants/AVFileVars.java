@@ -7,7 +7,7 @@ package automaticvariants;
 import automaticvariants.AVSaveFile.Settings;
 import automaticvariants.Variant.VariantSpec;
 import automaticvariants.gui.PackageTree;
-import automaticvariants.gui.SettingsPackagesPanel;
+import automaticvariants.gui.SettingsPackagesManager;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -1063,7 +1063,7 @@ public class AVFileVars {
      * Other Methods
      */
     static public void shufflePackages() {
-	PackageTree tree = SettingsPackagesPanel.tree;
+	PackageTree tree = SettingsPackagesManager.tree;
 	if (tree != null) {
 	    PackageComponent root = (PackageComponent) tree.getRoot();
 	    boolean fail;
