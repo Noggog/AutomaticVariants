@@ -219,11 +219,30 @@ public class AV {
 	}
     }
 
-    static boolean checkNPCskip(NPC_ npcSrc, boolean last) {
+    static boolean checkNPCskip(NPC_ npcSrc, boolean print, boolean last) {
 	String edid = npcSrc.getEDID().toUpperCase();
+	if (npcSrc.get(NPC_.NPCFlag.Unique)) {
+	    if (print && SPGlobal.logging()) {
+		    if (last) {
+			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
+		    }
+		    SPGlobal.log(header, "    Skipping " + npcSrc + " : Unique actor");
+		}
+	    return true;
+	}
+	if (block.contains(AVFileVars.getUsedSkin(npcSrc))) {
+	    if (print && SPGlobal.logging()) {
+		    if (last) {
+			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
+		    }
+		    SPGlobal.log(header, "    Skipping " + npcSrc + " : Blocked skin " + SPDatabase.getMajor(AVFileVars.getUsedSkin(npcSrc), GRUP_TYPE.ARMO));
+		    SPGlobal.logBlocked(header, "Blocked skin", npcSrc);
+		}
+	    return true;
+	}
 	if (!npcSrc.getTemplate().equals(FormID.NULL)) {
 	    if (npcSrc.get(NPC_.TemplateFlag.USE_TRAITS)) {
-		if (SPGlobal.logging()) {
+		if (print && SPGlobal.logging()) {
 		    if (last) {
 			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
 		    }
@@ -231,7 +250,7 @@ public class AV {
 		}
 		return true;
 	    } else if (NiftyFunc.isTemplatedToLList(npcSrc) != null) {
-		if (SPGlobal.logging()) {
+		if (print && SPGlobal.logging()) {
 		    if (last) {
 			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
 		    }
@@ -243,11 +262,12 @@ public class AV {
 	}
 	for (String exclude : edidExclude) {
 	    if (edid.contains(exclude)) {
-		if (SPGlobal.logging()) {
+		if (print && SPGlobal.logging()) {
 		    if (last) {
 			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
 		    }
 		    SPGlobal.log(header, "    Skipping " + npcSrc + " : edid exclude '" + exclude + "'");
+		    SPGlobal.logBlocked(header, "edid exclude " + exclude , npcSrc);
 		}
 		return true;
 	    }
