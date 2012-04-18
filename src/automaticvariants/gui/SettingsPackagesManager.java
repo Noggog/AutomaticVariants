@@ -221,7 +221,14 @@ public class SettingsPackagesManager extends DefaultsPanel {
 
     public void compress() {
 	try {
+	    int row = tree.tree.getLeadSelectionRow();
 	    PackageComponent p = (PackageComponent) tree.getSelectionPaths()[0].getLastPathComponent();
+	    enableSelection(true);
+ 	    p.moveNode();
+	    loadPackageList();
+
+	    p = (PackageComponent) tree.tree.getPathForRow(row).getLastPathComponent();
+
 	    long before = p.fileSize();
 	    if (SPGlobal.logging()) {
 		SPGlobal.log(p.src.getName(), "Current file size: " + before + "->" + Ln.toMB(before) + "MB");
