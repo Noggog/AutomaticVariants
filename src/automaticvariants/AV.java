@@ -230,16 +230,6 @@ public class AV {
 		}
 	    return true;
 	}
-	if (block.contains(AVFileVars.getUsedSkin(npcSrc))) {
-	    if (print && SPGlobal.logging()) {
-		    if (last) {
-			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		    }
-		    SPGlobal.log(header, "    Skipping " + npcSrc + " : Blocked skin " + SPDatabase.getMajor(AVFileVars.getUsedSkin(npcSrc), GRUP_TYPE.ARMO));
-		    SPGlobal.logBlocked(header, "Blocked skin", npcSrc);
-		}
-	    return true;
-	}
 	if (!npcSrc.getTemplate().equals(FormID.NULL)) {
 	    if (npcSrc.get(NPC_.TemplateFlag.USE_TRAITS)) {
 		if (print && SPGlobal.logging()) {

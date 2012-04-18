@@ -92,14 +92,30 @@ public class VariantSet extends PackageComponent implements Serializable {
 	    flat = new ArrayList<Variant>();
 	    if (!groups.isEmpty()) {
 		flat.addAll(groups.get(0).variants);
-		for (int i = 1; i < groups.size(); i++) {
-		    ArrayList<Variant> tmp = new ArrayList<Variant>(flat.size() * groups.get(i).variants.size());
-		    for (Variant a : flat) {
-			for (Variant b : groups.get(i).variants) {
-			    tmp.add(a.merge(b));
+		if (groups.size() > 1) {
+		    for (int i = 1; i < groups.size(); i++) {
+			ArrayList<Variant> tmp = new ArrayList<Variant>(flat.size() * groups.get(i).variants.size());
+			for (Variant a : flat) {
+			    for (Variant b : groups.get(i).variants) {
+				Variant merge = a.merge(b);
+				tmp.add(merge);
+			    }
 			}
+			flat = tmp;
 		    }
-		    flat = tmp;
+
+		    // Find average group size and adjust probability
+		    float sum = 0;
+		    for (VariantGroup g : groups) {
+			sum += g.getAll(Type.VAR).size();
+		    }
+		    sum /= groups.size();
+		    int avg = Math.round(sum);
+
+		    for (Variant v : flat) {
+			v.spec.Probability_Divider *= (avg * (groups.size() - 1));
+		    }
+
 		}
 	    }
 	}
