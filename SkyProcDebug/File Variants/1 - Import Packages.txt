@@ -1,0 +1,846 @@
+[1][0m:0s][26119]              [OPEN DEBUG FILE]  Opening Debug File
+[2][0m:0s][254359]                         [BSA]  Skyrim.ini believed to be in: D:\Users\Justin Swanson\Documents\My Games\Skyrim\Skyrim.ini. File exists.
+[3][0m:0s][16]                             [BSA]  Loading in BSA list from Skyrim.ini: D:\Users\Justin Swanson\Documents\My Games\Skyrim\Skyrim.ini
+[4][0m:0s][7436]                           [BSA]  BSA resource load order: 
+[5][0m:0s][24]                             [BSA]    Skyrim - Misc.bsa
+[6][0m:0s][5]                              [BSA]    Skyrim - Shaders.bsa
+[7][0m:0s][4]                              [BSA]    Skyrim - Textures.bsa
+[8][0m:0s][4]                              [BSA]    Skyrim - Interface.bsa
+[9][0m:0s][3]                              [BSA]    Skyrim - Animations.bsa
+[10][0m:0s][4]                             [BSA]    Skyrim - Meshes.bsa
+[11][0m:0s][4]                             [BSA]    Skyrim - Sounds.bsa
+[12][0m:0s][4]                             [BSA]    Skyrim - Voices.bsa
+[13][0m:0s][3]                             [BSA]    Skyrim - VoicesExtra.bsa
+[14][0m:0s][5]                             [BSA]  Loading in their headers.
+[15][0m:0s][79]                            [BSA]    BSA skipped because it didn't exist: ..\..\Skyrim - Misc.bsa
+[16][0m:0s][29]                            [BSA]    BSA skipped because it didn't exist: ..\..\Skyrim - Shaders.bsa
+[17][0m:0s][26]                            [BSA]    BSA skipped because it didn't exist: ..\..\Skyrim - Textures.bsa
+[18][0m:0s][26]                            [BSA]    BSA skipped because it didn't exist: ..\..\Skyrim - Interface.bsa
+[19][0m:0s][25]                            [BSA]    BSA skipped because it didn't exist: ..\..\Skyrim - Animations.bsa
+[20][0m:0s][357]                           [BSA]    BSA skipped because it didn't exist: ..\..\Skyrim - Sounds.bsa
+[21][0m:0s][28]                            [BSA]    BSA skipped because it didn't exist: ..\..\Skyrim - Voices.bsa
+[22][0m:0s][27]                            [BSA]    BSA skipped because it didn't exist: ..\..\Skyrim - VoicesExtra.bsa
+[23][0m:0s][11]                            [BSA]  Loading in active plugin BSA headers.
+[24][0m:0s][40]                            [BSA]    BSA skipped because it didn't exist: ..\..\Skyrim.bsa
+[25][0m:0s][280048]                        [BSA]  Loaded BSA: ..\..\Skyrim - Meshes.bsa
+[26][0m:0s][916]            [Bellyaches Animals]  ************************************************************
+[27][0m:0s][15]             [Bellyaches Animals]  * Loading package: AV Packages\Bellyaches Animals
+[28][0m:0s][5]              [Bellyaches Animals]  ************************************************************
+[29][0m:0s][2802]                         [Bear]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[30][0m:0s][17]                           [Bear]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Bear
+[31][0m:0s][6]                            [Bear]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[32][0m:0s][4]                            [Bear]  * +
+[33][0m:0s][246]                          [Bear]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Bear\bear.dds
+[34][0m:0s][79]                           [Bear]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Bear\bear_n.dds
+[35][0m:0s][48417]                        [Bear]  * +   --- Set Specifications loaded: --
+[36][0m:0s][32]                           [Bear]  * +   |   Target FormIDs: 
+[37][0m:0s][43]                           [Bear]  * +   |     023A8A | Skyrim.esm
+[38][0m:0s][20]                           [Bear]  * +   |   Apply to Similar: true
+[39][0m:0s][12]                           [Bear]  * +   -------------------------------------
+[40][0m:0s][13]                           [Bear]  * +
+[41][0m:0s][12]                           [Bear]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Bear
+[42][0m:0s][122]                      [BearCave]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[43][0m:0s][12]                       [BearCave]  * + Adding Variant Set: AV Packages\Bellyaches Animals\BearCave
+[44][0m:0s][9]                        [BearCave]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[45][0m:0s][10]                       [BearCave]  * +
+[46][0m:0s][182]                      [BearCave]  * +   Loaded common texture: AV Packages\Bellyaches Animals\BearCave\bearcave.dds
+[47][0m:0s][77]                       [BearCave]  * +   Loaded common texture: AV Packages\Bellyaches Animals\BearCave\bear_n.dds
+[48][0m:0s][236]                      [BearCave]  * +   --- Set Specifications loaded: --
+[49][0m:0s][13]                       [BearCave]  * +   |   Target FormIDs: 
+[50][0m:0s][9]                        [BearCave]  * +   |     023A8B | Skyrim.esm
+[51][0m:0s][10]                       [BearCave]  * +   |   Apply to Similar: true
+[52][0m:0s][8]                        [BearCave]  * +   -------------------------------------
+[53][0m:0s][9]                        [BearCave]  * +
+[54][0m:0s][11]                       [BearCave]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\BearCave
+[55][0m:0s][48]                      [BearPolar]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[56][0m:0s][12]                      [BearPolar]  * + Adding Variant Set: AV Packages\Bellyaches Animals\BearPolar
+[57][0m:0s][9]                       [BearPolar]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[58][0m:0s][10]                      [BearPolar]  * +
+[59][0m:0s][379]                     [BearPolar]  * +   Loaded common texture: AV Packages\Bellyaches Animals\BearPolar\bearpolar.dds
+[60][0m:0s][80]                      [BearPolar]  * +   Loaded common texture: AV Packages\Bellyaches Animals\BearPolar\bear_n.dds
+[61][0m:0s][205]                     [BearPolar]  * +   --- Set Specifications loaded: --
+[62][0m:0s][12]                      [BearPolar]  * +   |   Target FormIDs: 
+[63][0m:0s][9]                       [BearPolar]  * +   |     023A8C | Skyrim.esm
+[64][0m:0s][9]                       [BearPolar]  * +   |   Apply to Similar: true
+[65][0m:0s][12]                      [BearPolar]  * +   -------------------------------------
+[66][0m:0s][9]                       [BearPolar]  * +
+[67][0m:0s][9]                       [BearPolar]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\BearPolar
+[68][0m:0s][46]                        [Chaurus]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[69][0m:0s][11]                        [Chaurus]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Chaurus
+[70][0m:0s][9]                         [Chaurus]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[71][0m:0s][9]                         [Chaurus]  * +
+[72][0m:0s][169]                       [Chaurus]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Chaurus\chaurus_g.dds
+[73][0m:0s][88]                        [Chaurus]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Chaurus\chaurus_n.dds
+[74][0m:0s][830]                          [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Chaurus\Skin
+[75][0m:0s][1448]                        [Black]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Chaurus\Skin\Black
+[76][0m:0s][154]                         [Black]  * +   #     Added texture: AV Packages\Bellyaches Animals\Chaurus\Skin\Black\chaurus.dds
+[77][0m:0s][123]                         [Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Chaurus\Skin\Brown
+[78][0m:0s][96]                          [Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Chaurus\Skin\Brown\chaurus.dds
+[79][0m:0s][98]                          [Green]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Chaurus\Skin\Green
+[80][0m:0s][92]                          [Green]  * +   #     Added texture: AV Packages\Bellyaches Animals\Chaurus\Skin\Green\chaurus.dds
+[81][0m:0s][96]                            [Red]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Chaurus\Skin\Red
+[82][0m:0s][360]                           [Red]  * +   #     Added texture: AV Packages\Bellyaches Animals\Chaurus\Skin\Red\chaurus.dds
+[83][0m:0s][36]                           [Skin]  * +   ####################################
+[84][0m:0s][247]                       [Chaurus]  * +   --- Set Specifications loaded: --
+[85][0m:0s][12]                        [Chaurus]  * +   |   Target FormIDs: 
+[86][0m:0s][10]                        [Chaurus]  * +   |     0A5600 | Skyrim.esm
+[87][0m:0s][9]                         [Chaurus]  * +   |   Apply to Similar: true
+[88][0m:0s][9]                         [Chaurus]  * +   -------------------------------------
+[89][0m:0s][81]                        [Chaurus]  * +
+[90][0m:0s][35]                        [Chaurus]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Chaurus
+[91][0m:0s][82]                        [Chicken]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[92][0m:0s][13]                        [Chicken]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Chicken
+[93][0m:0s][9]                         [Chicken]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[94][0m:0s][9]                         [Chicken]  * +
+[95][0m:0s][152]                       [Chicken]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Chicken\chicken_n.dds
+[96][0m:0s][68]                           [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Chicken\Skin
+[97][0m:0s][174]                        [Barred]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Chicken\Skin\Barred
+[98][0m:0s][93]                         [Barred]  * +   #     Added texture: AV Packages\Bellyaches Animals\Chicken\Skin\Barred\chicken.dds
+[99][0m:0s][98]                        [Bicolor]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Chicken\Skin\Bicolor
+[100][0m:0s][91]                       [Bicolor]  * +   #     Added texture: AV Packages\Bellyaches Animals\Chicken\Skin\Bicolor\chicken.dds
+[101][0m:0s][98]                         [Black]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Chicken\Skin\Black
+[102][0m:0s][89]                         [Black]  * +   #     Added texture: AV Packages\Bellyaches Animals\Chicken\Skin\Black\chicken.dds
+[103][0m:0s][110]                        [Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Chicken\Skin\Brown
+[104][0m:0s][94]                         [Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Chicken\Skin\Brown\chicken.dds
+[105][0m:0s][102]                   [Dark Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Chicken\Skin\Dark Brown
+[106][0m:0s][91]                    [Dark Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Chicken\Skin\Dark Brown\chicken.dds
+[107][0m:0s][96]                      [Speckled]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Chicken\Skin\Speckled
+[108][0m:0s][88]                      [Speckled]  * +   #     Added texture: AV Packages\Bellyaches Animals\Chicken\Skin\Speckled\chicken.dds
+[109][0m:0s][96]                         [White]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Chicken\Skin\White
+[110][0m:0s][88]                         [White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Chicken\Skin\White\chicken.dds
+[111][0m:0s][16]                          [Skin]  * +   ####################################
+[112][0m:0s][210]                      [Chicken]  * +   --- Set Specifications loaded: --
+[113][0m:0s][13]                       [Chicken]  * +   |   Target FormIDs: 
+[114][0m:0s][9]                        [Chicken]  * +   |     0A91A0 | Skyrim.esm
+[115][0m:0s][9]                        [Chicken]  * +   |   Apply to Similar: true
+[116][0m:0s][8]                        [Chicken]  * +   -------------------------------------
+[117][0m:0s][9]                        [Chicken]  * +
+[118][0m:0s][10]                       [Chicken]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Chicken
+[119][0m:0s][48]                          [Deer]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[120][0m:0s][11]                          [Deer]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Deer
+[121][0m:0s][9]                           [Deer]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[122][0m:0s][9]                           [Deer]  * +
+[123][0m:0s][114]                         [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Deer\Skin
+[124][0m:0s][167]                         [Deer]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Deer\Skin\Deer
+[125][0m:0s][108]                         [Deer]  * +   #     Added texture: AV Packages\Bellyaches Animals\Deer\Skin\Deer\elkbody.dds
+[126][0m:0s][45]                          [Deer]  * +   #     Added texture: AV Packages\Bellyaches Animals\Deer\Skin\Deer\elkbody_n.dds
+[127][0m:0s][45]                          [Deer]  * +   #     Added texture: AV Packages\Bellyaches Animals\Deer\Skin\Deer\reindeerbody.dds
+[128][0m:0s][42]                          [Deer]  * +   #     Added texture: AV Packages\Bellyaches Animals\Deer\Skin\Deer\reindeerbody_n.dds
+[129][0m:0s][40]                          [Deer]  * +   #     Added texture: AV Packages\Bellyaches Animals\Deer\Skin\Deer\whitestagbody.dds
+[130][0m:0s][16]                          [Skin]  * +   ####################################
+[131][0m:0s][219]                         [Deer]  * +   --- Set Specifications loaded: --
+[132][0m:0s][16]                          [Deer]  * +   |   Target FormIDs: 
+[133][0m:0s][10]                          [Deer]  * +   |     023A91 | Skyrim.esm
+[134][0m:0s][14]                          [Deer]  * +   |     104F46 | Skyrim.esm
+[135][0m:0s][9]                           [Deer]  * +   |   Apply to Similar: true
+[136][0m:0s][9]                           [Deer]  * +   -------------------------------------
+[137][0m:0s][10]                          [Deer]  * +
+[138][0m:0s][10]                          [Deer]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Deer
+[139][0m:0s][47]                           [Dog]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[140][0m:0s][11]                           [Dog]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Dog
+[141][0m:0s][25]                           [Dog]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[142][0m:0s][10]                           [Dog]  * +
+[143][0m:0s][149]                          [Dog]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Dog\dog_n.dds
+[144][0m:0s][52]                          [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Dog\Skin
+[145][0m:0s][175]              [Black and white]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Dog\Skin\Black and white
+[146][0m:0s][94]               [Black and white]  * +   #     Added texture: AV Packages\Bellyaches Animals\Dog\Skin\Black and white\dog.dds
+[147][0m:0s][95]                         [Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Dog\Skin\Brown
+[148][0m:0s][91]                         [Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Dog\Skin\Brown\dog.dds
+[149][0m:0s][171]              [Brown and white]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Dog\Skin\Brown and white
+[150][0m:0s][162]              [Brown and white]  * +   #     Added texture: AV Packages\Bellyaches Animals\Dog\Skin\Brown and white\dog.dds
+[151][0m:0s][144]                   [Dark brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Dog\Skin\Dark brown
+[152][0m:0s][117]                   [Dark brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Dog\Skin\Dark brown\dog.dds
+[153][0m:0s][105]                    [Dark grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Dog\Skin\Dark grey
+[154][0m:0s][94]                     [Dark grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Dog\Skin\Dark grey\dog.dds
+[155][0m:0s][189]                      [Default]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Dog\Skin\Default
+[156][0m:0s][100]                      [Default]  * +   #     Added texture: AV Packages\Bellyaches Animals\Dog\Skin\Default\dog.dds
+[157][0m:0s][103]                  [Light brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Dog\Skin\Light brown
+[158][0m:0s][92]                   [Light brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Dog\Skin\Light brown\dog.dds
+[159][0m:0s][96]                         [White]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Dog\Skin\White
+[160][0m:0s][90]                         [White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Dog\Skin\White\dog.dds
+[161][0m:0s][16]                          [Skin]  * +   ####################################
+[162][0m:0s][223]                          [Dog]  * +   --- Set Specifications loaded: --
+[163][0m:0s][13]                           [Dog]  * +   |   Target FormIDs: 
+[164][0m:0s][9]                            [Dog]  * +   |     023A92 | Skyrim.esm
+[165][0m:0s][9]                            [Dog]  * +   |   Apply to Similar: true
+[166][0m:0s][9]                            [Dog]  * +   -------------------------------------
+[167][0m:0s][10]                           [Dog]  * +
+[168][0m:0s][10]                           [Dog]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Dog
+[169][0m:0s][48]                           [Fox]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[170][0m:0s][11]                           [Fox]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Fox
+[171][0m:0s][9]                            [Fox]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[172][0m:0s][9]                            [Fox]  * +
+[173][0m:0s][144]                          [Fox]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Fox\fox_n.dds
+[174][0m:0s][52]                          [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Fox\Skin
+[175][0m:0s][145]                          [Red]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Fox\Skin\Red
+[176][0m:0s][91]                           [Red]  * +   #     Added texture: AV Packages\Bellyaches Animals\Fox\Skin\Red\fox.dds
+[177][0m:0s][96]                        [Silver]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Fox\Skin\Silver
+[178][0m:0s][89]                        [Silver]  * +   #     Added texture: AV Packages\Bellyaches Animals\Fox\Skin\Silver\fox.dds
+[179][0m:0s][16]                          [Skin]  * +   ####################################
+[180][0m:0s][312]                          [Fox]  * +   --- Set Specifications loaded: --
+[181][0m:0s][16]                           [Fox]  * +   |   Target FormIDs: 
+[182][0m:0s][10]                           [Fox]  * +   |     0829B3 | Skyrim.esm
+[183][0m:0s][10]                           [Fox]  * +   |   Apply to Similar: true
+[184][0m:0s][8]                            [Fox]  * +   -------------------------------------
+[185][0m:0s][9]                            [Fox]  * +
+[186][0m:0s][10]                           [Fox]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Fox
+[187][0m:0s][60]                    [Fox Arctic]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[188][0m:0s][10]                    [Fox Arctic]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Fox Arctic
+[189][0m:0s][9]                     [Fox Arctic]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[190][0m:0s][9]                     [Fox Arctic]  * +
+[191][0m:0s][154]                   [Fox Arctic]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Fox Arctic\fox_n.dds
+[192][0m:0s][53]                          [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Fox Arctic\Skin
+[193][0m:0s][217]                       [Arctic]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Fox Arctic\Skin\Arctic
+[194][0m:0s][121]                       [Arctic]  * +   #     Added texture: AV Packages\Bellyaches Animals\Fox Arctic\Skin\Arctic\foxarctic.dds
+[195][0m:0s][124]                         [Grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Fox Arctic\Skin\Grey
+[196][0m:0s][97]                          [Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Fox Arctic\Skin\Grey\foxarctic.dds
+[197][0m:0s][17]                          [Skin]  * +   ####################################
+[198][0m:0s][204]                   [Fox Arctic]  * +   --- Set Specifications loaded: --
+[199][0m:0s][12]                    [Fox Arctic]  * +   |   Target FormIDs: 
+[200][0m:0s][9]                     [Fox Arctic]  * +   |     0829B6 | Skyrim.esm
+[201][0m:0s][9]                     [Fox Arctic]  * +   |   Apply to Similar: true
+[202][0m:0s][8]                     [Fox Arctic]  * +   -------------------------------------
+[203][0m:0s][9]                     [Fox Arctic]  * +
+[204][0m:0s][9]                     [Fox Arctic]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Fox Arctic
+[205][0m:0s][47]        [Frostbite Spider Black]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[206][0m:0s][10]        [Frostbite Spider Black]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Frostbite Spider Black
+[207][0m:0s][9]         [Frostbite Spider Black]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[208][0m:0s][8]         [Frostbite Spider Black]  * +
+[209][0m:0s][115]                         [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Frostbite Spider Black\Skin
+[210][0m:0s][164]                        [Black]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Frostbite Spider Black\Skin\Black
+[211][0m:0s][101]                        [Black]  * +   #     Added texture: AV Packages\Bellyaches Animals\Frostbite Spider Black\Skin\Black\spiderdesat.dds
+[212][0m:0s][123]                [Brown Striped]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Frostbite Spider Black\Skin\Brown Striped
+[213][0m:0s][97]                 [Brown Striped]  * +   #     Added texture: AV Packages\Bellyaches Animals\Frostbite Spider Black\Skin\Brown Striped\spiderdesat.dds
+[214][0m:0s][115]                   [Dark Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Frostbite Spider Black\Skin\Dark Brown
+[215][0m:0s][93]                    [Dark Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Frostbite Spider Black\Skin\Dark Brown\spiderdesat.dds
+[216][0m:0s][108]                          [Tan]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Frostbite Spider Black\Skin\Tan
+[217][0m:0s][91]                           [Tan]  * +   #     Added texture: AV Packages\Bellyaches Animals\Frostbite Spider Black\Skin\Tan\spiderdesat.dds
+[218][0m:0s][16]                          [Skin]  * +   ####################################
+[219][0m:0s][219]       [Frostbite Spider Black]  * +   --- Set Specifications loaded: --
+[220][0m:0s][13]        [Frostbite Spider Black]  * +   |   Target FormIDs: 
+[221][0m:0s][8]         [Frostbite Spider Black]  * +   |     023AAA | Skyrim.esm
+[222][0m:0s][8]         [Frostbite Spider Black]  * +   |   Apply to Similar: true
+[223][0m:0s][8]         [Frostbite Spider Black]  * +   -------------------------------------
+[224][0m:0s][9]         [Frostbite Spider Black]  * +
+[225][0m:0s][8]         [Frostbite Spider Black]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Frostbite Spider Black
+[226][0m:0s][47]        [Frostbite Spider White]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[227][0m:0s][10]        [Frostbite Spider White]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Frostbite Spider White
+[228][0m:0s][8]         [Frostbite Spider White]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[229][0m:0s][8]         [Frostbite Spider White]  * +
+[230][0m:0s][175]                         [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Frostbite Spider White\Skin
+[231][0m:0s][220]                       [Frosty]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Frostbite Spider White\Skin\Frosty
+[232][0m:0s][101]                       [Frosty]  * +   #     Added texture: AV Packages\Bellyaches Animals\Frostbite Spider White\Skin\Frosty\frostspider.dds
+[233][0m:0s][111]                         [Grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Frostbite Spider White\Skin\Grey
+[234][0m:0s][95]                          [Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Frostbite Spider White\Skin\Grey\frostspider.dds
+[235][0m:0s][17]                          [Skin]  * +   ####################################
+[236][0m:0s][204]       [Frostbite Spider White]  * +   --- Set Specifications loaded: --
+[237][0m:0s][11]        [Frostbite Spider White]  * +   |   Target FormIDs: 
+[238][0m:0s][8]         [Frostbite Spider White]  * +   |     023AAC | Skyrim.esm
+[239][0m:0s][8]         [Frostbite Spider White]  * +   |   Apply to Similar: true
+[240][0m:0s][8]         [Frostbite Spider White]  * +   -------------------------------------
+[241][0m:0s][8]         [Frostbite Spider White]  * +
+[242][0m:0s][8]         [Frostbite Spider White]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Frostbite Spider White
+[243][0m:0s][49]                          [Goat]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[244][0m:0s][11]                          [Goat]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Goat
+[245][0m:0s][9]                           [Goat]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[246][0m:0s][9]                           [Goat]  * +
+[247][0m:0s][211]                         [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Goat\Skin
+[248][0m:0s][169]                        [Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Goat\Skin\Brown
+[249][0m:0s][93]                         [Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Goat\Skin\Brown\goat_d.dds
+[250][0m:0s][105]                 [Brown Shaggy]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Goat\Skin\Brown Shaggy
+[251][0m:0s][93]                  [Brown Shaggy]  * +   #     Added texture: AV Packages\Bellyaches Animals\Goat\Skin\Brown Shaggy\goat_d.dds
+[252][0m:0s][99]                          [Grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Goat\Skin\Grey
+[253][0m:0s][89]                          [Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Goat\Skin\Grey\goat_d.dds
+[254][0m:0s][102]                  [Grey Shaggy]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Goat\Skin\Grey Shaggy
+[255][0m:0s][110]                  [Grey Shaggy]  * +   #     Added texture: AV Packages\Bellyaches Animals\Goat\Skin\Grey Shaggy\goat_d.dds
+[256][0m:0s][99]                         [White]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Goat\Skin\White
+[257][0m:0s][89]                         [White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Goat\Skin\White\goat_d.dds
+[258][0m:0s][114]                 [White Shaggy]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Goat\Skin\White Shaggy
+[259][0m:0s][89]                  [White Shaggy]  * +   #     Added texture: AV Packages\Bellyaches Animals\Goat\Skin\White Shaggy\goat_d.dds
+[260][0m:0s][16]                          [Skin]  * +   ####################################
+[261][0m:0s][358]                         [Goat]  * +   --- Set Specifications loaded: --
+[262][0m:0s][20]                          [Goat]  * +   |   Target FormIDs: 
+[263][0m:0s][10]                          [Goat]  * +   |     04359C | Skyrim.esm
+[264][0m:0s][9]                           [Goat]  * +   |     02EBE2 | Skyrim.esm
+[265][0m:0s][9]                           [Goat]  * +   |   Apply to Similar: true
+[266][0m:0s][30]                          [Goat]  * +   -------------------------------------
+[267][0m:0s][24]                          [Goat]  * +
+[268][0m:0s][23]                          [Goat]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Goat
+[269][0m:0s][68]                  [Highland Cow]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[270][0m:0s][64]                  [Highland Cow]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Highland Cow
+[271][0m:0s][13]                  [Highland Cow]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[272][0m:0s][9]                   [Highland Cow]  * +
+[273][0m:0s][190]                 [Highland Cow]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Highland Cow\highlandcowpaint.dds
+[274][0m:0s][79]                  [Highland Cow]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Highland Cow\highlandcowpaint_n.dds
+[275][0m:0s][76]                  [Highland Cow]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Highland Cow\highlandcow_n.dds
+[276][0m:0s][50]                          [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Highland Cow\Skin
+[277][0m:0s][170]              [Belted Galloway]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Highland Cow\Skin\Belted Galloway
+[278][0m:0s][96]               [Belted Galloway]  * +   #     Added texture: AV Packages\Bellyaches Animals\Highland Cow\Skin\Belted Galloway\highlandcow.dds
+[279][0m:0s][103]                        [Black]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Highland Cow\Skin\Black
+[280][0m:0s][91]                         [Black]  * +   #     Added texture: AV Packages\Bellyaches Animals\Highland Cow\Skin\Black\highlandcow.dds
+[281][0m:0s][103]                        [Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Highland Cow\Skin\Brown
+[282][0m:0s][89]                         [Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Highland Cow\Skin\Brown\highlandcow.dds
+[283][0m:0s][156]                       [Orange]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Highland Cow\Skin\Orange
+[284][0m:0s][1145]                      [Orange]  * +   #     Added texture: AV Packages\Bellyaches Animals\Highland Cow\Skin\Orange\highlandcow.dds
+[285][0m:0s][121]                        [White]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Highland Cow\Skin\White
+[286][0m:0s][101]                        [White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Highland Cow\Skin\White\highlandcow.dds
+[287][0m:0s][17]                          [Skin]  * +   ####################################
+[288][0m:0s][265]                 [Highland Cow]  * +   --- Set Specifications loaded: --
+[289][0m:0s][11]                  [Highland Cow]  * +   |   Target FormIDs: 
+[290][0m:0s][8]                   [Highland Cow]  * +   |     023A90 | Skyrim.esm
+[291][0m:0s][10]                  [Highland Cow]  * +   |     0C39F1 | Skyrim.esm
+[292][0m:0s][9]                   [Highland Cow]  * +   |   Apply to Similar: true
+[293][0m:0s][9]                   [Highland Cow]  * +   -------------------------------------
+[294][0m:0s][9]                   [Highland Cow]  * +
+[295][0m:0s][9]                   [Highland Cow]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Highland Cow
+[296][0m:0s][47]                        [Horker]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[297][0m:0s][11]                        [Horker]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Horker
+[298][0m:0s][9]                         [Horker]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[299][0m:0s][9]                         [Horker]  * +
+[300][0m:0s][113]                         [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Horker\Skin
+[301][0m:0s][152]                        [Black]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horker\Skin\Black
+[302][0m:0s][92]                         [Black]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horker\Skin\Black\horker.dds
+[303][0m:0s][229]                        [Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horker\Skin\Brown
+[304][0m:0s][115]                        [Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horker\Skin\Brown\horker.dds
+[305][0m:0s][104]                         [Grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horker\Skin\Grey
+[306][0m:0s][130]                         [Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horker\Skin\Grey\horker.dds
+[307][0m:0s][198]                  [Light Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horker\Skin\Light Brown
+[308][0m:0s][115]                  [Light Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horker\Skin\Light Brown\horker.dds
+[309][0m:0s][100]                        [White]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horker\Skin\White
+[310][0m:0s][92]                         [White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horker\Skin\White\horker.dds
+[311][0m:0s][17]                          [Skin]  * +   ####################################
+[312][0m:0s][207]                       [Horker]  * +   --- Set Specifications loaded: --
+[313][0m:0s][12]                        [Horker]  * +   |   Target FormIDs: 
+[314][0m:0s][9]                         [Horker]  * +   |     023AB1 | Skyrim.esm
+[315][0m:0s][9]                         [Horker]  * +   |   Apply to Similar: true
+[316][0m:0s][9]                         [Horker]  * +   -------------------------------------
+[317][0m:0s][9]                         [Horker]  * +
+[318][0m:0s][10]                        [Horker]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Horker
+[319][0m:0s][46]                         [Horse]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[320][0m:0s][11]                         [Horse]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Horse
+[321][0m:0s][9]                          [Horse]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[322][0m:0s][9]                          [Horse]  * +
+[323][0m:0s][211]                        [Horse]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Horse\horse01_n.dds
+[324][0m:0s][52]                          [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Horse\Skin
+[325][0m:0s][183]              [Black And White]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horse\Skin\Black And White
+[326][0m:0s][110]              [Black And White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horse01.dds
+[327][0m:0s][1175]             [Black And White]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horse01.dds
+[328][0m:0s][272]              [Black And White]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horse01.dds
+[329][0m:0s][527]              [Black And White]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horse01.dds
+[330][0m:0s][286]              [Black And White]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horse01.dds
+[331][0m:0s][59]               [Black And White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[332][0m:0s][313]              [Black And White]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[333][0m:0s][129]                [Black Spotted]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horse\Skin\Black Spotted
+[334][0m:0s][124]                [Black Spotted]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Black Spotted\horse01.dds
+[335][0m:0s][279]                [Black Spotted]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black Spotted\horse01.dds
+[336][0m:0s][253]                [Black Spotted]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black Spotted\horse01.dds
+[337][0m:0s][256]                [Black Spotted]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black Spotted\horse01.dds
+[338][0m:0s][251]                [Black Spotted]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black Spotted\horse01.dds
+[339][0m:0s][591]                [Black Spotted]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[340][0m:0s][298]                [Black Spotted]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[341][0m:0s][108]                    [Blue Roan]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horse\Skin\Blue Roan
+[342][0m:0s][123]                    [Blue Roan]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Blue Roan\horse01.dds
+[343][0m:0s][448]                    [Blue Roan]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Blue Roan\horse01.dds
+[344][0m:0s][259]                    [Blue Roan]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Blue Roan\horse01.dds
+[345][0m:0s][292]                    [Blue Roan]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Blue Roan\horse01.dds
+[346][0m:0s][255]                    [Blue Roan]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Blue Roan\horse01.dds
+[347][0m:0s][439]                    [Blue Roan]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[348][0m:0s][286]                    [Blue Roan]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[349][0m:0s][208]                  [Dapple Dark]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Dark
+[350][0m:0s][143]                  [Dapple Dark]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Dark\horse01.dds
+[351][0m:0s][552]                  [Dapple Dark]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Dark\horse01.dds
+[352][0m:0s][264]                  [Dapple Dark]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Dark\horse01.dds
+[353][0m:0s][256]                  [Dapple Dark]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Dark\horse01.dds
+[354][0m:0s][261]                  [Dapple Dark]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Dark\horse01.dds
+[355][0m:0s][266]                  [Dapple Dark]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[356][0m:0s][384]                  [Dapple Dark]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[357][0m:0s][110]                 [Dapple Light]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Light
+[358][0m:0s][123]                 [Dapple Light]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Light\horse01.dds
+[359][0m:0s][273]                 [Dapple Light]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Light\horse01.dds
+[360][0m:0s][252]                 [Dapple Light]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Light\horse01.dds
+[361][0m:0s][248]                 [Dapple Light]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Light\horse01.dds
+[362][0m:0s][250]                 [Dapple Light]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Light\horse01.dds
+[363][0m:0s][72]                  [Dapple Light]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Light\horsemanetail.dds
+[364][0m:0s][273]                 [Dapple Light]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Light\horsemanetail.dds
+[365][0m:0s][103]                   [Dirty Grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horse\Skin\Dirty Grey
+[366][0m:0s][224]                   [Dirty Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Dirty Grey\horse01.dds
+[367][0m:0s][283]                   [Dirty Grey]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dirty Grey\horse01.dds
+[368][0m:0s][256]                   [Dirty Grey]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dirty Grey\horse01.dds
+[369][0m:0s][248]                   [Dirty Grey]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dirty Grey\horse01.dds
+[370][0m:0s][247]                   [Dirty Grey]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dirty Grey\horse01.dds
+[371][0m:0s][390]                   [Dirty Grey]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[372][0m:0s][284]                   [Dirty Grey]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[373][0m:0s][214]                          [Dun]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horse\Skin\Dun
+[374][0m:0s][142]                          [Dun]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Dun\horse01.dds
+[375][0m:0s][281]                          [Dun]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dun\horse01.dds
+[376][0m:0s][270]                          [Dun]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dun\horse01.dds
+[377][0m:0s][247]                          [Dun]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dun\horse01.dds
+[378][0m:0s][242]                          [Dun]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dun\horse01.dds
+[379][0m:0s][276]                          [Dun]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[380][0m:0s][269]                          [Dun]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[381][0m:0s][107]                       [Normal]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horse\Skin\Normal
+[382][0m:0s][230]                       [Normal]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Normal\horse01.dds
+[383][0m:0s][49]                        [Normal]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Normal\horse02.dds
+[384][0m:0s][41]                        [Normal]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Normal\horse03.dds
+[385][0m:0s][40]                        [Normal]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Normal\horse04.dds
+[386][0m:0s][40]                        [Normal]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Normal\horse05.dds
+[387][0m:0s][313]                       [Normal]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[388][0m:0s][329]                       [Normal]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Light\horsemanetail.dds
+[389][0m:0s][140]                 [Pangare Dark]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horse\Skin\Pangare Dark
+[390][0m:0s][127]                 [Pangare Dark]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Pangare Dark\horse01.dds
+[391][0m:0s][337]                 [Pangare Dark]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Pangare Dark\horse01.dds
+[392][0m:0s][464]                 [Pangare Dark]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Pangare Dark\horse01.dds
+[393][0m:0s][263]                 [Pangare Dark]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Pangare Dark\horse01.dds
+[394][0m:0s][378]                 [Pangare Dark]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Pangare Dark\horse01.dds
+[395][0m:0s][367]                 [Pangare Dark]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[396][0m:0s][310]                 [Pangare Dark]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[397][0m:0s][138]                [Pangare Light]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horse\Skin\Pangare Light
+[398][0m:0s][120]                [Pangare Light]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Pangare Light\horse01.dds
+[399][0m:0s][292]                [Pangare Light]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Pangare Light\horse01.dds
+[400][0m:0s][268]                [Pangare Light]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Pangare Light\horse01.dds
+[401][0m:0s][264]                [Pangare Light]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Pangare Light\horse01.dds
+[402][0m:0s][260]                [Pangare Light]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Pangare Light\horse01.dds
+[403][0m:0s][367]                [Pangare Light]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Light\horsemanetail.dds
+[404][0m:0s][303]                [Pangare Light]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Light\horsemanetail.dds
+[405][0m:0s][101]                      [Piebald]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horse\Skin\Piebald
+[406][0m:0s][119]                      [Piebald]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\Piebald\horse01.dds
+[407][0m:0s][278]                      [Piebald]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Piebald\horse01.dds
+[408][0m:0s][213]                      [Piebald]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Piebald\horse01.dds
+[409][0m:0s][208]                      [Piebald]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Piebald\horse01.dds
+[410][0m:0s][244]                      [Piebald]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Piebald\horse01.dds
+[411][0m:0s][230]                      [Piebald]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[412][0m:0s][392]                      [Piebald]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Black And White\horsemanetail.dds
+[413][0m:0s][112]                        [White]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Horse\Skin\White
+[414][0m:0s][469]                        [White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Horse\Skin\White\horse01.dds
+[415][0m:0s][273]                        [White]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\White\horse01.dds
+[416][0m:0s][224]                        [White]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\White\horse01.dds
+[417][0m:0s][400]                        [White]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\White\horse01.dds
+[418][0m:0s][240]                        [White]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\White\horse01.dds
+[419][0m:0s][313]                        [White]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Light\horsemanetail.dds
+[420][0m:0s][257]                        [White]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Horse\Skin\Dapple Light\horsemanetail.dds
+[421][0m:0s][19]                          [Skin]  * +   ####################################
+[422][0m:0s][289]                        [Horse]  * +   --- Set Specifications loaded: --
+[423][0m:0s][12]                         [Horse]  * +   |   Target FormIDs: 
+[424][0m:0s][10]                         [Horse]  * +   |     068D6B | Skyrim.esm
+[425][0m:0s][9]                          [Horse]  * +   |     068D6D | Skyrim.esm
+[426][0m:0s][9]                          [Horse]  * +   |     068D07 | Skyrim.esm
+[427][0m:0s][9]                          [Horse]  * +   |     068D6E | Skyrim.esm
+[428][0m:0s][9]                          [Horse]  * +   |     068D5B | Skyrim.esm
+[429][0m:0s][10]                         [Horse]  * +   |   Apply to Similar: true
+[430][0m:0s][9]                          [Horse]  * +   -------------------------------------
+[431][0m:0s][10]                         [Horse]  * +
+[432][0m:0s][10]                         [Horse]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Horse
+[433][0m:0s][49]                       [Mammoth]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[434][0m:0s][11]                       [Mammoth]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Mammoth
+[435][0m:0s][9]                        [Mammoth]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[436][0m:0s][9]                        [Mammoth]  * +
+[437][0m:0s][153]                      [Mammoth]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Mammoth\mammoth_n.dds
+[438][0m:0s][52]                          [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Mammoth\Skin
+[439][0m:0s][160]                        [Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Mammoth\Skin\Brown
+[440][0m:0s][146]                        [Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mammoth\Skin\Brown\mammoth.dds
+[441][0m:0s][3504]                        [Grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Mammoth\Skin\Grey
+[442][0m:0s][324]                         [Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mammoth\Skin\Grey\mammoth.dds
+[443][0m:0s][145]                  [Light Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Mammoth\Skin\Light Brown
+[444][0m:0s][103]                  [Light Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mammoth\Skin\Light Brown\mammoth.dds
+[445][0m:0s][99]                    [Light Grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Mammoth\Skin\Light Grey
+[446][0m:0s][90]                    [Light Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mammoth\Skin\Light Grey\mammoth.dds
+[447][0m:0s][91]                         [White]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Mammoth\Skin\White
+[448][0m:0s][91]                         [White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mammoth\Skin\White\mammoth.dds
+[449][0m:0s][18]                          [Skin]  * +   ####################################
+[450][0m:0s][863]                      [Mammoth]  * +   --- Set Specifications loaded: --
+[451][0m:0s][15]                       [Mammoth]  * +   |   Target FormIDs: 
+[452][0m:0s][10]                       [Mammoth]  * +   |     023AB4 | Skyrim.esm
+[453][0m:0s][8]                        [Mammoth]  * +   |     0DD641 | Skyrim.esm
+[454][0m:0s][10]                       [Mammoth]  * +   |   Apply to Similar: true
+[455][0m:0s][9]                        [Mammoth]  * +   -------------------------------------
+[456][0m:0s][10]                       [Mammoth]  * +
+[457][0m:0s][10]                       [Mammoth]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Mammoth
+[458][0m:0s][63]                       [Mudcrab]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[459][0m:0s][11]                       [Mudcrab]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Mudcrab
+[460][0m:0s][9]                        [Mudcrab]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[461][0m:0s][9]                        [Mudcrab]  * +
+[462][0m:0s][179]                         [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Mudcrab\Skin
+[463][0m:0s][159]                         [Grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Mudcrab\Skin\Grey
+[464][0m:0s][127]                         [Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mudcrab\Skin\Grey\mudcrab.dds
+[465][0m:0s][45]                          [Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mudcrab\Skin\Grey\mudcrab_m.dds
+[466][0m:0s][43]                          [Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mudcrab\Skin\Grey\mudcrab_n.dds
+[467][0m:0s][99]                         [Muddy]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Mudcrab\Skin\Muddy
+[468][0m:0s][99]                         [Muddy]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mudcrab\Skin\Muddy\mudcrab.dds
+[469][0m:0s][44]                         [Muddy]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mudcrab\Skin\Muddy\mudcrabchitin.dds
+[470][0m:0s][253]                        [Muddy]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Mudcrab\Skin\Grey\mudcrab_n.dds
+[471][0m:0s][103]                     [Oblivion]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Mudcrab\Skin\Oblivion
+[472][0m:0s][111]                     [Oblivion]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mudcrab\Skin\Oblivion\mudcrab.dds
+[473][0m:0s][46]                      [Oblivion]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mudcrab\Skin\Oblivion\mudcrabchitin.dds
+[474][0m:0s][47]                      [Oblivion]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mudcrab\Skin\Oblivion\mudcrab_n.dds
+[475][0m:0s][120]                        [White]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Mudcrab\Skin\White
+[476][0m:0s][355]                        [White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mudcrab\Skin\White\mudcrab.dds
+[477][0m:0s][273]                        [White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Mudcrab\Skin\White\mudcrabchitin.dds
+[478][0m:0s][246]                        [White]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Mudcrab\Skin\Grey\mudcrab_n.dds
+[479][0m:0s][18]                          [Skin]  * +   ####################################
+[480][0m:0s][252]                      [Mudcrab]  * +   --- Set Specifications loaded: --
+[481][0m:0s][13]                       [Mudcrab]  * +   |   Target FormIDs: 
+[482][0m:0s][9]                        [Mudcrab]  * +   |     0E4011 | Skyrim.esm
+[483][0m:0s][9]                        [Mudcrab]  * +   |     0E4010 | Skyrim.esm
+[484][0m:0s][9]                        [Mudcrab]  * +   |   Apply to Similar: true
+[485][0m:0s][8]                        [Mudcrab]  * +   -------------------------------------
+[486][0m:0s][9]                        [Mudcrab]  * +
+[487][0m:0s][9]                        [Mudcrab]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Mudcrab
+[488][0m:0s][47]                        [Rabbit]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[489][0m:0s][11]                        [Rabbit]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Rabbit
+[490][0m:0s][9]                         [Rabbit]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[491][0m:0s][8]                         [Rabbit]  * +
+[492][0m:0s][323]                       [Rabbit]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Rabbit\rabbit.dds
+[493][0m:0s][231]                       [Rabbit]  * +   --- Set Specifications loaded: --
+[494][0m:0s][12]                        [Rabbit]  * +   |   Target FormIDs: 
+[495][0m:0s][9]                         [Rabbit]  * +   |     06DC9D | Skyrim.esm
+[496][0m:0s][9]                         [Rabbit]  * +   |   Apply to Similar: true
+[497][0m:0s][8]                         [Rabbit]  * +   -------------------------------------
+[498][0m:0s][9]                         [Rabbit]  * +
+[499][0m:0s][9]                         [Rabbit]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Rabbit
+[500][0m:0s][47]                     [Sabre Cat]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[501][0m:0s][10]                     [Sabre Cat]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Sabre Cat
+[502][0m:0s][9]                      [Sabre Cat]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[503][0m:0s][9]                      [Sabre Cat]  * +
+[504][0m:0s][303]                    [Sabre Cat]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Sabre Cat\sabrecat_n.dds
+[505][0m:0s][207]                         [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Sabre Cat\Skin
+[506][0m:0s][268]                  [Lion female]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Sabre Cat\Skin\Lion female
+[507][0m:0s][149]                  [Lion female]  * +   #     Added texture: AV Packages\Bellyaches Animals\Sabre Cat\Skin\Lion female\sabrecat.dds
+[508][0m:0s][186]                    [Lion male]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Sabre Cat\Skin\Lion male
+[509][0m:0s][143]                    [Lion male]  * +   #     Added texture: AV Packages\Bellyaches Animals\Sabre Cat\Skin\Lion male\sabrecat.dds
+[510][0m:0s][142]                      [Striped]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Sabre Cat\Skin\Striped
+[511][0m:0s][270]                      [Striped]  * +   #     Added texture: AV Packages\Bellyaches Animals\Sabre Cat\Skin\Striped\sabrecat.dds
+[512][0m:0s][23]                          [Skin]  * +   ####################################
+[513][0m:0s][274]                    [Sabre Cat]  * +   --- Set Specifications loaded: --
+[514][0m:0s][13]                     [Sabre Cat]  * +   |   Target FormIDs: 
+[515][0m:0s][9]                      [Sabre Cat]  * +   |     023AB5 | Skyrim.esm
+[516][0m:0s][9]                      [Sabre Cat]  * +   |   Apply to Similar: true
+[517][0m:0s][8]                      [Sabre Cat]  * +   -------------------------------------
+[518][0m:0s][9]                      [Sabre Cat]  * +
+[519][0m:0s][9]                      [Sabre Cat]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Sabre Cat
+[520][0m:0s][49]                [Sabre Cat Snow]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[521][0m:0s][11]                [Sabre Cat Snow]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Sabre Cat Snow
+[522][0m:0s][9]                 [Sabre Cat Snow]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[523][0m:0s][8]                 [Sabre Cat Snow]  * +
+[524][0m:0s][315]               [Sabre Cat Snow]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Sabre Cat Snow\sabrecat_n.dds
+[525][0m:0s][231]                         [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Sabre Cat Snow\Skin
+[526][0m:0s][231]                  [White solid]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Sabre Cat Snow\Skin\White solid
+[527][0m:0s][263]                  [White solid]  * +   #     Added texture: AV Packages\Bellyaches Animals\Sabre Cat Snow\Skin\White solid\sabrecatsnow.dds
+[528][0m:0s][201]                [White spotted]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Sabre Cat Snow\Skin\White spotted
+[529][0m:0s][156]                [White spotted]  * +   #     Added texture: AV Packages\Bellyaches Animals\Sabre Cat Snow\Skin\White spotted\sabrecatsnow.dds
+[530][0m:0s][151]                [White striped]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Sabre Cat Snow\Skin\White striped
+[531][0m:0s][138]                [White striped]  * +   #     Added texture: AV Packages\Bellyaches Animals\Sabre Cat Snow\Skin\White striped\sabrecatsnow.dds
+[532][0m:0s][18]                          [Skin]  * +   ####################################
+[533][0m:0s][252]               [Sabre Cat Snow]  * +   --- Set Specifications loaded: --
+[534][0m:0s][12]                [Sabre Cat Snow]  * +   |   Target FormIDs: 
+[535][0m:0s][9]                 [Sabre Cat Snow]  * +   |     023AB6 | Skyrim.esm
+[536][0m:0s][9]                 [Sabre Cat Snow]  * +   |   Apply to Similar: true
+[537][0m:0s][8]                 [Sabre Cat Snow]  * +   -------------------------------------
+[538][0m:0s][9]                 [Sabre Cat Snow]  * +
+[539][0m:0s][9]                 [Sabre Cat Snow]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Sabre Cat Snow
+[540][0m:0s][49]                       [Skeever]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[541][0m:0s][10]                       [Skeever]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Skeever
+[542][0m:0s][9]                        [Skeever]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[543][0m:0s][8]                        [Skeever]  * +
+[544][0m:0s][117]                         [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Skeever\Skin
+[545][0m:0s][348]                        [Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Skeever\Skin\Brown
+[546][0m:0s][150]                        [Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever\Skin\Brown\skeever.dds
+[547][0m:0s][79]                         [Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever\Skin\Brown\skeever_n.dds
+[548][0m:0s][103]                    [Dark Grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Skeever\Skin\Dark Grey
+[549][0m:0s][280]                    [Dark Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever\Skin\Dark Grey\skeever.dds
+[550][0m:0s][249]                    [Dark Grey]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Skeever\Skin\Brown\skeever_n.dds
+[551][0m:0s][155]                         [Grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Skeever\Skin\Grey
+[552][0m:0s][348]                         [Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever\Skin\Grey\skeever.dds
+[553][0m:0s][239]                         [Grey]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Skeever\Skin\Brown\skeever_n.dds
+[554][0m:0s][287]                  [Mangy Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Skeever\Skin\Mangy Brown
+[555][0m:0s][159]                  [Mangy Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever\Skin\Mangy Brown\skeever.dds
+[556][0m:0s][83]                   [Mangy Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever\Skin\Mangy Brown\skeever_n.dds
+[557][0m:0s][1393]             [Mangy Dark Grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Skeever\Skin\Mangy Dark Grey
+[558][0m:0s][347]              [Mangy Dark Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever\Skin\Mangy Dark Grey\skeever.dds
+[559][0m:0s][275]              [Mangy Dark Grey]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Skeever\Skin\Mangy Brown\skeever_n.dds
+[560][0m:0s][126]                   [Mangy Grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Skeever\Skin\Mangy Grey
+[561][0m:0s][332]                   [Mangy Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever\Skin\Mangy Grey\skeever.dds
+[562][0m:0s][223]                   [Mangy Grey]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Skeever\Skin\Mangy Brown\skeever_n.dds
+[563][0m:0s][48]                          [Skin]  * +   ####################################
+[564][0m:0s][227]                      [Skeever]  * +   --- Set Specifications loaded: --
+[565][0m:0s][12]                       [Skeever]  * +   |   Target FormIDs: 
+[566][0m:0s][10]                       [Skeever]  * +   |     023AB7 | Skyrim.esm
+[567][0m:0s][10]                       [Skeever]  * +   |   Apply to Similar: true
+[568][0m:0s][9]                        [Skeever]  * +   -------------------------------------
+[569][0m:0s][9]                        [Skeever]  * +
+[570][0m:0s][10]                       [Skeever]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Skeever
+[571][0m:0s][53]                 [Skeever White]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[572][0m:0s][11]                 [Skeever White]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Skeever White
+[573][0m:0s][9]                  [Skeever White]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[574][0m:0s][21]                 [Skeever White]  * +
+[575][0m:0s][121]                         [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Skeever White\Skin
+[576][0m:0s][369]                 [Brown Hooded]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Skeever White\Skin\Brown Hooded
+[577][0m:0s][201]                 [Brown Hooded]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever White\Skin\Brown Hooded\skeeverwhite.dds
+[578][0m:0s][88]                  [Brown Hooded]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever White\Skin\Brown Hooded\skeever_n.dds
+[579][0m:0s][116]                  [Grey Hooded]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Skeever White\Skin\Grey Hooded
+[580][0m:0s][311]                  [Grey Hooded]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever White\Skin\Grey Hooded\skeeverwhite.dds
+[581][0m:0s][338]                  [Grey Hooded]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Skeever White\Skin\Brown Hooded\skeever_n.dds
+[582][0m:0s][388]           [Mangy Brown Hooded]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Skeever White\Skin\Mangy Brown Hooded
+[583][0m:0s][178]           [Mangy Brown Hooded]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever White\Skin\Mangy Brown Hooded\skeeverwhite.dds
+[584][0m:0s][83]            [Mangy Brown Hooded]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever White\Skin\Mangy Brown Hooded\skeever_n.dds
+[585][0m:0s][101]            [Mangy Grey Hooded]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Skeever White\Skin\Mangy Grey Hooded
+[586][0m:0s][275]            [Mangy Grey Hooded]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever White\Skin\Mangy Grey Hooded\skeeverwhite.dds
+[587][0m:0s][257]            [Mangy Grey Hooded]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Skeever White\Skin\Mangy Brown Hooded\skeever_n.dds
+[588][0m:0s][103]                  [Mangy White]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Skeever White\Skin\Mangy White
+[589][0m:0s][291]                  [Mangy White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever White\Skin\Mangy White\skeeverwhite.dds
+[590][0m:0s][230]                  [Mangy White]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Skeever White\Skin\Mangy Brown Hooded\skeever_n.dds
+[591][0m:0s][97]                         [White]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Skeever White\Skin\White
+[592][0m:0s][287]                        [White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Skeever White\Skin\White\skeeverwhite.dds
+[593][0m:0s][313]                        [White]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\Skeever White\Skin\Brown Hooded\skeever_n.dds
+[594][0m:0s][26]                          [Skin]  * +   ####################################
+[595][0m:0s][229]                [Skeever White]  * +   --- Set Specifications loaded: --
+[596][0m:0s][13]                 [Skeever White]  * +   |   Target FormIDs: 
+[597][0m:0s][10]                 [Skeever White]  * +   |     0490F2 | Skyrim.esm
+[598][0m:0s][9]                  [Skeever White]  * +   |   Apply to Similar: true
+[599][0m:0s][8]                  [Skeever White]  * +   -------------------------------------
+[600][0m:0s][9]                  [Skeever White]  * +
+[601][0m:0s][9]                  [Skeever White]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Skeever White
+[602][0m:0s][49]                      [Werewolf]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[603][0m:0s][11]                      [Werewolf]  * + Adding Variant Set: AV Packages\Bellyaches Animals\Werewolf
+[604][0m:0s][10]                      [Werewolf]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[605][0m:0s][8]                       [Werewolf]  * +
+[606][0m:0s][384]                     [Werewolf]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Werewolf\eyewerewolfbeastbrown.dds
+[607][0m:0s][231]                     [Werewolf]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Werewolf\mouthwerewolf.dds
+[608][0m:0s][53]                          [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\Werewolf\Skin
+[609][0m:0s][341]                        [Black]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Werewolf\Skin\Black
+[610][0m:0s][212]                        [Black]  * +   #     Added texture: AV Packages\Bellyaches Animals\Werewolf\Skin\Black\werewolfbody.dds
+[611][0m:0s][89]                         [Black]  * +   #     Added texture: AV Packages\Bellyaches Animals\Werewolf\Skin\Black\werewolfhead.dds
+[612][0m:0s][302]                        [Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Werewolf\Skin\Brown
+[613][0m:0s][149]                        [Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Werewolf\Skin\Brown\werewolfbody.dds
+[614][0m:0s][80]                         [Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Werewolf\Skin\Brown\werewolfhead.dds
+[615][0m:0s][96]                    [Dark Brown]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Werewolf\Skin\Dark Brown
+[616][0m:0s][337]                   [Dark Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Werewolf\Skin\Dark Brown\werewolfbody.dds
+[617][0m:0s][249]                   [Dark Brown]  * +   #     Added texture: AV Packages\Bellyaches Animals\Werewolf\Skin\Dark Brown\werewolfhead.dds
+[618][0m:0s][259]                         [Gold]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Werewolf\Skin\Gold
+[619][0m:0s][144]                         [Gold]  * +   #     Added texture: AV Packages\Bellyaches Animals\Werewolf\Skin\Gold\werewolfbody.dds
+[620][0m:0s][76]                          [Gold]  * +   #     Added texture: AV Packages\Bellyaches Animals\Werewolf\Skin\Gold\werewolfhead.dds
+[621][0m:0s][254]                         [Grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Werewolf\Skin\Grey
+[622][0m:0s][145]                         [Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Werewolf\Skin\Grey\werewolfbody.dds
+[623][0m:0s][102]                         [Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\Werewolf\Skin\Grey\werewolfhead.dds
+[624][0m:0s][256]                       [Orange]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Werewolf\Skin\Orange
+[625][0m:0s][142]                       [Orange]  * +   #     Added texture: AV Packages\Bellyaches Animals\Werewolf\Skin\Orange\werewolfbody.dds
+[626][0m:0s][79]                        [Orange]  * +   #     Added texture: AV Packages\Bellyaches Animals\Werewolf\Skin\Orange\werewolfhead.dds
+[627][0m:0s][256]                        [White]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\Werewolf\Skin\White
+[628][0m:0s][252]                        [White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Werewolf\Skin\White\werewolfbody.dds
+[629][0m:0s][82]                         [White]  * +   #     Added texture: AV Packages\Bellyaches Animals\Werewolf\Skin\White\werewolfhead.dds
+[630][0m:0s][17]                          [Skin]  * +   ####################################
+[631][0m:0s][261]                     [Werewolf]  * +   --- Set Specifications loaded: --
+[632][0m:0s][13]                      [Werewolf]  * +   |   Target FormIDs: 
+[633][0m:0s][10]                      [Werewolf]  * +   |     023ABC | Skyrim.esm
+[634][0m:0s][11]                      [Werewolf]  * +   |   Apply to Similar: true
+[635][0m:0s][11]                      [Werewolf]  * +   -------------------------------------
+[636][0m:0s][343]                     [Werewolf]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Werewolf\werewolfbody_n.dds
+[637][0m:0s][269]                     [Werewolf]  * +   Loaded common texture: AV Packages\Bellyaches Animals\Werewolf\werewolfhead_n.dds
+[638][0m:0s][13]                      [Werewolf]  * +
+[639][0m:0s][10]                      [Werewolf]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\Werewolf
+[640][0m:0s][39]                     [WolfBlack]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[641][0m:0s][11]                     [WolfBlack]  * + Adding Variant Set: AV Packages\Bellyaches Animals\WolfBlack
+[642][0m:0s][9]                      [WolfBlack]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[643][0m:0s][8]                      [WolfBlack]  * +
+[644][0m:0s][263]                         [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\WolfBlack\Skin
+[645][0m:0s][184]                 [Darker Black]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\WolfBlack\Skin\Darker Black
+[646][0m:0s][191]                 [Darker Black]  * +   #     Added texture: AV Packages\Bellyaches Animals\WolfBlack\Skin\Darker Black\wolfblack.dds
+[647][0m:0s][85]                  [Darker Black]  * +   #     Added texture: AV Packages\Bellyaches Animals\WolfBlack\Skin\Darker Black\wolfpeltblack.dds
+[648][0m:0s][161]                       [Timber]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\WolfBlack\Skin\Timber
+[649][0m:0s][147]                       [Timber]  * +   #     Added texture: AV Packages\Bellyaches Animals\WolfBlack\Skin\Timber\wolfblack.dds
+[650][0m:0s][78]                        [Timber]  * +   #     Added texture: AV Packages\Bellyaches Animals\WolfBlack\Skin\Timber\wolfpeltblack.dds
+[651][0m:0s][17]                          [Skin]  * +   ####################################
+[652][0m:0s][260]                    [WolfBlack]  * +   --- Set Specifications loaded: --
+[653][0m:0s][13]                     [WolfBlack]  * +   |   Target FormIDs: 
+[654][0m:0s][9]                      [WolfBlack]  * +   |     023ABE | Skyrim.esm
+[655][0m:0s][9]                      [WolfBlack]  * +   |   Apply to Similar: true
+[656][0m:0s][9]                      [WolfBlack]  * +   -------------------------------------
+[657][0m:0s][258]                    [WolfBlack]  * +   Loaded common texture: AV Packages\Bellyaches Animals\WolfBlack\wolf_n.dds
+[658][0m:0s][12]                     [WolfBlack]  * +
+[659][0m:0s][9]                      [WolfBlack]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\WolfBlack
+[660][0m:0s][35]                       [WolfIce]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[661][0m:0s][10]                       [WolfIce]  * + Adding Variant Set: AV Packages\Bellyaches Animals\WolfIce
+[662][0m:0s][10]                       [WolfIce]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[663][0m:0s][9]                        [WolfIce]  * +
+[664][0m:0s][264]                      [WolfIce]  * +   --- Set Specifications loaded: --
+[665][0m:0s][13]                       [WolfIce]  * +   |   Target FormIDs: 
+[666][0m:0s][9]                        [WolfIce]  * +   |     023ABF | Skyrim.esm
+[667][0m:0s][9]                        [WolfIce]  * +   |   Apply to Similar: true
+[668][0m:0s][8]                        [WolfIce]  * +   -------------------------------------
+[669][0m:0s][59]                          [Skin]  * +   ### Adding Variant Group: AV Packages\Bellyaches Animals\WolfIce\Skin
+[670][0m:0s][332]                   [Light Grey]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\WolfIce\Skin\Light Grey
+[671][0m:0s][148]                   [Light Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\WolfIce\Skin\Light Grey\wolf.dds
+[672][0m:0s][93]                    [Light Grey]  * +   #     Added texture: AV Packages\Bellyaches Animals\WolfIce\Skin\Light Grey\wolfpelt.dds
+[673][0m:0s][171]              [White Blue eyed]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\WolfIce\Skin\White Blue eyed
+[674][0m:0s][913]              [White Blue eyed]  * +   #     --- Variant Specifications loaded: --
+[675][0m:0s][76]               [White Blue eyed]  * +   #     |   Probability Div: 1/2
+[676][0m:0s][12]               [White Blue eyed]  * +   #     -------------------------------------
+[677][0m:0s][271]              [White Blue eyed]  * +   #     Added texture: AV Packages\Bellyaches Animals\WolfIce\Skin\White Blue eyed\wolf.dds
+[678][0m:0s][220]              [White Blue eyed]  * +   #     Added texture: AV Packages\Bellyaches Animals\WolfIce\Skin\White Blue eyed\wolfpelt.dds
+[679][0m:0s][108]             [White Brown Eyed]  * +   #   Adding Variant: AV Packages\Bellyaches Animals\WolfIce\Skin\White Brown Eyed
+[680][0m:0s][266]             [White Brown Eyed]  * +   #     --- Variant Specifications loaded: --
+[681][0m:0s][13]              [White Brown Eyed]  * +   #     |   Probability Div: 1/2
+[682][0m:0s][8]               [White Brown Eyed]  * +   #     -------------------------------------
+[683][0m:0s][239]             [White Brown Eyed]  * +   #     Added texture: AV Packages\Bellyaches Animals\WolfIce\Skin\White Brown Eyed\wolf.dds
+[684][0m:0s][229]             [White Brown Eyed]  * +   #     Added ROUTED texture: AV Packages\Bellyaches Animals\WolfIce\Skin\White Blue eyed\wolfpelt.dds
+[685][0m:0s][17]                          [Skin]  * +   ####################################
+[686][0m:0s][249]                      [WolfIce]  * +   Loaded common texture: AV Packages\Bellyaches Animals\WolfIce\wolf_n.dds
+[687][0m:0s][12]                       [WolfIce]  * +
+[688][0m:0s][10]                       [WolfIce]  * +++++++ END Variant Set: AV Packages\Bellyaches Animals\WolfIce
+[689][0m:0s][18]            [Bellyaches Animals]  *** END package: AV Packages\Bellyaches Animals
+[690][0m:0s][49]                   [Giants Test]  ************************************************************
+[691][0m:0s][10]                   [Giants Test]  * Loading package: AV Packages\Giants Test
+[692][0m:0s][8]                    [Giants Test]  ************************************************************
+[693][0m:0s][90]                         [Giant]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[694][0m:0s][11]                         [Giant]  * + Adding Variant Set: AV Packages\Giants Test\Giant
+[695][0m:0s][9]                          [Giant]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[696][0m:0s][9]                          [Giant]  * +
+[697][0m:0s][161]                      [Clothes]  * +   ### Adding Variant Group: AV Packages\Giants Test\Giant\Clothes
+[698][0m:0s][334]           [GIANT OUTFIT BLACK]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Clothes\GIANT OUTFIT BLACK
+[699][0m:0s][147]           [GIANT OUTFIT BLACK]  * +   #     Added texture: AV Packages\Giants Test\Giant\Clothes\GIANT OUTFIT BLACK\giantoutfit.dds
+[700][0m:0s][331]      [GIANT OUTFIT DARK BROWN]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Clothes\GIANT OUTFIT DARK BROWN
+[701][0m:0s][190]      [GIANT OUTFIT DARK BROWN]  * +   #     Added texture: AV Packages\Giants Test\Giant\Clothes\GIANT OUTFIT DARK BROWN\giantoutfit.dds
+[702][0m:0s][314]            [GIANT OUTFIT GREY]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Clothes\GIANT OUTFIT GREY
+[703][0m:0s][144]            [GIANT OUTFIT GREY]  * +   #     Added texture: AV Packages\Giants Test\Giant\Clothes\GIANT OUTFIT GREY\giantoutfit.dds
+[704][0m:0s][269]    [GIANT OUTFIT MEDIUM BROWN]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Clothes\GIANT OUTFIT MEDIUM BROWN
+[705][0m:0s][148]    [GIANT OUTFIT MEDIUM BROWN]  * +   #     Added texture: AV Packages\Giants Test\Giant\Clothes\GIANT OUTFIT MEDIUM BROWN\giantoutfit.dds
+[706][0m:0s][273]      [GIANT OUTFIT TAN.BLONDE]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Clothes\GIANT OUTFIT TAN.BLONDE
+[707][0m:0s][147]      [GIANT OUTFIT TAN.BLONDE]  * +   #     Added texture: AV Packages\Giants Test\Giant\Clothes\GIANT OUTFIT TAN.BLONDE\giantoutfit.dds
+[708][0m:0s][18]                       [Clothes]  * +   ####################################
+[709][0m:0s][286]                        [Giant]  * +   Loaded common texture: AV Packages\Giants Test\Giant\giantoutfit_n.dds
+[710][0m:0s][59]                          [Skin]  * +   ### Adding Variant Group: AV Packages\Giants Test\Giant\Skin
+[711][0m:0s][338]                  [HAIRY BLACK]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Skin\HAIRY BLACK
+[712][0m:0s][150]                  [HAIRY BLACK]  * +   #     Added texture: AV Packages\Giants Test\Giant\Skin\HAIRY BLACK\giant.dds
+[713][0m:0s][90]                   [HAIRY BLACK]  * +   #     Added texture: AV Packages\Giants Test\Giant\Skin\HAIRY BLACK\giant_n.dds
+[714][0m:0s][114]                 [HAIRY BLONDE]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Skin\HAIRY BLONDE
+[715][0m:0s][316]                 [HAIRY BLONDE]  * +   #     Added texture: AV Packages\Giants Test\Giant\Skin\HAIRY BLONDE\giant.dds
+[716][0m:0s][380]                 [HAIRY BLONDE]  * +   #     Added ROUTED texture: AV Packages\Giants Test\Giant\Skin\HAIRY BLACK\giant_n.dds
+[717][0m:0s][118]             [HAIRY DARK BROWN]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Skin\HAIRY DARK BROWN
+[718][0m:0s][380]             [HAIRY DARK BROWN]  * +   #     Added texture: AV Packages\Giants Test\Giant\Skin\HAIRY DARK BROWN\giant.dds
+[719][0m:0s][296]             [HAIRY DARK BROWN]  * +   #     Added ROUTED texture: AV Packages\Giants Test\Giant\Skin\HAIRY BLACK\giant_n.dds
+[720][0m:0s][307]                   [HAIRY GREY]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Skin\HAIRY GREY
+[721][0m:0s][368]                   [HAIRY GREY]  * +   #     Added texture: AV Packages\Giants Test\Giant\Skin\HAIRY GREY\giant.dds
+[722][0m:0s][227]                   [HAIRY GREY]  * +   #     Added ROUTED texture: AV Packages\Giants Test\Giant\Skin\HAIRY BLACK\giant_n.dds
+[723][0m:0s][98]            [HAIRY MEDIUM BROWN]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Skin\HAIRY MEDIUM BROWN
+[724][0m:0s][305]           [HAIRY MEDIUM BROWN]  * +   #     Added texture: AV Packages\Giants Test\Giant\Skin\HAIRY MEDIUM BROWN\giant.dds
+[725][0m:0s][220]           [HAIRY MEDIUM BROWN]  * +   #     Added ROUTED texture: AV Packages\Giants Test\Giant\Skin\HAIRY BLACK\giant_n.dds
+[726][0m:0s][276]              [NON-HAIRY BLACK]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Skin\NON-HAIRY BLACK
+[727][0m:0s][151]              [NON-HAIRY BLACK]  * +   #     Added texture: AV Packages\Giants Test\Giant\Skin\NON-HAIRY BLACK\giant.dds
+[728][0m:0s][82]               [NON-HAIRY BLACK]  * +   #     Added texture: AV Packages\Giants Test\Giant\Skin\NON-HAIRY BLACK\giant_n.dds
+[729][0m:0s][120]             [NON-HAIRY BLONDE]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Skin\NON-HAIRY BLONDE
+[730][0m:0s][286]             [NON-HAIRY BLONDE]  * +   #     Added texture: AV Packages\Giants Test\Giant\Skin\NON-HAIRY BLONDE\giant.dds
+[731][0m:0s][238]             [NON-HAIRY BLONDE]  * +   #     Added ROUTED texture: AV Packages\Giants Test\Giant\Skin\NON-HAIRY BLACK\giant_n.dds
+[732][0m:0s][101]         [NON-HAIRY DARK BROWN]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Skin\NON-HAIRY DARK BROWN
+[733][0m:0s][307]         [NON-HAIRY DARK BROWN]  * +   #     Added texture: AV Packages\Giants Test\Giant\Skin\NON-HAIRY DARK BROWN\giant.dds
+[734][0m:0s][282]         [NON-HAIRY DARK BROWN]  * +   #     Added ROUTED texture: AV Packages\Giants Test\Giant\Skin\NON-HAIRY BLACK\giant_n.dds
+[735][0m:0s][103]               [NON-HAIRY GREY]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Skin\NON-HAIRY GREY
+[736][0m:0s][338]               [NON-HAIRY GREY]  * +   #     Added texture: AV Packages\Giants Test\Giant\Skin\NON-HAIRY GREY\giant.dds
+[737][0m:0s][265]               [NON-HAIRY GREY]  * +   #     Added ROUTED texture: AV Packages\Giants Test\Giant\Skin\NON-HAIRY BLACK\giant_n.dds
+[738][0m:0s][105]       [NON-HAIRY MEDIUM BROWN]  * +   #   Adding Variant: AV Packages\Giants Test\Giant\Skin\NON-HAIRY MEDIUM BROWN
+[739][0m:0s][291]       [NON-HAIRY MEDIUM BROWN]  * +   #     Added texture: AV Packages\Giants Test\Giant\Skin\NON-HAIRY MEDIUM BROWN\giant.dds
+[740][0m:0s][221]       [NON-HAIRY MEDIUM BROWN]  * +   #     Added ROUTED texture: AV Packages\Giants Test\Giant\Skin\NON-HAIRY BLACK\giant_n.dds
+[741][0m:0s][38]                          [Skin]  * +   ####################################
+[742][0m:0s][350]                        [Giant]  * +   --- Set Specifications loaded: --
+[743][0m:0s][15]                         [Giant]  * +   |   Target FormIDs: 
+[744][0m:0s][10]                         [Giant]  * +   |     0936D1 | Skyrim.esm
+[745][0m:0s][9]                          [Giant]  * +   |     0936D3 | Skyrim.esm
+[746][0m:0s][8]                          [Giant]  * +   |     023AAE | Skyrim.esm
+[747][0m:0s][9]                          [Giant]  * +   |     030437 | Skyrim.esm
+[748][0m:0s][9]                          [Giant]  * +   |     030438 | Skyrim.esm
+[749][0m:0s][8]                          [Giant]  * +   |     048D97 | Skyrim.esm
+[750][0m:0s][10]                         [Giant]  * +   |   Apply to Similar: true
+[751][0m:0s][8]                          [Giant]  * +   -------------------------------------
+[752][0m:0s][9]                          [Giant]  * +
+[753][0m:0s][10]                         [Giant]  * +++++++ END Variant Set: AV Packages\Giants Test\Giant
+[754][0m:0s][16]                   [Giants Test]  *** END package: AV Packages\Giants Test
+[755][0m:0s][224]            [StarX  AV Package]  ************************************************************
+[756][0m:0s][12]             [StarX  AV Package]  * Loading package: AV Packages\StarX  AV Package
+[757][0m:0s][9]              [StarX  AV Package]  ************************************************************
+[758][0m:0s][95]                    [Cave Troll]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[759][0m:0s][11]                    [Cave Troll]  * + Adding Variant Set: AV Packages\StarX  AV Package\Cave Troll
+[760][0m:0s][9]                     [Cave Troll]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[761][0m:0s][8]                     [Cave Troll]  * +
+[762][0m:0s][105]                         [Skin]  * +   ### Adding Variant Group: AV Packages\StarX  AV Package\Cave Troll\Skin
+[763][0m:0s][323]                   [TrollVar01]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Cave Troll\Skin\TrollVar01
+[764][0m:0s][240]                   [TrollVar01]  * +   #     Added texture: AV Packages\StarX  AV Package\Cave Troll\Skin\TrollVar01\troll_cave.dds
+[765][0m:0s][454]                   [TrollVar02]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Cave Troll\Skin\TrollVar02
+[766][0m:0s][197]                   [TrollVar02]  * +   #     Added texture: AV Packages\StarX  AV Package\Cave Troll\Skin\TrollVar02\troll_cave.dds
+[767][0m:0s][378]                   [TrollVar03]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Cave Troll\Skin\TrollVar03
+[768][0m:0s][225]                   [TrollVar03]  * +   #     Added texture: AV Packages\StarX  AV Package\Cave Troll\Skin\TrollVar03\troll_cave.dds
+[769][0m:0s][311]                   [TrollVar04]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Cave Troll\Skin\TrollVar04
+[770][0m:0s][148]                   [TrollVar04]  * +   #     Added texture: AV Packages\StarX  AV Package\Cave Troll\Skin\TrollVar04\troll_cave.dds
+[771][0m:0s][20]                          [Skin]  * +   ####################################
+[772][0m:0s][207]                   [Cave Troll]  * +   --- Set Specifications loaded: --
+[773][0m:0s][11]                    [Cave Troll]  * +   |   Target FormIDs: 
+[774][0m:0s][9]                     [Cave Troll]  * +   |     06AF65 | Skyrim.esm
+[775][0m:0s][8]                     [Cave Troll]  * +   |     023ABA | Skyrim.esm
+[776][0m:0s][9]                     [Cave Troll]  * +   |   Apply to Similar: true
+[777][0m:0s][9]                     [Cave Troll]  * +   -------------------------------------
+[778][0m:0s][251]                   [Cave Troll]  * +   Loaded common texture: AV Packages\StarX  AV Package\Cave Troll\troll_n.dds
+[779][0m:0s][12]                    [Cave Troll]  * +
+[780][0m:0s][9]                     [Cave Troll]  * +++++++ END Variant Set: AV Packages\StarX  AV Package\Cave Troll
+[781][0m:0s][37]                        [Draugr]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[782][0m:0s][11]                        [Draugr]  * + Adding Variant Set: AV Packages\StarX  AV Package\Draugr
+[783][0m:0s][9]                         [Draugr]  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[784][0m:0s][9]                         [Draugr]  * +
+[785][0m:0s][167]                         [Skin]  * +   ### Adding Variant Group: AV Packages\StarX  AV Package\Draugr\Skin
+[786][0m:0s][483]                  [STXDraugr01]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr01
+[787][0m:0s][177]                  [STXDraugr01]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr01\draugr.dds
+[788][0m:0s][89]                   [STXDraugr01]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr01\draugr_n.dds
+[789][0m:0s][276]                  [STXDraugr02]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr02
+[790][0m:0s][148]                  [STXDraugr02]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr02\draugr.dds
+[791][0m:0s][84]                   [STXDraugr02]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr02\draugr_n.dds
+[792][0m:0s][260]                  [STXDraugr03]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr03
+[793][0m:0s][164]                  [STXDraugr03]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr03\draugr.dds
+[794][0m:0s][112]                  [STXDraugr03]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr03\draugr_n.dds
+[795][0m:0s][553]                  [STXDraugr04]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr04
+[796][0m:0s][162]                  [STXDraugr04]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr04\draugr.dds
+[797][0m:0s][84]                   [STXDraugr04]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr04\draugr_n.dds
+[798][0m:0s][252]                  [STXDraugr05]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr05
+[799][0m:0s][147]                  [STXDraugr05]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr05\draugr.dds
+[800][0m:0s][84]                   [STXDraugr05]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr05\draugr_n.dds
+[801][0m:0s][259]                  [STXDraugr06]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr06
+[802][0m:0s][154]                  [STXDraugr06]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr06\draugr.dds
+[803][0m:0s][84]                   [STXDraugr06]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr06\draugr_n.dds
+[804][0m:0s][251]                  [STXDraugr07]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr07
+[805][0m:0s][148]                  [STXDraugr07]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr07\draugr.dds
+[806][0m:0s][96]                   [STXDraugr07]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr07\draugr_n.dds
+[807][0m:0s][275]                  [STXDraugr08]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr08
+[808][0m:0s][153]                  [STXDraugr08]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr08\draugr.dds
+[809][0m:0s][89]                   [STXDraugr08]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr08\draugr_n.dds
+[810][0m:0s][274]                  [STXDraugr09]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr09
+[811][0m:0s][158]                  [STXDraugr09]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr09\draugr.dds
+[812][0m:0s][84]                   [STXDraugr09]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr09\draugr_n.dds
+[813][0m:0s][266]                  [STXDraugr10]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr10
+[814][0m:0s][143]                  [STXDraugr10]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr10\draugr.dds
+[815][0m:0s][81]                   [STXDraugr10]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr10\draugr_n.dds
+[816][0m:0s][248]                  [STXDraugr11]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr11
+[817][0m:0s][143]                  [STXDraugr11]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr11\draugr.dds
+[818][0m:0s][97]                   [STXDraugr11]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr11\draugr_n.dds
+[819][0m:0s][269]                  [STXDraugr12]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr12
+[820][0m:0s][147]                  [STXDraugr12]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr12\draugr.dds
+[821][0m:0s][82]                   [STXDraugr12]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr12\draugr_n.dds
+[822][0m:0s][248]                  [STXDraugr13]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr13
+[823][0m:0s][150]                  [STXDraugr13]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr13\draugr.dds
+[824][0m:0s][80]                   [STXDraugr13]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr13\draugr_n.dds
+[825][0m:0s][93]                   [STXDraugr14]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr14
+[826][0m:0s][273]                  [STXDraugr14]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr14\draugr.dds
+[827][0m:0s][487]                  [STXDraugr14]  * +   #     Added ROUTED texture: Inactive AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr15\draugr_n.dds
+[828][0m:0s][262]                  [STXDraugr15]  * +   #   Adding Variant: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr15
+[829][0m:0s][159]                  [STXDraugr15]  * +   #     Added texture: AV Packages\StarX  AV Package\Draugr\Skin\STXDraugr15\draugr.dds
+[830][0m:0s][20]                          [Skin]  * +   ####################################
+[831][0m:0s][308]                       [Draugr]  * +   --- Set Specifications loaded: --
+[832][0m:0s][40]                        [Draugr]  * +   |   Target FormIDs: 
+[833][0m:0s][11]                        [Draugr]  * +   |     05B752 | Skyrim.esm
+[834][0m:0s][9]                         [Draugr]  * +   |     0387C4 | Skyrim.esm
+[835][0m:0s][8]                         [Draugr]  * +   |     03B54B | Skyrim.esm
+[836][0m:0s][9]                         [Draugr]  * +   |     03B545 | Skyrim.esm
+[837][0m:0s][10]                        [Draugr]  * +   |     03B548 | Skyrim.esm
+[838][0m:0s][9]                         [Draugr]  * +   |     055939 | Skyrim.esm
+[839][0m:0s][9]                         [Draugr]  * +   |     05B755 | Skyrim.esm
+[840][0m:0s][8]                         [Draugr]  * +   |     04247C | Skyrim.esm
+[841][0m:0s][9]                         [Draugr]  * +   |   Apply to Similar: true
+[842][0m:0s][8]                         [Draugr]  * +   -------------------------------------
+[843][0m:0s][10]                        [Draugr]  * +
+[844][0m:0s][9]                         [Draugr]  * +++++++ END Variant Set: AV Packages\StarX  AV Package\Draugr
+[845][0m:0s][15]             [StarX  AV Package]  *** END package: AV Packages\StarX  AV Package
+[846][0m:0s][117849]                     [DEBUG]  Closing Debug File.  Time was: 821

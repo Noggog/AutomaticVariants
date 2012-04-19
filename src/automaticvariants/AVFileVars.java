@@ -46,6 +46,7 @@ public class AVFileVars {
     public static PackageComponent AVPackages = new PackageComponent(new File(AVPackagesDir), PackageComponent.Type.ROOT);
     static HashSet<FormID> unusedRaces;
     static HashSet<FormID> unusedSkins;
+    static LMergeMap<FormID, FormID> unusedPieces;
     // AV_Nif name is key
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     static LMergeMap<String, ARMA> nifToARMA = new LMergeMap<String, ARMA>(false);
@@ -65,8 +66,16 @@ public class AVFileVars {
     static Map<FormID, RACE> switcherRaces = new HashMap<FormID, RACE>();
     static FLST boundList;
     static boolean raceSwitchMethod = false;
+    static String debugFolder = "File Variants/";
 
     static void setUpFileVariants(Mod source, Mod patch) throws IOException, Uninitialized, BadParameter {
+	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "1 - Import Packages.txt");
+	    File f = new File(SPGlobal.pathToDebug() + "Asynchronous log.txt");
+	    if (f.isFile()) {
+		f.delete();
+	    }
+	}
 
 	BSAs = BSA.loadInBSAs(BSA.FileType.NIF, BSA.FileType.DDS);
 
@@ -177,6 +186,7 @@ public class AVFileVars {
     }
 
     public static void locateUnused(Mod source) {
+
 	if (!AV.save.getBool(Settings.MINIMIZE_PATCH)) {
 	    return;
 	}
@@ -186,24 +196,68 @@ public class AVFileVars {
 	    unusedRaces.add(race.getForm());
 	}
 	unusedSkins = new HashSet<FormID>(source.getArmors().numRecords());
+	unusedPieces = new LMergeMap<FormID, FormID>(false);
+	LMergeMap<FormID, ARMA> unusedPiecesTmp = new LMergeMap<FormID, ARMA>(false);
 	for (ARMO armor : source.getArmors()) {
-	    unusedSkins.add(armor.getForm());
+	    if (!unusedSkins.contains(armor.getForm())) {
+		unusedSkins.add(armor.getForm());
+		for (FormID piece : armor.getArmatures()) {
+		    ARMA arma = (ARMA) SPDatabase.getMajor(piece, GRUP_TYPE.ARMA);
+		    unusedPiecesTmp.put(armor.getForm(), arma);
+		}
+	    }
 	}
+
 
 	for (NPC_ n : source.getNPCs()) {
 	    unusedRaces.remove(n.getRace());
-	    unusedSkins.remove(n.getSkin());
+	    FormID skin = getUsedSkin(n);
+	    unusedSkins.remove(skin);
+	    if (unusedPiecesTmp.containsKey(skin)) {
+		ArrayList<ARMA> tmpPieces = new ArrayList<ARMA>(unusedPiecesTmp.get(skin));
+		for (ARMA piece : tmpPieces) {
+		    if (piece.getRace().equals(n.getRace())) {
+			unusedPiecesTmp.get(skin).remove(piece);
+		    }
+		}
+	    }
 	}
 
-	for (RACE r : source.getRaces()) {
-	    if (!unusedRaces.contains(r.getForm())) {
-		unusedSkins.remove(r.getWornArmor());
+	for (FormID skin : unusedPiecesTmp.keySet()) {
+	    if (!unusedPiecesTmp.get(skin).isEmpty()) {
+		for (ARMA piece : unusedPiecesTmp.get(skin)) {
+		    unusedPieces.put(skin, piece.getForm());
+		}
+	    } else {
+		unusedPieces.put(skin, new ArrayList<FormID>(0));
+	    }
+	}
+
+	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "2 - Locate Unused.txt");
+	    SPGlobal.log(header, "Unused Races:");
+	    for (FormID race : unusedRaces) {
+		SPGlobal.log(header, "  " + SPDatabase.getMajor(race, GRUP_TYPE.RACE));
+	    }
+	    SPGlobal.log(header, "Unused Skins:");
+	    for (FormID skin : unusedSkins) {
+		SPGlobal.log(header, "  " + SPDatabase.getMajor(skin, GRUP_TYPE.ARMO));
+	    }
+	    SPGlobal.log(header, "Unused Pieces:");
+	    for (FormID skin : unusedPieces.keySet()) {
+		SPGlobal.log(header, "  For " + SPDatabase.getMajor(skin, GRUP_TYPE.ARMO));
+		for (FormID piece : unusedPieces.get(skin)) {
+		    SPGlobal.log(header, "    " + SPDatabase.getMajor(piece, GRUP_TYPE.ARMA));
+		}
 	    }
 	}
     }
 
     static void linkToNifs() {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Linking packages to .nif files.");
+	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "3 - Link to NIFs.txt");
+	}
 	for (PackageComponent avPackageC : AVPackages.getAll(PackageComponent.Type.PACKAGE)) {
 	    AVPackage avPackage = (AVPackage) avPackageC;
 	    for (VariantSet varSet : avPackage.sets) {
@@ -412,6 +466,9 @@ public class AVFileVars {
 
     static void generateTXSTvariants() throws IOException {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Generating TXST variants.");
+	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "4 - Generate TXST.txt");
+	}
 	for (AV_Nif n : nifs.values()) {
 
 	    if (SPGlobal.logging()) {
@@ -494,17 +551,25 @@ public class AVFileVars {
     static void generateARMAvariants(Mod source) {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Generating ARMA variants.");
 	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "5 - Generate ARMA + ARMO.txt");
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Generating ARMA duplicates for each NIF");
 	    SPGlobal.log(header, "====================================================================");
 	}
 	for (ARMA armaSrc : source.getArmatures()) {
+	    if (AV.save.getBool(Settings.MINIMIZE_PATCH) && unusedSkins.contains(armaSrc.getForm())) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "  Skipping " + armaSrc + " because it was unused.");
+		}
+		continue;
+	    }
+
 	    // If we have variants for it
 	    if (armaToNif.containsKey(armaSrc.getForm())) {
 		AV_Nif malenif = nifs.get(armaToNif.get(armaSrc.getForm()));
 		if (malenif != null) { // we have variants for that nif
 		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "Duplicating " + armaSrc + ", for nif: " + armaToNif.get(armaSrc.getForm()));
+			SPGlobal.log(header, "  Duplicating " + armaSrc + ", for nif: " + armaToNif.get(armaSrc.getForm()));
 		    }
 		    ArrayList<ARMA_spec> dups = new ArrayList<ARMA_spec>();
 		    for (Variant v : malenif.variants) {
@@ -558,15 +623,18 @@ public class AVFileVars {
 
 	    if (AV.save.getBool(Settings.MINIMIZE_PATCH)
 		    && !targets.isEmpty() && unusedSkins.contains(armoSrc.getForm())) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Skipping " + armoSrc + " because it is unused.");
-		}
 		continue;
 	    }
 
 	    for (FormID arma : targets.keySet()) {
+		// See if piece is unused
+		if (AV.save.getBool(Settings.MINIMIZE_PATCH)
+			&& unusedPieces.get(armoSrc.getForm()).contains(arma)) {
+		    continue;
+		}
+
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(arma, GRUP_TYPE.ARMA));
+		    SPGlobal.log(header, "  Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(arma, GRUP_TYPE.ARMA));
 		}
 		ArrayList<ARMO_spec> dups = new ArrayList<ARMO_spec>(targets.numVals());
 		for (ARMA_spec variant : targets.get(arma)) {
@@ -798,6 +866,7 @@ public class AVFileVars {
     static void generateNPCvariants(Mod source) {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Generating NPC variants.");
 	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "6 - Generate NPC.txt");
 	    SPGlobal.log(header, "====================================================================================================");
 	    SPGlobal.log(header, "Generating NPC duplicates for each ARMO skin.  Only NPCs that have skin directly without templating.");
 	    SPGlobal.log(header, "====================================================================================================");
@@ -883,6 +952,7 @@ public class AVFileVars {
 
     static void prepAndAddOriginals(Mod source) {
 	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "7 - Prep and add Originals.txt");
 	    SPGlobal.log(header, "====================================================================================================");
 	    SPGlobal.log(header, "AV Prepping and Adding Originals as Variants");
 	    SPGlobal.log(header, "====================================================================================================");
@@ -909,6 +979,7 @@ public class AVFileVars {
     static void generateLVLNs(Mod source) {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Loading NPC variants into Leveled Lists.");
 	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "8 - Generate LVLN.txt");
 	    SPGlobal.log(header, "===================================================");
 	    SPGlobal.log(header, "Generating LVLNs loaded with NPC variants.");
 	    SPGlobal.log(header, "===================================================");
@@ -952,6 +1023,7 @@ public class AVFileVars {
     static void generateTemplating(Mod source) {
 	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Templating original NPCs to variant LLists.");
 	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "9 - Generate Templating.txt");
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Setting source NPCs to template to LVLN loaded with variants");
 	    SPGlobal.log(header, "====================================================================");
@@ -971,8 +1043,9 @@ public class AVFileVars {
     }
 
     static void subInOldLVLNs(Mod source) {
-	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Replacing original NPC entries in your LVLN records.");
+	SPGUI.progress.setStatus(AV.step++, AV.numSteps, "Replacing original LVLN entries.");
 	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "10 - Replacing original LVLN entries.txt");
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Replacing old NPC entries in your mod's LVLNs");
 	    SPGlobal.log(header, "====================================================================");
@@ -997,6 +1070,7 @@ public class AVFileVars {
 
     static void dupTemplatedLVLNentries(Mod source) {
 	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "11 - Bloom templated LVLN entries.txt");
 	    SPGlobal.log(header, "============================================================================================");
 	    SPGlobal.log(header, "Checking each LVLN entry for traits templating to new variants.  Duplicating and replacing");
 	    SPGlobal.log(header, "============================================================================================");
@@ -1110,6 +1184,7 @@ public class AVFileVars {
 
     static void printVariantList() {
 	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "12 - Summary.txt");
 	    SPGlobal.log(header, "===================================================");
 	    SPGlobal.log(header, "Printing all NPCs that have a matching variant LList.");
 	    SPGlobal.log(header, "===================================================");

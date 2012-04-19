@@ -1,0 +1,1105 @@
+[1][0m:0s][16843]              [OPEN DEBUG FILE]  Opening Debug File
+[2][0m:0s][327]                     [AV_FileVar]  Skipping AV Packages\Bellyaches Animals\Bear because it was empty or missing a spec file.
+[3][0m:0s][88]                      [AV_FileVar]  Skipping AV Packages\Bellyaches Animals\BearCave because it was empty or missing a spec file.
+[4][0m:0s][43]                      [AV_FileVar]  Skipping AV Packages\Bellyaches Animals\BearPolar because it was empty or missing a spec file.
+[5][0m:0s][305]               [0A5600Skyrim.esm]  ====================================================================
+[6][0m:0s][36]                [0A5600Skyrim.esm]  Locating [NPC_ | 0A5600Skyrim.esm | EncChaurus]'s NIF file and analyzing the Skin.
+[7][0m:0s][8]                 [0A5600Skyrim.esm]  ====================================================================
+[8][0m:0s][13]                [0A5600Skyrim.esm]    [NPC_ | 0A5600Skyrim.esm | EncChaurus]
+[9][0m:0s][60]                [0A5600Skyrim.esm]    [ARMA | 058E2BSkyrim.esm | NakedChaurusAA]
+[10][0m:0s][2297]                          [BSA]    Nif meshes\ACTORS\CHAURUS\CHARACTER ASSETS\CHAUURUSSKIN.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[11][0m:0s][5536]                       [AV_Nif]    Loaded NiTriShapes: New (37) linked to texture index 38
+[12][0m:0s][30]               [0A5600Skyrim.esm]    Nif path: ACTORS\CHAURUS\CHARACTER ASSETS\CHAUURUSSKIN.NIF
+[13][0m:0s][18]                         [AV_Nif]    Texture index 0: New
+[14][0m:0s][16]                         [AV_Nif]      0: textures\actors\chaurus\Chaurus.dds
+[15][0m:0s][8]                          [AV_Nif]      1: textures\actors\chaurus\Chaurus_n.dds
+[16][0m:0s][7]                          [AV_Nif]      2: textures\actors\chaurus\Chaurus_g.dds
+[17][0m:0s][308367]           [0A91A0Skyrim.esm]  ====================================================================
+[18][0m:0s][39]               [0A91A0Skyrim.esm]  Locating [NPC_ | 0A91A0Skyrim.esm | EncChicken]'s NIF file and analyzing the Skin.
+[19][0m:0s][8]                [0A91A0Skyrim.esm]  ====================================================================
+[20][0m:0s][12]               [0A91A0Skyrim.esm]    [NPC_ | 0A91A0Skyrim.esm | EncChicken]
+[21][0m:0s][50]               [0A91A0Skyrim.esm]    [ARMA | 0A919BSkyrim.esm | NakedChickenAA]
+[22][0m:0s][505]                           [BSA]    Nif meshes\ACTORS\AMBIENT\CHICKEN\CHARACTER ASSETS\CHICKEN.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[23][0m:0s][777]                        [AV_Nif]    Loaded NiTriShapes: chicken (38) linked to texture index 39
+[24][0m:0s][13]               [0A91A0Skyrim.esm]    Nif path: ACTORS\AMBIENT\CHICKEN\CHARACTER ASSETS\CHICKEN.NIF
+[25][0m:0s][9]                          [AV_Nif]    Texture index 0: chicken
+[26][0m:0s][9]                          [AV_Nif]      0: textures\actors\chicken\chicken.DDS
+[27][0m:0s][8]                          [AV_Nif]      1: textures\actors\chicken\chicken_n.DDS
+[28][0m:0s][136077]           [023A91Skyrim.esm]  ====================================================================
+[29][0m:0s][40]               [023A91Skyrim.esm]  Locating [NPC_ | 023A91Skyrim.esm | EncElk]'s NIF file and analyzing the Skin.
+[30][0m:0s][1294]             [023A91Skyrim.esm]  ====================================================================
+[31][0m:0s][22]               [023A91Skyrim.esm]    [NPC_ | 023A91Skyrim.esm | EncElk]
+[32][0m:0s][89]               [023A91Skyrim.esm]    [RACE | 0131EDSkyrim.esm | ElkRace]
+[33][0m:0s][18]               [023A91Skyrim.esm]    [ARMO | 05E979Skyrim.esm | SkinDeer]
+[34][0m:0s][67]               [023A91Skyrim.esm]    [ARMA | 05E978Skyrim.esm | NakedDeerAA]
+[35][0m:0s][551]                           [BSA]    Nif meshes\ACTORS\DEER\CHARACTER ASSETS\ELK_MALESKIN.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[36][0m:0s][8273]                       [AV_Nif]    Loaded NiTriShapes: ElkMaleLEye01 (45) linked to texture index 46
+[37][0m:0s][23]                         [AV_Nif]    Loaded NiTriShapes: ElkMaleREye (52) linked to texture index 46
+[38][0m:0s][42]                         [AV_Nif]    Loaded NiTriShapes: DeerBase02:0 (58) linked to texture index 59
+[39][0m:0s][49]                         [AV_Nif]    Loaded NiTriShapes: DeerBase02:1 (65) linked to texture index 66
+[40][0m:0s][19]               [023A91Skyrim.esm]    Nif path: ACTORS\DEER\CHARACTER ASSETS\ELK_MALESKIN.NIF
+[41][0m:0s][8]                          [AV_Nif]    Texture index 0: ElkMaleLEye01
+[42][0m:0s][5]                          [AV_Nif]      0: textures\actors\elk\ElkBody.dds
+[43][0m:0s][4]                          [AV_Nif]      1: textures\actors\elk\ElkBody_N.dds
+[44][0m:0s][4]                          [AV_Nif]      2: textures\actors\elk\ElkBody_sk.dds
+[45][0m:0s][4]                          [AV_Nif]      3: textures\cubemaps\EyeCubeMap.dds
+[46][0m:0s][3]                          [AV_Nif]      4: textures\actors\elk\ElkEye_M.dds
+[47][0m:0s][4]                          [AV_Nif]    Texture index 1: ElkMaleREye
+[48][0m:0s][4]                          [AV_Nif]      0: textures\actors\elk\ElkBody.dds
+[49][0m:0s][3]                          [AV_Nif]      1: textures\actors\elk\ElkBody_N.dds
+[50][0m:0s][4]                          [AV_Nif]      2: textures\actors\elk\ElkBody_sk.dds
+[51][0m:0s][7]                          [AV_Nif]      3: textures\cubemaps\EyeCubeMap.dds
+[52][0m:0s][42]                         [AV_Nif]      4: textures\actors\elk\ElkEye_M.dds
+[53][0m:0s][8]                          [AV_Nif]    Texture index 2: DeerBase02:0
+[54][0m:0s][29]                         [AV_Nif]      0: textures\actors\elk\ElkBody.dds
+[55][0m:0s][6]                          [AV_Nif]      1: textures\actors\elk\ElkBody_N.dds
+[56][0m:0s][4]                          [AV_Nif]      2: textures\actors\elk\ElkBody_sk.dds
+[57][0m:0s][5]                          [AV_Nif]    Texture index 3: DeerBase02:1
+[58][0m:0s][4]                          [AV_Nif]      0: textures\actors\elk\ElkBody.dds
+[59][0m:0s][4]                          [AV_Nif]      1: textures\actors\elk\ElkBody_N.dds
+[60][0m:0s][4]                          [AV_Nif]      2: textures\actors\elk\ElkBody_sk.dds
+[61][0m:0s][29547]            [104F46Skyrim.esm]  ====================================================================
+[62][0m:0s][45]               [104F46Skyrim.esm]  Locating [NPC_ | 104F46Skyrim.esm | DA05EncWhiteStag]'s NIF file and analyzing the Skin.
+[63][0m:0s][3]                [104F46Skyrim.esm]  ====================================================================
+[64][0m:0s][10]               [104F46Skyrim.esm]    [NPC_ | 104F46Skyrim.esm | DA05EncWhiteStag]
+[65][0m:0s][16]               [104F46Skyrim.esm]    [RACE | 104F45Skyrim.esm | WhiteStagRace]
+[66][0m:0s][12]               [104F46Skyrim.esm]    [ARMO | 104F44Skyrim.esm | SkinWhiteStag]
+[67][0m:0s][59]               [104F46Skyrim.esm]    [ARMA | 104F42Skyrim.esm | NakedWhiteStagAA]
+[68][0m:0s][10]                       [SplitVar]    Record warrents split due to alt textures in ARMA.
+[69][0m:0s][157]                           [BSA]    Nif meshes\ACTORS\DEER\CHARACTER ASSETS\REINDEER_SKIN.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[70][0m:0s][2961]                       [AV_Nif]    Loaded NiTriShapes: ReinDeerEye (45) linked to texture index 46
+[71][0m:0s][18]                         [AV_Nif]    Loaded NiTriShapes: ElkMaleLEye03 (52) linked to texture index 46
+[72][0m:0s][7]                          [AV_Nif]    Loaded NiTriShapes: ReinDeer:0 (58) linked to texture index 59
+[73][0m:0s][7]                          [AV_Nif]    Loaded NiTriShapes: ReinDeer:1 (65) linked to texture index 59
+[74][0m:0s][6]                      [AV_FileVar]    Nif path: ACTORS\DEER\CHARACTER ASSETS\REINDEER_SKIN.NIF
+[75][0m:0s][6]                          [AV_Nif]    Texture index 0: ReinDeerEye
+[76][0m:0s][5]                          [AV_Nif]      0: textures\actors\elk\ElkBody.dds
+[77][0m:0s][4]                          [AV_Nif]      1: textures\actors\elk\ElkBody_N.dds
+[78][0m:0s][4]                          [AV_Nif]      2: textures\cubemaps\EyeCubeMap.dds
+[79][0m:0s][4]                          [AV_Nif]    Texture index 1: ElkMaleLEye03
+[80][0m:0s][3]                          [AV_Nif]      0: textures\actors\elk\ElkBody.dds
+[81][0m:0s][3]                          [AV_Nif]      1: textures\actors\elk\ElkBody_N.dds
+[82][0m:0s][4]                          [AV_Nif]      2: textures\cubemaps\EyeCubeMap.dds
+[83][0m:0s][4]                          [AV_Nif]    Texture index 2: ReinDeer:0
+[84][0m:0s][4]                          [AV_Nif]      0: textures\actors\elk\ReinDeerBody.dds
+[85][0m:0s][230]                        [AV_Nif]      1: textures\actors\elk\ReinDeerBody_N.dds
+[86][0m:0s][6]                          [AV_Nif]      2: textures\actors\elk\ReinDeer_sk.dds
+[87][0m:0s][5]                          [AV_Nif]    Texture index 3: ReinDeer:1
+[88][0m:0s][3]                          [AV_Nif]      0: textures\actors\elk\ReinDeerBody.dds
+[89][0m:0s][3]                          [AV_Nif]      1: textures\actors\elk\ReinDeerBody_N.dds
+[90][0m:0s][3]                          [AV_Nif]      2: textures\actors\elk\ReinDeer_sk.dds
+[91][0m:0s][123]                    [AV_FileVar]    Alt Texture index 0 texture map[0] replaced from textures\actors\elk\ElkBody.dds to textures\Actors\Elk\WhiteStagBody.dds
+[92][0m:0s][14]                     [AV_FileVar]    Alt Texture index 0 texture map[1] replaced from textures\actors\elk\ElkBody_N.dds to textures\Actors\Elk\ReinDeerBody_N.dds
+[93][0m:0s][8]                      [AV_FileVar]    Alt Texture index 0 texture map[2] replaced from  to textures\Actors\Elk\ReinDeer_sk.dds
+[94][0m:0s][7]                      [AV_FileVar]    Alt Texture index 0 texture map[4] removed.  Was: textures\cubemaps\EyeCubeMap.dds
+[95][0m:0s][30]                     [AV_FileVar]    Alt Texture index 2 texture map[0] replaced from textures\actors\elk\ReinDeerBody.dds to textures\Actors\Elk\WhiteStagBody.dds
+[96][0m:0s][12428]            [023A92Skyrim.esm]  ====================================================================
+[97][0m:0s][39]               [023A92Skyrim.esm]  Locating [NPC_ | 023A92Skyrim.esm | EncDog]'s NIF file and analyzing the Skin.
+[98][0m:0s][3]                [023A92Skyrim.esm]  ====================================================================
+[99][0m:0s][9]                [023A92Skyrim.esm]    [NPC_ | 023A92Skyrim.esm | EncDog]
+[100][0m:0s][112]             [023A92Skyrim.esm]    [ARMA | 04B2CASkyrim.esm | NakedDogAA]
+[101][0m:0s][251]                          [BSA]    Nif meshes\ACTORS\CANINE\CHARACTER ASSETS DOG\DOG.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[102][0m:0s][3268]                      [AV_Nif]    Loaded NiTriShapes: DOG_NewUV:0 (51) linked to texture index 52
+[103][0m:0s][11]                        [AV_Nif]    Loaded NiTriShapes: DOG_NewUV:1 (58) linked to texture index 59
+[104][0m:0s][5]               [023A92Skyrim.esm]    Nif path: ACTORS\CANINE\CHARACTER ASSETS DOG\DOG.NIF
+[105][0m:0s][6]                         [AV_Nif]    Texture index 0: DOG_NewUV:0
+[106][0m:0s][5]                         [AV_Nif]      0: textures\actors\dog\Dog.dds
+[107][0m:0s][3]                         [AV_Nif]      1: textures\actors\dog\Dog_n.dds
+[108][0m:0s][3]                         [AV_Nif]      2: textures\actors\dog\Dog_S.dds
+[109][0m:0s][4]                         [AV_Nif]    Texture index 1: DOG_NewUV:1
+[110][0m:0s][4]                         [AV_Nif]      0: textures\actors\dog\Dog.dds
+[111][0m:0s][4]                         [AV_Nif]      1: textures\actors\dog\Dog_n.dds
+[112][0m:0s][3]                         [AV_Nif]      2: textures\actors\dog\Dog_S.dds
+[113][0m:0s][76466]           [0829B3Skyrim.esm]  ====================================================================
+[114][0m:0s][41]              [0829B3Skyrim.esm]  Locating [NPC_ | 0829B3Skyrim.esm | EncFox]'s NIF file and analyzing the Skin.
+[115][0m:0s][3]               [0829B3Skyrim.esm]  ====================================================================
+[116][0m:0s][9]               [0829B3Skyrim.esm]    [NPC_ | 0829B3Skyrim.esm | EncFox]
+[117][0m:0s][47]              [0829B3Skyrim.esm]    [ARMA | 0829B2Skyrim.esm | NakedFoxAA]
+[118][0m:0s][290]                          [BSA]    Nif meshes\ACTORS\WOLF\FOX.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[119][0m:0s][932]                       [AV_Nif]    Loaded NiTriShapes: LowFox (40) linked to texture index 41
+[120][0m:0s][8]               [0829B3Skyrim.esm]    Nif path: ACTORS\WOLF\FOX.NIF
+[121][0m:0s][6]                         [AV_Nif]    Texture index 0: LowFox
+[122][0m:0s][4]                         [AV_Nif]      0: textures\actors\fox\Fox.dds
+[123][0m:0s][4]                         [AV_Nif]      1: textures\actors\fox\Fox_n.dds
+[124][0m:0s][18814]           [0829B6Skyrim.esm]  ====================================================================
+[125][0m:0s][41]              [0829B6Skyrim.esm]  Locating [NPC_ | 0829B6Skyrim.esm | EncFoxArctic]'s NIF file and analyzing the Skin.
+[126][0m:0s][3]               [0829B6Skyrim.esm]  ====================================================================
+[127][0m:0s][9]               [0829B6Skyrim.esm]    [NPC_ | 0829B6Skyrim.esm | EncFoxArctic]
+[128][0m:0s][47]              [0829B6Skyrim.esm]    [ARMA | 0829B5Skyrim.esm | NakedFoxArcticAA]
+[129][0m:0s][168]                          [BSA]    Nif meshes\ACTORS\WOLF\FOXARCTIC.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[130][0m:0s][935]                       [AV_Nif]    Loaded NiTriShapes: ArcticFox (38) linked to texture index 39
+[131][0m:0s][8]               [0829B6Skyrim.esm]    Nif path: ACTORS\WOLF\FOXARCTIC.NIF
+[132][0m:0s][5]                         [AV_Nif]    Texture index 0: ArcticFox
+[133][0m:0s][4]                         [AV_Nif]      0: textures\actors\fox\FoxArctic.dds
+[134][0m:0s][4]                         [AV_Nif]      1: textures\actors\fox\Fox_n.dds
+[135][0m:0s][12195]           [023AAASkyrim.esm]  ====================================================================
+[136][0m:0s][47]              [023AAASkyrim.esm]  Locating [NPC_ | 023AAASkyrim.esm | EncFrostbiteSpider]'s NIF file and analyzing the Skin.
+[137][0m:0s][7]               [023AAASkyrim.esm]  ====================================================================
+[138][0m:0s][12]              [023AAASkyrim.esm]    [NPC_ | 023AAASkyrim.esm | EncFrostbiteSpider]
+[139][0m:0s][21]              [023AAASkyrim.esm]    [RACE | 0131F8Skyrim.esm | FrostbiteSpiderRace]
+[140][0m:0s][17]              [023AAASkyrim.esm]    [ARMO | 03636FSkyrim.esm | SkinFrostbiteSpider]
+[141][0m:0s][69]              [023AAASkyrim.esm]    [ARMA | 03636DSkyrim.esm | NakedFrostbiteSpiderAA]
+[142][0m:0s][304]                          [BSA]    Nif meshes\ACTORS\FROSTBITESPIDER\CHARACTER ASSETS\FROSTBITESPIDER.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[143][0m:0s][8322]                      [AV_Nif]    Loaded NiTriShapes: S_Body0180percent (74) linked to texture index 75
+[144][0m:0s][17]                        [AV_Nif]    Loaded NiTriShapes: S_Hiars01Reduced (81) linked to texture index 75
+[145][0m:0s][7]               [023AAASkyrim.esm]    Nif path: ACTORS\FROSTBITESPIDER\CHARACTER ASSETS\FROSTBITESPIDER.NIF
+[146][0m:0s][7]                         [AV_Nif]    Texture index 0: S_Body0180percent
+[147][0m:0s][6]                         [AV_Nif]      0: textures\actors\frostbitespider\SpiderDesat.dds
+[148][0m:0s][5]                         [AV_Nif]      1: textures\actors\frostbitespider\Spider_n.dds
+[149][0m:0s][4]                         [AV_Nif]    Texture index 1: S_Hiars01Reduced
+[150][0m:0s][4]                         [AV_Nif]      0: textures\actors\frostbitespider\SpiderDesat.dds
+[151][0m:0s][4]                         [AV_Nif]      1: textures\actors\frostbitespider\Spider_n.dds
+[152][0m:0s][19353]           [023AACSkyrim.esm]  ====================================================================
+[153][0m:0s][44]              [023AACSkyrim.esm]  Locating [NPC_ | 023AACSkyrim.esm | EncFrostbiteSpiderSnow]'s NIF file and analyzing the Skin.
+[154][0m:0s][3]               [023AACSkyrim.esm]  ====================================================================
+[155][0m:0s][9]               [023AACSkyrim.esm]    [NPC_ | 023AACSkyrim.esm | EncFrostbiteSpiderSnow]
+[156][0m:0s][62]              [023AACSkyrim.esm]    [ARMA | 048C0DSkyrim.esm | NakedFrostbiteSpiderColdAA]
+[157][0m:0s][183]                          [BSA]    Nif meshes\ACTORS\FROSTBITESPIDER\CHARACTER ASSETS\FROSTBITESPIDERCOLD.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[158][0m:0s][4229]                      [AV_Nif]    Loaded NiTriShapes: S_Body0180percent (74) linked to texture index 75
+[159][0m:0s][117]                       [AV_Nif]    Loaded NiTriShapes: S_Hiars01Reduced (81) linked to texture index 75
+[160][0m:0s][6]               [023AACSkyrim.esm]    Nif path: ACTORS\FROSTBITESPIDER\CHARACTER ASSETS\FROSTBITESPIDERCOLD.NIF
+[161][0m:0s][6]                         [AV_Nif]    Texture index 0: S_Body0180percent
+[162][0m:0s][5]                         [AV_Nif]      0: textures\actors\frostbitespider\FrostSpider.dds
+[163][0m:0s][4]                         [AV_Nif]      1: textures\actors\frostbitespider\Spider_n.dds
+[164][0m:0s][4]                         [AV_Nif]    Texture index 1: S_Hiars01Reduced
+[165][0m:0s][3]                         [AV_Nif]      0: textures\actors\frostbitespider\FrostSpider.dds
+[166][0m:0s][3]                         [AV_Nif]      1: textures\actors\frostbitespider\Spider_n.dds
+[167][0m:0s][10177]           [04359CSkyrim.esm]  ====================================================================
+[168][0m:0s][46]              [04359CSkyrim.esm]  Locating [NPC_ | 04359CSkyrim.esm | EncGoatDomestic]'s NIF file and analyzing the Skin.
+[169][0m:0s][3]               [04359CSkyrim.esm]  ====================================================================
+[170][0m:0s][9]               [04359CSkyrim.esm]    [NPC_ | 04359CSkyrim.esm | EncGoatDomestic]
+[171][0m:0s][49]              [04359CSkyrim.esm]    [ARMA | 06FC48Skyrim.esm | NakedGoatDomesticAA]
+[172][0m:0s][196]                          [BSA]    Nif meshes\ACTORS\GOAT\CHARACTER ASSETS\GOATWITHBELL.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[173][0m:0s][3606]                      [AV_Nif]    Loaded NiTriShapes: Goat (60) linked to texture index 61
+[174][0m:0s][18]                        [AV_Nif]    Loaded NiTriShapes: GoatBell (68) linked to texture index 61
+[175][0m:0s][6]               [04359CSkyrim.esm]    Nif path: ACTORS\GOAT\CHARACTER ASSETS\GOATWITHBELL.NIF
+[176][0m:0s][6]                         [AV_Nif]    Texture index 0: Goat
+[177][0m:0s][4]                         [AV_Nif]      0: textures\actors\goat\Goat_D.dds
+[178][0m:0s][3]                         [AV_Nif]      1: textures\actors\goat\Goat_N.dds
+[179][0m:0s][3]                         [AV_Nif]      2: textures\actors\goat\Goat_SK.dds
+[180][0m:0s][5]                         [AV_Nif]    Texture index 1: GoatBell
+[181][0m:0s][3]                         [AV_Nif]      0: textures\actors\goat\Goat_D.dds
+[182][0m:0s][3]                         [AV_Nif]      1: textures\actors\goat\Goat_N.dds
+[183][0m:0s][3]                         [AV_Nif]      2: textures\actors\goat\Goat_SK.dds
+[184][0m:0s][30336]           [02EBE2Skyrim.esm]  ====================================================================
+[185][0m:0s][34]              [02EBE2Skyrim.esm]  Locating [NPC_ | 02EBE2Skyrim.esm | EncGoatWild]'s NIF file and analyzing the Skin.
+[186][0m:0s][3]               [02EBE2Skyrim.esm]  ====================================================================
+[187][0m:0s][9]               [02EBE2Skyrim.esm]    [NPC_ | 02EBE2Skyrim.esm | EncGoatWild]
+[188][0m:0s][59]              [02EBE2Skyrim.esm]    [ARMA | 06F279Skyrim.esm | NakedGoatAA]
+[189][0m:0s][161]                          [BSA]    Nif meshes\ACTORS\GOAT\CHARACTER ASSETS\GOAT.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[190][0m:0s][3227]                      [AV_Nif]    Loaded NiTriShapes: Goat (60) linked to texture index 61
+[191][0m:0s][9]               [02EBE2Skyrim.esm]    Nif path: ACTORS\GOAT\CHARACTER ASSETS\GOAT.NIF
+[192][0m:0s][5]                         [AV_Nif]    Texture index 0: Goat
+[193][0m:0s][5]                         [AV_Nif]      0: textures\actors\goat\Goat_D.dds
+[194][0m:0s][4]                         [AV_Nif]      1: textures\actors\goat\Goat_N.dds
+[195][0m:0s][3]                         [AV_Nif]      2: textures\actors\goat\Goat_SK.dds
+[196][0m:0s][34458]           [023A90Skyrim.esm]  ====================================================================
+[197][0m:0s][34]              [023A90Skyrim.esm]  Locating [NPC_ | 023A90Skyrim.esm | EncCow]'s NIF file and analyzing the Skin.
+[198][0m:0s][4]               [023A90Skyrim.esm]  ====================================================================
+[199][0m:0s][9]               [023A90Skyrim.esm]    [NPC_ | 023A90Skyrim.esm | EncCow]
+[200][0m:0s][44]              [023A90Skyrim.esm]    [ARMA | 04E783Skyrim.esm | NakedCowAA]
+[201][0m:0s][181]                          [BSA]    Nif meshes\ACTORS\COW\CHARACTER ASSETS\HIGHLANDCOW.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[202][0m:0s][2484]                      [AV_Nif]    Loaded NiTriShapes: highlandcow (48) linked to texture index 49
+[203][0m:0s][24]                        [AV_Nif]    Loaded NiTriShapes: Fur (56) linked to texture index 49
+[204][0m:0s][14]              [023A90Skyrim.esm]    Nif path: ACTORS\COW\CHARACTER ASSETS\HIGHLANDCOW.NIF
+[205][0m:0s][57]                        [AV_Nif]    Texture index 0: highlandcow
+[206][0m:0s][6]                         [AV_Nif]      0: textures\actors\highlandcow\HighlandCow.dds
+[207][0m:0s][4]                         [AV_Nif]      1: textures\actors\highlandcow\HighlandCow_N.dds
+[208][0m:0s][3]                         [AV_Nif]      2: textures\actors\highlandcow\HighlandCow_sk.dds
+[209][0m:0s][5]                         [AV_Nif]    Texture index 1: Fur
+[210][0m:0s][4]                         [AV_Nif]      0: textures\actors\highlandcow\HighlandCow.dds
+[211][0m:0s][3]                         [AV_Nif]      1: textures\actors\highlandcow\HighlandCow_N.dds
+[212][0m:0s][3]                         [AV_Nif]      2: textures\actors\highlandcow\HighlandCow_sk.dds
+[213][0m:0s][31669]           [0C39F1Skyrim.esm]  ====================================================================
+[214][0m:0s][37]              [0C39F1Skyrim.esm]  Locating [NPC_ | 0C39F1Skyrim.esm | EncCowPainted]'s NIF file and analyzing the Skin.
+[215][0m:0s][3]               [0C39F1Skyrim.esm]  ====================================================================
+[216][0m:0s][9]               [0C39F1Skyrim.esm]    [NPC_ | 0C39F1Skyrim.esm | EncCowPainted]
+[217][0m:0s][46]              [0C39F1Skyrim.esm]    [ARMA | 0C39EFSkyrim.esm | NakedCowPaintedAA]
+[218][0m:0s][86]                      [SplitVar]    Record warrents split due to alt textures in ARMA.
+[219][0m:0s][138]                          [BSA]    Nif meshes\ACTORS\COW\CHARACTER ASSETS\HIGHLANDCOW.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[220][0m:0s][2693]                      [AV_Nif]    Loaded NiTriShapes: highlandcow (48) linked to texture index 49
+[221][0m:0s][12]                        [AV_Nif]    Loaded NiTriShapes: Fur (56) linked to texture index 49
+[222][0m:0s][5]                     [AV_FileVar]    Nif path: ACTORS\COW\CHARACTER ASSETS\HIGHLANDCOW.NIF
+[223][0m:0s][6]                         [AV_Nif]    Texture index 0: highlandcow
+[224][0m:0s][4]                         [AV_Nif]      0: textures\actors\highlandcow\HighlandCow.dds
+[225][0m:0s][4]                         [AV_Nif]      1: textures\actors\highlandcow\HighlandCow_N.dds
+[226][0m:0s][3]                         [AV_Nif]      2: textures\actors\highlandcow\HighlandCow_sk.dds
+[227][0m:0s][4]                         [AV_Nif]    Texture index 1: Fur
+[228][0m:0s][3]                         [AV_Nif]      0: textures\actors\highlandcow\HighlandCow.dds
+[229][0m:0s][943]                       [AV_Nif]      1: textures\actors\highlandcow\HighlandCow_N.dds
+[230][0m:0s][7]                         [AV_Nif]      2: textures\actors\highlandcow\HighlandCow_sk.dds
+[231][0m:0s][29]                    [AV_FileVar]    Alt Texture index 1 texture map[0] replaced from textures\actors\highlandcow\HighlandCow.dds to textures\Actors\HighlandCow\HighlandCowpaint.dds
+[232][0m:0s][8]                     [AV_FileVar]    Alt Texture index 1 texture map[1] replaced from textures\actors\highlandcow\HighlandCow_N.dds to textures\Actors\HighlandCow\HighlandCowpaint_n.dds
+[233][0m:0s][29976]           [023AB1Skyrim.esm]  ====================================================================
+[234][0m:0s][97]              [023AB1Skyrim.esm]  Locating [NPC_ | 023AB1Skyrim.esm | EncHorker]'s NIF file and analyzing the Skin.
+[235][0m:0s][4]               [023AB1Skyrim.esm]  ====================================================================
+[236][0m:0s][10]              [023AB1Skyrim.esm]    [NPC_ | 023AB1Skyrim.esm | EncHorker]
+[237][0m:0s][14]              [023AB1Skyrim.esm]    [RACE | 0131FCSkyrim.esm | HorkerRace]
+[238][0m:0s][10]              [023AB1Skyrim.esm]    [ARMO | 08CA6ASkyrim.esm | SkinHorker]
+[239][0m:0s][37]              [023AB1Skyrim.esm]    [ARMA | 08CA6CSkyrim.esm | NakedHorkerAA]
+[240][0m:0s][161]                          [BSA]    Nif meshes\ACTORS\HORKER\CHARACTER ASSETS\HORKER.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[241][0m:0s][1591]                      [AV_Nif]    Loaded NiTriShapes: Horker:0 (39) linked to texture index 40
+[242][0m:0s][10]                        [AV_Nif]    Loaded NiTriShapes: Horker:1 (46) linked to texture index 47
+[243][0m:0s][5]               [023AB1Skyrim.esm]    Nif path: ACTORS\HORKER\CHARACTER ASSETS\HORKER.NIF
+[244][0m:0s][5]                         [AV_Nif]    Texture index 0: Horker:0
+[245][0m:0s][4]                         [AV_Nif]      0: textures\actors\horker\Horker.dds
+[246][0m:0s][4]                         [AV_Nif]      1: textures\actors\horker\Horker_n.dds
+[247][0m:0s][5]                         [AV_Nif]    Texture index 1: Horker:1
+[248][0m:0s][3]                         [AV_Nif]      0: textures\actors\horker\HorkerWhiskers.dds
+[249][0m:0s][3]                         [AV_Nif]      1: textures\actors\horker\HorkerWhiskers_n.dds
+[250][0m:0s][4]                         [AV_Nif]      2: textures\actors\horker\HorkerWhiskersTranslucent.dds
+[251][0m:0s][70799]           [068D6BSkyrim.esm]  ====================================================================
+[252][0m:0s][35]              [068D6BSkyrim.esm]  Locating [NPC_ | 068D6BSkyrim.esm | EncHorseBlackAndWhite]'s NIF file and analyzing the Skin.
+[253][0m:0s][3]               [068D6BSkyrim.esm]  ====================================================================
+[254][0m:0s][9]               [068D6BSkyrim.esm]    [NPC_ | 068D6BSkyrim.esm | EncHorseBlackAndWhite]
+[255][0m:0s][60]              [068D6BSkyrim.esm]    [ARMA | 08650CSkyrim.esm | NakedHorseBlacknWhiteAA]
+[256][0m:0s][10]                      [SplitVar]    Record warrents split due to alt textures in ARMA.
+[257][0m:0s][158]                          [BSA]    Nif meshes\ACTORS\HORSE\CHARACTER ASSETS\HORSE.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[258][0m:0s][5456]                      [AV_Nif]    Loaded NiTriShapes: horse:0 (55) linked to texture index 56
+[259][0m:0s][16]                        [AV_Nif]    Loaded NiTriShapes: horse:1 (62) linked to texture index 63
+[260][0m:0s][7]                         [AV_Nif]    Loaded NiTriShapes: horse:2 (70) linked to texture index 71
+[261][0m:0s][6]                         [AV_Nif]    Loaded NiTriShapes: horse:3 (78) linked to texture index 79
+[262][0m:0s][5]                     [AV_FileVar]    Nif path: ACTORS\HORSE\CHARACTER ASSETS\HORSE.NIF
+[263][0m:0s][5]                         [AV_Nif]    Texture index 0: horse:0
+[264][0m:0s][4]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[265][0m:0s][3]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[266][0m:0s][3]                         [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[267][0m:0s][5]                         [AV_Nif]    Texture index 1: horse:1
+[268][0m:0s][3]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[269][0m:0s][3]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[270][0m:0s][3]                         [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[271][0m:0s][4]                         [AV_Nif]    Texture index 2: horse:2
+[272][0m:0s][4]                         [AV_Nif]      0: textures\actors\horse\HorseManeTail.dds
+[273][0m:0s][4]                         [AV_Nif]      1: textures\actors\horse\HorseManeTail_n.dds
+[274][0m:0s][5]                         [AV_Nif]    Texture index 3: horse:3
+[275][0m:0s][3]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[276][0m:0s][3]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[277][0m:0s][4]                         [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[278][0m:0s][3]                         [AV_Nif]      3: textures\cubemaps\EyeCubeMap.dds
+[279][0m:0s][29]                    [AV_FileVar]    Alt Texture index 3 texture map[0] replaced from textures\actors\horse\Horse01.dds to textures\Actors\Horse\Horse04.dds
+[280][0m:0s][15]                    [AV_FileVar]    Alt Texture index 3 texture map[4] removed.  Was: textures\cubemaps\EyeCubeMap.dds
+[281][0m:0s][6]                     [AV_FileVar]    Alt Texture index 3 texture map[5] replaced from  to textures\Cubemaps\EyeCubeMap.dds
+[282][0m:0s][10]                    [AV_FileVar]    Alt Texture index 2 texture map[0] replaced from textures\actors\horse\HorseManeTail.dds to textures\Actors\Horse\HorseManeTail02.dds
+[283][0m:0s][18]                    [AV_FileVar]    Alt Texture index 1 texture map[0] replaced from textures\actors\horse\Horse01.dds to textures\Actors\Horse\Horse05.dds
+[284][0m:0s][20]                    [AV_FileVar]    Alt Texture index 0 texture map[0] replaced from textures\actors\horse\Horse01.dds to textures\Actors\Horse\Horse05.dds
+[285][0m:0s][55606]           [068D6DSkyrim.esm]  ====================================================================
+[286][0m:0s][36]              [068D6DSkyrim.esm]  Locating [NPC_ | 068D6DSkyrim.esm | EncHorseGrey]'s NIF file and analyzing the Skin.
+[287][0m:0s][3]               [068D6DSkyrim.esm]  ====================================================================
+[288][0m:0s][10]              [068D6DSkyrim.esm]    [NPC_ | 068D6DSkyrim.esm | EncHorseGrey]
+[289][0m:0s][63]              [068D6DSkyrim.esm]    [ARMA | 08650ASkyrim.esm | NakedHorseGreyAA]
+[290][0m:0s][10]                      [SplitVar]    Record warrents split due to alt textures in ARMA.
+[291][0m:0s][153]                          [BSA]    Nif meshes\ACTORS\HORSE\CHARACTER ASSETS\HORSE.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[292][0m:0s][3730]                      [AV_Nif]    Loaded NiTriShapes: horse:0 (55) linked to texture index 56
+[293][0m:0s][15]                        [AV_Nif]    Loaded NiTriShapes: horse:1 (62) linked to texture index 63
+[294][0m:0s][7]                         [AV_Nif]    Loaded NiTriShapes: horse:2 (70) linked to texture index 71
+[295][0m:0s][6]                         [AV_Nif]    Loaded NiTriShapes: horse:3 (78) linked to texture index 79
+[296][0m:0s][5]                     [AV_FileVar]    Nif path: ACTORS\HORSE\CHARACTER ASSETS\HORSE.NIF
+[297][0m:0s][5]                         [AV_Nif]    Texture index 0: horse:0
+[298][0m:0s][4]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[299][0m:0s][4]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[300][0m:0s][3]                         [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[301][0m:0s][4]                         [AV_Nif]    Texture index 1: horse:1
+[302][0m:0s][4]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[303][0m:0s][4]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[304][0m:0s][3]                         [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[305][0m:0s][4]                         [AV_Nif]    Texture index 2: horse:2
+[306][0m:0s][4]                         [AV_Nif]      0: textures\actors\horse\HorseManeTail.dds
+[307][0m:0s][4]                         [AV_Nif]      1: textures\actors\horse\HorseManeTail_n.dds
+[308][0m:0s][4]                         [AV_Nif]    Texture index 3: horse:3
+[309][0m:0s][4]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[310][0m:0s][4]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[311][0m:0s][237]                       [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[312][0m:0s][6]                         [AV_Nif]      3: textures\cubemaps\EyeCubeMap.dds
+[313][0m:0s][34]                    [AV_FileVar]    Alt Texture index 3 texture map[0] replaced from textures\actors\horse\Horse01.dds to textures\Actors\Horse\Horse04.dds
+[314][0m:0s][16]                    [AV_FileVar]    Alt Texture index 3 texture map[4] removed.  Was: textures\cubemaps\EyeCubeMap.dds
+[315][0m:0s][6]                     [AV_FileVar]    Alt Texture index 3 texture map[5] replaced from  to textures\Cubemaps\EyeCubeMap.dds
+[316][0m:0s][14]                    [AV_FileVar]    Alt Texture index 1 texture map[0] replaced from textures\actors\horse\Horse01.dds to textures\Actors\Horse\Horse03.dds
+[317][0m:0s][20]                    [AV_FileVar]    Alt Texture index 0 texture map[0] replaced from textures\actors\horse\Horse01.dds to textures\Actors\Horse\Horse03.dds
+[318][0m:1s][58959]           [068D07Skyrim.esm]  ====================================================================
+[319][0m:1s][40]              [068D07Skyrim.esm]  Locating [NPC_ | 068D07Skyrim.esm | EncHorseBlack]'s NIF file and analyzing the Skin.
+[320][0m:1s][3]               [068D07Skyrim.esm]  ====================================================================
+[321][0m:1s][9]               [068D07Skyrim.esm]    [NPC_ | 068D07Skyrim.esm | EncHorseBlack]
+[322][0m:1s][65]              [068D07Skyrim.esm]    [ARMA | 08650BSkyrim.esm | NakedHorseBlackAA]
+[323][0m:1s][11]                      [SplitVar]    Record warrents split due to alt textures in ARMA.
+[324][0m:1s][156]                          [BSA]    Nif meshes\ACTORS\HORSE\CHARACTER ASSETS\HORSE.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[325][0m:1s][3775]                      [AV_Nif]    Loaded NiTriShapes: horse:0 (55) linked to texture index 56
+[326][0m:1s][11]                        [AV_Nif]    Loaded NiTriShapes: horse:1 (62) linked to texture index 63
+[327][0m:1s][7]                         [AV_Nif]    Loaded NiTriShapes: horse:2 (70) linked to texture index 71
+[328][0m:1s][6]                         [AV_Nif]    Loaded NiTriShapes: horse:3 (78) linked to texture index 79
+[329][0m:1s][5]                     [AV_FileVar]    Nif path: ACTORS\HORSE\CHARACTER ASSETS\HORSE.NIF
+[330][0m:1s][5]                         [AV_Nif]    Texture index 0: horse:0
+[331][0m:1s][4]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[332][0m:1s][3]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[333][0m:1s][8]                         [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[334][0m:1s][5]                         [AV_Nif]    Texture index 1: horse:1
+[335][0m:1s][4]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[336][0m:1s][3]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[337][0m:1s][4]                         [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[338][0m:1s][4]                         [AV_Nif]    Texture index 2: horse:2
+[339][0m:1s][3]                         [AV_Nif]      0: textures\actors\horse\HorseManeTail.dds
+[340][0m:1s][3]                         [AV_Nif]      1: textures\actors\horse\HorseManeTail_n.dds
+[341][0m:1s][4]                         [AV_Nif]    Texture index 3: horse:3
+[342][0m:1s][4]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[343][0m:1s][3]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[344][0m:1s][3]                         [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[345][0m:1s][3]                         [AV_Nif]      3: textures\cubemaps\EyeCubeMap.dds
+[346][0m:1s][24]                    [AV_FileVar]    Alt Texture index 3 texture map[0] replaced from textures\actors\horse\Horse01.dds to textures\Actors\Horse\Horse04.dds
+[347][0m:1s][16]                    [AV_FileVar]    Alt Texture index 3 texture map[4] removed.  Was: textures\cubemaps\EyeCubeMap.dds
+[348][0m:1s][5]                     [AV_FileVar]    Alt Texture index 3 texture map[5] replaced from  to textures\Cubemaps\EyeCubeMap.dds
+[349][0m:1s][13]                    [AV_FileVar]    Alt Texture index 1 texture map[0] replaced from textures\actors\horse\Horse01.dds to textures\Actors\Horse\Horse04.dds
+[350][0m:1s][21]                    [AV_FileVar]    Alt Texture index 0 texture map[0] replaced from textures\actors\horse\Horse01.dds to textures\Actors\Horse\Horse04.dds
+[351][0m:1s][58940]           [068D6ESkyrim.esm]  ====================================================================
+[352][0m:1s][55]              [068D6ESkyrim.esm]  Locating [NPC_ | 068D6ESkyrim.esm | EncHorsePalomino]'s NIF file and analyzing the Skin.
+[353][0m:1s][4]               [068D6ESkyrim.esm]  ====================================================================
+[354][0m:1s][10]              [068D6ESkyrim.esm]    [NPC_ | 068D6ESkyrim.esm | EncHorsePalomino]
+[355][0m:1s][81]              [068D6ESkyrim.esm]    [ARMA | 086509Skyrim.esm | NakedHorsePalominoAA]
+[356][0m:1s][13]                      [SplitVar]    Record warrents split due to alt textures in ARMA.
+[357][0m:1s][205]                          [BSA]    Nif meshes\ACTORS\HORSE\CHARACTER ASSETS\HORSE.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[358][0m:1s][7937]                      [AV_Nif]    Loaded NiTriShapes: horse:0 (55) linked to texture index 56
+[359][0m:1s][41]                        [AV_Nif]    Loaded NiTriShapes: horse:1 (62) linked to texture index 63
+[360][0m:1s][8]                         [AV_Nif]    Loaded NiTriShapes: horse:2 (70) linked to texture index 71
+[361][0m:1s][7]                         [AV_Nif]    Loaded NiTriShapes: horse:3 (78) linked to texture index 79
+[362][0m:1s][5]                     [AV_FileVar]    Nif path: ACTORS\HORSE\CHARACTER ASSETS\HORSE.NIF
+[363][0m:1s][5]                         [AV_Nif]    Texture index 0: horse:0
+[364][0m:1s][4]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[365][0m:1s][4]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[366][0m:1s][3]                         [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[367][0m:1s][4]                         [AV_Nif]    Texture index 1: horse:1
+[368][0m:1s][4]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[369][0m:1s][3]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[370][0m:1s][3]                         [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[371][0m:1s][4]                         [AV_Nif]    Texture index 2: horse:2
+[372][0m:1s][3]                         [AV_Nif]      0: textures\actors\horse\HorseManeTail.dds
+[373][0m:1s][4]                         [AV_Nif]      1: textures\actors\horse\HorseManeTail_n.dds
+[374][0m:1s][5]                         [AV_Nif]    Texture index 3: horse:3
+[375][0m:1s][3]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[376][0m:1s][3]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[377][0m:1s][3]                         [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[378][0m:1s][4]                         [AV_Nif]      3: textures\cubemaps\EyeCubeMap.dds
+[379][0m:1s][37]                    [AV_FileVar]    Alt Texture index 3 texture map[0] replaced from textures\actors\horse\Horse01.dds to textures\Actors\Horse\Horse04.dds
+[380][0m:1s][17]                    [AV_FileVar]    Alt Texture index 3 texture map[4] removed.  Was: textures\cubemaps\EyeCubeMap.dds
+[381][0m:1s][5]                     [AV_FileVar]    Alt Texture index 3 texture map[5] replaced from  to textures\Cubemaps\EyeCubeMap.dds
+[382][0m:1s][11]                    [AV_FileVar]    Alt Texture index 2 texture map[0] replaced from textures\actors\horse\HorseManeTail.dds to textures\Actors\Horse\HorseManeTail02.dds
+[383][0m:1s][18]                    [AV_FileVar]    Alt Texture index 1 texture map[0] replaced from textures\actors\horse\Horse01.dds to textures\Actors\Horse\Horse02.dds
+[384][0m:1s][2903]                  [AV_FileVar]    Alt Texture index 0 texture map[0] replaced from textures\actors\horse\Horse01.dds to textures\Actors\Horse\Horse02.dds
+[385][0m:1s][79829]           [068D5BSkyrim.esm]  ====================================================================
+[386][0m:1s][39]              [068D5BSkyrim.esm]  Locating [NPC_ | 068D5BSkyrim.esm | EncHorseBrown]'s NIF file and analyzing the Skin.
+[387][0m:1s][3]               [068D5BSkyrim.esm]  ====================================================================
+[388][0m:1s][8]               [068D5BSkyrim.esm]    [NPC_ | 068D5BSkyrim.esm | EncHorseBrown]
+[389][0m:1s][60]              [068D5BSkyrim.esm]    [ARMA | 036EA7Skyrim.esm | NakedHorseAA]
+[390][0m:1s][228]                          [BSA]    Nif meshes\ACTORS\HORSE\CHARACTER ASSETS\HORSE.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[391][0m:1s][4065]                      [AV_Nif]    Loaded NiTriShapes: horse:0 (55) linked to texture index 56
+[392][0m:1s][13]                        [AV_Nif]    Loaded NiTriShapes: horse:1 (62) linked to texture index 63
+[393][0m:1s][7]                         [AV_Nif]    Loaded NiTriShapes: horse:2 (70) linked to texture index 71
+[394][0m:1s][7]                         [AV_Nif]    Loaded NiTriShapes: horse:3 (78) linked to texture index 79
+[395][0m:1s][6]               [068D5BSkyrim.esm]    Nif path: ACTORS\HORSE\CHARACTER ASSETS\HORSE.NIF
+[396][0m:1s][8]                         [AV_Nif]    Texture index 0: horse:0
+[397][0m:1s][6]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[398][0m:1s][4]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[399][0m:1s][5]                         [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[400][0m:1s][5]                         [AV_Nif]    Texture index 1: horse:1
+[401][0m:1s][5]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[402][0m:1s][5]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[403][0m:1s][4]                         [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[404][0m:1s][7]                         [AV_Nif]    Texture index 2: horse:2
+[405][0m:1s][5]                         [AV_Nif]      0: textures\actors\horse\HorseManeTail.dds
+[406][0m:1s][6]                         [AV_Nif]      1: textures\actors\horse\HorseManeTail_n.dds
+[407][0m:1s][6]                         [AV_Nif]    Texture index 3: horse:3
+[408][0m:1s][6]                         [AV_Nif]      0: textures\actors\horse\Horse01.dds
+[409][0m:1s][6]                         [AV_Nif]      1: textures\actors\horse\Horse01_n.dds
+[410][0m:1s][6]                         [AV_Nif]      2: textures\actors\horse\Horse01_sk.dds
+[411][0m:1s][5]                         [AV_Nif]      3: textures\cubemaps\EyeCubeMap.dds
+[412][0m:1s][62982]           [023AB4Skyrim.esm]  ====================================================================
+[413][0m:1s][33]              [023AB4Skyrim.esm]  Locating [NPC_ | 023AB4Skyrim.esm | EncMammothWild]'s NIF file and analyzing the Skin.
+[414][0m:1s][3]               [023AB4Skyrim.esm]  ====================================================================
+[415][0m:1s][9]               [023AB4Skyrim.esm]    [NPC_ | 023AB4Skyrim.esm | EncMammothWild]
+[416][0m:1s][44]              [023AB4Skyrim.esm]    [ARMA | 059251Skyrim.esm | NakedMammothWildAA]
+[417][0m:1s][163]                          [BSA]    Nif meshes\ACTORS\MAMMOTH\CHARACTER ASSETS\MAMMOTHWILD.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[418][0m:1s][2887]                      [AV_Nif]    Loaded NiTriShapes: MammothWild:0 (53) linked to texture index 54
+[419][0m:1s][12]                        [AV_Nif]    Loaded NiTriShapes: MammothWild:1 (61) linked to texture index 62
+[420][0m:1s][5]               [023AB4Skyrim.esm]    Nif path: ACTORS\MAMMOTH\CHARACTER ASSETS\MAMMOTHWILD.NIF
+[421][0m:1s][5]                         [AV_Nif]    Texture index 0: MammothWild:0
+[422][0m:1s][4]                         [AV_Nif]      0: textures\actors\mammoth\Mammoth.dds
+[423][0m:1s][4]                         [AV_Nif]      1: textures\actors\mammoth\Mammoth_n.dds
+[424][0m:1s][4]                         [AV_Nif]      2: textures\actors\mammoth\Mammoth_SK.dds
+[425][0m:1s][4]                         [AV_Nif]    Texture index 1: MammothWild:1
+[426][0m:1s][3]                         [AV_Nif]      0: textures\actors\mammoth\Mammoth.dds
+[427][0m:1s][4]                         [AV_Nif]      1: textures\actors\mammoth\Mammoth_n.dds
+[428][0m:1s][3]                         [AV_Nif]      2: textures\actors\mammoth\Mammoth_SK.dds
+[429][0m:1s][23550]           [0DD641Skyrim.esm]  ====================================================================
+[430][0m:1s][40]              [0DD641Skyrim.esm]  Locating [NPC_ | 0DD641Skyrim.esm | EncMammothTamed]'s NIF file and analyzing the Skin.
+[431][0m:1s][4]               [0DD641Skyrim.esm]  ====================================================================
+[432][0m:1s][9]               [0DD641Skyrim.esm]    [NPC_ | 0DD641Skyrim.esm | EncMammothTamed]
+[433][0m:1s][44]              [0DD641Skyrim.esm]    [ARMA | 059252Skyrim.esm | NakedMammothBrandedAA]
+[434][0m:1s][176]                          [BSA]    Nif meshes\ACTORS\MAMMOTH\CHARACTER ASSETS\MAMMOTHBRANDED.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[435][0m:1s][3639]                      [AV_Nif]    Loaded NiTriShapes: MammothBranded:0 (53) linked to texture index 54
+[436][0m:1s][21]                        [AV_Nif]    Loaded NiTriShapes: MammothBranded:1 (61) linked to texture index 62
+[437][0m:1s][7]                         [AV_Nif]    Loaded NiTriShapes: MammothBranded:2 (69) linked to texture index 70
+[438][0m:1s][6]               [0DD641Skyrim.esm]    Nif path: ACTORS\MAMMOTH\CHARACTER ASSETS\MAMMOTHBRANDED.NIF
+[439][0m:1s][6]                         [AV_Nif]    Texture index 0: MammothBranded:0
+[440][0m:1s][4]                         [AV_Nif]      0: textures\actors\mammoth\Mammoth.dds
+[441][0m:1s][4]                         [AV_Nif]      1: textures\actors\mammoth\Mammoth_n.dds
+[442][0m:1s][4]                         [AV_Nif]      2: textures\actors\mammoth\Mammoth_SK.dds
+[443][0m:1s][4]                         [AV_Nif]    Texture index 1: MammothBranded:1
+[444][0m:1s][3]                         [AV_Nif]      0: textures\actors\mammoth\Mammoth.dds
+[445][0m:1s][4]                         [AV_Nif]      1: textures\actors\mammoth\Mammoth_n.dds
+[446][0m:1s][4]                         [AV_Nif]      2: textures\actors\mammoth\Mammoth_SK.dds
+[447][0m:1s][4]                         [AV_Nif]    Texture index 2: MammothBranded:2
+[448][0m:1s][4]                         [AV_Nif]      0: textures\actors\mammoth\Mammoth.dds
+[449][0m:1s][3]                         [AV_Nif]      1: textures\actors\mammoth\Mammoth_n.dds
+[450][0m:1s][4]                         [AV_Nif]      2: textures\actors\mammoth\Mammoth_SK.dds
+[451][0m:1s][24034]           [0E4011Skyrim.esm]  ====================================================================
+[452][0m:1s][35]              [0E4011Skyrim.esm]  Locating [NPC_ | 0E4011Skyrim.esm | EncMudcrabLarge]'s NIF file and analyzing the Skin.
+[453][0m:1s][4]               [0E4011Skyrim.esm]  ====================================================================
+[454][0m:1s][9]               [0E4011Skyrim.esm]    [NPC_ | 0E4011Skyrim.esm | EncMudcrabLarge]
+[455][0m:1s][43]              [0E4011Skyrim.esm]    [ARMA | 0E40B9Skyrim.esm | NakedMudcrabLarge1AA]
+[456][0m:1s][161]                          [BSA]    Nif meshes\ACTORS\MUDCRAB\CHARACTER ASSETS\MCRAB3.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[457][0m:1s][2746]                      [AV_Nif]    Loaded NiTriShapes: Crab3 (45) linked to texture index 46
+[458][0m:1s][9]               [0E4011Skyrim.esm]    Nif path: ACTORS\MUDCRAB\CHARACTER ASSETS\MCRAB3.NIF
+[459][0m:1s][5]                         [AV_Nif]    Texture index 0: Crab3
+[460][0m:1s][5]                         [AV_Nif]      0: textures\actors\mudcrab\Mudcrab.dds
+[461][0m:1s][1063]                      [AV_Nif]      1: textures\actors\mudcrab\Mudcrab_n.dds
+[462][0m:1s][13]                        [AV_Nif]      2: textures\cubemaps\Ore_Obsidian_e.dds
+[463][0m:1s][4]                         [AV_Nif]      3: textures\actors\mudcrab\Mudcrab_m.dds
+[464][0m:1s][18042]           [0E4010Skyrim.esm]  ====================================================================
+[465][0m:1s][34]              [0E4010Skyrim.esm]  Locating [NPC_ | 0E4010Skyrim.esm | EncMudcrabMedium]'s NIF file and analyzing the Skin.
+[466][0m:1s][3]               [0E4010Skyrim.esm]  ====================================================================
+[467][0m:1s][8]               [0E4010Skyrim.esm]    [NPC_ | 0E4010Skyrim.esm | EncMudcrabMedium]
+[468][0m:1s][45]              [0E4010Skyrim.esm]    [ARMA | 0E40B8Skyrim.esm | NakedMudcrabMedium1AA]
+[469][0m:1s][159]                          [BSA]    Nif meshes\ACTORS\MUDCRAB\CHARACTER ASSETS\MCRAB2.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[470][0m:1s][2910]                      [AV_Nif]    Loaded NiTriShapes: Crab2 (45) linked to texture index 46
+[471][0m:1s][8]               [0E4010Skyrim.esm]    Nif path: ACTORS\MUDCRAB\CHARACTER ASSETS\MCRAB2.NIF
+[472][0m:1s][5]                         [AV_Nif]    Texture index 0: Crab2
+[473][0m:1s][4]                         [AV_Nif]      0: textures\actors\mudcrab\Mudcrab.dds
+[474][0m:1s][4]                         [AV_Nif]      1: textures\actors\mudcrab\Mudcrab_n.dds
+[475][0m:1s][4]                         [AV_Nif]      2: textures\cubemaps\Ore_Obsidian_e.dds
+[476][0m:1s][3]                         [AV_Nif]      3: textures\actors\mudcrab\Mudcrab_m.dds
+[477][0m:1s][23126]                 [AV_FileVar]  Skipping AV Packages\Bellyaches Animals\Rabbit because it was empty or missing a spec file.
+[478][0m:1s][296]             [023AB5Skyrim.esm]  ====================================================================
+[479][0m:1s][60]              [023AB5Skyrim.esm]  Locating [NPC_ | 023AB5Skyrim.esm | EncSabreCat]'s NIF file and analyzing the Skin.
+[480][0m:1s][4]               [023AB5Skyrim.esm]  ====================================================================
+[481][0m:1s][9]               [023AB5Skyrim.esm]    [NPC_ | 023AB5Skyrim.esm | EncSabreCat]
+[482][0m:1s][12]              [023AB5Skyrim.esm]    [RACE | 013200Skyrim.esm | SabreCatRace]
+[483][0m:1s][9]               [023AB5Skyrim.esm]    [ARMO | 016EE6Skyrim.esm | SkinSabrecat]
+[484][0m:1s][40]              [023AB5Skyrim.esm]    [ARMA | 018193Skyrim.esm | NakedSabreCatAA]
+[485][0m:1s][228]                          [BSA]    Nif meshes\ACTORS\SABRECAT\CHARACTER ASSETS\SABRECAT.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[486][0m:1s][5096]                      [AV_Nif]    Loaded NiTriShapes: SabreCat_LeftEye (69) linked to texture index 70
+[487][0m:1s][18]                        [AV_Nif]    Loaded NiTriShapes: SabreCat_RightEye (77) linked to texture index 70
+[488][0m:1s][7]                         [AV_Nif]    Loaded NiTriShapes: SabreCat (84) linked to texture index 70
+[489][0m:1s][6]                         [AV_Nif]    Loaded NiTriShapes: SabrecatMane (91) linked to texture index 70
+[490][0m:1s][5]               [023AB5Skyrim.esm]    Nif path: ACTORS\SABRECAT\CHARACTER ASSETS\SABRECAT.NIF
+[491][0m:1s][6]                         [AV_Nif]    Texture index 0: SabreCat_LeftEye
+[492][0m:1s][5]                         [AV_Nif]      0: textures\actors\sabrecat\Sabrecat.dds
+[493][0m:1s][4]                         [AV_Nif]      1: textures\actors\sabrecat\Sabrecat_n.dds
+[494][0m:1s][4]                         [AV_Nif]      2: textures\actors\sabrecat\Sabrecat_sk.dds
+[495][0m:1s][5]                         [AV_Nif]    Texture index 1: SabreCat_RightEye
+[496][0m:1s][4]                         [AV_Nif]      0: textures\actors\sabrecat\Sabrecat.dds
+[497][0m:1s][4]                         [AV_Nif]      1: textures\actors\sabrecat\Sabrecat_n.dds
+[498][0m:1s][3]                         [AV_Nif]      2: textures\actors\sabrecat\Sabrecat_sk.dds
+[499][0m:1s][4]                         [AV_Nif]    Texture index 2: SabreCat
+[500][0m:1s][4]                         [AV_Nif]      0: textures\actors\sabrecat\Sabrecat.dds
+[501][0m:1s][3]                         [AV_Nif]      1: textures\actors\sabrecat\Sabrecat_n.dds
+[502][0m:1s][3]                         [AV_Nif]      2: textures\actors\sabrecat\Sabrecat_sk.dds
+[503][0m:1s][4]                         [AV_Nif]    Texture index 3: SabrecatMane
+[504][0m:1s][3]                         [AV_Nif]      0: textures\actors\sabrecat\Sabrecat.dds
+[505][0m:1s][3]                         [AV_Nif]      1: textures\actors\sabrecat\Sabrecat_n.dds
+[506][0m:1s][3]                         [AV_Nif]      2: textures\actors\sabrecat\Sabrecat_sk.dds
+[507][0m:1s][13256]           [023AB6Skyrim.esm]  ====================================================================
+[508][0m:1s][40]              [023AB6Skyrim.esm]  Locating [NPC_ | 023AB6Skyrim.esm | EncSabreCatSnow]'s NIF file and analyzing the Skin.
+[509][0m:1s][3]               [023AB6Skyrim.esm]  ====================================================================
+[510][0m:1s][9]               [023AB6Skyrim.esm]    [NPC_ | 023AB6Skyrim.esm | EncSabreCatSnow]
+[511][0m:1s][74]              [023AB6Skyrim.esm]    [ARMA | 020BFBSkyrim.esm | NakedSabreCatSnowyAA]
+[512][0m:1s][170]                          [BSA]    Nif meshes\ACTORS\SABRECAT\CHARACTER ASSETS\SABRECATSNOW.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[513][0m:1s][3752]                      [AV_Nif]    Loaded NiTriShapes: SabreCat_LeftEye (69) linked to texture index 70
+[514][0m:1s][13]                        [AV_Nif]    Loaded NiTriShapes: SabreCat_RightEye (77) linked to texture index 70
+[515][0m:1s][9]                         [AV_Nif]    Loaded NiTriShapes: SabreCat (84) linked to texture index 70
+[516][0m:1s][6]                         [AV_Nif]    Loaded NiTriShapes: SabrecatMane (91) linked to texture index 70
+[517][0m:1s][5]               [023AB6Skyrim.esm]    Nif path: ACTORS\SABRECAT\CHARACTER ASSETS\SABRECATSNOW.NIF
+[518][0m:1s][5]                         [AV_Nif]    Texture index 0: SabreCat_LeftEye
+[519][0m:1s][4]                         [AV_Nif]      0: textures\actors\sabrecat\SabrecatSnow.dds
+[520][0m:1s][4]                         [AV_Nif]      1: textures\actors\sabrecat\Sabrecat_n.dds
+[521][0m:1s][3]                         [AV_Nif]      2: textures\actors\sabrecat\Sabrecat_sk.dds
+[522][0m:1s][5]                         [AV_Nif]    Texture index 1: SabreCat_RightEye
+[523][0m:1s][4]                         [AV_Nif]      0: textures\actors\sabrecat\SabrecatSnow.dds
+[524][0m:1s][3]                         [AV_Nif]      1: textures\actors\sabrecat\Sabrecat_n.dds
+[525][0m:1s][3]                         [AV_Nif]      2: textures\actors\sabrecat\Sabrecat_sk.dds
+[526][0m:1s][4]                         [AV_Nif]    Texture index 2: SabreCat
+[527][0m:1s][4]                         [AV_Nif]      0: textures\actors\sabrecat\SabrecatSnow.dds
+[528][0m:1s][3]                         [AV_Nif]      1: textures\actors\sabrecat\Sabrecat_n.dds
+[529][0m:1s][4]                         [AV_Nif]      2: textures\actors\sabrecat\Sabrecat_sk.dds
+[530][0m:1s][4]                         [AV_Nif]    Texture index 3: SabrecatMane
+[531][0m:1s][4]                         [AV_Nif]      0: textures\actors\sabrecat\SabrecatSnow.dds
+[532][0m:1s][3]                         [AV_Nif]      1: textures\actors\sabrecat\Sabrecat_n.dds
+[533][0m:1s][3]                         [AV_Nif]      2: textures\actors\sabrecat\Sabrecat_sk.dds
+[534][0m:1s][12674]           [023AB7Skyrim.esm]  ====================================================================
+[535][0m:1s][38]              [023AB7Skyrim.esm]  Locating [NPC_ | 023AB7Skyrim.esm | EncSkeever]'s NIF file and analyzing the Skin.
+[536][0m:1s][3]               [023AB7Skyrim.esm]  ====================================================================
+[537][0m:1s][9]               [023AB7Skyrim.esm]    [NPC_ | 023AB7Skyrim.esm | EncSkeever]
+[538][0m:1s][14]              [023AB7Skyrim.esm]    [RACE | 013201Skyrim.esm | SkeeverRace]
+[539][0m:1s][10]              [023AB7Skyrim.esm]    [ARMO | 016EE5Skyrim.esm | SkinSkeever]
+[540][0m:1s][41]              [023AB7Skyrim.esm]    [ARMA | 01F0F8Skyrim.esm | NakedSkeeverAA]
+[541][0m:1s][197]                          [BSA]    Nif meshes\ACTORS\SKEEVER\CHARACTER ASSETS\SKEEVER.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[542][0m:1s][3361]                      [AV_Nif]    Loaded NiTriShapes: SKeeverUVBakeOver:0 (72) linked to texture index 73
+[543][0m:1s][14]                        [AV_Nif]    Loaded NiTriShapes: SKeeverUVBakeOver:1 (79) linked to texture index 80
+[544][0m:1s][5]               [023AB7Skyrim.esm]    Nif path: ACTORS\SKEEVER\CHARACTER ASSETS\SKEEVER.NIF
+[545][0m:1s][6]                         [AV_Nif]    Texture index 0: SKeeverUVBakeOver:0
+[546][0m:1s][4]                         [AV_Nif]      0: textures\actors\skeever\Skeever.dds
+[547][0m:1s][4]                         [AV_Nif]      1: textures\actors\skeever\Skeever_n.dds
+[548][0m:1s][3]                         [AV_Nif]      2: textures\actors\skeever\Skeever_SK.dds
+[549][0m:1s][4]                         [AV_Nif]    Texture index 1: SKeeverUVBakeOver:1
+[550][0m:1s][4]                         [AV_Nif]      0: textures\actors\skeever\Skeever.dds
+[551][0m:1s][3]                         [AV_Nif]      1: textures\actors\skeever\Skeever_n.dds
+[552][0m:1s][4]                         [AV_Nif]      2: textures\actors\skeever\Skeever_SK.dds
+[553][0m:1s][28259]           [0490F2Skyrim.esm]  ====================================================================
+[554][0m:1s][34]              [0490F2Skyrim.esm]  Locating [NPC_ | 0490F2Skyrim.esm | dunHonningbrewMeaderyencSkeever]'s NIF file and analyzing the Skin.
+[555][0m:1s][3]               [0490F2Skyrim.esm]  ====================================================================
+[556][0m:1s][82]              [0490F2Skyrim.esm]    [NPC_ | 0490F2Skyrim.esm | dunHonningbrewMeaderyencSkeever]
+[557][0m:1s][13]              [0490F2Skyrim.esm]    [RACE | 0C3EDFSkyrim.esm | SkeeverWhiteRace]
+[558][0m:1s][9]               [0490F2Skyrim.esm]    [ARMO | 0C3EE0Skyrim.esm | SkinSkeeverWhite]
+[559][0m:1s][37]              [0490F2Skyrim.esm]    [ARMA | 0C3EDESkyrim.esm | NakedSkeeverWhiteAA]
+[560][0m:1s][12]                      [SplitVar]    Record warrents split due to alt textures in ARMA.
+[561][0m:1s][289]                          [BSA]    Nif meshes\ACTORS\SKEEVER\CHARACTER ASSETS\SKEEVER.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[562][0m:1s][3345]                      [AV_Nif]    Loaded NiTriShapes: SKeeverUVBakeOver:0 (72) linked to texture index 73
+[563][0m:1s][12]                        [AV_Nif]    Loaded NiTriShapes: SKeeverUVBakeOver:1 (79) linked to texture index 80
+[564][0m:1s][5]                     [AV_FileVar]    Nif path: ACTORS\SKEEVER\CHARACTER ASSETS\SKEEVER.NIF
+[565][0m:1s][5]                         [AV_Nif]    Texture index 0: SKeeverUVBakeOver:0
+[566][0m:1s][4]                         [AV_Nif]      0: textures\actors\skeever\Skeever.dds
+[567][0m:1s][4]                         [AV_Nif]      1: textures\actors\skeever\Skeever_n.dds
+[568][0m:1s][4]                         [AV_Nif]      2: textures\actors\skeever\Skeever_SK.dds
+[569][0m:1s][4]                         [AV_Nif]    Texture index 1: SKeeverUVBakeOver:1
+[570][0m:1s][4]                         [AV_Nif]      0: textures\actors\skeever\Skeever.dds
+[571][0m:1s][3]                         [AV_Nif]      1: textures\actors\skeever\Skeever_n.dds
+[572][0m:1s][4]                         [AV_Nif]      2: textures\actors\skeever\Skeever_SK.dds
+[573][0m:1s][20]                    [AV_FileVar]    Alt Texture index 0 texture map[0] replaced from textures\actors\skeever\Skeever.dds to textures\Actors\Skeever\SkeeverWhite.dds
+[574][0m:1s][15]                    [AV_FileVar]    Alt Texture index 0 texture map[2] replaced from textures\actors\skeever\Skeever_SK.dds to textures\Actors\Skeever\Skeever_SKWhite.dds
+[575][0m:1s][10]                    [AV_FileVar]    Alt Texture index 1 texture map[0] replaced from textures\actors\skeever\Skeever.dds to textures\Actors\Skeever\SkeeverWhite.dds
+[576][0m:1s][20]                    [AV_FileVar]    Alt Texture index 1 texture map[2] replaced from textures\actors\skeever\Skeever_SK.dds to textures\Actors\Skeever\Skeever_SKWhite.dds
+[577][0m:1s][23545]           [023ABCSkyrim.esm]  ====================================================================
+[578][0m:1s][1067]            [023ABCSkyrim.esm]  Locating [NPC_ | 023ABCSkyrim.esm | EncWerewolf01]'s NIF file and analyzing the Skin.
+[579][0m:1s][11]              [023ABCSkyrim.esm]  ====================================================================
+[580][0m:1s][38]              [023ABCSkyrim.esm]    [NPC_ | 023ABCSkyrim.esm | EncWerewolf01]
+[581][0m:1s][18]              [023ABCSkyrim.esm]    [RACE | 0CDD84Skyrim.esm | WerewolfBeastRace]
+[582][0m:1s][11]              [023ABCSkyrim.esm]    [ARMO | 0CDD86Skyrim.esm | SkinNakedWerewolfBeast]
+[583][0m:1s][45]              [023ABCSkyrim.esm]    [ARMA | 0CDD87Skyrim.esm | NakedTorsoWerewolfBeast]
+[584][0m:1s][199]                          [BSA]    Nif meshes\ACTORS\WEREWOLFBEAST\CHARACTER ASSETS\MALEBODYWEREWOLF_1.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[585][0m:1s][5345]                      [AV_Nif]    Loaded NiTriShapes: WereWolfLow01:0 (75) linked to texture index 76
+[586][0m:1s][12]                        [AV_Nif]    Loaded NiTriShapes: WereWolfLow01:1 (82) linked to texture index 83
+[587][0m:1s][16]                        [AV_Nif]    Loaded NiTriShapes: WereWolfLowHead01 (90) linked to texture index 91
+[588][0m:1s][7]                         [AV_Nif]    Loaded NiTriShapes: WereWolfTeeth (98) linked to texture index 99
+[589][0m:1s][6]                         [AV_Nif]    Loaded NiTriShapes: EyesMaleWerewolfBeast (105) linked to texture index 106
+[590][0m:1s][5]               [023ABCSkyrim.esm]    Nif path: ACTORS\WEREWOLFBEAST\CHARACTER ASSETS\MALEBODYWEREWOLF_1.NIF
+[591][0m:1s][5]                         [AV_Nif]    Texture index 0: WereWolfLow01:0
+[592][0m:1s][5]                         [AV_Nif]      0: textures\actors\character\werewolf\WerewolfBody.dds
+[593][0m:1s][4]                         [AV_Nif]      1: textures\actors\character\werewolf\WereWolfBody_n.dds
+[594][0m:1s][3]                         [AV_Nif]      2: textures\actors\character\werewolf\WerewolfBody_sk.dds
+[595][0m:1s][4]                         [AV_Nif]    Texture index 1: WereWolfLow01:1
+[596][0m:1s][4]                         [AV_Nif]      0: textures\actors\character\werewolf\WerewolfBody.dds
+[597][0m:1s][3]                         [AV_Nif]      1: textures\actors\character\werewolf\WereWolfBody_n.dds
+[598][0m:1s][3]                         [AV_Nif]      2: textures\actors\character\werewolf\WerewolfBody_sk.dds
+[599][0m:1s][4]                         [AV_Nif]    Texture index 2: WereWolfLowHead01
+[600][0m:1s][3]                         [AV_Nif]      0: textures\actors\character\werewolf\WerewolfHead.dds
+[601][0m:1s][4]                         [AV_Nif]      1: textures\actors\character\werewolf\WerewolfHead_n.dds
+[602][0m:1s][3]                         [AV_Nif]      2: textures\actors\character\werewolf\WerewolfHead_sk.dds
+[603][0m:1s][4]                         [AV_Nif]    Texture index 3: WereWolfTeeth
+[604][0m:1s][3]                         [AV_Nif]      0: textures\actors\character\werewolf\MouthWereWolf.dds
+[605][0m:1s][3]                         [AV_Nif]      1: textures\actors\character\werewolf\MouthWereWolf_n.dds
+[606][0m:1s][5]                         [AV_Nif]    Texture index 4: EyesMaleWerewolfBeast
+[607][0m:1s][3]                         [AV_Nif]      0: textures\actors\character\eyes\EyeWerewolfBeastBrown.dds
+[608][0m:1s][4]                         [AV_Nif]      1: textures\actors\character\eyes\EyeWerewolfBeast_n.dds
+[609][0m:1s][4]                         [AV_Nif]      2: textures\actors\character\eyes\EyeBrown_sk.dds
+[610][0m:1s][4]                         [AV_Nif]      3: textures\cubemaps\CatsEye.dds
+[611][0m:1s][3]                         [AV_Nif]      4: textures\actors\character\eyes\EyeWolfEnvironmentMask_M.dds
+[612][0m:1s][29404]           [023ABESkyrim.esm]  ====================================================================
+[613][0m:1s][36]              [023ABESkyrim.esm]  Locating [NPC_ | 023ABESkyrim.esm | EncWolf]'s NIF file and analyzing the Skin.
+[614][0m:1s][3]               [023ABESkyrim.esm]  ====================================================================
+[615][0m:1s][8]               [023ABESkyrim.esm]    [NPC_ | 023ABESkyrim.esm | EncWolf]
+[616][0m:1s][51]              [023ABESkyrim.esm]    [ARMA | 0C02FASkyrim.esm | NakedWolfBlackAA]
+[617][0m:1s][162]                          [BSA]    Nif meshes\ACTORS\CANINE\CHARACTER ASSETS WOLF\WOLFBLACK.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[618][0m:1s][2908]                      [AV_Nif]    Loaded NiTriShapes: WolfBLACK (47) linked to texture index 48
+[619][0m:1s][12]                        [AV_Nif]    Loaded NiTriShapes: BlackFur (55) linked to texture index 48
+[620][0m:1s][5]               [023ABESkyrim.esm]    Nif path: ACTORS\CANINE\CHARACTER ASSETS WOLF\WOLFBLACK.NIF
+[621][0m:1s][5]                         [AV_Nif]    Texture index 0: WolfBLACK
+[622][0m:1s][5]                         [AV_Nif]      0: textures\actors\wolf\WolfBLACK.dds
+[623][0m:1s][4]                         [AV_Nif]      1: textures\actors\wolf\Wolf_n.dds
+[624][0m:1s][4]                         [AV_Nif]      2: textures\actors\wolf\Wolf_sk.dds
+[625][0m:1s][4]                         [AV_Nif]      3: textures\actors\wolf\Wolf_b.dds
+[626][0m:1s][3]                         [AV_Nif]    Texture index 1: BlackFur
+[627][0m:1s][4]                         [AV_Nif]      0: textures\actors\wolf\WolfBLACK.dds
+[628][0m:1s][3]                         [AV_Nif]      1: textures\actors\wolf\Wolf_n.dds
+[629][0m:1s][82]                        [AV_Nif]      2: textures\actors\wolf\Wolf_sk.dds
+[630][0m:1s][5]                         [AV_Nif]      3: textures\actors\wolf\Wolf_b.dds
+[631][0m:1s][64801]           [023ABFSkyrim.esm]  ====================================================================
+[632][0m:1s][34]              [023ABFSkyrim.esm]  Locating [NPC_ | 023ABFSkyrim.esm | EncWolfIce]'s NIF file and analyzing the Skin.
+[633][0m:1s][3]               [023ABFSkyrim.esm]  ====================================================================
+[634][0m:1s][9]               [023ABFSkyrim.esm]    [NPC_ | 023ABFSkyrim.esm | EncWolfIce]
+[635][0m:1s][12]              [023ABFSkyrim.esm]    [RACE | 01320ASkyrim.esm | WolfRace]
+[636][0m:1s][9]               [023ABFSkyrim.esm]    [ARMO | 04E886Skyrim.esm | SkinWolf]
+[637][0m:1s][38]              [023ABFSkyrim.esm]    [ARMA | 04E885Skyrim.esm | NakedWolfAA]
+[638][0m:1s][162]                          [BSA]    Nif meshes\ACTORS\CANINE\CHARACTER ASSETS WOLF\WOLF.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[639][0m:1s][3008]                      [AV_Nif]    Loaded NiTriShapes: WolfREDUCED (47) linked to texture index 48
+[640][0m:1s][10]                        [AV_Nif]    Loaded NiTriShapes: Fur (55) linked to texture index 48
+[641][0m:1s][5]               [023ABFSkyrim.esm]    Nif path: ACTORS\CANINE\CHARACTER ASSETS WOLF\WOLF.NIF
+[642][0m:1s][5]                         [AV_Nif]    Texture index 0: WolfREDUCED
+[643][0m:1s][4]                         [AV_Nif]      0: textures\actors\wolf\Wolf.dds
+[644][0m:1s][4]                         [AV_Nif]      1: textures\actors\wolf\Wolf_n.dds
+[645][0m:1s][3]                         [AV_Nif]      2: textures\actors\wolf\Wolf_sk.dds
+[646][0m:1s][4]                         [AV_Nif]    Texture index 1: Fur
+[647][0m:1s][3]                         [AV_Nif]      0: textures\actors\wolf\Wolf.dds
+[648][0m:1s][3]                         [AV_Nif]      1: textures\actors\wolf\Wolf_n.dds
+[649][0m:1s][3]                         [AV_Nif]      2: textures\actors\wolf\Wolf_sk.dds
+[650][0m:1s][24863]           [0936D1Skyrim.esm]  ====================================================================
+[651][0m:1s][67]              [0936D1Skyrim.esm]  Locating [NPC_ | 0936D1Skyrim.esm | E3demoGiant01]'s NIF file and analyzing the Skin.
+[652][0m:1s][3]               [0936D1Skyrim.esm]  ====================================================================
+[653][0m:1s][10]              [0936D1Skyrim.esm]    [NPC_ | 0936D1Skyrim.esm | E3demoGiant01]
+[654][0m:1s][65]              [0936D1Skyrim.esm]    [ARMA | 048D91Skyrim.esm | NakedGiantBodyAA01]
+[655][0m:1s][191]                          [BSA]    Nif meshes\ACTORS\GIANT\CHARACTER ASSETS\GIANT01.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[656][0m:1s][5535]                      [AV_Nif]    Loaded NiTriShapes: giant_med_cloth:0 (78) linked to texture index 79
+[657][0m:1s][13]                        [AV_Nif]    Loaded NiTriShapes: giant_med_cloth:1 (86) linked to texture index 87
+[658][0m:1s][7]                         [AV_Nif]    Loaded NiTriShapes: giant_med_cloth:2 (94) linked to texture index 95
+[659][0m:1s][5]               [0936D1Skyrim.esm]    Nif path: ACTORS\GIANT\CHARACTER ASSETS\GIANT01.NIF
+[660][0m:1s][5]                         [AV_Nif]    Texture index 0: giant_med_cloth:0
+[661][0m:1s][4]                         [AV_Nif]      0: textures\actors\giant\Giant.dds
+[662][0m:1s][3]                         [AV_Nif]      1: textures\actors\giant\Giant_n.dds
+[663][0m:1s][5]                         [AV_Nif]    Texture index 1: giant_med_cloth:1
+[664][0m:1s][3]                         [AV_Nif]      0: textures\actors\giant\GiantOutfit.dds
+[665][0m:1s][3]                         [AV_Nif]      1: textures\actors\giant\GiantOutfit_n.dds
+[666][0m:1s][4]                         [AV_Nif]    Texture index 2: giant_med_cloth:2
+[667][0m:1s][3]                         [AV_Nif]      0: textures\actors\giant\Giant.dds
+[668][0m:1s][4]                         [AV_Nif]      1: textures\actors\giant\Giant_n.dds
+[669][0m:1s][234316]          [0936D3Skyrim.esm]  ====================================================================
+[670][0m:1s][39]              [0936D3Skyrim.esm]  Locating [NPC_ | 0936D3Skyrim.esm | E3demoGiant02]'s NIF file and analyzing the Skin.
+[671][0m:1s][3]               [0936D3Skyrim.esm]  ====================================================================
+[672][0m:1s][9]               [0936D3Skyrim.esm]    [NPC_ | 0936D3Skyrim.esm | E3demoGiant02]
+[673][0m:1s][70]              [0936D3Skyrim.esm]    [ARMA | 048D92Skyrim.esm | NakedGiantBodyAA02]
+[674][0m:1s][181]                          [BSA]    Nif meshes\ACTORS\GIANT\CHARACTER ASSETS\GIANT02.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[675][0m:2s][287568]                    [AV_Nif]    Loaded NiTriShapes: giant_heavy_cloth:0 (81) linked to texture index 82
+[676][0m:2s][16]                        [AV_Nif]    Loaded NiTriShapes: giant_heavy_cloth:1 (89) linked to texture index 90
+[677][0m:2s][6]                         [AV_Nif]    Loaded NiTriShapes: giant_heavy_cloth:2 (97) linked to texture index 98
+[678][0m:2s][6]               [0936D3Skyrim.esm]    Nif path: ACTORS\GIANT\CHARACTER ASSETS\GIANT02.NIF
+[679][0m:2s][6]                         [AV_Nif]    Texture index 0: giant_heavy_cloth:0
+[680][0m:2s][4]                         [AV_Nif]      0: textures\actors\giant\Giant.dds
+[681][0m:2s][5]                         [AV_Nif]      1: textures\actors\giant\Giant_n.dds
+[682][0m:2s][6]                         [AV_Nif]    Texture index 1: giant_heavy_cloth:1
+[683][0m:2s][5]                         [AV_Nif]      0: textures\actors\giant\GiantOutfit.dds
+[684][0m:2s][19]                        [AV_Nif]      1: textures\actors\giant\GiantOutfit_n.dds
+[685][0m:2s][6]                         [AV_Nif]    Texture index 2: giant_heavy_cloth:2
+[686][0m:2s][6]                         [AV_Nif]      0: textures\actors\giant\Giant.dds
+[687][0m:2s][5]                         [AV_Nif]      1: textures\actors\giant\Giant_n.dds
+[688][0m:2s][306125]          [023AAESkyrim.esm]  ====================================================================
+[689][0m:2s][42]              [023AAESkyrim.esm]  Locating [NPC_ | 023AAESkyrim.esm | EncGiant01]'s NIF file and analyzing the Skin.
+[690][0m:2s][3]               [023AAESkyrim.esm]  ====================================================================
+[691][0m:2s][9]               [023AAESkyrim.esm]    [NPC_ | 023AAESkyrim.esm | EncGiant01]
+[692][0m:2s][67]              [023AAESkyrim.esm]    [ARMA | 048D8FSkyrim.esm | NakedGiantBodyAA]
+[693][0m:2s][229]                          [BSA]    Nif meshes\ACTORS\GIANT\CHARACTER ASSETS\GIANT.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[694][0m:2s][4910]                      [AV_Nif]    Loaded NiTriShapes: giant_base:0 (77) linked to texture index 78
+[695][0m:2s][17]                        [AV_Nif]    Loaded NiTriShapes: giant_base:1 (85) linked to texture index 86
+[696][0m:2s][5]               [023AAESkyrim.esm]    Nif path: ACTORS\GIANT\CHARACTER ASSETS\GIANT.NIF
+[697][0m:2s][6]                         [AV_Nif]    Texture index 0: giant_base:0
+[698][0m:2s][5]                         [AV_Nif]      0: textures\actors\giant\Giant.dds
+[699][0m:2s][4]                         [AV_Nif]      1: textures\actors\giant\Giant_n.dds
+[700][0m:2s][5]                         [AV_Nif]    Texture index 1: giant_base:1
+[701][0m:2s][3]                         [AV_Nif]      0: textures\actors\giant\Giant.dds
+[702][0m:2s][3]                         [AV_Nif]      1: textures\actors\giant\Giant_n.dds
+[703][0m:2s][265748]          [030437Skyrim.esm]  ====================================================================
+[704][0m:2s][36]              [030437Skyrim.esm]  Locating [NPC_ | 030437Skyrim.esm | EncGiant02]'s NIF file and analyzing the Skin.
+[705][0m:2s][3]               [030437Skyrim.esm]  ====================================================================
+[706][0m:2s][9]               [030437Skyrim.esm]    [NPC_ | 030437Skyrim.esm | EncGiant02]
+[707][0m:2s][552]             [030437Skyrim.esm]    Already logged [ARMA | 048D91Skyrim.esm | NakedGiantBodyAA01] for this variant set.
+[708][0m:2s][121]             [030438Skyrim.esm]  ====================================================================
+[709][0m:2s][13]              [030438Skyrim.esm]  Locating [NPC_ | 030438Skyrim.esm | EncGiant03]'s NIF file and analyzing the Skin.
+[710][0m:2s][3]               [030438Skyrim.esm]  ====================================================================
+[711][0m:2s][8]               [030438Skyrim.esm]    [NPC_ | 030438Skyrim.esm | EncGiant03]
+[712][0m:2s][42]              [030438Skyrim.esm]    Already logged [ARMA | 048D92Skyrim.esm | NakedGiantBodyAA02] for this variant set.
+[713][0m:2s][93]              [048D97Skyrim.esm]  ====================================================================
+[714][0m:2s][10]              [048D97Skyrim.esm]  Locating [NPC_ | 048D97Skyrim.esm | TestGiantActor]'s NIF file and analyzing the Skin.
+[715][0m:2s][3]               [048D97Skyrim.esm]  ====================================================================
+[716][0m:2s][12]              [048D97Skyrim.esm]    [NPC_ | 048D97Skyrim.esm | TestGiantActor]
+[717][0m:2s][37]              [048D97Skyrim.esm]    Already logged [ARMA | 048D92Skyrim.esm | NakedGiantBodyAA02] for this variant set.
+[718][0m:2s][94]              [06AF65Skyrim.esm]  ====================================================================
+[719][0m:2s][10]              [06AF65Skyrim.esm]  Locating [NPC_ | 06AF65Skyrim.esm | dunPOIAggroTroll1024]'s NIF file and analyzing the Skin.
+[720][0m:2s][3]               [06AF65Skyrim.esm]  ====================================================================
+[721][0m:2s][7]               [06AF65Skyrim.esm]    [NPC_ | 06AF65Skyrim.esm | dunPOIAggroTroll1024]
+[722][0m:2s][27]              [06AF65Skyrim.esm]    [ARMA | 0A8053Skyrim.esm | NakedCaveTrollAA]
+[723][0m:2s][153]                          [BSA]    Nif meshes\ACTORS\TROLL\CHARACTER ASSETS\BLACKTROLL.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[724][0m:2s][11970]                     [AV_Nif]    Loaded NiTriShapes: Troll Cave (46) linked to texture index 47
+[725][0m:2s][20]              [06AF65Skyrim.esm]    Nif path: ACTORS\TROLL\CHARACTER ASSETS\BLACKTROLL.NIF
+[726][0m:2s][7]                         [AV_Nif]    Texture index 0: Troll Cave
+[727][0m:2s][5]                         [AV_Nif]      0: textures\actors\troll\Troll_Cave.dds
+[728][0m:2s][4]                         [AV_Nif]      1: textures\actors\troll\Troll_n.dds
+[729][0m:2s][4]                         [AV_Nif]      2: textures\actors\troll\Troll_SK_blue.dds
+[730][0m:2s][18091]           [023ABASkyrim.esm]  ====================================================================
+[731][0m:2s][38]              [023ABASkyrim.esm]  Locating [NPC_ | 023ABASkyrim.esm | EncTroll]'s NIF file and analyzing the Skin.
+[732][0m:2s][3]               [023ABASkyrim.esm]  ====================================================================
+[733][0m:2s][9]               [023ABASkyrim.esm]    [NPC_ | 023ABASkyrim.esm | EncTroll]
+[734][0m:2s][49]              [023ABASkyrim.esm]    Already logged [ARMA | 0A8053Skyrim.esm | NakedCaveTrollAA] for this variant set.
+[735][0m:2s][99]              [05B752Skyrim.esm]  ====================================================================
+[736][0m:2s][10]              [05B752Skyrim.esm]  Locating [NPC_ | 05B752Skyrim.esm | EncDraugr01Template2H]'s NIF file and analyzing the Skin.
+[737][0m:2s][2]               [05B752Skyrim.esm]  ====================================================================
+[738][0m:2s][8]               [05B752Skyrim.esm]    [NPC_ | 05B752Skyrim.esm | EncDraugr01Template2H]
+[739][0m:2s][26]              [05B752Skyrim.esm]    [ARMA | 01FDBESkyrim.esm | NakedDraugrBodyAA02]
+[740][0m:2s][165]                          [BSA]    Nif meshes\ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE02.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[741][0m:2s][3653]                      [AV_Nif]    Loaded NiTriShapes: Eye_L (68) linked to texture index 69
+[742][0m:2s][10]                        [AV_Nif]    Loaded NiTriShapes: Eye_R (76) linked to texture index 69
+[743][0m:2s][7]                         [AV_Nif]    Loaded NiTriShapes: Body_Male_Naked (83) linked to texture index 84
+[744][0m:2s][7]                         [AV_Nif]    Loaded NiTriShapes: ArmorChest00 (90) linked to texture index 91
+[745][0m:2s][6]                         [AV_Nif]    Loaded NiTriShapes: ArmorWaist01 (98) linked to texture index 91
+[746][0m:2s][6]                         [AV_Nif]    Loaded NiTriShapes: ArmorWaist00 (105) linked to texture index 91
+[747][0m:2s][4]               [05B752Skyrim.esm]    Nif path: ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE02.NIF
+[748][0m:2s][5]                         [AV_Nif]    Texture index 0: Eye_L
+[749][0m:2s][4]                         [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[750][0m:2s][3]                         [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[751][0m:2s][3]                         [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[752][0m:2s][4]                         [AV_Nif]    Texture index 1: Eye_R
+[753][0m:2s][3]                         [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[754][0m:2s][3]                         [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[755][0m:2s][3]                         [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[756][0m:2s][4]                         [AV_Nif]    Texture index 2: Body_Male_Naked
+[757][0m:2s][4]                         [AV_Nif]      0: textures\actors\draugr\Draugr.dds
+[758][0m:2s][3]                         [AV_Nif]      1: textures\actors\draugr\Draugr_n.dds
+[759][0m:2s][4]                         [AV_Nif]    Texture index 3: ArmorChest00
+[760][0m:2s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[761][0m:2s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[762][0m:2s][5]                         [AV_Nif]    Texture index 4: ArmorWaist01
+[763][0m:2s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[764][0m:2s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[765][0m:2s][4]                         [AV_Nif]    Texture index 5: ArmorWaist00
+[766][0m:2s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[767][0m:2s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[768][0m:3s][897674]          [0387C4Skyrim.esm]  ====================================================================
+[769][0m:3s][37]              [0387C4Skyrim.esm]  Locating [NPC_ | 0387C4Skyrim.esm | EncDraugr01MissileHeadM01]'s NIF file and analyzing the Skin.
+[770][0m:3s][3]               [0387C4Skyrim.esm]  ====================================================================
+[771][0m:3s][8]               [0387C4Skyrim.esm]    [NPC_ | 0387C4Skyrim.esm | EncDraugr01MissileHeadM01]
+[772][0m:3s][48]              [0387C4Skyrim.esm]    [ARMA | 01FDBDSkyrim.esm | NakedDraugrBodyAA01]
+[773][0m:3s][291]                          [BSA]    Nif meshes\ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE01.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[774][0m:3s][3844]                      [AV_Nif]    Loaded NiTriShapes: Eye_L (68) linked to texture index 69
+[775][0m:3s][11]                        [AV_Nif]    Loaded NiTriShapes: Eye_R (76) linked to texture index 69
+[776][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: Body_Male_Naked (83) linked to texture index 84
+[777][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: ArmorWaist01 (90) linked to texture index 91
+[778][0m:3s][7]                         [AV_Nif]    Loaded NiTriShapes: Armband00 (98) linked to texture index 91
+[779][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: ArmorWaist00 (105) linked to texture index 91
+[780][0m:3s][4]               [0387C4Skyrim.esm]    Nif path: ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE01.NIF
+[781][0m:3s][67]                        [AV_Nif]    Texture index 0: Eye_L
+[782][0m:3s][5]                         [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[783][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[784][0m:3s][3]                         [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[785][0m:3s][4]                         [AV_Nif]    Texture index 1: Eye_R
+[786][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[787][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[788][0m:3s][3]                         [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[789][0m:3s][4]                         [AV_Nif]    Texture index 2: Body_Male_Naked
+[790][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Draugr.dds
+[791][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Draugr_n.dds
+[792][0m:3s][4]                         [AV_Nif]    Texture index 3: ArmorWaist01
+[793][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[794][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[795][0m:3s][4]                         [AV_Nif]    Texture index 4: Armband00
+[796][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[797][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[798][0m:3s][5]                         [AV_Nif]    Texture index 5: ArmorWaist00
+[799][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[800][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[801][0m:3s][67381]           [03B54BSkyrim.esm]  ====================================================================
+[802][0m:3s][41]              [03B54BSkyrim.esm]  Locating [NPC_ | 03B54BSkyrim.esm | EncDraugr05Template]'s NIF file and analyzing the Skin.
+[803][0m:3s][4]               [03B54BSkyrim.esm]  ====================================================================
+[804][0m:3s][9]               [03B54BSkyrim.esm]    [NPC_ | 03B54BSkyrim.esm | EncDraugr05Template]
+[805][0m:3s][50]              [03B54BSkyrim.esm]    [ARMA | 01FDC3Skyrim.esm | NakedDraugrBodyAA07]
+[806][0m:3s][190]                          [BSA]    Nif meshes\ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE07.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[807][0m:3s][6255]                      [AV_Nif]    Loaded NiTriShapes: Eye_L (73) linked to texture index 74
+[808][0m:3s][18]                        [AV_Nif]    Loaded NiTriShapes: Eye_R (81) linked to texture index 74
+[809][0m:3s][7]                         [AV_Nif]    Loaded NiTriShapes: Beard_2 (88) linked to texture index 89
+[810][0m:3s][7]                         [AV_Nif]    Loaded NiTriShapes: Hair_2 (96) linked to texture index 89
+[811][0m:3s][7]                         [AV_Nif]    Loaded NiTriShapes: ArmorChest00 (103) linked to texture index 104
+[812][0m:3s][7]                         [AV_Nif]    Loaded NiTriShapes: ArmorWaist01 (111) linked to texture index 104
+[813][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: ArmorBracers00 (118) linked to texture index 104
+[814][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: ArmorBoots00 (125) linked to texture index 104
+[815][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: Armband00 (132) linked to texture index 104
+[816][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: ArmorWaist00 (139) linked to texture index 104
+[817][0m:3s][12]                        [AV_Nif]    Loaded NiTriShapes: Body_Male_Armor03 (146) linked to texture index 147
+[818][0m:3s][8]                         [AV_Nif]    Loaded NiTriShapes: Armor_Fur00 (153) linked to texture index 104
+[819][0m:3s][8]                         [AV_Nif]    Loaded NiTriShapes: Armor_Pauldrons00 (160) linked to texture index 104
+[820][0m:3s][9]                         [AV_Nif]    Loaded NiTriShapes: Armor_WaistPlate00 (167) linked to texture index 104
+[821][0m:3s][8]               [03B54BSkyrim.esm]    Nif path: ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE07.NIF
+[822][0m:3s][8]                         [AV_Nif]    Texture index 0: Eye_L
+[823][0m:3s][7]                         [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[824][0m:3s][5]                         [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[825][0m:3s][5]                         [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[826][0m:3s][7]                         [AV_Nif]    Texture index 1: Eye_R
+[827][0m:3s][5]                         [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[828][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[829][0m:3s][3]                         [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[830][0m:3s][5]                         [AV_Nif]    Texture index 2: Beard_2
+[831][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Hair.dds
+[832][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Hair_n.dds
+[833][0m:3s][4]                         [AV_Nif]    Texture index 3: Hair_2
+[834][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Hair.dds
+[835][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Hair_n.dds
+[836][0m:3s][5]                         [AV_Nif]    Texture index 4: ArmorChest00
+[837][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[838][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[839][0m:3s][4]                         [AV_Nif]    Texture index 5: ArmorWaist01
+[840][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[841][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[842][0m:3s][4]                         [AV_Nif]    Texture index 6: ArmorBracers00
+[843][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[844][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[845][0m:3s][5]                         [AV_Nif]    Texture index 7: ArmorBoots00
+[846][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[847][0m:3s][12]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[848][0m:3s][27]                        [AV_Nif]    Texture index 8: Armband00
+[849][0m:3s][6]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[850][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[851][0m:3s][5]                         [AV_Nif]    Texture index 9: ArmorWaist00
+[852][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[853][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[854][0m:3s][6]                         [AV_Nif]    Texture index 10: Body_Male_Armor03
+[855][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Draugr.dds
+[856][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Draugr_n.dds
+[857][0m:3s][5]                         [AV_Nif]    Texture index 11: Armor_Fur00
+[858][0m:3s][5]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[859][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[860][0m:3s][6]                         [AV_Nif]    Texture index 12: Armor_Pauldrons00
+[861][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[862][0m:3s][5]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[863][0m:3s][5]                         [AV_Nif]    Texture index 13: Armor_WaistPlate00
+[864][0m:3s][5]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[865][0m:3s][90]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[866][0m:3s][67777]           [03B545Skyrim.esm]  ====================================================================
+[867][0m:3s][59]              [03B545Skyrim.esm]  Locating [NPC_ | 03B545Skyrim.esm | EncDraugr05MissileHeadF00]'s NIF file and analyzing the Skin.
+[868][0m:3s][5]               [03B545Skyrim.esm]  ====================================================================
+[869][0m:3s][10]              [03B545Skyrim.esm]    [NPC_ | 03B545Skyrim.esm | EncDraugr05MissileHeadF00]
+[870][0m:3s][47]              [03B545Skyrim.esm]    [ARMA | 01FDC2Skyrim.esm | NakedDraugrBodyAA06]
+[871][0m:3s][163]                          [BSA]    Nif meshes\ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE06.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[872][0m:3s][4843]                      [AV_Nif]    Loaded NiTriShapes: Eye_L (70) linked to texture index 71
+[873][0m:3s][11]                        [AV_Nif]    Loaded NiTriShapes: Eye_R (78) linked to texture index 71
+[874][0m:3s][7]                         [AV_Nif]    Loaded NiTriShapes: Hair_2 (85) linked to texture index 86
+[875][0m:3s][7]                         [AV_Nif]    Loaded NiTriShapes: ArmorChest00 (93) linked to texture index 94
+[876][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: ArmorWaist01 (101) linked to texture index 94
+[877][0m:3s][5]                         [AV_Nif]    Loaded NiTriShapes: ArmorBoots00 (108) linked to texture index 94
+[878][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: Armband00 (115) linked to texture index 94
+[879][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: ArmorWaist00 (122) linked to texture index 94
+[880][0m:3s][7]                         [AV_Nif]    Loaded NiTriShapes: Body_Male_Armor02 (129) linked to texture index 130
+[881][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: Armor_Fur00 (136) linked to texture index 94
+[882][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: Armor_Pauldrons00 (143) linked to texture index 94
+[883][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: Armor_WaistPlate00 (150) linked to texture index 94
+[884][0m:3s][5]               [03B545Skyrim.esm]    Nif path: ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE06.NIF
+[885][0m:3s][4]                         [AV_Nif]    Texture index 0: Eye_L
+[886][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[887][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[888][0m:3s][4]                         [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[889][0m:3s][4]                         [AV_Nif]    Texture index 1: Eye_R
+[890][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[891][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[892][0m:3s][3]                         [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[893][0m:3s][4]                         [AV_Nif]    Texture index 2: Hair_2
+[894][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Hair.dds
+[895][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Hair_n.dds
+[896][0m:3s][5]                         [AV_Nif]    Texture index 3: ArmorChest00
+[897][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[898][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[899][0m:3s][5]                         [AV_Nif]    Texture index 4: ArmorWaist01
+[900][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[901][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[902][0m:3s][4]                         [AV_Nif]    Texture index 5: ArmorBoots00
+[903][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[904][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[905][0m:3s][5]                         [AV_Nif]    Texture index 6: Armband00
+[906][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[907][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[908][0m:3s][4]                         [AV_Nif]    Texture index 7: ArmorWaist00
+[909][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[910][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[911][0m:3s][4]                         [AV_Nif]    Texture index 8: Body_Male_Armor02
+[912][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Draugr.dds
+[913][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Draugr_n.dds
+[914][0m:3s][5]                         [AV_Nif]    Texture index 9: Armor_Fur00
+[915][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[916][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[917][0m:3s][4]                         [AV_Nif]    Texture index 10: Armor_Pauldrons00
+[918][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[919][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[920][0m:3s][4]                         [AV_Nif]    Texture index 11: Armor_WaistPlate00
+[921][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[922][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[923][0m:3s][126659]          [03B548Skyrim.esm]  ====================================================================
+[924][0m:3s][160]             [03B548Skyrim.esm]  Locating [NPC_ | 03B548Skyrim.esm | EncDraugr02Template]'s NIF file and analyzing the Skin.
+[925][0m:3s][8]               [03B548Skyrim.esm]  ====================================================================
+[926][0m:3s][14]              [03B548Skyrim.esm]    [NPC_ | 03B548Skyrim.esm | EncDraugr02Template]
+[927][0m:3s][60]              [03B548Skyrim.esm]    [ARMA | 01FDBFSkyrim.esm | NakedDraugrBodyAA03]
+[928][0m:3s][164]                          [BSA]    Nif meshes\ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE03.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[929][0m:3s][5258]                      [AV_Nif]    Loaded NiTriShapes: Eye_L (69) linked to texture index 70
+[930][0m:3s][13]                        [AV_Nif]    Loaded NiTriShapes: Eye_R (77) linked to texture index 70
+[931][0m:3s][7]                         [AV_Nif]    Loaded NiTriShapes: Beard_2 (84) linked to texture index 85
+[932][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: Hair_2 (92) linked to texture index 85
+[933][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: ArmorChest00 (99) linked to texture index 100
+[934][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: ArmorWaist01 (107) linked to texture index 100
+[935][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: ArmorBoots00 (114) linked to texture index 100
+[936][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: Armband00 (121) linked to texture index 100
+[937][0m:3s][6]                         [AV_Nif]    Loaded NiTriShapes: ArmorWaist00 (128) linked to texture index 100
+[938][0m:3s][7]                         [AV_Nif]    Loaded NiTriShapes: Body_Male_Armor02 (135) linked to texture index 136
+[939][0m:3s][5]               [03B548Skyrim.esm]    Nif path: ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE03.NIF
+[940][0m:3s][9]                         [AV_Nif]    Texture index 0: Eye_L
+[941][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[942][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[943][0m:3s][3]                         [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[944][0m:3s][4]                         [AV_Nif]    Texture index 1: Eye_R
+[945][0m:3s][109]                       [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[946][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[947][0m:3s][3]                         [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[948][0m:3s][5]                         [AV_Nif]    Texture index 2: Beard_2
+[949][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Hair.dds
+[950][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Hair_n.dds
+[951][0m:3s][4]                         [AV_Nif]    Texture index 3: Hair_2
+[952][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Hair.dds
+[953][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Hair_n.dds
+[954][0m:3s][4]                         [AV_Nif]    Texture index 4: ArmorChest00
+[955][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[956][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[957][0m:3s][5]                         [AV_Nif]    Texture index 5: ArmorWaist01
+[958][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[959][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[960][0m:3s][4]                         [AV_Nif]    Texture index 6: ArmorBoots00
+[961][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[962][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[963][0m:3s][4]                         [AV_Nif]    Texture index 7: Armband00
+[964][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[965][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[966][0m:3s][4]                         [AV_Nif]    Texture index 8: ArmorWaist00
+[967][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[968][0m:3s][3]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[969][0m:3s][4]                         [AV_Nif]    Texture index 9: Body_Male_Armor02
+[970][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Draugr.dds
+[971][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Draugr_n.dds
+[972][0m:3s][68886]           [055939Skyrim.esm]  ====================================================================
+[973][0m:3s][35]              [055939Skyrim.esm]  Locating [NPC_ | 055939Skyrim.esm | EncDraugr01Melee1HHeadF02]'s NIF file and analyzing the Skin.
+[974][0m:3s][3]               [055939Skyrim.esm]  ====================================================================
+[975][0m:3s][8]               [055939Skyrim.esm]    [NPC_ | 055939Skyrim.esm | EncDraugr01Melee1HHeadF02]
+[976][0m:3s][13]              [055939Skyrim.esm]    [RACE | 000D53Skyrim.esm | DraugrRace]
+[977][0m:3s][10]              [055939Skyrim.esm]    [ARMO | 016EE3Skyrim.esm | SkinDraugr]
+[978][0m:3s][40]              [055939Skyrim.esm]    [ARMA | 000D80Skyrim.esm | NakedDraugrBodyAA]
+[979][0m:3s][177]                          [BSA]    Nif meshes\ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[980][0m:3s][3150]                      [AV_Nif]    Loaded NiTriShapes: Eye_L (68) linked to texture index 69
+[981][0m:3s][17]                        [AV_Nif]    Loaded NiTriShapes: Eye_R (76) linked to texture index 69
+[982][0m:3s][7]                         [AV_Nif]    Loaded NiTriShapes: Body_Male_Naked (83) linked to texture index 84
+[983][0m:3s][7]                         [AV_Nif]    Loaded NiTriShapes: ArmorWaist01 (90) linked to texture index 91
+[984][0m:3s][5]               [055939Skyrim.esm]    Nif path: ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE.NIF
+[985][0m:3s][6]                         [AV_Nif]    Texture index 0: Eye_L
+[986][0m:3s][5]                         [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[987][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[988][0m:3s][4]                         [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[989][0m:3s][4]                         [AV_Nif]    Texture index 1: Eye_R
+[990][0m:3s][3]                         [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[991][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[992][0m:3s][3]                         [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[993][0m:3s][5]                         [AV_Nif]    Texture index 2: Body_Male_Naked
+[994][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Draugr.dds
+[995][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Draugr_n.dds
+[996][0m:3s][4]                         [AV_Nif]    Texture index 3: ArmorWaist01
+[997][0m:3s][4]                         [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[998][0m:3s][4]                         [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[999][0m:4s][70264]           [05B755Skyrim.esm]  ====================================================================
+[1000][0m:4s][41]             [05B755Skyrim.esm]  Locating [NPC_ | 05B755Skyrim.esm | EncDraugr04Template2H]'s NIF file and analyzing the Skin.
+[1001][0m:4s][4]              [05B755Skyrim.esm]  ====================================================================
+[1002][0m:4s][9]              [05B755Skyrim.esm]    [NPC_ | 05B755Skyrim.esm | EncDraugr04Template2H]
+[1003][0m:4s][85]             [05B755Skyrim.esm]    [ARMA | 01FDC1Skyrim.esm | NakedDraugrBodyAA05]
+[1004][0m:4s][153]                         [BSA]    Nif meshes\ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE05.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[1005][0m:4s][5561]                     [AV_Nif]    Loaded NiTriShapes: Eye_L (72) linked to texture index 73
+[1006][0m:4s][16]                       [AV_Nif]    Loaded NiTriShapes: Eye_R (80) linked to texture index 73
+[1007][0m:4s][7]                        [AV_Nif]    Loaded NiTriShapes: Hair_2 (87) linked to texture index 88
+[1008][0m:4s][7]                        [AV_Nif]    Loaded NiTriShapes: ArmorChest00 (95) linked to texture index 96
+[1009][0m:4s][6]                        [AV_Nif]    Loaded NiTriShapes: ArmorWaist01 (103) linked to texture index 96
+[1010][0m:4s][6]                        [AV_Nif]    Loaded NiTriShapes: ArmorBracers00 (110) linked to texture index 96
+[1011][0m:4s][6]                        [AV_Nif]    Loaded NiTriShapes: ArmorBoots00 (117) linked to texture index 96
+[1012][0m:4s][6]                        [AV_Nif]    Loaded NiTriShapes: ArmorWaist00 (124) linked to texture index 96
+[1013][0m:4s][8]                        [AV_Nif]    Loaded NiTriShapes: Body_Male_Armor03 (131) linked to texture index 132
+[1014][0m:4s][6]                        [AV_Nif]    Loaded NiTriShapes: Armor_Fur00 (138) linked to texture index 96
+[1015][0m:4s][7]                        [AV_Nif]    Loaded NiTriShapes: Armor_Pauldrons00 (145) linked to texture index 96
+[1016][0m:4s][5]              [05B755Skyrim.esm]    Nif path: ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE05.NIF
+[1017][0m:4s][5]                        [AV_Nif]    Texture index 0: Eye_L
+[1018][0m:4s][4]                        [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[1019][0m:4s][4]                        [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[1020][0m:4s][3]                        [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[1021][0m:4s][6]                        [AV_Nif]    Texture index 1: Eye_R
+[1022][0m:4s][3]                        [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[1023][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[1024][0m:4s][3]                        [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[1025][0m:4s][5]                        [AV_Nif]    Texture index 2: Hair_2
+[1026][0m:4s][74]                       [AV_Nif]      0: textures\actors\draugr\Hair.dds
+[1027][0m:4s][4]                        [AV_Nif]      1: textures\actors\draugr\Hair_n.dds
+[1028][0m:4s][5]                        [AV_Nif]    Texture index 3: ArmorChest00
+[1029][0m:4s][4]                        [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[1030][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[1031][0m:4s][5]                        [AV_Nif]    Texture index 4: ArmorWaist01
+[1032][0m:4s][3]                        [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[1033][0m:4s][4]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[1034][0m:4s][4]                        [AV_Nif]    Texture index 5: ArmorBracers00
+[1035][0m:4s][3]                        [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[1036][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[1037][0m:4s][4]                        [AV_Nif]    Texture index 6: ArmorBoots00
+[1038][0m:4s][3]                        [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[1039][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[1040][0m:4s][4]                        [AV_Nif]    Texture index 7: ArmorWaist00
+[1041][0m:4s][3]                        [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[1042][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[1043][0m:4s][5]                        [AV_Nif]    Texture index 8: Body_Male_Armor03
+[1044][0m:4s][4]                        [AV_Nif]      0: textures\actors\draugr\Draugr.dds
+[1045][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Draugr_n.dds
+[1046][0m:4s][5]                        [AV_Nif]    Texture index 9: Armor_Fur00
+[1047][0m:4s][3]                        [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[1048][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[1049][0m:4s][5]                        [AV_Nif]    Texture index 10: Armor_Pauldrons00
+[1050][0m:4s][3]                        [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[1051][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[1052][0m:4s][64937]          [04247CSkyrim.esm]  ====================================================================
+[1053][0m:4s][37]             [04247CSkyrim.esm]  Locating [NPC_ | 04247CSkyrim.esm | EncDraugr03TemplateBoss]'s NIF file and analyzing the Skin.
+[1054][0m:4s][4]              [04247CSkyrim.esm]  ====================================================================
+[1055][0m:4s][9]              [04247CSkyrim.esm]    [NPC_ | 04247CSkyrim.esm | EncDraugr03TemplateBoss]
+[1056][0m:4s][70]             [04247CSkyrim.esm]    [ARMA | 01FDC0Skyrim.esm | NakedDraugrBodyAA04]
+[1057][0m:4s][218]                         [BSA]    Nif meshes\ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE04.NIF loaded from BSA ..\..\SKYRIM - MESHES.BSA
+[1058][0m:4s][5095]                     [AV_Nif]    Loaded NiTriShapes: Eye_L (71) linked to texture index 72
+[1059][0m:4s][11]                       [AV_Nif]    Loaded NiTriShapes: Eye_R (79) linked to texture index 72
+[1060][0m:4s][7]                        [AV_Nif]    Loaded NiTriShapes: Beard_2 (86) linked to texture index 87
+[1061][0m:4s][6]                        [AV_Nif]    Loaded NiTriShapes: Hair_2 (94) linked to texture index 87
+[1062][0m:4s][6]                        [AV_Nif]    Loaded NiTriShapes: ArmorChest00 (101) linked to texture index 102
+[1063][0m:4s][6]                        [AV_Nif]    Loaded NiTriShapes: ArmorWaist01 (109) linked to texture index 102
+[1064][0m:4s][5]                        [AV_Nif]    Loaded NiTriShapes: ArmorBracers00 (116) linked to texture index 102
+[1065][0m:4s][5]                        [AV_Nif]    Loaded NiTriShapes: ArmorBoots00 (123) linked to texture index 102
+[1066][0m:4s][6]                        [AV_Nif]    Loaded NiTriShapes: Armband00 (130) linked to texture index 102
+[1067][0m:4s][6]                        [AV_Nif]    Loaded NiTriShapes: ArmorWaist00 (137) linked to texture index 102
+[1068][0m:4s][7]                        [AV_Nif]    Loaded NiTriShapes: Body_Male_Armor02 (144) linked to texture index 145
+[1069][0m:4s][4]              [04247CSkyrim.esm]    Nif path: ACTORS\DRAUGR\CHARACTER ASSETS\DRAUGRMALE04.NIF
+[1070][0m:4s][5]                        [AV_Nif]    Texture index 0: Eye_L
+[1071][0m:4s][4]                        [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[1072][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[1073][0m:4s][3]                        [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[1074][0m:4s][4]                        [AV_Nif]    Texture index 1: Eye_R
+[1075][0m:4s][3]                        [AV_Nif]      0: textures\actors\draugr\Draugreyes.dds
+[1076][0m:4s][4]                        [AV_Nif]      1: textures\actors\draugr\Draugreyes_n.dds
+[1077][0m:4s][3]                        [AV_Nif]      2: textures\actors\draugr\Draugreyes_g.dds
+[1078][0m:4s][4]                        [AV_Nif]    Texture index 2: Beard_2
+[1079][0m:4s][4]                        [AV_Nif]      0: textures\actors\draugr\Hair.dds
+[1080][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Hair_n.dds
+[1081][0m:4s][4]                        [AV_Nif]    Texture index 3: Hair_2
+[1082][0m:4s][3]                        [AV_Nif]      0: textures\actors\draugr\Hair.dds
+[1083][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Hair_n.dds
+[1084][0m:4s][4]                        [AV_Nif]    Texture index 4: ArmorChest00
+[1085][0m:4s][3]                        [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[1086][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[1087][0m:4s][4]                        [AV_Nif]    Texture index 5: ArmorWaist01
+[1088][0m:4s][3]                        [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[1089][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[1090][0m:4s][4]                        [AV_Nif]    Texture index 6: ArmorBracers00
+[1091][0m:4s][3]                        [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[1092][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[1093][0m:4s][4]                        [AV_Nif]    Texture index 7: ArmorBoots00
+[1094][0m:4s][4]                        [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[1095][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[1096][0m:4s][5]                        [AV_Nif]    Texture index 8: Armband00
+[1097][0m:4s][3]                        [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[1098][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[1099][0m:4s][4]                        [AV_Nif]    Texture index 9: ArmorWaist00
+[1100][0m:4s][3]                        [AV_Nif]      0: textures\actors\draugr\Armor.dds
+[1101][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Armor_n.dds
+[1102][0m:4s][4]                        [AV_Nif]    Texture index 10: Body_Male_Armor02
+[1103][0m:4s][4]                        [AV_Nif]      0: textures\actors\draugr\Draugr.dds
+[1104][0m:4s][3]                        [AV_Nif]      1: textures\actors\draugr\Draugr_n.dds
+[1105][0m:4s][72059]                     [DEBUG]  Closing Debug File.  Time was: 4177
