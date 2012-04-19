@@ -4,10 +4,8 @@
  */
 package automaticvariants.gui;
 
-import automaticvariants.AV;
-import automaticvariants.AVFileVars;
-import automaticvariants.AVPackage;
-import automaticvariants.PackageComponent;
+import automaticvariants.*;
+import automaticvariants.AVSaveFile.Settings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -15,7 +13,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
@@ -24,6 +21,7 @@ import javax.swing.tree.TreePath;
 import lev.Ln;
 import lev.gui.LButton;
 import lev.gui.LImagePane;
+import lev.gui.LMenuItem;
 import skyproc.SPGlobal;
 
 /**
@@ -39,8 +37,9 @@ public class SettingsPackagesManager extends DefaultsPanel {
     LButton disableButton;
     LButton otherSettings;
     JPopupMenu optionsMenu;
-    JMenuItem enable;
-    JMenuItem compress;
+    LMenuItem enable;
+    LMenuItem disable;
+    LMenuItem compress;
 
     public SettingsPackagesManager(EncompassingPanel parent_) {
 	super("Texture Variants", AV.save, parent_);
@@ -68,6 +67,8 @@ public class SettingsPackagesManager extends DefaultsPanel {
 		    enableSelection(true);
 		}
 	    });
+	    enableButton.linkTo(Settings.PACKAGES_ENABLE, saveFile, parent.helpPanel, true);
+	    enableButton.setFollowPosition(false);
 	    Add(enableButton);
 
 
@@ -81,6 +82,8 @@ public class SettingsPackagesManager extends DefaultsPanel {
 		    enableSelection(false);
 		}
 	    });
+	    disableButton.linkTo(Settings.PACKAGES_DISABLE, saveFile, parent.helpPanel, true);
+	    disableButton.setFollowPosition(false);
 	    Add(disableButton);
 
 
@@ -90,16 +93,33 @@ public class SettingsPackagesManager extends DefaultsPanel {
 
 
 	    optionsMenu = new JPopupMenu();
-	    enable = new JMenuItem("Enable");
+	    enable = new LMenuItem("Enable");
+	    enable.linkTo(Settings.PACKAGES_ENABLE, saveFile, parent.helpPanel, true);
+	    enable.setFollowPosition(false);
 	    enable.addActionListener(new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-		    enableSelection(enable.getText().equals("Enable"));
+		    enableSelection(true);
 		}
 	    });
-	    optionsMenu.add(enable);
-	    compress = new JMenuItem("Compress");
+	    optionsMenu.add(enable.getItem());
+
+	    disable = new LMenuItem("Disable");
+	    disable.linkTo(Settings.PACKAGES_DISABLE, saveFile, parent.helpPanel, true);
+	    disable.setFollowPosition(false);
+	    disable.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		    enableSelection(false);
+		}
+	    });
+	    optionsMenu.add(disable.getItem());
+
+	    compress = new LMenuItem("Compress");
+	    compress.linkTo(Settings.PACKAGES_COMPRESS, saveFile, parent.helpPanel, true);
+	    compress.setFollowPosition(false);
 	    compress.addActionListener(new ActionListener() {
 
 		@Override
@@ -107,7 +127,7 @@ public class SettingsPackagesManager extends DefaultsPanel {
 		    compress();
 		}
 	    });
-	    optionsMenu.add(compress);
+	    optionsMenu.add(compress.getItem());
 
 
 	    //Add popup listener
@@ -128,12 +148,6 @@ public class SettingsPackagesManager extends DefaultsPanel {
 		    compress.setVisible(sel.type == PackageComponent.Type.PACKAGE
 			    || sel.type == PackageComponent.Type.VARSET
 			    || sel.type == PackageComponent.Type.ROOT);
-
-		    if (sel.disabled) {
-			enable.setText("Enable");
-		    } else {
-			enable.setText("Disable");
-		    }
 
 		    optionsMenu.show(tree, x + 10, y);
 		}
@@ -180,7 +194,7 @@ public class SettingsPackagesManager extends DefaultsPanel {
 //	parent.helpPanel.addToBottomArea(display);
 	parent.helpPanel.setBottomAreaHeight(AVGUI.rightDimensions.width - 50);
 
-	otherSettings.addActionListener(((SettingsMainMenu)parent).packagesOtherPanel.getOpenHandler(parent));
+	otherSettings.addActionListener(((SettingsMainMenu) parent).packagesOtherPanel.getOpenHandler(parent));
     }
 
     public void enableSelection(boolean enable) {
@@ -221,14 +235,17 @@ public class SettingsPackagesManager extends DefaultsPanel {
 
     public void compress() {
 	try {
-	    int row = tree.tree.getLeadSelectionRow();
+	    // Enable selecton and move files
+	    int row = tree.getLeadSelectionRow();
 	    PackageComponent p = (PackageComponent) tree.getSelectionPaths()[0].getLastPathComponent();
 	    enableSelection(true);
- 	    p.moveNode();
+	    p.moveNode();
 	    loadPackageList();
 
-	    p = (PackageComponent) tree.tree.getPathForRow(row).getLastPathComponent();
+	    // Select the same node
+	    p = (PackageComponent) tree.getPathForRow(row).getLastPathComponent();
 
+	    // Compress
 	    long before = p.fileSize();
 	    if (SPGlobal.logging()) {
 		SPGlobal.log(p.src.getName(), "Current file size: " + before + "->" + Ln.toMB(before) + "MB");

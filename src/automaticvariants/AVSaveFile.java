@@ -96,14 +96,26 @@ public class AVSaveFile extends LSaveFile {
 		+ "\n\nNOTE: If you disable a package that you have been playing with, "
 		+ "make sure to reset the cells of your savegame.");
 
+	helpInfo.put(Settings.PACKAGES_DISABLE, "This will disable any selected items and their children.\n\n"
+		+ "Disabled items will not be integrated into the AV patch.");
+
+	helpInfo.put(Settings.PACKAGES_ENABLE, "This will enable any selected items and their children.\n\n"
+		+ "Enabled items will be integrated into the AV patch.");
+
+	helpInfo.put(Settings.PACKAGES_COMPRESS, "This will run AV's compression algorithm over the package,"
+		+ " making the package as small as possible.  It will move common files to Variant Set positions, as"
+		+ " well as replacing any duplicate files with reroute 'shortcuts' so that there is only one of each file.\n\n"
+		+ "NOTES: It is recommended that you make a backup in case something goes wrong, as this function will be moving and"
+		+ " deleting things.\n\n"
+		+ "This function will enable the selection before compressing.\n\n"
+		+ "This may take a while to process.  A popup will appear showing the results when it is complete.");
+
 	helpInfo.put(Settings.PACKAGES_PREP, "This will prep AV to be able to safely add/remove packages "
 		+ "without bugging out.  It is still highly recommended that you start a new game when installing "
 		+ "AV;  However, once a game is 'established' with AV Prepping, then it should be safe to enable/disable "
 		+ "new packages without consequence.\n\n"
-
 		+ "This will make every NPC a \"variant of one\" so that variants can be added/removed from the list without "
 		+ "drastically changing the record structure.\n\n"
-
 		+ "It is highly recommended that you keep this setting on.");
 
 	helpInfo.put(Settings.PACKAGES_ORIG_AS_VAR, "This will add the non-AV actor setup as a variant, and add it to the list of options. \n\n"
@@ -137,14 +149,11 @@ public class AVSaveFile extends LSaveFile {
 	helpInfo.put(Settings.IMPORT_AT_START,
 		"If enabled, AV will begin importing your mods when the program starts.\n"
 		+ "If turned off, the program will wait until it is necessary before importing.\n\n"
-
 		+ "NOTE: This setting will not take effect until the next time the program is run.\n\n"
-
 		+ "Benefits:\n"
 		+ "- Faster patching when you close the program."
 		+ "- More information displayed in GUI, as it will have access to the records."
 		+ "\n\n"
-
 		+ "Downsides:\n"
 		+ "Having this on might make the GUI respond sluggishly while it processes in the"
 		+ "background.");
@@ -156,10 +165,11 @@ public class AVSaveFile extends LSaveFile {
 	PACKAGES_PREP,
 	PACKAGES_GATHER,
 	PACKAGES_ORIG_AS_VAR,
-
+	PACKAGES_COMPRESS,
+	PACKAGES_ENABLE,
+	PACKAGES_DISABLE,
 	HEIGHT_ON,
 	HEIGHT_STD,
-
 	DEBUG_LEVEL,
 	IMPORT_AT_START,
 	MINIMIZE_PATCH,
