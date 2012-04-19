@@ -76,7 +76,7 @@ public class AVSaveFile extends LSaveFile {
 	    output.write("AV savefile used for the application.\n");
 	    for (Enum s : curSettings.keySet()) {
 		if (!curSettings.get(s).get().equals("")) {
-		    SPGlobal.log("SaveFile Export", "Exporting to savefile: ", curSettings.get(s).getTitle());
+		    SPGlobal.log("SaveFile Export", "Exporting to savefile: " + curSettings.get(s).getTitle() + " = " + curSettings.get(s));
 		    curSettings.get(s).write(output);
 		} else {
 		    defaultSettings.get(s).write(output);

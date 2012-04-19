@@ -93,9 +93,6 @@ public class AVFileVars {
 	// Generate ARMO dups that use ARMAs
 	generateARMOvariants(source);
 
-	// Prep AV and/or add Originals as Variants
-//	prepAndAddOriginals(source);
-
 	// Split between two methods of achiving variants in-game.
 	// Currently using NPC dup method
 	if (raceSwitchMethod) {
@@ -116,7 +113,7 @@ public class AVFileVars {
 	// Generate NPC_ dups that use ARMO skins
 	generateNPCvariants(source);
 
-	prepAndAddOriginals2(source);
+	prepAndAddOriginals(source);
 
 	// Load NPC_ dups into LVLNs
 	generateLVLNs(source);
@@ -588,77 +585,6 @@ public class AVFileVars {
 	SPGUI.progress.incrementBar();
     }
 
-    static void prepAndAddOriginals(Mod source) {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================================================");
-	    SPGlobal.log(header, "AV Prepping and Adding Originals as Variants");
-	    SPGlobal.log(header, "====================================================================================================");
-	}
-
-	for (ARMO armoSrc : source.getArmors()) {
-
-	    if (SPGlobal.logging()) {
-		SPGlobal.log(header, "Investigating " + armoSrc);
-	    }
-
-	    ArrayList<ARMO_spec> skinVariants = armors.get(armoSrc.getForm());
-	    boolean prepped = false;
-
-	    // If no variants, but prepping is on, make it a variant of one
-	    // Else if orig as var is on, add original as variant
-	    if (skinVariants == null) {
-		if (AV.save.getBool(Settings.PACKAGES_PREP)) {
-		    prepped = true;
-		    skinVariants = new ArrayList<ARMO_spec>();
-		    armors.put(armoSrc.getForm(), skinVariants);
-		    SPGlobal.log(header, "  Prepped.");
-		} else {
-		    continue;
-		}
-	    }
-
-	    if (AV.save.getBool(Settings.PACKAGES_ORIG_AS_VAR) || prepped) {
-		// Find target races in ARMO
-		ArrayList<FormID> targetRaces = new ArrayList<FormID>();
-		for (FormID armaF : armoSrc.getArmatures()) {
-		    ARMA arma = (ARMA) SPDatabase.getMajor(armaF);
-		    if (!targetRaces.contains(arma.getRace())) {
-			targetRaces.add(arma.getRace());
-		    }
-		}
-
-		// Add one orig for each target race
-		for (FormID targetRace : targetRaces) {
-		    skinVariants.add(new ARMO_spec(armoSrc, targetRace));
-		    SPGlobal.log(header, "  Added for race " + SPDatabase.getMajor(targetRace, GRUP_TYPE.RACE));
-		}
-	    }
-	}
-
-
-//	for (NPC_ npcSrc : source.getNPCs()) {
-//
-//	    ArrayList<ARMO_spec> skinVariants = armors.get(getUsedSkin(npcSrc));
-//
-//	    // If no variants, but prepping is on, make it a variant of one
-//	    // Else if orig as var is on, add original as variant
-//	    if (skinVariants == null && AV.save.getBool(Settings.PACKAGES_PREP)) {
-//		skinVariants = new ArrayList<ARMO_spec>(1);
-//		skinVariants.add(new ARMO_spec(npcSrc));
-//		armors.put(armoSrc.getForm(), skinVariants);
-//		if (SPGlobal.logging()) {
-//		    SPGlobal.log(header, "Prepped " + armoSrc);
-//		}
-//	    } else if (AV.save.getBool(Settings.PACKAGES_ORIG_AS_VAR)) {
-//		skinVariants.add(new ARMO_spec(armoSrc));
-//		if (SPGlobal.logging()) {
-//		    SPGlobal.log(header, "Added original " + armoSrc);
-//		}
-//	    }
-//	}
-
-    }
-
     static void printVariants() {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "Variants loaded: ");
@@ -890,8 +816,20 @@ public class AVFileVars {
 
 	    ArrayList<ARMO_spec> skinVariants = armors.get(armorForm);
 
-	    // If npc has variant
+	    // If npc has skin with variants
 	    if (skinVariants != null) {
+
+		// See if any variants races match npc's
+		boolean match = false;
+		for (ARMO_spec variant : skinVariants) {
+		    if (variant.targetRace.equals(npcSrc.getRace())) {
+			match = true;
+			break;
+		    }
+		}
+		if (!match) {
+		    continue;
+		}
 
 		// Check if this is an NPC to skip
 		if (AV.checkNPCskip(npcSrc, true, last)) {
@@ -943,16 +881,15 @@ public class AVFileVars {
 	SPGUI.progress.incrementBar();
     }
 
-    static void prepAndAddOriginals2(Mod source) {
+    static void prepAndAddOriginals(Mod source) {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "====================================================================================================");
 	    SPGlobal.log(header, "AV Prepping and Adding Originals as Variants");
 	    SPGlobal.log(header, "====================================================================================================");
 	}
 	for (NPC_ npcSrc : source.getNPCs()) {
-
 	    if ((npcs.containsKey(npcSrc.getForm()) && AV.save.getBool(Settings.PACKAGES_ORIG_AS_VAR))
-		    || (AV.save.getBool(Settings.PACKAGES_PREP) && !AV.checkNPCskip(npcSrc, false, false))) {
+		    || (!npcs.containsKey(npcSrc.getForm()) && AV.save.getBool(Settings.PACKAGES_PREP) && !AV.checkNPCskip(npcSrc, false, false))) {
 		if (SPGlobal.logging()) {
 		    if (npcs.containsKey(npcSrc.getForm())) {
 			SPGlobal.log(header, "  Added as variant: " + npcSrc);
