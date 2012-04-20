@@ -114,6 +114,11 @@ public class AV {
 	if (delete.isFile()) {
 	    delete.delete();
 	}
+
+	delete = new File("AV Starter.bat");
+	if (delete.isFile()) {
+	    delete.delete();
+	}
     }
 
     public static void runProgram() {
