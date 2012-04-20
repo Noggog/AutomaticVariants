@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
+import lev.Ln;
 import lev.debug.LDebug;
 import lev.gui.LSaveFile;
 import skyproc.*;
@@ -16,14 +17,14 @@ import skyproc.exceptions.BadParameter;
 import skyproc.exceptions.Uninitialized;
 
 /**
- * ToDo:
- * - Make compress work for disabled files
+ * ToDo: - Make compress work for disabled files
+ *
  * @author Leviathan1753
  */
 public class AV {
 
     // Version
-    public static String version = "1.3 Alpha";
+    public static String version = "1.3.1 Alpha";
 
     /*
      * Static Strings
@@ -66,13 +67,13 @@ public class AV {
     public static void main(String[] args) {
 	ArrayList<String> arguments = new ArrayList<String>(Arrays.asList(args));
 	try {
+	    save.init();
 	    if (handleArgs(arguments)) {
 		SPGlobal.closeDebug();
 		return;
 	    }
 	    cleanUp();
 	    setGlobals();
-	    save.init();
 	    setDebugLevel();
 	    AVFileVars.gatherFiles();
 	    AVGUI.open();
@@ -222,20 +223,20 @@ public class AV {
     static boolean checkNPCskip(NPC_ npcSrc, boolean print, boolean last) {
 	if (npcSrc.get(NPC_.NPCFlag.Unique)) {
 	    if (print && SPGlobal.logging()) {
-		    if (last) {
-			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		    }
-		    SPGlobal.log(header, "    Skipping " + npcSrc + " : Unique actor");
+		if (last) {
+		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
 		}
+		SPGlobal.log(header, "    Skipping " + npcSrc + " : Unique actor");
+	    }
 	    return true;
 	}
 	if (block.contains(AVFileVars.getUsedSkin(npcSrc))) {
 	    if (print && SPGlobal.logging()) {
-		    if (last) {
-			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		    }
-		    SPGlobal.log(header, "    Skipping " + npcSrc + " : Blocked skin");
+		if (last) {
+		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
 		}
+		SPGlobal.log(header, "    Skipping " + npcSrc + " : Blocked skin");
+	    }
 	    return true;
 	}
 	if (!npcSrc.getTemplate().equals(FormID.NULL)) {
@@ -266,7 +267,7 @@ public class AV {
 			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
 		    }
 		    SPGlobal.log(header, "    Skipping " + npcSrc + " : edid exclude '" + exclude + "'");
-		    SPGlobal.logBlocked(header, "edid exclude " + exclude , npcSrc);
+		    SPGlobal.logBlocked(header, "edid exclude " + exclude, npcSrc);
 		}
 		return true;
 	    }
@@ -318,7 +319,10 @@ public class AV {
 	SPGlobal.debugNIFimport = false;
 	LDebug.timeElapsed = true;
 	LDebug.timeStamp = true;
-	// Turn Debugging off except for errors
+
+	SPGlobal.logMain(header, "AV version: " + version);
+	SPGlobal.logMain(header, "Available Memory: " + Ln.toMB(Runtime.getRuntime().totalMemory()) + "MB");
+	SPGlobal.logMain(header, "Max Memory: " + Ln.toMB(Runtime.getRuntime().maxMemory()) + "MB");
 
     }
 
@@ -350,32 +354,37 @@ public class AV {
 	}
     }
 
-    static boolean handleArgs(ArrayList<String> arguments) {
+    static boolean handleArgs(ArrayList<String> arguments) throws IOException, InterruptedException {
 	String debug = "-debug";
-	String extraPth = "-extraPath";
+	String nonew = "-nonew";
+
 	for (String s : arguments) {
 	    if (s.contains(debug)) {
 		s = s.substring(s.indexOf(debug) + debug.length()).trim();
 		try {
 		    initDebugLevel = Integer.valueOf(s);
-		    SPGlobal.logMain(header, "Debug level set to: " + initDebugLevel);
 		} catch (NumberFormatException e) {
-		    SPGlobal.logError(header, "Error parsing the debug level: '" + s + "'");
 		}
 	    }
-//	    else if (s.contains(extraPth)) {
-//		s = s.substring(s.indexOf(extraPth) + extraPth.length()).trim();
-//		extraPath = s;
-//		SPGlobal.pathToData = extraPath + SPGlobal.pathToData;
-//		AVFileVars.AVPackagesDir = new File(extraPath + AVFileVars.AVPackagesDir.getPath());
-//		AVFileVars.AVMeshesDir = new File(extraPath + AVFileVars.AVMeshesDir.getPath());
-//		AVFileVars.AVTexturesDir = new File(extraPath + AVFileVars.AVTexturesDir.getPath());
-//		if (SPGlobal.logging()) {
-//		    SPGlobal.logMain(header, "Extra Path set to: " + extraPath);
-//		    SPGlobal.logMain(header, "Path to data: " + SPGlobal.pathToData);
-//		}
-//	    }
+	}
 
+	if (!arguments.contains(nonew)) {
+	    // Less than 1GB max memory, spawn new process with more memory
+	    if (Runtime.getRuntime().maxMemory() < Math.pow(1024, 3)) {
+		ProcessBuilder proc = new ProcessBuilder("java", "-jar", "-Xms100m", "-Xmx" + AV.save.getInt(Settings.MAX_MEM) + "m", "Automatic Variants.jar", "-nonew");
+		Process start = proc.start();
+		InputStream shellIn = start.getInputStream();
+		int exitStatus = start.waitFor();
+		String response = convertStreamToStr(shellIn);
+		if (exitStatus != 0) {
+		    JOptionPane.showMessageDialog(null, "Error allocating " + AV.save.getInt(Settings.MAX_MEM) + "MB memory:\n"
+			    + response
+			    + "\nMemory defaulted to lowest levels.  Please lower your\n"
+			    + "allocated memory in Other Settings and start the program again.");
+		} else {
+		    System.exit(0);
+		}
+	    }
 	}
 
 	if (arguments.contains("-gather")) {
@@ -384,6 +393,28 @@ public class AV {
 	}
 
 	return false;
+    }
+
+    public static String convertStreamToStr(InputStream is) throws IOException {
+
+	if (is != null) {
+	    Writer writer = new StringWriter();
+
+	    char[] buffer = new char[1024];
+	    try {
+		Reader reader = new BufferedReader(new InputStreamReader(is,
+			"UTF-8"));
+		int n;
+		while ((n = reader.read(buffer)) != -1) {
+		    writer.write(buffer, 0, n);
+		}
+	    } finally {
+		is.close();
+	    }
+	    return writer.toString();
+	} else {
+	    return "";
+	}
     }
 
     public static void exitProgram() {

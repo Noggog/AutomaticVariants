@@ -37,12 +37,14 @@ public class SettingsPackagesOther extends DefaultsPanel {
 	    prepAV = new LCheckBox ("Prep AV", AVGUI.settingsFont, AVGUI.yellow);
 	    prepAV.setOffset(0);
 	    prepAV.tie(AVSaveFile.Settings.PACKAGES_PREP, AV.save, parent.helpPanel, true);
+	    prepAV.addShadow();
 	    last = setPlacement(prepAV, last);
 	    Add(prepAV);
 
 	    origAsVar = new LCheckBox ("Original As Variant", AVGUI.settingsFont, AVGUI.yellow);
 	    origAsVar.setOffset(0);
 	    origAsVar.tie(AVSaveFile.Settings.PACKAGES_ORIG_AS_VAR, AV.save, parent.helpPanel, true);
+	    origAsVar.addShadow();
 	    last = setPlacement(origAsVar, last);
 	    Add(origAsVar);
 

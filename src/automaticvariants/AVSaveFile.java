@@ -7,6 +7,7 @@ package automaticvariants;
 import java.io.*;
 import java.util.Map;
 import javax.swing.JOptionPane;
+import lev.Ln;
 import lev.gui.LSaveFile;
 import skyproc.SPGlobal;
 
@@ -26,6 +27,7 @@ public class AVSaveFile extends LSaveFile {
 	Add(m, Settings.HEIGHT_ON, "Height Variants On", false, true);
 	Add(m, Settings.HEIGHT_STD, "Height Variants Min", false, 10);
 	Add(m, Settings.MINIMIZE_PATCH, "Height Variants On", false, true);
+	Add(m, Settings.MAX_MEM, "Max memory MB", false, 750);
     }
 
     @Override
@@ -157,6 +159,17 @@ public class AVSaveFile extends LSaveFile {
 		+ "Downsides:\n"
 		+ "Having this on might make the GUI respond sluggishly while it processes in the"
 		+ "background.");
+
+	helpInfo.put(Settings.MAX_MEM,
+		"This will determine the max amount of megabytes of memory AV will be allowed to use.\n\n"
+		+ "Current max memory: " + Ln.toMB(Runtime.getRuntime().maxMemory()) + "MB\n\n"
+		+ "If AV runs out of memory the program will essentially halt as it "
+		+ "tries to scrap by with too little memory. "
+		+ "If you experience this, then try allocating more memory.\n\n"
+		+ "NOTE:  This setting will not take effect until you restart AV.");
+
+	helpInfo.put(Settings.MINIMIZE_PATCH,
+		"This will make AV do more processing in order to minimize the patch size.");
     }
 
     public enum Settings {
@@ -173,6 +186,7 @@ public class AVSaveFile extends LSaveFile {
 	DEBUG_LEVEL,
 	IMPORT_AT_START,
 	MINIMIZE_PATCH,
+	MAX_MEM,
 	AV_SETTINGS;
     }
 }

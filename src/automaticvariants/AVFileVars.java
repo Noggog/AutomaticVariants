@@ -878,7 +878,7 @@ public class AVFileVars {
 	    FormID armorForm = getUsedSkin(npcSrc);
 	    if (armorForm == null) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Skipping " + npcSrc + " : did not have a worn armor or race.");
+		    SPGlobal.log(header, "  Skipping " + npcSrc + " : did not have a worn armor or race.");
 		}
 		continue;
 	    }
