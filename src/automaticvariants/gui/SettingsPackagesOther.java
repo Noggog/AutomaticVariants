@@ -4,6 +4,8 @@
  */
 package automaticvariants.gui;
 
+import skyproc.gui.SPSettingPanel;
+import skyproc.gui.SPMainMenuPanel;
 import automaticvariants.AV;
 import automaticvariants.AVFileVars;
 import automaticvariants.AVSaveFile;
@@ -11,20 +13,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import lev.gui.LButton;
 import lev.gui.LCheckBox;
+import skyproc.gui.SPComplexGUI;
 
 /**
  *
  * @author Justin Swanson
  */
-public class SettingsPackagesOther extends DefaultsPanel {
+public class SettingsPackagesOther extends SPSettingPanel {
 
     LButton gatherAndExit;
     LCheckBox prepAV;
     LCheckBox origAsVar;
     LButton packageManager;
 
-    public SettingsPackagesOther(EncompassingPanel parent_) {
-	super("Texture Variants", AV.save, parent_);
+    public SettingsPackagesOther(SPMainMenuPanel parent_) {
+	super("Texture Variants", AV.save, parent_, AV.orange);
     }
 
     @Override
@@ -34,16 +37,16 @@ public class SettingsPackagesOther extends DefaultsPanel {
 	    save.setVisible(false);
 	    defaults.setVisible(false);
 
-	    prepAV = new LCheckBox ("Prep AV", AVGUI.settingsFont, AVGUI.yellow);
+	    prepAV = new LCheckBox ("Prep AV", AV.settingsFont, AV.yellow);
 	    prepAV.setOffset(0);
-	    prepAV.tie(AVSaveFile.Settings.PACKAGES_PREP, AV.save, parent.helpPanel, true);
+	    prepAV.tie(AVSaveFile.Settings.PACKAGES_PREP, AV.save, SPComplexGUI.helpPanel, true);
 	    prepAV.addShadow();
 	    last = setPlacement(prepAV, last);
 	    Add(prepAV);
 
-	    origAsVar = new LCheckBox ("Original As Variant", AVGUI.settingsFont, AVGUI.yellow);
+	    origAsVar = new LCheckBox ("Original As Variant", AV.settingsFont, AV.yellow);
 	    origAsVar.setOffset(0);
-	    origAsVar.tie(AVSaveFile.Settings.PACKAGES_ORIG_AS_VAR, AV.save, parent.helpPanel, true);
+	    origAsVar.tie(AVSaveFile.Settings.PACKAGES_ORIG_AS_VAR, AV.save, SPComplexGUI.helpPanel, true);
 	    origAsVar.addShadow();
 	    last = setPlacement(origAsVar, last);
 	    Add(origAsVar);
@@ -55,10 +58,10 @@ public class SettingsPackagesOther extends DefaultsPanel {
 		public void actionPerformed(ActionEvent e) {
 		    AVFileVars.shufflePackages();
 		    AVFileVars.gatherFiles();
-		    AV.exitProgram();
+		    SPComplexGUI.exitProgram();
 		}
 	    });
-	    gatherAndExit.linkTo(AVSaveFile.Settings.PACKAGES_GATHER, saveFile, parent.helpPanel, true);
+	    gatherAndExit.linkTo(AVSaveFile.Settings.PACKAGES_GATHER, saveFile, SPComplexGUI.helpPanel, true);
 	    last = setPlacement(gatherAndExit, last);
 	    Add(gatherAndExit);
 
@@ -74,8 +77,8 @@ public class SettingsPackagesOther extends DefaultsPanel {
     }
 
     @Override
-    public void specialOpen(EncompassingPanel parent) {
-	packageManager.addActionListener(((SettingsMainMenu)parent).managePackagesPanel.getOpenHandler(parent));
+    public void specialOpen(SPMainMenuPanel parent) {
+	packageManager.addActionListener(AV.packagesManagerPanel.getOpenHandler(parent));
     }
 
 

@@ -4,7 +4,6 @@
  */
 package automaticvariants;
 
-import automaticvariants.gui.AVGUI;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -265,7 +264,7 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 		((PackageComponent) parent).updateHelp(help);
 		return;
 	    default:
-		AVGUI.settingsMenu.managePackagesButton.updateHelp();
+		AV.packageManagerConfig.updateHelp();
 	}
 	help.setContent(content);
 	help.hideArrow();

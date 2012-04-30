@@ -4,8 +4,11 @@
  */
 package automaticvariants.gui;
 
-import automaticvariants.*;
+import automaticvariants.AV;
+import automaticvariants.AVFileVars;
+import automaticvariants.AVPackage;
 import automaticvariants.AVSaveFile.Settings;
+import automaticvariants.PackageComponent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -23,12 +26,15 @@ import lev.gui.LButton;
 import lev.gui.LImagePane;
 import lev.gui.LMenuItem;
 import skyproc.SPGlobal;
+import skyproc.gui.SPComplexGUI;
+import skyproc.gui.SPMainMenuPanel;
+import skyproc.gui.SPSettingPanel;
 
 /**
  *
  * @author Justin Swanson
  */
-public class SettingsPackagesManager extends DefaultsPanel {
+public class SettingsPackagesManager extends SPSettingPanel {
 
     public static PackageTree tree;
 //    static DDSreader reader;
@@ -41,17 +47,17 @@ public class SettingsPackagesManager extends DefaultsPanel {
     LMenuItem disable;
     LMenuItem compress;
 
-    public SettingsPackagesManager(EncompassingPanel parent_) {
-	super("Texture Variants", AV.save, parent_);
+    public SettingsPackagesManager(SPMainMenuPanel parent_) {
+	super("Texture Variants", AV.save, parent_, AV.orange);
     }
 
     @Override
     public boolean initialize() {
 	if (super.initialize()) {
 
-	    tree = new PackageTree(AVGUI.middleDimensions.width - 30,
-		    AVGUI.middleDimensions.height - 165, parent.helpPanel);
-	    tree.setLocation(AVGUI.middleDimensions.width / 2 - tree.getWidth() / 2, last.y + 10);
+	    tree = new PackageTree(SPComplexGUI.middleDimensions.width - 30,
+		    SPComplexGUI.middleDimensions.height - 165, SPComplexGUI.helpPanel);
+	    tree.setLocation(SPComplexGUI.middleDimensions.width / 2 - tree.getWidth() / 2, last.y + 10);
 	    tree.setMargin(10, 5);
 	    tree.removeBorder();
 	    Add(tree);
@@ -67,7 +73,7 @@ public class SettingsPackagesManager extends DefaultsPanel {
 		    enableSelection(true);
 		}
 	    });
-	    enableButton.linkTo(Settings.PACKAGES_ENABLE, saveFile, parent.helpPanel, true);
+	    enableButton.linkTo(Settings.PACKAGES_ENABLE, saveFile, SPComplexGUI.helpPanel, true);
 	    enableButton.setFollowPosition(false);
 	    Add(enableButton);
 
@@ -82,7 +88,7 @@ public class SettingsPackagesManager extends DefaultsPanel {
 		    enableSelection(false);
 		}
 	    });
-	    disableButton.linkTo(Settings.PACKAGES_DISABLE, saveFile, parent.helpPanel, true);
+	    disableButton.linkTo(Settings.PACKAGES_DISABLE, saveFile, SPComplexGUI.helpPanel, true);
 	    disableButton.setFollowPosition(false);
 	    Add(disableButton);
 
@@ -94,7 +100,7 @@ public class SettingsPackagesManager extends DefaultsPanel {
 
 	    optionsMenu = new JPopupMenu();
 	    enable = new LMenuItem("Enable");
-	    enable.linkTo(Settings.PACKAGES_ENABLE, saveFile, parent.helpPanel, true);
+	    enable.linkTo(Settings.PACKAGES_ENABLE, saveFile, SPComplexGUI.helpPanel, true);
 	    enable.setFollowPosition(false);
 	    enable.addActionListener(new ActionListener() {
 
@@ -106,7 +112,7 @@ public class SettingsPackagesManager extends DefaultsPanel {
 	    optionsMenu.add(enable.getItem());
 
 	    disable = new LMenuItem("Disable");
-	    disable.linkTo(Settings.PACKAGES_DISABLE, saveFile, parent.helpPanel, true);
+	    disable.linkTo(Settings.PACKAGES_DISABLE, saveFile, SPComplexGUI.helpPanel, true);
 	    disable.setFollowPosition(false);
 	    disable.addActionListener(new ActionListener() {
 
@@ -118,7 +124,7 @@ public class SettingsPackagesManager extends DefaultsPanel {
 	    optionsMenu.add(disable.getItem());
 
 	    compress = new LMenuItem("Compress");
-	    compress.linkTo(Settings.PACKAGES_COMPRESS, saveFile, parent.helpPanel, true);
+	    compress.linkTo(Settings.PACKAGES_COMPRESS, saveFile, SPComplexGUI.helpPanel, true);
 	    compress.setFollowPosition(false);
 	    compress.addActionListener(new ActionListener() {
 
@@ -190,11 +196,11 @@ public class SettingsPackagesManager extends DefaultsPanel {
     }
 
     @Override
-    public void specialOpen(EncompassingPanel parent) {
+    public void specialOpen(SPMainMenuPanel parent) {
 //	parent.helpPanel.addToBottomArea(display);
-	parent.helpPanel.setBottomAreaHeight(AVGUI.rightDimensions.width - 50);
+//	parent.helpPanel.setBottomAreaHeight(SPMainMenuPanel.rightDimensions.width - 50);
 
-	otherSettings.addActionListener(((SettingsMainMenu) parent).packagesOtherPanel.getOpenHandler(parent));
+ 	otherSettings.addActionListener(AV.packagesOtherPanel.getOpenHandler(parent));
     }
 
     public void enableSelection(boolean enable) {

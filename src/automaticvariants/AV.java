@@ -1,8 +1,17 @@
 package automaticvariants;
 
+import skyproc.gui.SPProgressBarPlug;
+import skyproc.gui.SUM;
 import automaticvariants.AVSaveFile.Settings;
-import automaticvariants.gui.AVGUI;
+import automaticvariants.gui.SettingsHeightPanel;
+import automaticvariants.gui.SettingsOther;
+import automaticvariants.gui.SettingsPackagesManager;
+import automaticvariants.gui.SettingsPackagesOther;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Point;
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,15 +22,16 @@ import lev.Ln;
 import lev.debug.LDebug;
 import lev.gui.LSaveFile;
 import skyproc.*;
-import skyproc.exceptions.BadParameter;
-import skyproc.exceptions.Uninitialized;
+import skyproc.gui.SPComplexGUI;
+import skyproc.gui.SPMainMenuConfig;
+import skyproc.gui.SPMainMenuPanel;
 
 /**
  * ToDo: - Make compress work for disabled files
  *
  * @author Leviathan1753
  */
-public class AV {
+public class AV implements SUM {
 
     // Version
     public static String version = "1.3.1 Alpha";
@@ -63,11 +73,36 @@ public class AV {
     static int initDebugLevel = -1;
     static boolean imported = false;
     static boolean exported = false;
+    //GUI
+    static public SPComplexGUI GUI = new SPComplexGUI();
+    static public SPMainMenuPanel settingsMenu;
+    static public SPMainMenuConfig packageManagerConfig;
+    static public SettingsPackagesManager packagesManagerPanel;
+    static public SettingsPackagesOther packagesOtherPanel;
+    static public SettingsOther otherPanel;
+    static public SettingsHeightPanel heightPanel;
+    static public Font settingsFont = new Font("Serif", Font.BOLD, 16);
+    static public Color green = new Color(67, 162, 10);
+    static public Color darkGreen = new Color(61, 128, 21);
+    static public Color orange = new Color(247, 163, 52);
+    static public Color blue = new Color(0, 147, 196);
+    static public Color yellow = new Color(255, 204, 26);
+    static public Color lightGray = new Color(190, 190, 190);
+    static public Color darkGray = new Color(110, 110, 110);
 
     public static void main(String[] args) {
 	ArrayList<String> arguments = new ArrayList<String>(Arrays.asList(args));
 	try {
 	    save.init();
+
+//	    AV.save.getBool(AVSaveFile.Settings.IMPORT_AT_START)
+//	    versionNum = new LLabel("v" + AV.version, new Font("Serif", Font.PLAIN, 10), AVGUI.darkGray);
+//	    versionNum.setLocation(80, 82);
+//	    backgroundPanel.add(versionNum);
+//	    settingsMenu = new SettingsMainMenu(getSize());
+//	    backgroundPanel.add(settingsMenu);
+//	    settingsMenu.open();
+
 	    if (handleArgs(arguments)) {
 		SPGlobal.closeDebug();
 		return;
@@ -76,8 +111,8 @@ public class AV {
 	    setGlobals();
 	    setDebugLevel();
 	    AVFileVars.gatherFiles();
-	    AVGUI.open();
-	    // AVGUI runs the program after it's finished displaying.
+
+	    openGUI();
 
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.
@@ -87,6 +122,23 @@ public class AV {
 	    SPGlobal.closeDebug();
 	}
 
+    }
+
+    static void openGUI() {
+	SUM AV = new AV();
+
+	settingsMenu = new SPMainMenuPanel(green);
+	settingsMenu.addLogo(AV.getLogo());
+	settingsMenu.setVersion(version, new Point(80, 88));
+
+	packagesManagerPanel = new SettingsPackagesManager(settingsMenu);
+	packagesOtherPanel = new SettingsPackagesOther(settingsMenu);
+	settingsMenu.addMenu(packagesManagerPanel, true, save, Settings.PACKAGES_ON);
+
+	otherPanel = new SettingsOther(settingsMenu);
+	settingsMenu.addMenu(otherPanel, false, save, Settings.AV_SETTINGS);
+
+	SPComplexGUI.open(AV);
     }
 
     static void setDebugLevel() {
@@ -119,100 +171,6 @@ public class AV {
 	if (delete.isFile()) {
 	    delete.delete();
 	}
-    }
-
-    public static void runProgram() {
-	if (parser == null || !parser.isAlive()) {
-	    parser = new Thread(new StartProcessThread());
-	    parser.start();
-	}
-    }
-
-    static class StartProcessThread implements Runnable {
-
-	@Override
-	public void run() {
-	    SPGlobal.log("START IMPORT THREAD", "Starting of process thread.");
-	    try {
-		if (!imported) {
-		    importFunction();
-		}
-		if (imported && AVGUI.exitRequested && !exported) {
-		    exportFunction();
-		    exitProgram();
-		} else {
-		    return;
-		}
-	    } catch (Exception e) {
-		System.err.println(e.toString());
-		SPGlobal.logException(e);
-		JOptionPane.showMessageDialog(null, "There was an exception thrown during program execution: '" + e + "'  Check the debug logs.");
-	    }
-
-	    // if exception occurs
-	    exitProgram();
-	}
-
-	public void main(String args[]) {
-	    (new Thread(new StartProcessThread())).start();
-	}
-    }
-
-    static void importFunction() throws IOException, Uninitialized, BadParameter {
-
-	Mod patch = new Mod("Automatic Variants", false);
-	patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
-	patch.setAuthor("Leviathan1753");
-	SPGlobal.setGlobalPatch(patch);
-
-	readInExceptions();
-
-	importMods();
-
-	imported = true;
-	SPGUI.progress.setStatus("Done importing.");
-    }
-
-    static void exportFunction() throws IOException, BadParameter, Uninitialized {
-
-	SPGlobal.loggingSync(true);
-	SPGlobal.logging(true);
-
-	Mod patch = SPGlobal.getGlobalPatch();
-
-	SPGUI.progress.setMax(numSteps);
-	SPGUI.progress.setStatus(step++, numSteps, "Initializing AV");
-	Mod source = new Mod("Temporary", false);
-	source.addAsOverrides(SPGlobal.getDB());
-
-
-	if (AVFileVars.raceSwitchMethod) {
-	    alreadySwitchedList = new FLST(patch, "AV_" + alreadySwitched);
-	}
-
-	// For all race SWITCHING variants
-	// (such as texture variants)
-	AVFileVars.setUpFileVariants(source, patch);
-
-	// For all non-race SWITCHING variants
-	// (such as height variant scripting)
-//	setUpInGameScriptBasedVariants(source);
-
-	/*
-	 * Close up shop.
-	 */
-	try {
-	    // Export your custom patch.
-	    patch.export();
-	} catch (Exception ex) {
-	    // If something goes wrong, show an error message.
-	    SPGlobal.logException(ex);
-	    JOptionPane.showMessageDialog(null, "There was an error exporting the custom patch.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
-	    exitProgram();
-	}
-
-	exported = true;
-	AVGUI.progress.done();
     }
 
     static void setUpInGameScriptBasedVariants(Mod source) {
@@ -294,23 +252,6 @@ public class AV {
 	    script.setProperty(heightOn, false);
 	}
 	return script;
-    }
-
-    static void importMods() throws IOException {
-	try {
-	    SPImporter importer = new SPImporter();
-	    importer.importActiveMods(
-		    GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
-		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
-		    GRUP_TYPE.LVLN, GRUP_TYPE.TXST,
-		    GRUP_TYPE.WEAP);
-	} catch (IOException ex) {
-	    // If things go wrong, create an error box.
-	    SPGlobal.logException(ex);
-	    JOptionPane.showMessageDialog(null, "There was an error importing plugins.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
-	    LDebug.wrapUp();
-	    System.exit(0);
-	}
     }
 
     private static void setGlobals() {
@@ -428,30 +369,129 @@ public class AV {
 	LDebug.wrapUpAndExit();
     }
 
-    static SPDefaultGUI createGUI() {
-	/*
-	 * Custom names and descriptions
-	 */
-	// Used in the GUI as the title
-	String myPatcherName = "Automatic Variants";
-	// Used in the GUI as the description of what your patcher does
-	String myPatcherDescription =
-		"Loading in packages; Creating variant records; Inserting them into Skyrim.\n"
-		+ "Enjoy!";
+    @Override
+    public String getName() {
+	throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	/*
-	 * Creating SkyProc Default GUI
-	 */
-	SPDefaultGUI gui = new SPDefaultGUI(myPatcherName, myPatcherDescription);
+    @Override
+    public GRUP_TYPE[] duplicateOriginalsReport() {
+	throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public GRUP_TYPE[] importRequests() {
+	return new GRUP_TYPE[]{GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
+		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
+		    GRUP_TYPE.LVLN, GRUP_TYPE.TXST,
+		    GRUP_TYPE.WEAP};
+    }
+
+    @Override
+    public boolean hasStandardMenu() {
+	return true;
+    }
+
+    @Override
+    public SPMainMenuPanel getStandardMenu() {
+	return settingsMenu;
+    }
+
+    @Override
+    public boolean hasLogo() {
+	return true;
+    }
+
+    @Override
+    public URL getLogo() {
+	return SettingsOther.class.getResource("AutoVarGUITitle.png");
+    }
+
+    @Override
+    public boolean hasSave() {
+	return true;
+    }
+
+    @Override
+    public LSaveFile getSave() {
+	return save;
+    }
+
+    @Override
+    public void runChangesToPatch() throws Exception {
+
+	Mod patch = SPGlobal.getGlobalPatch();
+
+	readInExceptions();
+
+	SPGlobal.loggingSync(true);
+	SPGlobal.logging(true);
+
+	SPProgressBarPlug.progress.setMax(numSteps);
+	SPProgressBarPlug.progress.setStatus(step++, numSteps, "Initializing AV");
+	Mod source = new Mod("Temporary", false);
+	source.addAsOverrides(SPGlobal.getDB());
 
 
-
-
-	try {
-	    gui.replaceHeader(AVGUI.class.getResource("AutoVarGUITitle.png"), - 35);
-	} catch (IOException ex) {
-	    SPGlobal.logException(ex);
+	if (AVFileVars.raceSwitchMethod) {
+	    alreadySwitchedList = new FLST(patch, "AV_" + alreadySwitched);
 	}
-	return gui;
+
+	// For all race SWITCHING variants
+	// (such as texture variants)
+	AVFileVars.setUpFileVariants(source, patch);
+
+	// For all non-race SWITCHING variants
+	// (such as height variant scripting)
+//	setUpInGameScriptBasedVariants(source);
+
+	/*
+	 * Close up shop.
+	 */
+	try {
+	    // Export your custom patch.
+	    patch.export();
+	} catch (Exception ex) {
+	    // If something goes wrong, show an error message.
+	    SPGlobal.logException(ex);
+	    JOptionPane.showMessageDialog(null, "There was an error exporting the custom patch.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
+	    exitProgram();
+	}
+
+	exported = true;
+	SPProgressBarPlug.progress.done();
+    }
+
+    @Override
+    public boolean hasCustomMenu() {
+	throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void openCustomMenu() {
+	throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean importAtStart() {
+	return getSave().getBool(Settings.IMPORT_AT_START);
+    }
+
+    @Override
+    public String getVersion() {
+	return version;
+    }
+
+    @Override
+    public Mod getExportPatch() {
+	Mod patch = new Mod("Automatic Variants", false);
+	patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
+	patch.setAuthor("Leviathan1753");
+	return patch;
+    }
+
+    @Override
+    public Color getHeaderColor() {
+	return green;
     }
 }

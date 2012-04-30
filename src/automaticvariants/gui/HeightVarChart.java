@@ -4,13 +4,12 @@
  */
 package automaticvariants.gui;
 
+import automaticvariants.AV;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lev.gui.LAreaChart;
 import lev.gui.LImagePane;
 
@@ -57,7 +56,7 @@ public class HeightVarChart extends LAreaChart {
     @Override
     public void paint(Graphics g) {
 	super.paint(g);
-	g.setColor(AVGUI.blue);
+	g.setColor(AV.blue);
 
 	// Normal line
 	g.drawLine(this.getSize().width / 2 + offsetX - width, peak,

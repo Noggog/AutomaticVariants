@@ -153,11 +153,11 @@ public class AVSaveFile extends LSaveFile {
 		+ "If turned off, the program will wait until it is necessary before importing.\n\n"
 		+ "NOTE: This setting will not take effect until the next time the program is run.\n\n"
 		+ "Benefits:\n"
-		+ "- Faster patching when you close the program."
+		+ "- Faster patching when you close the program.\n"
 		+ "- More information displayed in GUI, as it will have access to the records."
 		+ "\n\n"
 		+ "Downsides:\n"
-		+ "Having this on might make the GUI respond sluggishly while it processes in the"
+		+ "- catch Having this on might make the GUI respond sluggishly while it processes in the"
 		+ "background.");
 
 	helpInfo.put(Settings.MAX_MEM,

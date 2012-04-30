@@ -14,12 +14,15 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import lev.gui.LHelpPanel;
 import lev.gui.LNumericSetting;
+import skyproc.gui.SPComplexGUI;
+import skyproc.gui.SPMainMenuPanel;
+import skyproc.gui.SPSettingPanel;
 
 /**
  *
  * @author Justin Swanson
  */
-public class SettingsHeightPanel extends DefaultsPanel {
+public class SettingsHeightPanel extends SPSettingPanel {
 
     LNumericSetting stdDevSetting;
     HeightVarChart chart;
@@ -27,20 +30,20 @@ public class SettingsHeightPanel extends DefaultsPanel {
     static int maxStd = 40;
     static double cutoff = 2.5;
 
-    public SettingsHeightPanel(EncompassingPanel parent_) {
-	super("Height Variants", AV.save, parent_);
+    public SettingsHeightPanel(SPMainMenuPanel parent_) {
+	super("Height Variants", AV.save, parent_, AV.orange);
     }
 
     @Override
     public boolean initialize() {
 	if (super.initialize()) {
 
-	    chart = new HeightVarChart("Current Settings", new Dimension (parent.helpPanel.getBottomSize().width , 190),
-		    AVGUI.yellow, AVGUI.orange, "Percent deviance from normal height", "Probability / Height");
-	    chart.addSeries(AVGUI.darkGreen);
+	    chart = new HeightVarChart("Current Settings", new Dimension (SPComplexGUI.helpPanel.getBottomSize().width , 190),
+		    AV.yellow, AV.orange, "Percent deviance from normal height", "Probability / Height");
+	    chart.addSeries(AV.darkGreen);
 
-	    stdDevSetting = new LNumericSetting("Height Difference", AVGUI.settingsFont, AVGUI.yellow,
-		    0, maxStd, 1, Settings.HEIGHT_STD, AV.save, parent.helpPanel);
+	    stdDevSetting = new LNumericSetting("Height Difference", AV.settingsFont, AV.yellow,
+		    0, maxStd, 1, Settings.HEIGHT_STD, AV.save, SPComplexGUI.helpPanel);
 	    last = setPlacement(stdDevSetting, last);
 	    stdDevSetting.addChangeListener(new SettingsHeightPanel.UpdateChartChangeHandler());
 	    AddSetting(stdDevSetting);
@@ -131,8 +134,8 @@ public class SettingsHeightPanel extends DefaultsPanel {
     }
 
     @Override
-    public void specialOpen(EncompassingPanel parent) {
-	addChart(parent.helpPanel);
+    public void specialOpen(SPMainMenuPanel parent) {
+	addChart(SPComplexGUI.helpPanel);
     }
 
     @Override

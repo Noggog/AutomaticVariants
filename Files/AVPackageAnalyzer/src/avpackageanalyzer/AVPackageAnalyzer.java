@@ -6,8 +6,6 @@ package avpackageanalyzer;
 
 import java.io.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import lev.LMergeMap;
 import lev.LShrinkArray;
@@ -18,6 +16,7 @@ import skyproc.NIF.Node;
 import skyproc.NIF.NodeType;
 import skyproc.*;
 import skyproc.exceptions.BadParameter;
+import skyproc.gui.SPDefaultGUI;
 
 /**
  *
