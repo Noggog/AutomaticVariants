@@ -31,66 +31,6 @@ public class AVSaveFile extends LSaveFile {
     }
 
     @Override
-    public void readInSettings() {
-	File f = new File(SPGlobal.pathToInternalFiles + "Savefile");
-	SPGlobal.log("SaveFile Import", "Starting import");
-	if (f.exists()) {
-	    try {
-		BufferedReader input = new BufferedReader(new FileReader(f));
-		input.readLine();  //title
-		String inStr;
-		String settingTitle;
-		while (input.ready()) {
-		    inStr = input.readLine();
-		    settingTitle = inStr.substring(4, inStr.indexOf(" to "));
-		    for (Enum s : saveSettings.keySet()) {
-			if (saveSettings.containsKey(s)) {
-			    if (saveSettings.get(s).getTitle().equals(settingTitle)) {
-				saveSettings.get(s).readSetting(inStr);
-				curSettings.get(s).readSetting(inStr);
-			    }
-			}
-		    }
-		}
-
-	    } catch (Exception e) {
-		JOptionPane.showMessageDialog(null, "Error in reading in save file. Reverting to default settings.");
-		super.init();
-	    }
-	}
-    }
-
-    @Override
-    public void saveToFile() {
-	SPGlobal.log("SaveFile Export", "Starting export");
-
-	File f = new File(SPGlobal.pathToInternalFiles);
-	if (!f.isDirectory()) {
-	    f.mkdirs();
-	}
-	f = new File(SPGlobal.pathToInternalFiles + "Savefile");
-	if (f.isFile()) {
-	    f.delete();
-	}
-
-	try {
-	    BufferedWriter output = new BufferedWriter(new FileWriter(f));
-	    output.write("AV savefile used for the application.\n");
-	    for (Enum s : curSettings.keySet()) {
-		if (!curSettings.get(s).get().equals("")) {
-		    SPGlobal.log("SaveFile Export", "Exporting to savefile: " + curSettings.get(s).getTitle() + " = " + curSettings.get(s));
-		    curSettings.get(s).write(output);
-		} else {
-		    defaultSettings.get(s).write(output);
-		}
-	    }
-	    output.close();
-	} catch (java.io.IOException e) {
-	    JOptionPane.showMessageDialog(null, "The application couldn't open the save file output stream.  Your DLL settings were not saved.");
-	}
-    }
-
-    @Override
     protected void initHelp() {
 	helpInfo.put(Settings.PACKAGES_ON, "This feature will duplicate and reorganize records to make actors"
 		+ " with different textures spawn."

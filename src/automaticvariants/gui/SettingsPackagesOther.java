@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import lev.gui.LButton;
 import lev.gui.LCheckBox;
-import skyproc.gui.SPComplexGUI;
+import skyproc.gui.SUMGUI;
 
 /**
  *
@@ -39,14 +39,14 @@ public class SettingsPackagesOther extends SPSettingPanel {
 
 	    prepAV = new LCheckBox ("Prep AV", AV.settingsFont, AV.yellow);
 	    prepAV.setOffset(0);
-	    prepAV.tie(AVSaveFile.Settings.PACKAGES_PREP, AV.save, SPComplexGUI.helpPanel, true);
+	    prepAV.tie(AVSaveFile.Settings.PACKAGES_PREP, AV.save, SUMGUI.helpPanel, true);
 	    prepAV.addShadow();
 	    last = setPlacement(prepAV, last);
 	    Add(prepAV);
 
 	    origAsVar = new LCheckBox ("Original As Variant", AV.settingsFont, AV.yellow);
 	    origAsVar.setOffset(0);
-	    origAsVar.tie(AVSaveFile.Settings.PACKAGES_ORIG_AS_VAR, AV.save, SPComplexGUI.helpPanel, true);
+	    origAsVar.tie(AVSaveFile.Settings.PACKAGES_ORIG_AS_VAR, AV.save, SUMGUI.helpPanel, true);
 	    origAsVar.addShadow();
 	    last = setPlacement(origAsVar, last);
 	    Add(origAsVar);
@@ -58,10 +58,10 @@ public class SettingsPackagesOther extends SPSettingPanel {
 		public void actionPerformed(ActionEvent e) {
 		    AVFileVars.shufflePackages();
 		    AVFileVars.gatherFiles();
-		    SPComplexGUI.exitProgram();
+		    SUMGUI.exitProgram();
 		}
 	    });
-	    gatherAndExit.linkTo(AVSaveFile.Settings.PACKAGES_GATHER, saveFile, SPComplexGUI.helpPanel, true);
+	    gatherAndExit.linkTo(AVSaveFile.Settings.PACKAGES_GATHER, saveFile, SUMGUI.helpPanel, true);
 	    last = setPlacement(gatherAndExit, last);
 	    Add(gatherAndExit);
 

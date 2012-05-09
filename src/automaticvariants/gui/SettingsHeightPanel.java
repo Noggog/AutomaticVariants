@@ -14,7 +14,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import lev.gui.LHelpPanel;
 import lev.gui.LNumericSetting;
-import skyproc.gui.SPComplexGUI;
+import skyproc.gui.SUMGUI;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPSettingPanel;
 
@@ -38,12 +38,12 @@ public class SettingsHeightPanel extends SPSettingPanel {
     public boolean initialize() {
 	if (super.initialize()) {
 
-	    chart = new HeightVarChart("Current Settings", new Dimension (SPComplexGUI.helpPanel.getBottomSize().width , 190),
+	    chart = new HeightVarChart("Current Settings", new Dimension (SUMGUI.helpPanel.getBottomSize().width , 190),
 		    AV.yellow, AV.orange, "Percent deviance from normal height", "Probability / Height");
 	    chart.addSeries(AV.darkGreen);
 
 	    stdDevSetting = new LNumericSetting("Height Difference", AV.settingsFont, AV.yellow,
-		    0, maxStd, 1, Settings.HEIGHT_STD, AV.save, SPComplexGUI.helpPanel);
+		    0, maxStd, 1, Settings.HEIGHT_STD, AV.save, SUMGUI.helpPanel);
 	    last = setPlacement(stdDevSetting, last);
 	    stdDevSetting.addChangeListener(new SettingsHeightPanel.UpdateChartChangeHandler());
 	    AddSetting(stdDevSetting);
@@ -135,7 +135,7 @@ public class SettingsHeightPanel extends SPSettingPanel {
 
     @Override
     public void specialOpen(SPMainMenuPanel parent) {
-	addChart(SPComplexGUI.helpPanel);
+	addChart(SUMGUI.helpPanel);
     }
 
     @Override

@@ -11,7 +11,7 @@ import lev.gui.LCheckBox;
 import lev.gui.LComboBox;
 import lev.gui.LLabel;
 import lev.gui.LNumericSetting;
-import skyproc.gui.SPComplexGUI;
+import skyproc.gui.SUMGUI;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPSettingPanel;
 
@@ -36,14 +36,14 @@ public class SettingsOther extends SPSettingPanel {
 	if (super.initialize()) {
 
 	    importOnStartup = new LCheckBox("Import Mods on Startup", AV.settingsFont, AV.yellow);
-	    importOnStartup.tie(AVSaveFile.Settings.IMPORT_AT_START, saveFile, SPComplexGUI.helpPanel, true);
+	    importOnStartup.tie(AVSaveFile.Settings.IMPORT_AT_START, saveFile, SUMGUI.helpPanel, true);
 	    importOnStartup.setOffset(2);
 	    importOnStartup.addShadow();
 	    last = setPlacement(importOnStartup, last);
 	    AddSetting(importOnStartup);
 
 	    minimize = new LCheckBox("Minimize Patch", AV.settingsFont, AV.yellow);
-	    minimize.tie(AVSaveFile.Settings.MINIMIZE_PATCH, saveFile, SPComplexGUI.helpPanel, true);
+	    minimize.tie(AVSaveFile.Settings.MINIMIZE_PATCH, saveFile, SUMGUI.helpPanel, true);
 	    minimize.setOffset(2);
 	    minimize.addShadow();
 	    last = setPlacement(minimize, last);
@@ -56,7 +56,7 @@ public class SettingsOther extends SPSettingPanel {
 	    debugLevel.addItem("Off");
 	    debugLevel.addItem("AV Debug");
 	    debugLevel.addItem("AV + SkyProc Debug");
-	    debugLevel.tie(Settings.DEBUG_LEVEL, saveFile, SPComplexGUI.helpPanel, true);
+	    debugLevel.tie(Settings.DEBUG_LEVEL, saveFile, SUMGUI.helpPanel, true);
 	    last = setPlacement(debugLevel, last.x + debugLabel.getWidth() + 15,last.y);
 	    AddSetting(debugLevel);
 
@@ -66,7 +66,7 @@ public class SettingsOther extends SPSettingPanel {
 
 	    maxMem = new LNumericSetting("Max Allocated Memory",
 		    AV.settingsFont, AV.yellow, 250, 2000, 250,
-		    Settings.MAX_MEM, saveFile, SPComplexGUI.helpPanel);
+		    Settings.MAX_MEM, saveFile, SUMGUI.helpPanel);
 	    last = setPlacement(maxMem, last);
 	    AddSetting(maxMem);
 

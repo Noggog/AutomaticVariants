@@ -26,7 +26,7 @@ import lev.gui.LButton;
 import lev.gui.LImagePane;
 import lev.gui.LMenuItem;
 import skyproc.SPGlobal;
-import skyproc.gui.SPComplexGUI;
+import skyproc.gui.SUMGUI;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPSettingPanel;
 
@@ -55,9 +55,9 @@ public class SettingsPackagesManager extends SPSettingPanel {
     public boolean initialize() {
 	if (super.initialize()) {
 
-	    tree = new PackageTree(SPComplexGUI.middleDimensions.width - 30,
-		    SPComplexGUI.middleDimensions.height - 165, SPComplexGUI.helpPanel);
-	    tree.setLocation(SPComplexGUI.middleDimensions.width / 2 - tree.getWidth() / 2, last.y + 10);
+	    tree = new PackageTree(SUMGUI.middleDimensions.width - 30,
+		    SUMGUI.middleDimensions.height - 165, SUMGUI.helpPanel);
+	    tree.setLocation(SUMGUI.middleDimensions.width / 2 - tree.getWidth() / 2, last.y + 10);
 	    tree.setMargin(10, 5);
 	    tree.removeBorder();
 	    Add(tree);
@@ -73,7 +73,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
 		    enableSelection(true);
 		}
 	    });
-	    enableButton.linkTo(Settings.PACKAGES_ENABLE, saveFile, SPComplexGUI.helpPanel, true);
+	    enableButton.linkTo(Settings.PACKAGES_ENABLE, saveFile, SUMGUI.helpPanel, true);
 	    enableButton.setFollowPosition(false);
 	    Add(enableButton);
 
@@ -88,7 +88,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
 		    enableSelection(false);
 		}
 	    });
-	    disableButton.linkTo(Settings.PACKAGES_DISABLE, saveFile, SPComplexGUI.helpPanel, true);
+	    disableButton.linkTo(Settings.PACKAGES_DISABLE, saveFile, SUMGUI.helpPanel, true);
 	    disableButton.setFollowPosition(false);
 	    Add(disableButton);
 
@@ -100,7 +100,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
 
 	    optionsMenu = new JPopupMenu();
 	    enable = new LMenuItem("Enable");
-	    enable.linkTo(Settings.PACKAGES_ENABLE, saveFile, SPComplexGUI.helpPanel, true);
+	    enable.linkTo(Settings.PACKAGES_ENABLE, saveFile, SUMGUI.helpPanel, true);
 	    enable.setFollowPosition(false);
 	    enable.addActionListener(new ActionListener() {
 
@@ -112,7 +112,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
 	    optionsMenu.add(enable.getItem());
 
 	    disable = new LMenuItem("Disable");
-	    disable.linkTo(Settings.PACKAGES_DISABLE, saveFile, SPComplexGUI.helpPanel, true);
+	    disable.linkTo(Settings.PACKAGES_DISABLE, saveFile, SUMGUI.helpPanel, true);
 	    disable.setFollowPosition(false);
 	    disable.addActionListener(new ActionListener() {
 
@@ -124,7 +124,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
 	    optionsMenu.add(disable.getItem());
 
 	    compress = new LMenuItem("Compress");
-	    compress.linkTo(Settings.PACKAGES_COMPRESS, saveFile, SPComplexGUI.helpPanel, true);
+	    compress.linkTo(Settings.PACKAGES_COMPRESS, saveFile, SUMGUI.helpPanel, true);
 	    compress.setFollowPosition(false);
 	    compress.addActionListener(new ActionListener() {
 

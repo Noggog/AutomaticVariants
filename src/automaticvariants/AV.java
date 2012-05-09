@@ -1,7 +1,5 @@
 package automaticvariants;
 
-import skyproc.gui.SPProgressBarPlug;
-import skyproc.gui.SUM;
 import automaticvariants.AVSaveFile.Settings;
 import automaticvariants.gui.SettingsHeightPanel;
 import automaticvariants.gui.SettingsOther;
@@ -16,15 +14,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
 import lev.Ln;
 import lev.debug.LDebug;
 import lev.gui.LSaveFile;
 import skyproc.*;
-import skyproc.gui.SPComplexGUI;
-import skyproc.gui.SPMainMenuConfig;
-import skyproc.gui.SPMainMenuPanel;
+import skyproc.gui.*;
 
 /**
  * ToDo: - Make compress work for disabled files
@@ -34,7 +31,7 @@ import skyproc.gui.SPMainMenuPanel;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.3.1 Alpha";
+    public static String version = "1.3.2 Alpha";
 
     /*
      * Static Strings
@@ -74,7 +71,6 @@ public class AV implements SUM {
     static boolean imported = false;
     static boolean exported = false;
     //GUI
-    static public SPComplexGUI GUI = new SPComplexGUI();
     static public SPMainMenuPanel settingsMenu;
     static public SPMainMenuConfig packageManagerConfig;
     static public SettingsPackagesManager packagesManagerPanel;
@@ -112,7 +108,7 @@ public class AV implements SUM {
 	    setDebugLevel();
 	    AVFileVars.gatherFiles();
 
-	    openGUI();
+	    SUMGUI.open(new AV());
 
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.
@@ -122,23 +118,6 @@ public class AV implements SUM {
 	    SPGlobal.closeDebug();
 	}
 
-    }
-
-    static void openGUI() {
-	SUM AV = new AV();
-
-	settingsMenu = new SPMainMenuPanel(green);
-	settingsMenu.addLogo(AV.getLogo());
-	settingsMenu.setVersion(version, new Point(80, 88));
-
-	packagesManagerPanel = new SettingsPackagesManager(settingsMenu);
-	packagesOtherPanel = new SettingsPackagesOther(settingsMenu);
-	settingsMenu.addMenu(packagesManagerPanel, true, save, Settings.PACKAGES_ON);
-
-	otherPanel = new SettingsOther(settingsMenu);
-	settingsMenu.addMenu(otherPanel, false, save, Settings.AV_SETTINGS);
-
-	SPComplexGUI.open(AV);
     }
 
     static void setDebugLevel() {
@@ -371,7 +350,7 @@ public class AV implements SUM {
 
     @Override
     public String getName() {
-	throw new UnsupportedOperationException("Not supported yet.");
+	return "Automatic Variants";
     }
 
     @Override
@@ -394,6 +373,16 @@ public class AV implements SUM {
 
     @Override
     public SPMainMenuPanel getStandardMenu() {
+	settingsMenu = new SPMainMenuPanel(green);
+	settingsMenu.addLogo(this.getLogo());
+	settingsMenu.setVersion(version, new Point(80, 88));
+
+	packagesManagerPanel = new SettingsPackagesManager(settingsMenu);
+	packagesOtherPanel = new SettingsPackagesOther(settingsMenu);
+	settingsMenu.addMenu(packagesManagerPanel, true, save, Settings.PACKAGES_ON);
+
+	otherPanel = new SettingsOther(settingsMenu);
+	settingsMenu.addMenu(otherPanel, false, save, Settings.AV_SETTINGS);
 	return settingsMenu;
     }
 
@@ -464,12 +453,7 @@ public class AV implements SUM {
 
     @Override
     public boolean hasCustomMenu() {
-	throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void openCustomMenu() {
-	throw new UnsupportedOperationException("Not supported yet.");
+	return false;
     }
 
     @Override
@@ -484,7 +468,7 @@ public class AV implements SUM {
 
     @Override
     public Mod getExportPatch() {
-	Mod patch = new Mod("Automatic Variants", false);
+	Mod patch = new Mod(getListing());
 	patch.setFlag(Mod.Mod_Flags.STRING_TABLED, false);
 	patch.setAuthor("Leviathan1753");
 	return patch;
@@ -493,5 +477,15 @@ public class AV implements SUM {
     @Override
     public Color getHeaderColor() {
 	return green;
+    }
+
+    @Override
+    public JFrame getCustomMenu() {
+	throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ModListing getListing() {
+	return new ModListing("Automatic Variants", false);
     }
 }
