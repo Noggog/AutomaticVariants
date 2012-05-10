@@ -4,7 +4,6 @@
  */
 package automaticvariants;
 
-import skyproc.gui.SPProgressBarPlug;
 import automaticvariants.AVSaveFile.Settings;
 import automaticvariants.Variant.VariantSpec;
 import automaticvariants.gui.PackageTree;
@@ -20,6 +19,7 @@ import lev.Ln;
 import skyproc.*;
 import skyproc.exceptions.BadParameter;
 import skyproc.exceptions.Uninitialized;
+import skyproc.gui.SPProgressBarPlug;
 
 /**
  * All the functionality concerning setting up variants associated with race
@@ -37,37 +37,42 @@ public class AVFileVars {
     public static String inactiveAVPackagesDir = "Inactive AV Packages\\";
     public static String AVTexturesDir = SPGlobal.pathToData + "textures\\AV Packages\\";
     public static String AVMeshesDir = SPGlobal.pathToData + "meshes\\AV Packages\\";
-    static String changeRaceFormList = "RaceOptions";
-    static String changeRaceBoundWeapons = "BoundWeapons";
+    static String debugFolder = "File Variants/";
     static int numSupportedTextures = 8;
-
+    public static PackageComponent AVPackages = new PackageComponent(new File(AVPackagesDir), PackageComponent.Type.ROOT);
     /*
      * Variant storage lists/maps
      */
-    public static PackageComponent AVPackages = new PackageComponent(new File(AVPackagesDir), PackageComponent.Type.ROOT);
+    // List of unused things to skip
     static HashSet<FormID> unusedRaces;
     static HashSet<FormID> unusedSkins;
     static LMergeMap<FormID, FormID> unusedPieces;
+    // List of what races the armor "supports"
+    static LMergeMap<FormID, FormID> armoRaces;
+    ///////////////////
     // AV_Nif name is key
+    ///////////////////
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     static LMergeMap<String, ARMA> nifToARMA = new LMergeMap<String, ARMA>(false);
     static LMergeMap<ARMO, FormID> ARMOToRace = new LMergeMap<ARMO, FormID>(false);
+    //////////////////
     // ArmaSrc is key
+    //////////////////
     static Map<FormID, String> armaToNif = new HashMap<FormID, String>();
     static LMergeMap<FormID, ARMA_spec> armatures = new LMergeMap<FormID, ARMA_spec>(false);
-    // ArmoSrc is key
-    static LMergeMap<FormID, ARMO_spec> armors = new LMergeMap<FormID, ARMO_spec>(false);
-    static LMergeMap<FormID, RACE_spec> races = new LMergeMap<FormID, RACE_spec>(false);
-    static Map<FormID, FLST> formLists = new HashMap<FormID, FLST>();
-    static Map<FormID, SPEL> switcherSpells = new HashMap<FormID, SPEL>();
-    // NpcSrc is Key
-    static Map<FormID, LVLN> llists = new HashMap<FormID, LVLN>();
-    static LMergeMap<FormID, NPC_spec> npcs = new LMergeMap<FormID, NPC_spec>(false);
+    //////////////////
+    // ArmoSrc is key for outer, race of arma piece is inner key
+    //////////////////
+    static Map<FormID, LMergeMap<FormID, ARMO_spec>> armors = new HashMap<FormID, LMergeMap<FormID, ARMO_spec>>();
+    //////////////////
+    // RaceSrc of piece is key for outer, armo is inner key
+    //////////////////
+    static Map<FormID, Map<FormID, FLST>> formLists = new HashMap<FormID, Map<FormID, FLST>>();
+    //////////////////
     // RaceSrc is key
-    static Map<FormID, RACE> switcherRaces = new HashMap<FormID, RACE>();
-    static FLST boundList;
-    static boolean raceSwitchMethod = false;
-    static String debugFolder = "File Variants/";
+    //////////////////
+    static Map<FormID, SPEL_setup> switcherSpells = new HashMap<FormID, SPEL_setup>();
+    static Map<NPC_, Map<FormID, FormID>> npcRacesToSkins = new HashMap<NPC_, Map<FormID, FormID>>();
 
     static void setUpFileVariants(Mod source, Mod patch) throws IOException, Uninitialized, BadParameter {
 	if (SPGlobal.logging()) {
@@ -103,66 +108,23 @@ public class AVFileVars {
 	// Generate ARMO dups that use ARMAs
 	generateARMOvariants(source);
 
-	// Split between two methods of achiving variants in-game.
-	// Currently using NPC dup method
-	if (raceSwitchMethod) {
-	    raceSwitchMethod(source);
-	} else {
-	    npcDupMethod(source);
-	}
+	skinSwitchMethod(source);
 
 	for (PackageComponent p : AVPackages.getAll()) {
 	    p.moveOut();
 	}
     }
 
-    static void npcDupMethod(Mod source) {
-	// Flatten unique NPC templates
-	handleUniqueNPCTemplates(source);
-
-	// Generate NPC_ dups that use ARMO skins
-	generateNPCvariants(source);
-
-	prepAndAddOriginals(source);
-
-	// Load NPC_ dups into LVLNs
-	generateLVLNs(source);
-
-	// Apply template routing from original NPCs to new LLists
-	generateTemplating(source);
-
-	// Replace original NPCs in orig LVLNs, as CK throws warning/error for it
-	subInOldLVLNs(source);
-
-	// Bethesda doesn't like two LLists being on the same template chain
-	// Searches for LList entries that template to new AV LLists and
-	// Flattens their templating and sets up variants of their own to
-	// Route around the issue.
-	dupTemplatedLVLNentries(source);
-
-//	handleUniqueNPCLListTemplates(source);
-
-	printVariantList();
-    }
-
-    static void raceSwitchMethod(Mod source) {
-
-	// Generate RACE dups that use ARMOs
-	generateRACEvariants(source);
+    static void skinSwitchMethod(Mod source) {
 
 	// Generate FormLists of RACE variants
 	generateFormLists(source);
 
-	// Generate FormList of bound weapons, for race switch script
-	locateBoundWeapons(source);
-
 	// Generate Spells that use Race Switcher Magic Effects
-	generateSPELvariants();
+	generateSPELvariants(source);
 
-	attachSPELs();
-
-	// Sub In script attachment races on target NPCs
-	subInSwitcherRaces(source);
+	// Add AV keywords to NPCs that have alt skins
+	loadAltNpcs(source);
     }
 
     /*
@@ -188,10 +150,6 @@ public class AVFileVars {
 
     public static void locateUnused(Mod source) {
 
-	if (!AV.save.getBool(Settings.MINIMIZE_PATCH)) {
-	    return;
-	}
-
 	// Load all races, skins, pieces into containers
 	unusedRaces = new HashSet<FormID>(source.getRaces().numRecords());
 	for (RACE race : source.getRaces()) {
@@ -199,12 +157,14 @@ public class AVFileVars {
 	}
 	unusedSkins = new HashSet<FormID>(source.getArmors().numRecords());
 	unusedPieces = new LMergeMap<FormID, FormID>(false);
+	armoRaces = new LMergeMap<FormID, FormID>(false);
 	LMergeMap<FormID, ARMA> unusedPiecesTmp = new LMergeMap<FormID, ARMA>(false);
 	for (ARMO armor : source.getArmors()) {
 	    if (!unusedSkins.contains(armor.getForm())) {
 		unusedSkins.add(armor.getForm());
 		for (FormID piece : armor.getArmatures()) {
 		    ARMA arma = (ARMA) SPDatabase.getMajor(piece, GRUP_TYPE.ARMA);
+		    armoRaces.put(armor.getForm(), arma.getRace());
 		    unusedPiecesTmp.put(armor.getForm(), arma);
 		}
 	    }
@@ -612,14 +572,10 @@ public class AVFileVars {
 	for (ARMO armoSrc : source.getArmors()) {
 
 	    LMergeMap<FormID, ARMA_spec> targets = new LMergeMap<FormID, ARMA_spec>(false);
-	    int largest = 0;
 	    for (FormID armaForm : armoSrc.getArmatures()) {
 		ARMA arma = (ARMA) SPDatabase.getMajor(armaForm);
 		if (arma != null) {
 		    if (armatures.containsKey(armaForm)) {
-			if (largest < armatures.get(armaForm).size()) {
-			    largest = armatures.get(armaForm).size();
-			}
 			targets.put(armaForm, armatures.get(armaForm));
 		    }
 		}
@@ -640,7 +596,9 @@ public class AVFileVars {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "  Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(arma, GRUP_TYPE.ARMA));
 		}
-		ArrayList<ARMO_spec> dups = new ArrayList<ARMO_spec>(targets.numVals());
+		if (!armors.containsKey(armoSrc.getForm())) {
+		    armors.put(armoSrc.getForm(), new LMergeMap<FormID, ARMO_spec>(false));
+		}
 		for (ARMA_spec variant : targets.get(arma)) {
 		    String edid = variant.arma.getEDID().substring(0, variant.arma.getEDID().lastIndexOf("_arma"));
 		    edid = edid.substring(0, edid.lastIndexOf("_")) + "_" + armoSrc.getEDID() + "_armo";  // replace ARMA string with ARMO name
@@ -648,9 +606,8 @@ public class AVFileVars {
 
 		    dup.removeArmature(arma);
 		    dup.addArmature(variant.arma.getForm());
-		    dups.add(new ARMO_spec(dup, variant, variant.arma.getRace()));
+		    armors.get(armoSrc.getForm()).put(variant.arma.getRace(), new ARMO_spec(dup, variant, variant.arma.getRace()));
 		}
-		armors.put(armoSrc.getForm(), dups);
 	    }
 	}
 	printVariants();
@@ -662,8 +619,13 @@ public class AVFileVars {
 	    SPGlobal.log(header, "Variants loaded: ");
 	    for (FormID srcArmor : armors.keySet()) {
 		SPGlobal.log(header, "  Armor " + SPDatabase.getMajor(srcArmor) + " has " + armors.get(srcArmor).size() + " variants.");
-		for (ARMO_spec variant : armors.get(srcArmor)) {
-		    SPGlobal.log(header, "    " + variant.armo + ", prob divider: 1/" + variant.probDiv);
+		for (FormID armoSrc : armors.keySet()) {
+		    for (FormID race : armors.get(armoSrc).keySet()) {
+			SPGlobal.log(header, "    For race: " + SPDatabase.getMajor(race, GRUP_TYPE.RACE));
+			for (ARMO_spec variant : armors.get(armoSrc).get(race)) {
+			    SPGlobal.log(header, "      " + variant.armo + ", prob divider: 1/" + variant.probDiv);
+			}
+		    }
 		}
 	    }
 	}
@@ -672,181 +634,187 @@ public class AVFileVars {
     /*
      * Race Switch Methods
      */
-    static void generateRACEvariants(Mod source) {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Generating RACE variants.");
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Generating RACE duplicates for each ARMO variant");
-	    SPGlobal.log(header, "====================================================================");
-	}
-	for (FormID armoSrcID : armors.keySet()) {
-	    ARMO armoSrc = (ARMO) SPDatabase.getMajor(armoSrcID, GRUP_TYPE.ARMO);
-	    RACE raceSrc = null;
-	    if (!armoSrc.getRace().equals(FormID.NULL)) {
-		raceSrc = (RACE) SPDatabase.getMajor(armoSrc.getRace(), GRUP_TYPE.RACE);
-	    } else if (SPGlobal.logging()) {
-		SPGlobal.log(header, "  Dup ARMO " + armoSrc + " had no race.  Skipping.");
-		continue;
-	    }
-
-	    if (raceSrc == null) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "  Dup ARMO " + armoSrc + " had a formID that was not a race: " + armoSrc.getRace());
-		}
-		continue;
-	    } else if (SPGlobal.logging()) {
-		SPGlobal.log(header, "  Duplicating " + raceSrc + ", for " + armoSrc);
-	    }
-
-	    ArrayList<RACE_spec> dups = new ArrayList<RACE_spec>(armors.get(armoSrcID).size());
-	    for (ARMO_spec armoDupSpec : armors.get(armoSrcID)) {
-		ARMO armoDup = armoDupSpec.armo;
-		ARMA armaDup = armoDupSpec.targetArma;
-		RACE raceDup = (RACE) SPGlobal.getGlobalPatch().makeCopy(raceSrc, armoDup.getEDID().substring(0, armoDup.getEDID().lastIndexOf("_armo")) + "_race");
-		raceDup.setWornArmor(armoDup.getForm());
-		armoDup.setRace(raceDup.getForm());
-		armaDup.setRace(raceDup.getForm());
-		dups.add(new RACE_spec(raceDup, armoDupSpec));
-	    }
-	    races.put(armoSrc.getForm(), dups);
-	}
-	SPProgressBarPlug.progress.incrementBar();
-    }
-
     static void generateFormLists(Mod source) {
 	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Generating Form Lists.");
 	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "6 - Generate Form Lists.txt");
 	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Generating FormLists for each RACE variant");
+	    SPGlobal.log(header, "Generating FormLists for each ARMO variant");
 	    SPGlobal.log(header, "====================================================================");
 	}
-	for (FormID armoSrcForm : races.keySet()) {
+	for (FormID armoSrcForm : armors.keySet()) {
 	    ARMO armoSrc = (ARMO) SPDatabase.getMajor(armoSrcForm, GRUP_TYPE.ARMO);
-	    FLST flst = new FLST(SPGlobal.getGlobalPatch(), "AV_" + armoSrc.getEDID() + "_flst");
 	    if (SPGlobal.logging()) {
-		SPGlobal.log(header, "  Generating FLST " + flst);
+		SPGlobal.log(header, "  Generating FLSTs for " + armoSrc);
 	    }
-
-	    ArrayList<RACE_spec> raceVars = races.get(armoSrcForm);
-	    int[] divs = new int[raceVars.size()];
-	    for (int i = 0; i < divs.length; i++) {
-		divs[i] = raceVars.get(i).probDiv;
-	    }
-	    int lowestCommMult = Ln.lcmm(divs);
-
-	    for (RACE_spec raceSpec : races.get(armoSrcForm)) {
+	    for (FormID race : armors.get(armoSrcForm).keySet()) {
+		RACE raceSrc = (RACE) SPDatabase.getMajor(race, GRUP_TYPE.RACE);
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "    Generating " + (lowestCommMult / raceSpec.probDiv) + " entries for " + raceSpec.race);
+		    SPGlobal.log(header, "    Generating FLST for race " + raceSrc);
 		}
-		for (int i = 0; i < lowestCommMult / raceSpec.probDiv; i++) {
-		    flst.addFormEntry(raceSpec.race.getForm());
+		FLST flst = new FLST(SPGlobal.getGlobalPatch(), "AV_" + armoSrc.getEDID() + "_" + raceSrc.getEDID() + "_flst");
+		ArrayList<ARMO_spec> armoVars = armors.get(armoSrcForm).get(race);
+		int[] divs = new int[armoVars.size()];
+		for (int i = 0; i < divs.length; i++) {
+		    divs[i] = armoVars.get(i).probDiv;
 		}
+		int lowestCommMult = Ln.lcmm(divs);
+
+		for (ARMO_spec armorSpec : armors.get(armoSrcForm).get(race)) {
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "      Generating " + (lowestCommMult / armorSpec.probDiv) + " entries for " + armorSpec.armo);
+		    }
+		    for (int i = 0; i < lowestCommMult / armorSpec.probDiv; i++) {
+			flst.addFormEntry(armorSpec.armo.getForm());
+		    }
+		}
+		if (!formLists.containsKey(race)) {
+		    formLists.put(race, new HashMap<FormID, FLST>());
+		}
+		formLists.get(race).put(armoSrcForm, flst);
 	    }
-	    formLists.put(armoSrcForm, flst);
+
 	}
 	SPProgressBarPlug.progress.incrementBar();
     }
 
-    static void locateBoundWeapons(Mod source) {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Locating bound weapons.");
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Locating Bound Weapons");
-	    SPGlobal.log(header, "====================================================================");
-	}
-	boundList = new FLST(SPGlobal.getGlobalPatch(), "AV_BoundWeaponsList");
-	for (WEAP weap : source.getWeapons()) {
-	    if (weap.get(WEAP.WeaponFlag.BoundWeapon)) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "  Added: " + weap);
-		}
-		boundList.addFormEntry(weap.getForm());
-	    }
-	}
-	SPProgressBarPlug.progress.incrementBar();
-    }
-
-    static void generateSPELvariants() {
+    static void generateSPELvariants(Mod source) {
 	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Generating script attachment races.");
 	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "7 - Generate Switcher Spells.txt");
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Generating Spells which attach specialized scripts");
 	    SPGlobal.log(header, "====================================================================");
 	}
-	for (FormID armoSrc : formLists.keySet()) {
-	    FLST flst = formLists.get(armoSrc);
-	    String name = flst.getEDID().substring(flst.getEDID().indexOf("AV_") + 3, flst.getEDID().lastIndexOf("_flst"));
-	    ScriptRef script = AV.generateAttachScript();
-	    script.setProperty(changeRaceBoundWeapons, boundList.getForm());
-	    script.setProperty(changeRaceFormList, flst.getForm());
-	    script.setProperty(AV.changeRaceOn, true);
-	    switcherSpells.put(armoSrc, NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), script, name));
-	}
-	SPProgressBarPlug.progress.incrementBar();
-    }
 
-    static void attachSPELs() {
-	for (FormID armoSrcForm : switcherSpells.keySet()) {
-	    FormID switcherSpell = switcherSpells.get(armoSrcForm).getForm();
-	    for (RACE_spec r : races.get(armoSrcForm)) {
-		r.race.addSpell(switcherSpell);
-	    }
-	}
-    }
-
-    static void subInSwitcherRaces(Mod source) {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Switching in scripted race versions.");
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Switching target NPC's races to scripted versions");
-	    SPGlobal.log(header, "====================================================================");
-	}
-	boolean last = false;
-	for (NPC_ npcSrc : source.getNPCs()) {
-
-	    // Locate if any variants are available
-	    FormID armorForm = npcSrc.getSkin();
-	    if (npcSrc.getSkin().equals(FormID.NULL)) {
-		RACE race = (RACE) SPDatabase.getMajor(npcSrc.getRace());
-		if (race == null) {
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "Skipping " + npcSrc + " : did not have a worn armor or race.");
-		    }
-		    continue;
-		}
-		armorForm = race.getWornArmor();
-	    }
-	    if (formLists.containsKey(armorForm)) {
-
-		if (AV.checkNPCskip(npcSrc, true, last)) {
-		    last = false;
-		    continue;
-		}
-
+	for (RACE raceSrc : source.getRaces()) {
+	    if (formLists.containsKey(raceSrc.getForm())) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		    SPGlobal.log(header, "| Scripting " + npcSrc + ", for " + SPDatabase.getMajor(armorForm, GRUP_TYPE.ARMO));
-		    last = true;
+		    SPGlobal.log(header, "Has variants: " + raceSrc);
 		}
+		SPEL_setup spell = new SPEL_setup(raceSrc);
 
-		RACE switchRace = races.get(armorForm).get(0).race;
-
-		npcSrc.setRace(switchRace.getForm());
-
-		// If has special skin, remove it
-		if (!npcSrc.getSkin().equals(FormID.NULL)) {
-		    ARMO specialSkin = (ARMO) SPDatabase.getMajor(npcSrc.getSkin(), GRUP_TYPE.ARMO);
-		    npcSrc.setSkin(FormID.NULL);
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "| Had special skin " + specialSkin + ".  Removed.");
+		// Add Alt Skins to key/array setup
+		for (FormID skinF : formLists.get(raceSrc.getForm()).keySet()) {
+		    if (!skinF.equals(raceSrc.getWornArmor())) {
+			if (SPGlobal.logging()) {
+			    SPGlobal.log(header, "  Has alt skin " + SPDatabase.getMajor(skinF, GRUP_TYPE.ARMO));
+			}
+			ARMO skin = (ARMO) SPDatabase.getMajor(skinF, GRUP_TYPE.ARMO);
+			FLST npcList = new FLST(SPGlobal.getGlobalPatch(), "AV_" + raceSrc.getEDID() + "_" + skin.getEDID() + "_flst_NPCList");
+			spell.key.addFormEntry(npcList.getForm());
+			spell.array.addFormEntry(formLists.get(raceSrc.getForm()).get(skinF).getForm());
 		    }
 		}
 
-		SPGlobal.getGlobalPatch().addRecord(npcSrc);
-		AV.modifiedNPCs.put(armorForm, npcSrc);
+		// Add normal worn armor to last on the array
+		if (formLists.get(raceSrc.getForm()).containsKey(raceSrc.getWornArmor())) {
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "  Added normal skin " + SPDatabase.getMajor(raceSrc.getWornArmor(), GRUP_TYPE.ARMO));
+		    }
+		    spell.array.addFormEntry(formLists.get(raceSrc.getForm()).get(raceSrc.getWornArmor()).getForm());
+		}
+
+		switcherSpells.put(raceSrc.getForm(), spell);
+		raceSrc.addSpell(spell.spell.getForm());
+		SPGlobal.getGlobalPatch().addRecord(raceSrc);
 	    }
 	}
 	SPProgressBarPlug.progress.incrementBar();
+    }
+
+    static void loadAltNpcs(Mod source) {
+	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Loading NPCs.");
+	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "8 - Loading NPCs.txt");
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Loading NPCs that have alt races");
+	    SPGlobal.log(header, "====================================================================");
+	}
+	for (NPC_ n : source.getNPCs()) {
+	    // Race is key, Skin is value
+	    Map<FormID, FormID> racesAndSkins = getRacesAndSkins(n);
+	    if (!racesAndSkins.isEmpty()) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, n.toString());
+		    for (FormID race : racesAndSkins.keySet()) {
+			SPGlobal.log(header, "  " + SPDatabase.getMajor(race, GRUP_TYPE.RACE));
+			SPGlobal.log(header, "    " + SPDatabase.getMajor(racesAndSkins.get(race), GRUP_TYPE.ARMO));
+		    }
+		}
+//		if (keywords.containsKey(n.getSkin())) {
+//		    if (SPGlobal.logging()) {
+//			SPGlobal.log(header, "Tagged " + n);
+//		    }
+//		    n.keywords.addKeywordRef(keywords.get(n.getSkin()).getForm());
+//		    SPGlobal.getGlobalPatch().addRecord(n);
+//		} else {
+//		    RACE race = (RACE) SPDatabase.getMajor(n.getRace(), GRUP_TYPE.RACE);
+//		    if (!race.getWornArmor().equals(n.getSkin())) {
+//			if (SPGlobal.logging()) {
+//			    SPGlobal.log(header, "Tagged As Excluded Skin " + n);
+//			}
+//			n.keywords.addKeywordRef(excluded.getForm());
+//			SPGlobal.getGlobalPatch().addRecord(n);
+//		    }
+//		}
+	    }
+	}
+    }
+
+    static Map<FormID, FormID> getRacesAndSkins(NPC_ n) {
+	if (npcRacesToSkins.containsKey(n)) {
+	    return npcRacesToSkins.get(n);
+	}
+
+	Map<FormID, FormID> out;
+	if (!n.getTemplate().isNull() && n.get(NPC_.TemplateFlag.USE_TRAITS)) {
+	    NPC_ npc = (NPC_) SPDatabase.getMajor(n.getTemplate(), GRUP_TYPE.NPC_);
+	    if (npc != null) {
+		out = getRacesAndSkins(npc);
+	    } else {
+		out = getRacesAndSkins((LVLN) SPDatabase.getMajor(n.getTemplate(), GRUP_TYPE.LVLN));
+	    }
+	} else {
+	    if (!n.getSkin().isNull()) {
+		out = new HashMap<FormID, FormID>(1);
+		out.put(n.getRace(), n.getSkin());
+		return out;
+	    } else {
+		out = new HashMap<FormID, FormID>(0);
+	    }
+	}
+
+	npcRacesToSkins.put(n, out);
+	return out;
+    }
+
+    static Map<FormID, FormID> getRacesAndSkins(LVLN llist) {
+	Map<FormID, FormID> out = new HashMap<FormID, FormID>(3);
+	for (LVLO entry : llist.getEntries()) {
+	    NPC_ npc = (NPC_) SPDatabase.getMajor(entry.getForm(), GRUP_TYPE.NPC_);
+	    Map<FormID, FormID> tmp;
+	    if (npc != null) {
+		tmp = getRacesAndSkins(npc);
+	    } else {
+		tmp = getRacesAndSkins((LVLN) SPDatabase.getMajor(entry.getForm(), GRUP_TYPE.LVLN));
+	    }
+	    for (FormID key : tmp.keySet()) {
+		if (out.containsKey(key)
+			&& !out.get(key).isNull()
+			&& !out.get(key).equals(tmp.get(key))) {
+		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, header, "Warning: Ambiguous LVLN setup");
+		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, header, "  " + llist);
+		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, header, "  Has race " + SPDatabase.getMajor(key, GRUP_TYPE.RACE));
+		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, header, "  with two differing skins to pick from:");
+		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, header, "    " + SPDatabase.getMajor(tmp.get(key), GRUP_TYPE.ARMO));
+		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, header, "    " + SPDatabase.getMajor(out.get(key), GRUP_TYPE.ARMO));
+		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, header, "---------------------------");
+		}
+	    }
+	    out.putAll(tmp);
+	}
+	return out;
     }
 
     static void printModifiedNPCs() {
@@ -860,346 +828,6 @@ public class AVFileVars {
 		    SPGlobal.log(header, "    " + n);
 		}
 		SPGlobal.log(header, "--------------------------------------");
-	    }
-	}
-    }
-
-    /*
-     * NPC dup methods
-     */
-    static void generateNPCvariants(Mod source) {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Generating NPC variants.");
-	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "6 - Generate NPC.txt");
-	    SPGlobal.log(header, "====================================================================================================");
-	    SPGlobal.log(header, "Generating NPC duplicates for each ARMO skin.  Only NPCs that have skin directly without templating.");
-	    SPGlobal.log(header, "====================================================================================================");
-	}
-	boolean last = false;
-	for (NPC_ npcSrc : source.getNPCs()) {
-
-	    // Locate if any variants are available
-	    FormID armorForm = getUsedSkin(npcSrc);
-	    if (armorForm == null) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "  Skipping " + npcSrc + " : did not have a worn armor or race.");
-		}
-		continue;
-	    }
-
-	    ArrayList<ARMO_spec> skinVariants = armors.get(armorForm);
-
-	    // If npc has skin with variants
-	    if (skinVariants != null) {
-
-		// See if any variants races match npc's
-		boolean match = false;
-		for (ARMO_spec variant : skinVariants) {
-		    if (variant.targetRace.equals(npcSrc.getRace())) {
-			match = true;
-			break;
-		    }
-		}
-		if (!match) {
-		    continue;
-		}
-
-		// Check if this is an NPC to skip
-		if (AV.checkNPCskip(npcSrc, true, last)) {
-		    last = false;
-		    continue;
-		}
-
-		// Find if NPC has a template
-		NPC_ template = null;
-		if (!npcSrc.getTemplate().equals(FormID.NULL)) {
-		    template = (NPC_) SPDatabase.getMajor(npcSrc.getTemplate(), GRUP_TYPE.NPC_);
-		}
-
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		    SPGlobal.log(header, "| Duplicating " + npcSrc + ", for " + SPDatabase.getMajor(armorForm, GRUP_TYPE.ARMO));
-		    if (template != null) {
-			SPGlobal.log(header, "| Flattening template to " + template);
-		    }
-		    last = true;
-		}
-
-		ArrayList<NPC_spec> dups = new ArrayList<NPC_spec>(skinVariants.size());
-		for (ARMO_spec variant : skinVariants) {
-		    // If skin's target race does not match npc's, skip.
-		    if (!npcSrc.getRace().equals(variant.targetRace)) {
-			continue;
-		    }
-
-		    // Duplicate the source NPC
-		    String newEDID;
-		    newEDID = variant.armo.getEDID().substring(0, variant.armo.getEDID().lastIndexOf("_ID_")) + "_" + npcSrc.getEDID();
-		    NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc, newEDID);
-
-		    // Flatten the dup's template chain so it has no template.
-		    if (template != null) {
-			dup.templateTo(template);
-		    }
-
-		    // Set skin to AV's variant
-		    dup.setSkin(variant.armo.getForm());
-
-		    dups.add(new NPC_spec(dup, variant));
-		}
-		npcs.put(npcSrc.getForm(), dups);
-	    }
-	}
-
-	SPProgressBarPlug.progress.incrementBar();
-    }
-
-    static void prepAndAddOriginals(Mod source) {
-	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "7 - Prep and add Originals.txt");
-	    SPGlobal.log(header, "====================================================================================================");
-	    SPGlobal.log(header, "AV Prepping and Adding Originals as Variants");
-	    SPGlobal.log(header, "====================================================================================================");
-	}
-	for (NPC_ npcSrc : source.getNPCs()) {
-	    if ((npcs.containsKey(npcSrc.getForm()) && AV.save.getBool(Settings.PACKAGES_ORIG_AS_VAR))
-		    || (!npcs.containsKey(npcSrc.getForm()) && AV.save.getBool(Settings.PACKAGES_PREP) && !AV.checkNPCskip(npcSrc, false, false))) {
-		if (SPGlobal.logging()) {
-		    if (npcs.containsKey(npcSrc.getForm())) {
-			SPGlobal.log(header, "  Added as variant: " + npcSrc);
-		    } else {
-			SPGlobal.log(header, "  Prepped: " + npcSrc);
-		    }
-		}
-		NPC_ dup = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcSrc, "AV_OrigVar_" + npcSrc.getEDID());
-		if (!npcSrc.getTemplate().equals(FormID.NULL)) {
-		    dup.templateTo(npcSrc.getTemplate());
-		}
-		npcs.put(npcSrc.getForm(), new NPC_spec(dup));
-	    }
-	}
-    }
-
-    static void generateLVLNs(Mod source) {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Loading NPC variants into Leveled Lists.");
-	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "8 - Generate LVLN.txt");
-	    SPGlobal.log(header, "===================================================");
-	    SPGlobal.log(header, "Generating LVLNs loaded with NPC variants.");
-	    SPGlobal.log(header, "===================================================");
-	}
-	for (FormID srcNpc : npcs.keySet()) {
-	    if (SPGlobal.logging()) {
-		SPGlobal.log(header, "Generating for " + SPDatabase.getMajor(srcNpc));
-	    }
-
-	    LVLN llist = new LVLN(SPGlobal.getGlobalPatch(), "AV_" + source.getNPCs().get(srcNpc).getEDID() + "_llist");
-	    ArrayList<NPC_spec> npcVars = npcs.get(srcNpc);
-	    if (npcVars.isEmpty()) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "  Skipping because variant list was empty");
-		}
-		continue;
-	    }
-	    int[] divs = new int[npcVars.size()];
-	    for (int i = 0; i < divs.length; i++) {
-		divs[i] = npcVars.get(i).probDiv;
-	    }
-	    int lowestCommMult = Ln.lcmm(divs);
-
-	    for (NPC_spec n : npcVars) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "  Generating " + (lowestCommMult / n.probDiv) + " entries for " + n.npc);
-		}
-		for (int i = 0; i < lowestCommMult / n.probDiv; i++) {
-		    llist.addEntry(new LVLO(n.npc.getForm(), 1, 1));
-		}
-	    }
-	    llists.put(srcNpc, llist);
-
-	    if (SPGlobal.logging()) {
-		SPGlobal.log(header, "--------------------------------------------------");
-	    }
-	}
-	SPProgressBarPlug.progress.incrementBar();
-    }
-
-    static void generateTemplating(Mod source) {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Templating original NPCs to variant LLists.");
-	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "9 - Generate Templating.txt");
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Setting source NPCs to template to LVLN loaded with variants");
-	    SPGlobal.log(header, "====================================================================");
-	}
-	for (NPC_ npcSrc : source.getNPCs()) {
-	    FormID npcForm = npcSrc.getForm();
-	    if (llists.containsKey(npcForm)) {
-		npcSrc.setTemplate(llists.get(npcForm).getForm());
-		npcSrc.set(NPC_.TemplateFlag.USE_TRAITS, true);
-		SPGlobal.getGlobalPatch().addRecord(npcSrc);
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Templating " + npcSrc + " with " + llists.get(npcForm));
-		}
-	    }
-	}
-	SPProgressBarPlug.progress.incrementBar();
-    }
-
-    static void subInOldLVLNs(Mod source) {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Replacing original LVLN entries.");
-	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "10 - Replacing original LVLN entries.txt");
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Replacing old NPC entries in your mod's LVLNs");
-	    SPGlobal.log(header, "====================================================================");
-	}
-	for (LVLN llistSrc : source.getLeveledCreatures()) {
-	    boolean add = false;
-	    for (LVLO entry : llistSrc) {
-		if (llists.containsKey(entry.getForm())) {
-		    entry.setForm(llists.get(entry.getForm()).getForm());
-		    add = true;
-		}
-	    }
-	    if (add) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Modified " + llistSrc);
-		}
-		SPGlobal.getGlobalPatch().addRecord(llistSrc);
-	    }
-	}
-	SPProgressBarPlug.progress.incrementBar();
-    }
-
-    static void dupTemplatedLVLNentries(Mod source) {
-	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "11 - Bloom templated LVLN entries.txt");
-	    SPGlobal.log(header, "============================================================================================");
-	    SPGlobal.log(header, "Checking each LVLN entry for traits templating to new variants.  Duplicating and replacing");
-	    SPGlobal.log(header, "============================================================================================");
-	}
-	for (LVLN llist : source.getLeveledCreatures()) {
-
-	    boolean add = false;
-	    for (LVLO entry : llist) {
-		LVLN template = NiftyFunc.isTemplatedToLList(entry.getForm());
-		if (template != null && template.getFormMaster().equals(SPGlobal.getGlobalPatch().getInfo())) { // If entry is NPC and templated to an AV LList
-		    NPC_ npcEntry = (NPC_) SPDatabase.getMajor(entry.getForm(), GRUP_TYPE.NPC_);
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "  " + npcEntry + " replaced.");
-		    }
-
-		    LVLN sub = llists.get(entry.getForm());
-		    if (sub == null) { // If variant LList does not already exist for entry NPC, create it
-			if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "    Creating variants.");
-			}
-			sub = createLVLNvariant(npcEntry, template);
-		    }
-
-		    entry.setForm(sub.getForm());
-		    add = true;
-		}
-	    }
-	    if (add) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Modified " + llist);
-		    SPGlobal.log(header, "----------------------------------------------------------------");
-		}
-		SPGlobal.getGlobalPatch().addRecord(llist);
-	    }
-	}
-    }
-
-    static LVLN createLVLNvariant(NPC_ npcEntry, LVLN template) {
-	LVLN out = new LVLN(SPGlobal.getGlobalPatch(), "AV_" + npcEntry.getEDID() + "_llist");
-
-	// Map to store NPC dups just in case there are multiple entries of the same skin
-	Map<FormID, NPC_> skinToNPCdup = new HashMap<FormID, NPC_>();
-
-	// Make NPC duplicates for each in the template LList.
-	for (LVLO templateEntry : template) {
-	    NPC_ templateNPC = (NPC_) SPGlobal.getGlobalPatch().getNPCs().get(templateEntry.getForm());
-	    String[] edidSplit = templateNPC.getEDID().split("_");
-	    String edidBase;
-	    if (edidSplit.length > 4) {
-		// If normal AV variant
-		edidBase = edidSplit[0] + "_" + edidSplit[1] + "_" + edidSplit[2] + "_" + edidSplit[3] + "_" + edidSplit[4];
-	    } else {
-		// If orig as var variant
-		edidBase = templateNPC.getEDID().substring(0, templateNPC.getEDID().lastIndexOf("_")) + "_TEST";
-	    }
-
-	    NPC_ dupNPC = skinToNPCdup.get(templateNPC.getSkin());
-	    if (dupNPC == null) {
-		dupNPC = (NPC_) SPGlobal.getGlobalPatch().makeCopy(npcEntry, edidBase + "_" + npcEntry.getEDID());
-		dupNPC.templateTo(templateNPC);
-		skinToNPCdup.put(templateNPC.getSkin(), dupNPC);
-	    }
-	    out.addEntry(new LVLO(dupNPC.getForm(), 1, 1));
-	}
-	llists.put(npcEntry.getForm(), out);
-	return out;
-    }
-
-    static void handleUniqueNPCTemplates(Mod source) {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Flattening unique templates");
-	    SPGlobal.log(header, "====================================================================");
-	}
-	for (NPC_ srcNPC : source.getNPCs()) {
-	    if (srcNPC.get(NPC_.NPCFlag.Unique) && !srcNPC.getTemplate().equals(FormID.NULL)) {
-		srcNPC.templateTo(srcNPC.getTemplate());
-		SPGlobal.getGlobalPatch().addRecord(srcNPC);
-	    }
-	}
-    }
-
-    static void handleUniqueNPCLListTemplates(Mod source) {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Handling unique NPCs not liking LList templates");
-	    SPGlobal.log(header, "====================================================================");
-	}
-	for (NPC_ srcNpc : source.getNPCs()) {
-	    if (srcNpc.get(NPC_.NPCFlag.Unique)) {
-		LVLN llistTemplate = srcNpc.isTemplatedToLList();
-		while (llistTemplate != null && llistTemplate.getFormMaster().equals(SPGlobal.getGlobalPatch().getInfo())) {
-		    srcNpc.templateTo(srcNpc.getTemplate());
-		    // Best we can do is replace its template with one from alt LList.
-		    // Put the first to minimize unique actor changing when people rerun av patch
-		    if (!llistTemplate.isEmpty()) {
-			if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "  Replacing unique actor " + srcNpc + "'s template "
-				    + SPDatabase.getMajor(srcNpc.getTemplate(), GRUP_TYPE.NPC_, GRUP_TYPE.LVLN)
-				    + " with " + SPDatabase.getMajor(llistTemplate.getEntry(0).getForm(), GRUP_TYPE.NPC_));
-			}
-			srcNpc.setTemplate(llistTemplate.getEntry(0).getForm());
-			srcNpc.set(NPC_.TemplateFlag.USE_TRAITS, true);
-			SPGlobal.getGlobalPatch().addRecord(srcNpc);
-		    }
-		    llistTemplate = srcNpc.isTemplatedToLList();
-		}
-	    }
-	}
-    }
-
-    static void printVariantList() {
-	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "12 - Summary.txt");
-	    SPGlobal.log(header, "===================================================");
-	    SPGlobal.log(header, "Printing all NPCs that have a matching variant LList.");
-	    SPGlobal.log(header, "===================================================");
-	    Map<String, NPC_> sorter = new TreeMap<String, NPC_>();
-	    for (FormID form : llists.keySet()) {
-		NPC_ tmp = (NPC_) SPDatabase.getMajor(form, GRUP_TYPE.NPC_);
-		sorter.put(tmp.getEDID(), tmp);
-	    }
-
-	    for (NPC_ n : sorter.values()) {
-		SPGlobal.log(header, "  " + n);
 	    }
 	}
     }
@@ -1458,30 +1086,23 @@ public class AVFileVars {
 	}
     }
 
-    static class NPC_spec {
+    static class SPEL_setup {
 
-	NPC_ npc;
-	int probDiv;
+	SPEL spell;
+	FLST key;
+	FLST array;
+	// Armo is key
+	Map<FormID, FLST> npcKeyLists = new HashMap<FormID, FLST>();
 
-	NPC_spec(NPC_ npc, ARMO_spec spec) {
-	    this.npc = npc;
-	    probDiv = spec.probDiv;
-	}
+	SPEL_setup(RACE raceSrc) {
+	    ScriptRef script = AV.generateAttachScript();
+	    key = new FLST(SPGlobal.getGlobalPatch(), "AV_" + raceSrc.getEDID() + "_flst_Key");
+	    array = new FLST(SPGlobal.getGlobalPatch(), "AV_" + raceSrc.getEDID() + "_flst_Array");
 
-	NPC_spec(NPC_ npc) {
-	    this.npc = npc;
-	    probDiv = 1;
-	}
-    }
+	    script.setProperty("AltOptions", array.getForm());
+	    script.setProperty("AltKey", key.getForm());
 
-    static class RACE_spec {
-
-	RACE race;
-	int probDiv;
-
-	RACE_spec(RACE race, ARMO_spec spec) {
-	    this.race = race;
-	    probDiv = spec.probDiv;
+	    spell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), script, raceSrc.getEDID());
 	}
     }
 }

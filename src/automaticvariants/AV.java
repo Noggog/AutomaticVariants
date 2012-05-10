@@ -31,7 +31,7 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.3.2 Alpha";
+    public static String version = "1.4 Alpha";
 
     /*
      * Static Strings
@@ -49,9 +49,8 @@ public class AV implements SUM {
     /*
      * Script/Property names
      */
-    static String alreadySwitched = "AlreadySwitched";
     static String raceAttachScript = "AVRaceAttachment";
-    static String changeRaceOn = "RaceVariantOn";
+    static String changeSkinOn = "SkinVariantOn";
     static String heightOn = "HeightVariantOn";
     static String heightMin = "HeightVariantMin";
     static String heightMax = "HeightVariantMax";
@@ -61,7 +60,6 @@ public class AV implements SUM {
      * Other
      */
     public static LSaveFile save = new AVSaveFile();
-    static FLST alreadySwitchedList;
     public static Thread parser;
     static boolean heightOnF = false;
     static String extraPath = "";
@@ -155,7 +153,7 @@ public class AV implements SUM {
     static void setUpInGameScriptBasedVariants(Mod source) {
 	SPEL addScriptSpell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), generateAttachScript(), "AVGenericScriptAttach");
 	for (RACE race : source.getRaces()) {
-	    if (!AVFileVars.switcherRaces.containsKey(race.getForm())) {
+	    if (!AVFileVars.switcherSpells.containsKey(race.getForm())) {
 		race.addSpell(addScriptSpell.getForm());
 		SPGlobal.getGlobalPatch().addRecord(race);
 	    }
@@ -219,17 +217,17 @@ public class AV implements SUM {
 
     static ScriptRef generateAttachScript() {
 	ScriptRef script = new ScriptRef(raceAttachScript);
-	script.setProperty(changeRaceOn, false);
-	script.setProperty(alreadySwitched, alreadySwitchedList.getForm());
-	if (heightOnF) {
-	    script.setProperty(heightOn, true);
-	    script.setProperty(heightMin, (float) 0);
-	    script.setProperty(heightMax, (float) .98);
-	    script.setProperty(heightWidth, (float) 5);
-	    script.setProperty(heightIntensity, (float) 9);
-	} else {
-	    script.setProperty(heightOn, false);
-	}
+//	script.setProperty(changeSkinOn, false);
+//	script.setProperty(alreadySwitched, alreadySwitchedList.getForm());
+//	if (heightOnF) {
+//	    script.setProperty(heightOn, true);
+//	    script.setProperty(heightMin, (float) 0);
+//	    script.setProperty(heightMax, (float) .98);
+//	    script.setProperty(heightWidth, (float) 5);
+//	    script.setProperty(heightIntensity, (float) 9);
+//	} else {
+//	    script.setProperty(heightOn, false);
+//	}
 	return script;
     }
 
@@ -242,6 +240,7 @@ public class AV implements SUM {
 	SPGlobal.debugExportSummary = false;
 	SPGlobal.debugBSAimport = false;
 	SPGlobal.debugNIFimport = false;
+	SPGlobal.newSpecialLog(SpecialLogs.WARNINGS, "Warnings.txt");
 	LDebug.timeElapsed = true;
 	LDebug.timeStamp = true;
 
@@ -347,6 +346,10 @@ public class AV implements SUM {
 	save.saveToFile();
 	LDebug.wrapUpAndExit();
     }
+    
+    public enum SpecialLogs {
+	WARNINGS;
+    }
 
     @Override
     public String getName() {
@@ -420,11 +423,6 @@ public class AV implements SUM {
 	SPProgressBarPlug.progress.setStatus(step++, numSteps, "Initializing AV");
 	Mod source = new Mod("Temporary", false);
 	source.addAsOverrides(SPGlobal.getDB());
-
-
-	if (AVFileVars.raceSwitchMethod) {
-	    alreadySwitchedList = new FLST(patch, "AV_" + alreadySwitched);
-	}
 
 	// For all race SWITCHING variants
 	// (such as texture variants)
