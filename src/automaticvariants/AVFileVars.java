@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import lev.LMergeMap;
 import lev.Ln;
 import skyproc.*;
+import skyproc.NPC_.TemplateFlag;
 import skyproc.exceptions.BadParameter;
 import skyproc.exceptions.Uninitialized;
 import skyproc.gui.SPProgressBarPlug;
@@ -38,6 +39,7 @@ public class AVFileVars {
     public static String AVTexturesDir = SPGlobal.pathToData + "textures\\AV Packages\\";
     public static String AVMeshesDir = SPGlobal.pathToData + "meshes\\AV Packages\\";
     static String debugFolder = "File Variants/";
+    static KYWD excluded;
     static int numSupportedTextures = 8;
     public static PackageComponent AVPackages = new PackageComponent(new File(AVPackagesDir), PackageComponent.Type.ROOT);
     /*
@@ -49,21 +51,23 @@ public class AVFileVars {
     static LMergeMap<FormID, FormID> unusedPieces;
     // List of what races the armor "supports"
     static LMergeMap<FormID, FormID> armoRaces;
+    static Set<FormID> taggedNPCs = new HashSet<FormID>();
     ///////////////////
     // AV_Nif name is key
     ///////////////////
-    static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
+    static Map<String, AVFileVars.AV_Nif> nifs = new HashMap<String, AVFileVars.AV_Nif>();
     static LMergeMap<String, ARMA> nifToARMA = new LMergeMap<String, ARMA>(false);
     static LMergeMap<ARMO, FormID> ARMOToRace = new LMergeMap<ARMO, FormID>(false);
     //////////////////
     // ArmaSrc is key
     //////////////////
     static Map<FormID, String> armaToNif = new HashMap<FormID, String>();
-    static LMergeMap<FormID, ARMA_spec> armatures = new LMergeMap<FormID, ARMA_spec>(false);
+    static LMergeMap<FormID, AVFileVars.ARMA_spec> armatures = new LMergeMap<FormID, AVFileVars.ARMA_spec>(false);
     //////////////////
     // ArmoSrc is key for outer, race of arma piece is inner key
     //////////////////
-    static Map<FormID, LMergeMap<FormID, ARMO_spec>> armors = new HashMap<FormID, LMergeMap<FormID, ARMO_spec>>();
+    static Map<FormID, LMergeMap<FormID, AVFileVars.ARMO_spec>> armors = new HashMap<FormID, LMergeMap<FormID, AVFileVars.ARMO_spec>>();
+    static Map<FormID, KYWD> keywords = new HashMap<FormID, KYWD>();
     //////////////////
     // RaceSrc of piece is key for outer, armo is inner key
     //////////////////
@@ -71,8 +75,7 @@ public class AVFileVars {
     //////////////////
     // RaceSrc is key
     //////////////////
-    static Map<FormID, SPEL_setup> switcherSpells = new HashMap<FormID, SPEL_setup>();
-    static Map<NPC_, Map<FormID, FormID>> npcRacesToSkins = new HashMap<NPC_, Map<FormID, FormID>>();
+    static Map<FormID, SPEL> switcherSpells = new HashMap<FormID, SPEL>();
 
     static void setUpFileVariants(Mod source, Mod patch) throws IOException, Uninitialized, BadParameter {
 	if (SPGlobal.logging()) {
@@ -117,6 +120,8 @@ public class AVFileVars {
 
     static void skinSwitchMethod(Mod source) {
 
+	excluded = new KYWD(SPGlobal.getGlobalPatch(), "AVExclude");
+
 	// Generate FormLists of RACE variants
 	generateFormLists(source);
 
@@ -124,7 +129,9 @@ public class AVFileVars {
 	generateSPELvariants(source);
 
 	// Add AV keywords to NPCs that have alt skins
-	loadAltNpcs(source);
+	tagAltNPCs(source);
+
+	keywordTemplateNPCs(source);
     }
 
     /*
@@ -308,7 +315,7 @@ public class AVFileVars {
 			    // Has alt texture, separate
 			    splitVariant(nifPath, piece);
 			} else if (!nifs.containsKey(nifPath)) {
-			    AV_Nif nif = new AV_Nif(nifPath);
+			    AVFileVars.AV_Nif nif = new AVFileVars.AV_Nif(nifPath);
 			    nif.load();
 
 			    SPGlobal.log(header, "  Nif path: " + nifPath);
@@ -389,7 +396,7 @@ public class AVFileVars {
     }
 
     static void splitVariant(String nifPath, ARMA piece) throws IOException, BadParameter, DataFormatException {
-	AV_Nif nif = new AV_Nif(nifPath);
+	AVFileVars.AV_Nif nif = new AVFileVars.AV_Nif(nifPath);
 	nif.load();
 	SPGlobal.log(header, "  Nif path: " + nifPath);
 	nif.print();
@@ -433,7 +440,7 @@ public class AVFileVars {
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + "4 - Generate TXST.txt");
 	}
-	for (AV_Nif n : nifs.values()) {
+	for (AVFileVars.AV_Nif n : nifs.values()) {
 
 	    if (SPGlobal.logging()) {
 		SPGlobal.log(header, "====================================================================");
@@ -447,7 +454,7 @@ public class AVFileVars {
 		boolean[] needed = new boolean[n.textureFields.size()];
 		for (PackageComponent f : v.textures) {
 		    int i = 0;
-		    for (AV_Nif.TextureField textureSet : n.textureFields) {
+		    for (AVFileVars.AV_Nif.TextureField textureSet : n.textureFields) {
 			int j = 0;
 			for (String texture : textureSet.maps) {
 			    if (!texture.equals("") && texture.lastIndexOf('\\') != -1) {
@@ -471,7 +478,7 @@ public class AVFileVars {
 		v.TXSTs = new TextureVariant[n.textureFields.size()];
 		int i = 0;
 		TXST last = null;
-		for (AV_Nif.TextureField textureSet : n.textureFields) {
+		for (AVFileVars.AV_Nif.TextureField textureSet : n.textureFields) {
 		    if (needed[i]) {
 			if (textureSet.unique) {
 			    // New TXST
@@ -530,12 +537,12 @@ public class AVFileVars {
 
 	    // If we have variants for it
 	    if (armaToNif.containsKey(armaSrc.getForm())) {
-		AV_Nif malenif = nifs.get(armaToNif.get(armaSrc.getForm()));
+		AVFileVars.AV_Nif malenif = nifs.get(armaToNif.get(armaSrc.getForm()));
 		if (malenif != null) { // we have variants for that nif
 		    if (SPGlobal.logging()) {
 			SPGlobal.log(header, "  Duplicating " + armaSrc + ", for nif: " + armaToNif.get(armaSrc.getForm()));
 		    }
-		    ArrayList<ARMA_spec> dups = new ArrayList<ARMA_spec>();
+		    ArrayList<AVFileVars.ARMA_spec> dups = new ArrayList<AVFileVars.ARMA_spec>();
 		    for (Variant v : malenif.variants) {
 			ARMA dup = (ARMA) SPGlobal.getGlobalPatch().makeCopy(armaSrc, v.name + "_ID_" + armaSrc.getEDID() + "_arma");
 
@@ -553,7 +560,7 @@ public class AVFileVars {
 //			femalealts.clear();
 //			femalealts.addAll(alts);
 
-			dups.add(new ARMA_spec(dup, v.spec));
+			dups.add(new AVFileVars.ARMA_spec(dup, v.spec));
 		    }
 		    armatures.put(armaSrc.getForm(), dups);
 		}
@@ -571,7 +578,7 @@ public class AVFileVars {
 	}
 	for (ARMO armoSrc : source.getArmors()) {
 
-	    LMergeMap<FormID, ARMA_spec> targets = new LMergeMap<FormID, ARMA_spec>(false);
+	    LMergeMap<FormID, AVFileVars.ARMA_spec> targets = new LMergeMap<FormID, AVFileVars.ARMA_spec>(false);
 	    for (FormID armaForm : armoSrc.getArmatures()) {
 		ARMA arma = (ARMA) SPDatabase.getMajor(armaForm);
 		if (arma != null) {
@@ -597,16 +604,16 @@ public class AVFileVars {
 		    SPGlobal.log(header, "  Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(arma, GRUP_TYPE.ARMA));
 		}
 		if (!armors.containsKey(armoSrc.getForm())) {
-		    armors.put(armoSrc.getForm(), new LMergeMap<FormID, ARMO_spec>(false));
+		    armors.put(armoSrc.getForm(), new LMergeMap<FormID, AVFileVars.ARMO_spec>(false));
 		}
-		for (ARMA_spec variant : targets.get(arma)) {
+		for (AVFileVars.ARMA_spec variant : targets.get(arma)) {
 		    String edid = variant.arma.getEDID().substring(0, variant.arma.getEDID().lastIndexOf("_arma"));
 		    edid = edid.substring(0, edid.lastIndexOf("_")) + "_" + armoSrc.getEDID() + "_armo";  // replace ARMA string with ARMO name
 		    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, edid);
 
 		    dup.removeArmature(arma);
 		    dup.addArmature(variant.arma.getForm());
-		    armors.get(armoSrc.getForm()).put(variant.arma.getRace(), new ARMO_spec(dup, variant, variant.arma.getRace()));
+		    armors.get(armoSrc.getForm()).put(variant.arma.getRace(), new AVFileVars.ARMO_spec(dup, variant, variant.arma.getRace()));
 		}
 	    }
 	}
@@ -622,7 +629,7 @@ public class AVFileVars {
 		for (FormID armoSrc : armors.keySet()) {
 		    for (FormID race : armors.get(armoSrc).keySet()) {
 			SPGlobal.log(header, "    For race: " + SPDatabase.getMajor(race, GRUP_TYPE.RACE));
-			for (ARMO_spec variant : armors.get(armoSrc).get(race)) {
+			for (AVFileVars.ARMO_spec variant : armors.get(armoSrc).get(race)) {
 			    SPGlobal.log(header, "      " + variant.armo + ", prob divider: 1/" + variant.probDiv);
 			}
 		    }
@@ -653,14 +660,14 @@ public class AVFileVars {
 		    SPGlobal.log(header, "    Generating FLST for race " + raceSrc);
 		}
 		FLST flst = new FLST(SPGlobal.getGlobalPatch(), "AV_" + armoSrc.getEDID() + "_" + raceSrc.getEDID() + "_flst");
-		ArrayList<ARMO_spec> armoVars = armors.get(armoSrcForm).get(race);
+		ArrayList<AVFileVars.ARMO_spec> armoVars = armors.get(armoSrcForm).get(race);
 		int[] divs = new int[armoVars.size()];
 		for (int i = 0; i < divs.length; i++) {
 		    divs[i] = armoVars.get(i).probDiv;
 		}
 		int lowestCommMult = Ln.lcmm(divs);
 
-		for (ARMO_spec armorSpec : armors.get(armoSrcForm).get(race)) {
+		for (AVFileVars.ARMO_spec armorSpec : armors.get(armoSrcForm).get(race)) {
 		    if (SPGlobal.logging()) {
 			SPGlobal.log(header, "      Generating " + (lowestCommMult / armorSpec.probDiv) + " entries for " + armorSpec.armo);
 		    }
@@ -692,7 +699,9 @@ public class AVFileVars {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "Has variants: " + raceSrc);
 		}
-		SPEL_setup spell = new SPEL_setup(raceSrc);
+		ScriptRef script = AV.generateAttachScript();
+		FLST flstKey = new FLST(SPGlobal.getGlobalPatch(), "AV_" + raceSrc.getEDID() + "_flst_Key");
+		FLST flstArray = new FLST(SPGlobal.getGlobalPatch(), "AV_" + raceSrc.getEDID() + "_flst_Array");
 
 		// Add Alt Skins to key/array setup
 		for (FormID skinF : formLists.get(raceSrc.getForm()).keySet()) {
@@ -700,10 +709,16 @@ public class AVFileVars {
 			if (SPGlobal.logging()) {
 			    SPGlobal.log(header, "  Has alt skin " + SPDatabase.getMajor(skinF, GRUP_TYPE.ARMO));
 			}
-			ARMO skin = (ARMO) SPDatabase.getMajor(skinF, GRUP_TYPE.ARMO);
-			FLST npcList = new FLST(SPGlobal.getGlobalPatch(), "AV_" + raceSrc.getEDID() + "_" + skin.getEDID() + "_flst_NPCList");
-			spell.key.addFormEntry(npcList.getForm());
-			spell.array.addFormEntry(formLists.get(raceSrc.getForm()).get(skinF).getForm());
+			if (!keywords.containsKey(skinF)) {
+			    ARMO skin = (ARMO) SPDatabase.getMajor(skinF, GRUP_TYPE.ARMO);
+			    KYWD keyword = new KYWD(SPGlobal.getGlobalPatch(), "AV" + skin.getEDID());
+			    if (SPGlobal.logging()) {
+				SPGlobal.log(header, "    Created keyword " + keyword);
+			    }
+			    keywords.put(skinF, keyword);
+			}
+			flstKey.addFormEntry(keywords.get(skinF).getForm());
+			flstArray.addFormEntry(formLists.get(raceSrc.getForm()).get(skinF).getForm());
 		    }
 		}
 
@@ -712,109 +727,129 @@ public class AVFileVars {
 		    if (SPGlobal.logging()) {
 			SPGlobal.log(header, "  Added normal skin " + SPDatabase.getMajor(raceSrc.getWornArmor(), GRUP_TYPE.ARMO));
 		    }
-		    spell.array.addFormEntry(formLists.get(raceSrc.getForm()).get(raceSrc.getWornArmor()).getForm());
+		    flstArray.addFormEntry(formLists.get(raceSrc.getForm()).get(raceSrc.getWornArmor()).getForm());
 		}
 
-		switcherSpells.put(raceSrc.getForm(), spell);
-		raceSrc.addSpell(spell.spell.getForm());
+		script.setProperty("AltOptions", flstArray.getForm());
+		script.setProperty("AltKey", flstKey.getForm());
+		script.setProperty("Exclude", excluded.getForm());
+
+		switcherSpells.put(raceSrc.getForm(), NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), script, raceSrc.getEDID()));
+		raceSrc.addSpell(switcherSpells.get(raceSrc.getForm()).getForm());
 		SPGlobal.getGlobalPatch().addRecord(raceSrc);
 	    }
 	}
 	SPProgressBarPlug.progress.incrementBar();
     }
 
-    static void loadAltNpcs(Mod source) {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Loading NPCs.");
+    static void tagAltNPCs(Mod source) {
+	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Tagging NPCs.");
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "8 - Loading NPCs.txt");
+	    SPGlobal.newLog(debugFolder + "8 - Tagging NPCs.txt");
 	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Loading NPCs that have alt races");
+	    SPGlobal.log(header, "Tagging NPCs that have alt races");
 	    SPGlobal.log(header, "====================================================================");
 	}
 	for (NPC_ n : source.getNPCs()) {
-	    // Race is key, Skin is value
-	    Map<FormID, FormID> racesAndSkins = getRacesAndSkins(n);
-	    if (!racesAndSkins.isEmpty()) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, n.toString());
-		    for (FormID race : racesAndSkins.keySet()) {
-			SPGlobal.log(header, "  " + SPDatabase.getMajor(race, GRUP_TYPE.RACE));
-			SPGlobal.log(header, "    " + SPDatabase.getMajor(racesAndSkins.get(race), GRUP_TYPE.ARMO));
+	    FormID skin = getSkin(n);
+	    if (skin != null // Not LList templated
+		    && !skin.isNull() // If has alt skin
+		    && switcherSpells.containsKey(n.getRace())) {  // If we have variants for it
+		if (keywords.containsKey(n.getSkin())) {
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "Tagged " + n);
+		    }
+		    n.keywords.addKeywordRef(keywords.get(n.getSkin()).getForm());
+		    SPGlobal.getGlobalPatch().addRecord(n);
+		    taggedNPCs.add(n.getForm());
+		} else {
+		    RACE race = (RACE) SPDatabase.getMajor(n.getRace(), GRUP_TYPE.RACE);
+		    if (!race.getWornArmor().equals(n.getSkin())) {
+			if (SPGlobal.logging()) {
+			    SPGlobal.log(header, "Tagged As Excluded Skin " + n);
+			}
+			n.keywords.addKeywordRef(excluded.getForm());
+			SPGlobal.getGlobalPatch().addRecord(n);
+			taggedNPCs.add(n.getForm());
 		    }
 		}
-//		if (keywords.containsKey(n.getSkin())) {
-//		    if (SPGlobal.logging()) {
-//			SPGlobal.log(header, "Tagged " + n);
-//		    }
-//		    n.keywords.addKeywordRef(keywords.get(n.getSkin()).getForm());
-//		    SPGlobal.getGlobalPatch().addRecord(n);
-//		} else {
-//		    RACE race = (RACE) SPDatabase.getMajor(n.getRace(), GRUP_TYPE.RACE);
-//		    if (!race.getWornArmor().equals(n.getSkin())) {
-//			if (SPGlobal.logging()) {
-//			    SPGlobal.log(header, "Tagged As Excluded Skin " + n);
-//			}
-//			n.keywords.addKeywordRef(excluded.getForm());
-//			SPGlobal.getGlobalPatch().addRecord(n);
-//		    }
-//		}
 	    }
 	}
     }
 
-    static Map<FormID, FormID> getRacesAndSkins(NPC_ n) {
-	if (npcRacesToSkins.containsKey(n)) {
-	    return npcRacesToSkins.get(n);
+    static FormID getSkin(NPC_ n) {
+	if (n == null) {
+	    return null;
 	}
-
-	Map<FormID, FormID> out;
 	if (!n.getTemplate().isNull() && n.get(NPC_.TemplateFlag.USE_TRAITS)) {
-	    NPC_ npc = (NPC_) SPDatabase.getMajor(n.getTemplate(), GRUP_TYPE.NPC_);
-	    if (npc != null) {
-		out = getRacesAndSkins(npc);
-	    } else {
-		out = getRacesAndSkins((LVLN) SPDatabase.getMajor(n.getTemplate(), GRUP_TYPE.LVLN));
-	    }
+	    return getSkin((NPC_) SPDatabase.getMajor(n.getTemplate(), GRUP_TYPE.NPC_));
 	} else {
-	    if (!n.getSkin().isNull()) {
-		out = new HashMap<FormID, FormID>(1);
-		out.put(n.getRace(), n.getSkin());
-		return out;
-	    } else {
-		out = new HashMap<FormID, FormID>(0);
-	    }
+	    return n.getSkin();
 	}
-
-	npcRacesToSkins.put(n, out);
-	return out;
     }
 
-    static Map<FormID, FormID> getRacesAndSkins(LVLN llist) {
-	Map<FormID, FormID> out = new HashMap<FormID, FormID>(3);
-	for (LVLO entry : llist.getEntries()) {
-	    NPC_ npc = (NPC_) SPDatabase.getMajor(entry.getForm(), GRUP_TYPE.NPC_);
-	    Map<FormID, FormID> tmp;
-	    if (npc != null) {
-		tmp = getRacesAndSkins(npc);
-	    } else {
-		tmp = getRacesAndSkins((LVLN) SPDatabase.getMajor(entry.getForm(), GRUP_TYPE.LVLN));
-	    }
-	    for (FormID key : tmp.keySet()) {
-		if (out.containsKey(key)
-			&& !out.get(key).isNull()
-			&& !out.get(key).equals(tmp.get(key))) {
-		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, header, "Warning: Ambiguous LVLN setup");
-		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, header, "  " + llist);
-		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, header, "  Has race " + SPDatabase.getMajor(key, GRUP_TYPE.RACE));
-		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, header, "  with two differing skins to pick from:");
-		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, header, "    " + SPDatabase.getMajor(tmp.get(key), GRUP_TYPE.ARMO));
-		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, header, "    " + SPDatabase.getMajor(out.get(key), GRUP_TYPE.ARMO));
-		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, header, "---------------------------");
+    static void keywordTemplateNPCs(Mod source) {
+	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Templating Keywords.");
+	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + "9 - Tagging Keywords.txt");
+	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.log(header, "Templating NPCs that template to LLists to template keywords too");
+	    SPGlobal.log(header, "====================================================================");
+	}
+	for (NPC_ n : source.getNPCs()) {
+	    if (!taggedNPCs.contains(n.getForm()) //If not already a tagged NPC
+		    && !n.getTemplate().isNull() //If has template
+		    && n.get(TemplateFlag.USE_TRAITS) //If templating traits
+		    && !n.get(TemplateFlag.USE_KEYWORDS)) { //And not templating keywords
+		LVLN llist = (LVLN) NiftyFunc.isTemplatedToLList(n, TemplateFlag.USE_TRAITS);
+		if (llist != null) { //If templating to a LList
+		    // Check to see if any entries have variants
+		    ArrayList<LVLO> entries = llist.getFlattenedEntries();
+		    boolean variant = false;
+		    for (LVLO entry : entries) {
+			if (taggedNPCs.contains(entry.getForm())) {
+			    variant = true;
+			    break;
+			}
+		    }
+		    if (variant) {
+			//Confirm that every entry has same keywords as original
+			boolean pass = true;
+			for (LVLO entry : entries) {
+			    NPC_ npc = (NPC_) SPDatabase.getMajor(entry.getForm(), GRUP_TYPE.NPC_);
+			    if (!n.keywords.containedIn(npc.keywords)) {
+				if (SPGlobal.logging()) {
+				    SPGlobal.log(header, "SKIPPED " + n);
+				    SPGlobal.log(header, "  BECAUSE " + npc);
+				}
+				pass = false;
+				break;
+			    }
+			}
+			if (pass) {
+			    n.set(TemplateFlag.USE_KEYWORDS, true);
+			    SPGlobal.getGlobalPatch().addRecord(n);
+			    if (SPGlobal.logging()) {
+				SPGlobal.log(header, "Templated keywords on " + n);
+			    }
+			}
+		    }
 		}
 	    }
-	    out.putAll(tmp);
 	}
-	return out;
+    }
+
+    static boolean hasVariant(LVLN llist) {
+	for (LVLO entry : llist.getEntries()) {
+	    if (taggedNPCs.contains(entry.getForm())) {
+		return true;
+	    }
+	    LVLN testLList = (LVLN) SPDatabase.getMajor(entry.getForm(), GRUP_TYPE.LVLN);
+	    if (testLList != null && hasVariant(testLList)) {
+		return true;
+	    }
+	}
+	return false;
     }
 
     static void printModifiedNPCs() {
@@ -923,7 +958,7 @@ public class AVFileVars {
 
 	String name;
 	String path;
-	ArrayList<AV_Nif.TextureField> textureFields = new ArrayList<AV_Nif.TextureField>();
+	ArrayList<AVFileVars.AV_Nif.TextureField> textureFields = new ArrayList<AVFileVars.AV_Nif.TextureField>();
 	ArrayList<Variant> variants = new ArrayList<Variant>();
 
 	AV_Nif(String path) {
@@ -940,7 +975,7 @@ public class AVFileVars {
 	    Map<Integer, NIF.Node> BiLightingShaderProperties = nif.getNodes(NIF.NodeType.BSLIGHTINGSHADERPROPERTY);
 	    Map<Integer, NIF.Node> BiShaderTextureNodes = nif.getNodes(NIF.NodeType.BSSHADERTEXTURESET);
 	    Map<Integer, ArrayList<String>> BiShaderTextureSets = new HashMap<Integer, ArrayList<String>>();
-	    Map<Integer, AV_Nif.TextureField> fields = new HashMap<Integer, AV_Nif.TextureField>();
+	    Map<Integer, AVFileVars.AV_Nif.TextureField> fields = new HashMap<Integer, AVFileVars.AV_Nif.TextureField>();
 	    ArrayList<ArrayList<NIF.Node>> NiTriShapes = nif.getNiTriShapePackages();
 
 	    for (Integer i : BiShaderTextureNodes.keySet()) {
@@ -950,7 +985,7 @@ public class AVFileVars {
 	    int i = 0;
 	    for (Integer key : BiLightingShaderProperties.keySet()) {
 		int textureLink = BiLightingShaderProperties.get(key).data.extractInt(40, 4);
-		AV_Nif.TextureField next = new AV_Nif.TextureField();
+		AVFileVars.AV_Nif.TextureField next = new AVFileVars.AV_Nif.TextureField();
 		if (fields.containsKey(textureLink)) {
 		    next.maps = fields.get(textureLink).maps;
 		    next.unique = false;
@@ -972,7 +1007,7 @@ public class AVFileVars {
 	public void print() {
 	    if (SPGlobal.logging()) {
 		int i = 0;
-		for (AV_Nif.TextureField set : textureFields) {
+		for (AVFileVars.AV_Nif.TextureField set : textureFields) {
 		    SPGlobal.log("AV_Nif", "  Texture index " + i++ + ": " + set.title);
 		    int j = 0;
 		    for (String s : set.maps) {
@@ -992,7 +1027,7 @@ public class AVFileVars {
 	    if (getClass() != obj.getClass()) {
 		return false;
 	    }
-	    final AV_Nif other = (AV_Nif) obj;
+	    final AVFileVars.AV_Nif other = (AVFileVars.AV_Nif) obj;
 	    if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
 		return false;
 	    }
@@ -1019,7 +1054,7 @@ public class AVFileVars {
 	    TextureField() {
 	    }
 
-	    TextureField(AV_Nif.TextureField in) {
+	    TextureField(AVFileVars.AV_Nif.TextureField in) {
 		this.title = in.title;
 		this.maps = in.maps;
 	    }
@@ -1032,7 +1067,7 @@ public class AVFileVars {
 		if (getClass() != obj.getClass()) {
 		    return false;
 		}
-		final AV_Nif.TextureField other = (AV_Nif.TextureField) obj;
+		final AVFileVars.AV_Nif.TextureField other = (AVFileVars.AV_Nif.TextureField) obj;
 		if (this.maps != other.maps && (this.maps == null || !this.maps.equals(other.maps))) {
 		    return false;
 		}
@@ -1078,31 +1113,11 @@ public class AVFileVars {
 	    probDiv = 1;
 	}
 
-	ARMO_spec(ARMO armo, ARMA_spec spec, FormID targetRace) {
+	ARMO_spec(ARMO armo, AVFileVars.ARMA_spec spec, FormID targetRace) {
 	    this.armo = armo;
 	    targetArma = spec.arma;
 	    this.targetRace = targetRace;
 	    probDiv = spec.probDiv;
-	}
-    }
-
-    static class SPEL_setup {
-
-	SPEL spell;
-	FLST key;
-	FLST array;
-	// Armo is key
-	Map<FormID, FLST> npcKeyLists = new HashMap<FormID, FLST>();
-
-	SPEL_setup(RACE raceSrc) {
-	    ScriptRef script = AV.generateAttachScript();
-	    key = new FLST(SPGlobal.getGlobalPatch(), "AV_" + raceSrc.getEDID() + "_flst_Key");
-	    array = new FLST(SPGlobal.getGlobalPatch(), "AV_" + raceSrc.getEDID() + "_flst_Array");
-
-	    script.setProperty("AltOptions", array.getForm());
-	    script.setProperty("AltKey", key.getForm());
-
-	    spell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), script, raceSrc.getEDID());
 	}
     }
 }
