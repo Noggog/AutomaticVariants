@@ -164,8 +164,10 @@ public class AVFileVars {
 		unusedSkins.add(armor.getForm());
 		for (FormID piece : armor.getArmatures()) {
 		    ARMA arma = (ARMA) SPDatabase.getMajor(piece, GRUP_TYPE.ARMA);
-		    armoRaces.put(armor.getForm(), arma.getRace());
-		    unusedPiecesTmp.put(armor.getForm(), arma);
+		    if (arma != null) {
+			armoRaces.put(armor.getForm(), arma.getRace());
+			unusedPiecesTmp.put(armor.getForm(), arma);
+		    }
 		}
 	    }
 	}
@@ -751,16 +753,16 @@ public class AVFileVars {
 	RACE foxRace = (RACE) SPDatabase.getMajor(new FormID("109C7CSkyrim.esm"), GRUP_TYPE.RACE);
 	for (NPC_ n : source.getNPCs()) {
 	    FormID skin = getUsedSkin(n);
-	    if (skin != null 
+	    if (skin != null
 		    && n.getTemplate().isNull() // Not templated
 		    && !skin.isNull() // If has alt skin
 		    && switcherSpells.containsKey(n.getRace())) {  // If we have variants for it
 		// If fox race but does not have FOX in the name
 		// We skip it as it's most likely a lazy modder
 		// using the default race: FoxRace
-		if (n.getRace().equals(foxRace.getForm()) 
+		if (n.getRace().equals(foxRace.getForm())
 			&& !n.getEDID().toUpperCase().contains("FOX")
-			&& !n.getName().toUpperCase().contains("FOX")){
+			&& !n.getName().toUpperCase().contains("FOX")) {
 		    tagNPC(n, 99);
 		}
 		ArrayList<FormID> skins = switcherSpells.get(n.getRace()).key;

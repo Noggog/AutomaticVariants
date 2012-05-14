@@ -63,7 +63,7 @@ public class AV implements SUM {
     public static Thread parser;
     static boolean heightOnF = false;
     static String extraPath = "";
-    static int numSteps = 10;
+    static int numSteps = 8;
     static int step = 0;
     static int initDebugLevel = -1;
     //GUI
