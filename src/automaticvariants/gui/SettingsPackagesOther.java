@@ -22,7 +22,6 @@ import skyproc.gui.SUMGUI;
 public class SettingsPackagesOther extends SPSettingPanel {
 
     LButton gatherAndExit;
-    LCheckBox prepAV;
     LCheckBox origAsVar;
     LButton packageManager;
 
@@ -36,13 +35,6 @@ public class SettingsPackagesOther extends SPSettingPanel {
 
 	    save.setVisible(false);
 	    defaults.setVisible(false);
-
-	    prepAV = new LCheckBox ("Prep AV", AV.settingsFont, AV.yellow);
-	    prepAV.setOffset(0);
-	    prepAV.tie(AVSaveFile.Settings.PACKAGES_PREP, AV.save, SUMGUI.helpPanel, true);
-	    prepAV.addShadow();
-	    last = setPlacement(prepAV, last);
-	    Add(prepAV);
 
 	    origAsVar = new LCheckBox ("Original As Variant", AV.settingsFont, AV.yellow);
 	    origAsVar.setOffset(0);

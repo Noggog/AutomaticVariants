@@ -20,7 +20,6 @@ public class AVSaveFile extends LSaveFile {
     @Override
     protected void init(Map m) {
 	Add(m, Settings.PACKAGES_ON, "Packages On", false, true);
-	Add(m, Settings.PACKAGES_PREP, "Package Prep", false, true);
 	Add(m, Settings.PACKAGES_ORIG_AS_VAR, "Orig as Var", false, true);
 	Add(m, Settings.DEBUG_LEVEL, "Debug Level", false, 1);
 	Add(m, Settings.IMPORT_AT_START, "Import at Start", false, false);
@@ -51,15 +50,7 @@ public class AVSaveFile extends LSaveFile {
 		+ " deleting things.\n\n"
 		+ "This function will enable the selection before compressing.\n\n"
 		+ "This may take a while to process.  A popup will appear showing the results when it is complete.");
-
-	helpInfo.put(Settings.PACKAGES_PREP, "This will prep AV to be able to safely add/remove packages "
-		+ "without bugging out.  It is still highly recommended that you start a new game when installing "
-		+ "AV;  However, once a game is 'established' with AV Prepping, then it should be safe to enable/disable "
-		+ "new packages without consequence.\n\n"
-		+ "This will make every NPC a \"variant of one\" so that variants can be added/removed from the list without "
-		+ "drastically changing the record structure.\n\n"
-		+ "It is highly recommended that you keep this setting on.");
-
+	
 	helpInfo.put(Settings.PACKAGES_ORIG_AS_VAR, "This will add the non-AV actor setup as a variant, and add it to the list of options. \n\n"
 		+ "If turned off, then only variants explicitly part of an AV Package will spawn.");
 
@@ -115,7 +106,6 @@ public class AVSaveFile extends LSaveFile {
     public enum Settings {
 
 	PACKAGES_ON,
-	PACKAGES_PREP,
 	PACKAGES_GATHER,
 	PACKAGES_ORIG_AS_VAR,
 	PACKAGES_COMPRESS,
