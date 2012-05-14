@@ -16,8 +16,8 @@ import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
 import lev.Ln;
-import skyproc.*;
 import skyproc.NPC_.TemplateFlag;
+import skyproc.*;
 import skyproc.exceptions.BadParameter;
 import skyproc.exceptions.Uninitialized;
 import skyproc.gui.SPProgressBarPlug;
@@ -139,10 +139,10 @@ public class AVFileVars {
      */
     public static void importVariants() throws FileNotFoundException, IOException {
 	String header = "Import Variants";
-	File AVPackagesDirFile = new File(AVPackagesDir);
+	File AVPackagesDirFile = new File(SPGlobal.SUMpath + AVPackagesDir);
 
 	// wipe
-	AVPackages = new PackageComponent(new File(AVPackagesDir), PackageComponent.Type.ROOT);
+	AVPackages = new PackageComponent(AVPackagesDirFile, PackageComponent.Type.ROOT);
 	if (AVPackagesDirFile.isDirectory()) {
 	    for (File packageFolder : AVPackagesDirFile.listFiles()) {
 		if (packageFolder.isDirectory()) {
@@ -337,7 +337,7 @@ public class AVFileVars {
 
 			uniqueArmas.add(piece.getForm());
 			for (Variant v : varSet.multiplyAndFlatten()) {
-			    nifs.get(nif).variants.add((Variant) Ln.deepCopy(v));
+			    nifs.get(nif).variants.add((Variant)Ln.deepCopy(v));
 			}
 
 			//Oh nos

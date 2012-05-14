@@ -66,8 +66,6 @@ public class AV implements SUM {
     static int numSteps = 10;
     static int step = 0;
     static int initDebugLevel = -1;
-    static boolean imported = false;
-    static boolean exported = false;
     //GUI
     static public SPMainMenuPanel settingsMenu;
     static public SPMainMenuConfig packageManagerConfig;
@@ -432,21 +430,6 @@ public class AV implements SUM {
 	// (such as height variant scripting)
 //	setUpInGameScriptBasedVariants(source);
 
-	/*
-	 * Close up shop.
-	 */
-	try {
-	    // Export your custom patch.
-	    patch.export();
-	} catch (Exception ex) {
-	    // If something goes wrong, show an error message.
-	    SPGlobal.logException(ex);
-	    JOptionPane.showMessageDialog(null, "There was an error exporting the custom patch.\n(" + ex.getMessage() + ")\n\nPlease contact Leviathan1753.");
-	    exitProgram();
-	}
-
-	exported = true;
-	SPProgressBarPlug.progress.done();
     }
 
     @Override
