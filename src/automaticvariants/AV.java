@@ -31,7 +31,7 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.4 Alpha";
+    public static String version = "1.4.0.1 Alpha";
 
     /*
      * Static Strings
@@ -344,7 +344,7 @@ public class AV implements SUM {
 	save.saveToFile();
 	LDebug.wrapUpAndExit();
     }
-    
+
     public enum SpecialLogs {
 	WARNINGS;
     }
@@ -380,7 +380,7 @@ public class AV implements SUM {
 
 	packagesManagerPanel = new SettingsPackagesManager(settingsMenu);
 	packagesOtherPanel = new SettingsPackagesOther(settingsMenu);
-	settingsMenu.addMenu(packagesManagerPanel, true, save, Settings.PACKAGES_ON);
+	packageManagerConfig = settingsMenu.addMenu(packagesManagerPanel, true, save, Settings.PACKAGES_ON);
 
 	otherPanel = new SettingsOther(settingsMenu);
 	settingsMenu.addMenu(otherPanel, false, save, Settings.AV_SETTINGS);
