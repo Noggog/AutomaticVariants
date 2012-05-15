@@ -245,7 +245,7 @@ public class AVFileVars {
 
 			NPC_ record = (NPC_) SPDatabase.getMajor(id, GRUP_TYPE.NPC_);
 			if (record == null) {
-			    SPGlobal.logError(header, "Could not locate NPC with FormID: " + s);
+			    SPGlobal.logError(header, "Could not locate NPC with FormID: " + id);
 			    continue;
 			} else if (SPGlobal.logging()) {
 			    SPGlobal.log(header, "  " + record);
