@@ -31,7 +31,7 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.4 Alpha";
+    public static String version = "1.4.1 Alpha";
 
     /*
      * Static Strings
@@ -60,6 +60,7 @@ public class AV implements SUM {
      * Other
      */
     public static LSaveFile save = new AVSaveFile();
+    public static QUST quest;
     public static Thread parser;
     static boolean heightOnF = false;
     static String extraPath = "";
@@ -86,14 +87,6 @@ public class AV implements SUM {
 	ArrayList<String> arguments = new ArrayList<String>(Arrays.asList(args));
 	try {
 	    save.init();
-
-//	    AV.save.getBool(AVSaveFile.Settings.IMPORT_AT_START)
-//	    versionNum = new LLabel("v" + AV.version, new Font("Serif", Font.PLAIN, 10), AVGUI.darkGray);
-//	    versionNum.setLocation(80, 82);
-//	    backgroundPanel.add(versionNum);
-//	    settingsMenu = new SettingsMainMenu(getSize());
-//	    backgroundPanel.add(settingsMenu);
-//	    settingsMenu.open();
 
 	    if (handleArgs(arguments)) {
 		SPGlobal.closeDebug();
@@ -215,17 +208,14 @@ public class AV implements SUM {
 
     static ScriptRef generateAttachScript() {
 	ScriptRef script = new ScriptRef(raceAttachScript);
-//	script.setProperty(changeSkinOn, false);
-//	script.setProperty(alreadySwitched, alreadySwitchedList.getForm());
-//	if (heightOnF) {
-//	    script.setProperty(heightOn, true);
-//	    script.setProperty(heightMin, (float) 0);
-//	    script.setProperty(heightMax, (float) .98);
-//	    script.setProperty(heightWidth, (float) 5);
-//	    script.setProperty(heightIntensity, (float) 9);
-//	} else {
-//	    script.setProperty(heightOn, false);
-//	}
+	script.setProperty("AVQuest", quest.getForm());
+	if (heightOnF) {
+	    script.setProperty(heightOn, true);
+	    script.setProperty(heightMin, (float) 0);
+	    script.setProperty(heightMax, (float) .98);
+	    script.setProperty(heightWidth, (float) 5);
+	    script.setProperty(heightIntensity, (float) 9);
+	}
 	return script;
     }
 
@@ -297,7 +287,7 @@ public class AV implements SUM {
 		Process start = proc.start();
 		InputStream shellIn = start.getInputStream();
 		int exitStatus = start.waitFor();
-		String response = convertStreamToStr(shellIn);
+		String response = Ln.convertStreamToStr(shellIn);
 		if (exitStatus != 0) {
 		    JOptionPane.showMessageDialog(null, "Error allocating " + AV.save.getInt(Settings.MAX_MEM) + "MB memory:\n"
 			    + response
@@ -315,28 +305,6 @@ public class AV implements SUM {
 	}
 
 	return false;
-    }
-
-    public static String convertStreamToStr(InputStream is) throws IOException {
-
-	if (is != null) {
-	    Writer writer = new StringWriter();
-
-	    char[] buffer = new char[1024];
-	    try {
-		Reader reader = new BufferedReader(new InputStreamReader(is,
-			"UTF-8"));
-		int n;
-		while ((n = reader.read(buffer)) != -1) {
-		    writer.write(buffer, 0, n);
-		}
-	    } finally {
-		is.close();
-	    }
-	    return writer.toString();
-	} else {
-	    return "";
-	}
     }
 
     public static void exitProgram() {
@@ -381,6 +349,9 @@ public class AV implements SUM {
 	packagesManagerPanel = new SettingsPackagesManager(settingsMenu);
 	packagesOtherPanel = new SettingsPackagesOther(settingsMenu);
 	settingsMenu.addMenu(packagesManagerPanel, true, save, Settings.PACKAGES_ON);
+	
+	heightPanel = new SettingsHeightPanel(settingsMenu);
+	settingsMenu.addMenu(heightPanel, true, save, Settings.HEIGHT_ON);
 
 	otherPanel = new SettingsOther(settingsMenu);
 	settingsMenu.addMenu(otherPanel, false, save, Settings.AV_SETTINGS);
@@ -409,13 +380,13 @@ public class AV implements SUM {
 
     @Override
     public void runChangesToPatch() throws Exception {
-
-	Mod patch = SPGlobal.getGlobalPatch();
-
+	
 	readInExceptions();
 
 	SPGlobal.loggingSync(true);
 	SPGlobal.logging(true);
+	
+	makeAVQuest();
 
 	SPProgressBarPlug.progress.setMax(numSteps);
 	SPProgressBarPlug.progress.setStatus(step++, numSteps, "Initializing AV");
@@ -424,14 +395,25 @@ public class AV implements SUM {
 
 	// For all race SWITCHING variants
 	// (such as texture variants)
-	AVFileVars.setUpFileVariants(source, patch);
+	AVFileVars.setUpFileVariants(source);
 
-	// For all non-race SWITCHING variants
+	// For all non-skin SWITCHING variants
 	// (such as height variant scripting)
-//	setUpInGameScriptBasedVariants(source);
-
+	setUpInGameScriptBasedVariants(source);
     }
 
+    public void makeAVQuest() {
+	ScriptRef questScript = new ScriptRef("AVQuestScript");
+	questScript.setProperty(changeSkinOn, save.getBool(Settings.PACKAGES_ON));
+	questScript.setProperty(heightOn, save.getBool(Settings.HEIGHT_ON));
+	Float[] logTable = new Float[1000];
+	for (int i = 0 ; i < logTable.length ; i++) {
+	    logTable[i] = (float) Math.log((i + 1) / 1000.0);
+	}
+	questScript.setProperty("LogTable", logTable);
+	quest = NiftyFunc.makeScriptQuest(SPGlobal.getGlobalPatch(), questScript);
+    }
+    
     @Override
     public boolean hasCustomMenu() {
 	return false;

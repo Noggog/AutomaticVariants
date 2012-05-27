@@ -14,9 +14,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import lev.gui.LHelpPanel;
 import lev.gui.LNumericSetting;
-import skyproc.gui.SUMGUI;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPSettingPanel;
+import skyproc.gui.SUMGUI;
 
 /**
  *
@@ -38,8 +38,8 @@ public class SettingsHeightPanel extends SPSettingPanel {
     public boolean initialize() {
 	if (super.initialize()) {
 
-	    chart = new HeightVarChart("Current Settings", new Dimension (SUMGUI.helpPanel.getBottomSize().width , 190),
-		    AV.yellow, AV.orange, "Percent deviance from normal height", "Probability / Height");
+	    chart = new HeightVarChart("Current Settings", new Dimension(SUMGUI.helpPanel.getBottomSize().width, 190),
+		    AV.yellow, AV.orange, "Percent difference from normal height", "Probability / Height");
 	    chart.addSeries(AV.darkGreen);
 
 	    stdDevSetting = new LNumericSetting("Height Difference", AV.settingsFont, AV.yellow,
@@ -60,7 +60,7 @@ public class SettingsHeightPanel extends SPSettingPanel {
     void updateChart() {
 	AV.save.update();
 	chart.clear();
-	double std = (AV.save.getInt(Settings.HEIGHT_STD) + minStd) / 3.0;
+	double std = (AV.save.getInt(Settings.HEIGHT_STD) + minStd) / 3.0;	
 	if (std == 0) {
 	    return;
 	}
@@ -89,6 +89,45 @@ public class SettingsHeightPanel extends SPSettingPanel {
 		/ (2 * Math.pow(stdDev, 2)));
 	return (1 / stdDev / Math.sqrt(2 * Math.PI))
 		* Math.pow(Math.E, exponent);
+    }
+
+    double estimateSTD(double value, double target, double accuracy, double testSTD, double step, int direction) {
+	
+	double test = bellCurve(value, testSTD);
+	if (Math.abs(target - test) < accuracy) {
+	    // If test STD gave value within accuracy range, return it
+	    return testSTD;
+	    
+	} else {
+	    // Need to adjust STD and test again
+	    boolean passedTarget = false;
+	    if (direction != 0) {
+		passedTarget = direction > 0 ? 
+			test < target: // If direction up, then passed if test > target
+			test > target; // If direction down, then passed if test < target
+	    }
+	    
+	    // If we passed, half the step
+	    if (passedTarget) {
+		step = step / 2;
+	    }
+	    
+	    // Set direction
+	    if (target > test) {
+		direction = -1;
+	    } else {
+		direction = 1;
+	    }
+	    
+	    // Select new test
+	    testSTD = testSTD + (step * direction);
+	    
+	    return estimateSTD(value, target, accuracy, testSTD, step, direction);
+	}
+    }
+
+    double estimateSTD() {
+	return estimateSTD(AV.save.getInt(Settings.HEIGHT_STD), 1, .1, 1, .5, 0);
     }
 
     private class UpdateChartHandler implements ActionListener {

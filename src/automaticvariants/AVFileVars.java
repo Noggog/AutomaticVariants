@@ -74,7 +74,7 @@ public class AVFileVars {
     //////////////////
     static Map<FormID, AV_SPEL> switcherSpells = new HashMap<FormID, AV_SPEL>();
 
-    static void setUpFileVariants(Mod source, Mod patch) throws IOException, Uninitialized, BadParameter {
+    static void setUpFileVariants(Mod source) throws IOException, Uninitialized, BadParameter {
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + "1 - Import Packages.txt");
 	    File f = new File(SPGlobal.pathToDebug() + "Asynchronous log.txt");

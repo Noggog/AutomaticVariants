@@ -4,12 +4,8 @@
  */
 package automaticvariants;
 
-import java.io.*;
-import java.util.Map;
-import javax.swing.JOptionPane;
 import lev.Ln;
 import lev.gui.LSaveFile;
-import skyproc.SPGlobal;
 
 /**
  *
@@ -18,15 +14,15 @@ import skyproc.SPGlobal;
 public class AVSaveFile extends LSaveFile {
 
     @Override
-    protected void init(Map m) {
-	Add(m, Settings.PACKAGES_ON, "Packages On", false, true);
-	Add(m, Settings.PACKAGES_ORIG_AS_VAR, "Orig as Var", false, true);
-	Add(m, Settings.DEBUG_LEVEL, "Debug Level", false, 1);
-	Add(m, Settings.IMPORT_AT_START, "Import at Start", false, false);
-	Add(m, Settings.HEIGHT_ON, "Height Variants On", false, true);
-	Add(m, Settings.HEIGHT_STD, "Height Variants Min", false, 10);
-	Add(m, Settings.MINIMIZE_PATCH, "Height Variants On", false, true);
-	Add(m, Settings.MAX_MEM, "Max memory MB", false, 750);
+    protected void initSettings() {
+	Add(Settings.PACKAGES_ON, "Packages On", false, true);
+	Add(Settings.PACKAGES_ORIG_AS_VAR, "Orig as Var", false, true);
+	Add(Settings.DEBUG_LEVEL, "Debug Level", false, 1);
+	Add(Settings.IMPORT_AT_START, "Import at Start", false, false);
+	Add(Settings.HEIGHT_ON, "Height Variants On", false, true);
+	Add(Settings.HEIGHT_STD, "Height Variants STD", false, 10);
+	Add(Settings.MINIMIZE_PATCH, "Height Variants On", false, true);
+	Add(Settings.MAX_MEM, "Max memory MB", false, 750);
     }
 
     @Override
@@ -64,6 +60,18 @@ public class AVSaveFile extends LSaveFile {
 
 	helpInfo.put(Settings.HEIGHT_ON, "This variant setup will give each actor "
 		+ "that spawns a variance in its height.");
+	
+	helpInfo.put(Settings.HEIGHT_STD, "This determines the maximum difference from "
+		+ "the normal height an actor can be. \n\n"
+		
+		+ "The probability of what height an actor will spawn "
+		+ "as follows a bell curve, where normal height is most"
+		+ " common, and the max/min height is fairly rare.\n\n"
+		
+		+ "NOTE: The Bethesda function used to set the size of an"
+		+ " actor does NOT change its hitbox size.  Therefore, if you're"
+		+ " playing an archer type character trying to get headshots, it is recommended you"
+		+ " keep this setting fairly conservative.");
 
 	helpInfo.put(Settings.AV_SETTINGS,
 		"These are AV settings related to this patcher program.");
