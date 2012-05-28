@@ -20,7 +20,7 @@ public class AVSaveFile extends LSaveFile {
 	Add(Settings.DEBUG_LEVEL, "Debug Level", false, 1);
 	Add(Settings.IMPORT_AT_START, "Import at Start", false, false);
 	Add(Settings.HEIGHT_ON, "Height Variants On", false, true);
-	Add(Settings.HEIGHT_STD, "Height Variants STD", false, 10);
+	Add(Settings.HEIGHT_MAX, "Height Variants Max", false, 15);
 	Add(Settings.MINIMIZE_PATCH, "Height Variants On", false, true);
 	Add(Settings.MAX_MEM, "Max memory MB", false, 750);
     }
@@ -61,12 +61,12 @@ public class AVSaveFile extends LSaveFile {
 	helpInfo.put(Settings.HEIGHT_ON, "This variant setup will give each actor "
 		+ "that spawns a variance in its height.");
 	
-	helpInfo.put(Settings.HEIGHT_STD, "This determines the maximum difference from "
+	helpInfo.put(Settings.HEIGHT_MAX, "This determines the maximum difference from "
 		+ "the normal height an actor can be. \n\n"
 		
 		+ "The probability of what height an actor will spawn "
 		+ "as follows a bell curve, where normal height is most"
-		+ " common, and the max/min height is fairly rare.\n\n"
+		+ " common, and the max/min height is very rare (about 0.5% chance).\n\n"
 		
 		+ "NOTE: The Bethesda function used to set the size of an"
 		+ " actor does NOT change its hitbox size.  Therefore, if you're"
@@ -120,7 +120,7 @@ public class AVSaveFile extends LSaveFile {
 	PACKAGES_ENABLE,
 	PACKAGES_DISABLE,
 	HEIGHT_ON,
-	HEIGHT_STD,
+	HEIGHT_MAX,
 	DEBUG_LEVEL,
 	IMPORT_AT_START,
 	MINIMIZE_PATCH,

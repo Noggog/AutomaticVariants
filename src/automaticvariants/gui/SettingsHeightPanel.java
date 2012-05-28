@@ -43,7 +43,7 @@ public class SettingsHeightPanel extends SPSettingPanel {
 	    chart.addSeries(AV.darkGreen);
 
 	    stdDevSetting = new LNumericSetting("Height Difference", AV.settingsFont, AV.yellow,
-		    0, maxStd, 1, Settings.HEIGHT_STD, AV.save, SUMGUI.helpPanel);
+		    0, maxStd, 1, Settings.HEIGHT_MAX, AV.save, SUMGUI.helpPanel);
 	    last = setPlacement(stdDevSetting, last);
 	    stdDevSetting.addChangeListener(new SettingsHeightPanel.UpdateChartChangeHandler());
 	    AddSetting(stdDevSetting);
@@ -60,7 +60,7 @@ public class SettingsHeightPanel extends SPSettingPanel {
     void updateChart() {
 	AV.save.update();
 	chart.clear();
-	double std = (AV.save.getInt(Settings.HEIGHT_STD) + minStd) / 3.0;	
+	double std = (AV.save.getInt(Settings.HEIGHT_MAX) + minStd) / 3.0;	
 	if (std == 0) {
 	    return;
 	}
@@ -82,6 +82,47 @@ public class SettingsHeightPanel extends SPSettingPanel {
 	chart.plot.getDomainAxis().setRange(cutoff * -std, cutoff * std);
 	chart.plot.getRangeAxis().setRange(0, 1.5);
     }
+    
+    void boxMullerTest() {
+	int[] array = new int[1000];
+	for (int i = 0 ; i < array.length ; i++) {
+	    array[i] = 0;
+	}
+	int maxRange = 0;
+	double min = 1000;
+	double max = -1000;
+	double average = 0;
+	for (int i = 0; i < 999; i++) {
+	    for (int j = 0; j < 999; j++) {
+		double val = (Math.sqrt(-2 * Math.log((i + 1) / 1000.0)) * Math.cos(2 * Math.PI * (j + 1) / 1000.0));
+		if (max < val) {
+		    max = val;
+		}
+		
+		if (min > val) {
+		    min = val;
+		}
+		
+		average += val;
+		
+		val = val * 100 + 500;
+		array[(int)val]++;
+		if (array[(int)val] > maxRange) {
+		    maxRange = array[(int)val];
+		}
+	    }
+	}
+	
+	System.out.println("Min " + min);
+	System.out.println("Max " + max);
+	System.out.println("Avg " + average / 1000 / 1000);
+	
+	for (int i = 0 ; i < array.length ; i++) {
+	    chart.putPoint(1, i, array[i]);
+	}
+	chart.plot.getDomainAxis().setRange(0, array.length);
+	chart.plot.getRangeAxis().setRange(0, maxRange);
+    }
 
     // Equation just taken from wikipedia bell curve page.
     double bellCurve(double pos, double stdDev) {
@@ -92,42 +133,42 @@ public class SettingsHeightPanel extends SPSettingPanel {
     }
 
     double estimateSTD(double value, double target, double accuracy, double testSTD, double step, int direction) {
-	
+
 	double test = bellCurve(value, testSTD);
 	if (Math.abs(target - test) < accuracy) {
 	    // If test STD gave value within accuracy range, return it
 	    return testSTD;
-	    
+
 	} else {
 	    // Need to adjust STD and test again
 	    boolean passedTarget = false;
 	    if (direction != 0) {
-		passedTarget = direction > 0 ? 
-			test < target: // If direction up, then passed if test > target
+		passedTarget = direction > 0
+			? test < target : // If direction up, then passed if test > target
 			test > target; // If direction down, then passed if test < target
 	    }
-	    
+
 	    // If we passed, half the step
 	    if (passedTarget) {
 		step = step / 2;
 	    }
-	    
+
 	    // Set direction
 	    if (target > test) {
 		direction = -1;
 	    } else {
 		direction = 1;
 	    }
-	    
+
 	    // Select new test
 	    testSTD = testSTD + (step * direction);
-	    
+
 	    return estimateSTD(value, target, accuracy, testSTD, step, direction);
 	}
     }
 
     double estimateSTD() {
-	return estimateSTD(AV.save.getInt(Settings.HEIGHT_STD), 1, .1, 1, .5, 0);
+	return estimateSTD(AV.save.getInt(Settings.HEIGHT_MAX), 1, .1, 1, .5, 0);
     }
 
     private class UpdateChartHandler implements ActionListener {

@@ -52,10 +52,6 @@ public class AV implements SUM {
     static String raceAttachScript = "AVRaceAttachment";
     static String changeSkinOn = "SkinVariantOn";
     static String heightOn = "HeightVariantOn";
-    static String heightMin = "HeightVariantMin";
-    static String heightMax = "HeightVariantMax";
-    static String heightWidth = "HeightVariantWidth";
-    static String heightIntensity = "HeightVariantIntensity";
     /*
      * Other
      */
@@ -209,13 +205,6 @@ public class AV implements SUM {
     static ScriptRef generateAttachScript() {
 	ScriptRef script = new ScriptRef(raceAttachScript);
 	script.setProperty("AVQuest", quest.getForm());
-	if (heightOnF) {
-	    script.setProperty(heightOn, true);
-	    script.setProperty(heightMin, (float) 0);
-	    script.setProperty(heightMax, (float) .98);
-	    script.setProperty(heightWidth, (float) 5);
-	    script.setProperty(heightIntensity, (float) 9);
-	}
 	return script;
     }
 
@@ -406,11 +395,15 @@ public class AV implements SUM {
 	ScriptRef questScript = new ScriptRef("AVQuestScript");
 	questScript.setProperty(changeSkinOn, save.getBool(Settings.PACKAGES_ON));
 	questScript.setProperty(heightOn, save.getBool(Settings.HEIGHT_ON));
+	questScript.setProperty("HeightScale", (float)(save.getInt(Settings.HEIGHT_MAX) / 100.0 / 3.0));
+	
+	// Log Table
 	Float[] logTable = new Float[1000];
 	for (int i = 0 ; i < logTable.length ; i++) {
 	    logTable[i] = (float) Math.log((i + 1) / 1000.0);
 	}
 	questScript.setProperty("LogTable", logTable);
+	
 	quest = NiftyFunc.makeScriptQuest(SPGlobal.getGlobalPatch(), questScript);
     }
     
