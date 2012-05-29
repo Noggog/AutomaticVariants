@@ -108,6 +108,10 @@ public class AVFileVars {
 	// Generate ARMO dups that use ARMAs
 	generateARMOvariants(source);
 
+	implementOrigAsVar();
+
+	printVariants();
+
 	skinSwitchMethod(source);
 
 	for (PackageComponent p : AVPackages.getAll()) {
@@ -612,8 +616,18 @@ public class AVFileVars {
 		}
 	    }
 	}
-	printVariants();
 	SPProgressBarPlug.progress.incrementBar();
+    }
+
+    static void implementOrigAsVar() {
+	if (AV.save.getBool(Settings.PACKAGES_ORIG_AS_VAR)) {
+	    for (FormID armoSrc : armors.keySet()) {
+		ARMO src = (ARMO) SPDatabase.getMajor(armoSrc, GRUP_TYPE.ARMO);
+		for (FormID race : armors.get(armoSrc).keySet()) {
+		    armors.get(armoSrc).get(race).add(new ARMO_spec(src, race));
+		}
+	    }
+	}
     }
 
     static void printVariants() {
@@ -621,12 +635,10 @@ public class AVFileVars {
 	    SPGlobal.log(header, "Variants loaded: ");
 	    for (FormID srcArmor : armors.keySet()) {
 		SPGlobal.log(header, "  Armor " + SPDatabase.getMajor(srcArmor) + " has " + armors.get(srcArmor).size() + " variants.");
-		for (FormID armoSrc : armors.keySet()) {
-		    for (FormID race : armors.get(armoSrc).keySet()) {
-			SPGlobal.log(header, "    For race: " + SPDatabase.getMajor(race, GRUP_TYPE.RACE));
-			for (AVFileVars.ARMO_spec variant : armors.get(armoSrc).get(race)) {
-			    SPGlobal.log(header, "      " + variant.armo + ", prob divider: 1/" + variant.probDiv);
-			}
+		for (FormID race : armors.get(srcArmor).keySet()) {
+		    SPGlobal.log(header, "    For race: " + SPDatabase.getMajor(race, GRUP_TYPE.RACE));
+		    for (AVFileVars.ARMO_spec variant : armors.get(srcArmor).get(race)) {
+			SPGlobal.log(header, "      " + variant.armo + ", prob divider: 1/" + variant.probDiv);
 		    }
 		}
 	    }
