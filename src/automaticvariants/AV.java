@@ -1,7 +1,7 @@
 package automaticvariants;
 
 import automaticvariants.AVSaveFile.Settings;
-import automaticvariants.gui.SettingsHeightPanel;
+import automaticvariants.gui.SettingsStatsPanel;
 import automaticvariants.gui.SettingsOther;
 import automaticvariants.gui.SettingsPackagesManager;
 import automaticvariants.gui.SettingsPackagesOther;
@@ -51,7 +51,13 @@ public class AV implements SUM {
      */
     static String raceAttachScript = "AVRaceAttachment";
     static String changeSkinOn = "SkinVariantOn";
-    static String heightOn = "HeightVariantOn";
+    static String statOn = "StatVariantOn";
+    static String heightScale = "HeightScale";
+    static String healthScale = "HealthScale";
+    static String magicScale = "MagicScale";
+    static String staminaScale = "StaminaScale";
+    static String speedScale = "SpeedScale";
+    static String tieStats = "TieStats";
     /*
      * Other
      */
@@ -69,7 +75,7 @@ public class AV implements SUM {
     static public SettingsPackagesManager packagesManagerPanel;
     static public SettingsPackagesOther packagesOtherPanel;
     static public SettingsOther otherPanel;
-    static public SettingsHeightPanel heightPanel;
+    static public SettingsStatsPanel heightPanel;
     static public Font settingsFont = new Font("Serif", Font.BOLD, 16);
     static public Color green = new Color(67, 162, 10);
     static public Color darkGreen = new Color(61, 128, 21);
@@ -339,8 +345,8 @@ public class AV implements SUM {
 	packagesOtherPanel = new SettingsPackagesOther(settingsMenu);
 	settingsMenu.addMenu(packagesManagerPanel, true, save, Settings.PACKAGES_ON);
 	
-	heightPanel = new SettingsHeightPanel(settingsMenu);
-	settingsMenu.addMenu(heightPanel, true, save, Settings.HEIGHT_ON);
+	heightPanel = new SettingsStatsPanel(settingsMenu);
+	settingsMenu.addMenu(heightPanel, true, save, Settings.STATS_ON);
 
 	otherPanel = new SettingsOther(settingsMenu);
 	settingsMenu.addMenu(otherPanel, false, save, Settings.AV_SETTINGS);
@@ -394,8 +400,15 @@ public class AV implements SUM {
     public void makeAVQuest() {
 	ScriptRef questScript = new ScriptRef("AVQuestScript");
 	questScript.setProperty(changeSkinOn, save.getBool(Settings.PACKAGES_ON));
-	questScript.setProperty(heightOn, save.getBool(Settings.HEIGHT_ON));
-	questScript.setProperty("HeightScale", (float)(save.getInt(Settings.HEIGHT_MAX) / 100.0 / 3.0));
+	questScript.setProperty(statOn, save.getBool(Settings.STATS_ON));
+	double scale =	100.0  // To percent (.01) instead of ints (1)
+			* 3.0; // Scaled to 3 standard deviations
+	questScript.setProperty(heightScale, (float)(save.getInt(Settings.STATS_HEIGHT_MAX) / scale));
+	questScript.setProperty(healthScale, (float)(save.getInt(Settings.STATS_HEALTH_MAX) / scale));
+	questScript.setProperty(magicScale, (float)(save.getInt(Settings.STATS_MAGIC_MAX) / scale));
+	questScript.setProperty(staminaScale, (float)(save.getInt(Settings.STATS_STAMINA_MAX) / scale));
+	questScript.setProperty(speedScale, (float)(save.getInt(Settings.STATS_SPEED_MAX) / scale));
+	questScript.setProperty(tieStats, save.getBool(Settings.STATS_TIE));
 	
 	// Log Table
 	Float[] logTable = new Float[1000];

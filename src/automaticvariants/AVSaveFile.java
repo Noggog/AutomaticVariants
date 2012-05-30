@@ -15,14 +15,19 @@ public class AVSaveFile extends LSaveFile {
 
     @Override
     protected void initSettings() {
-	Add(Settings.PACKAGES_ON, "Packages On", false, true);
-	Add(Settings.PACKAGES_ORIG_AS_VAR, "Orig as Var", false, true);
-	Add(Settings.DEBUG_LEVEL, "Debug Level", false, 1);
-	Add(Settings.IMPORT_AT_START, "Import at Start", false, false);
-	Add(Settings.HEIGHT_ON, "Height Variants On", false, true);
-	Add(Settings.HEIGHT_MAX, "Height Variants Max", false, 15);
-	Add(Settings.MINIMIZE_PATCH, "Height Variants On", false, true);
-	Add(Settings.MAX_MEM, "Max memory MB", false, 750);
+	Add(Settings.PACKAGES_ON,		false, true);
+	Add(Settings.PACKAGES_ORIG_AS_VAR,	false, true);
+	Add(Settings.DEBUG_LEVEL,		false, 1);
+	Add(Settings.IMPORT_AT_START,		false, false);
+	Add(Settings.STATS_ON,			false, true);
+	Add(Settings.STATS_HEIGHT_MAX,		false, 15);
+	Add(Settings.STATS_HEALTH_MAX,		false, 25);
+	Add(Settings.STATS_MAGIC_MAX,		false, 25);
+	Add(Settings.STATS_STAMINA_MAX,		false, 25);
+	Add(Settings.STATS_SPEED_MAX,		false, 10);
+	Add(Settings.STATS_TIE,			false, true);
+	Add(Settings.MINIMIZE_PATCH,		false, true);
+	Add(Settings.MAX_MEM,			false, 750);
     }
 
     @Override
@@ -58,21 +63,60 @@ public class AVSaveFile extends LSaveFile {
 		+ "This button will simply gather them back to the AV Packages folder and quit, so that you can modify "
 		+ "AV Packages manually in windows.  Make sure to re-run the patcher before attemting to play with AV again.");
 
-	helpInfo.put(Settings.HEIGHT_ON, "This variant setup will give each actor "
-		+ "that spawns a variance in its height.");
+	helpInfo.put(Settings.STATS_ON, "This variant setup will randomly skew the stats of an actor "
+		+ "so that each spawn has a different height, health, speed, etc.\n\n"
+		+ "This is applied in addition to the variant-specific stat differences that modders can"
+		+ " put on their specific variants.  So, for example, if one of your AV Packages introduces "
+		+ "a red troll with 15% more health, then any red troll spawns will have 15% bonus health that "
+		+ "the modder desired, but will then be skewed by this setup to be slightly higher or lower for "
+		+ "each spawn.");
 	
-	helpInfo.put(Settings.HEIGHT_MAX, "This determines the maximum difference from "
+	helpInfo.put(Settings.STATS_HEIGHT_MAX, "This determines the maximum percentage difference from "
 		+ "the normal height an actor can be. \n\n"
 		
 		+ "The probability of what height an actor will spawn "
 		+ "as follows a bell curve, where normal height is most"
-		+ " common, and the max/min height is very rare (about 0.5% chance).\n\n"
+		+ " common, and the (max / min) height is very rare (about 0.5% chance).\n\n"
 		
 		+ "NOTE: The Bethesda function used to set the size of an"
 		+ " actor does NOT change its hitbox size.  Therefore, if you're"
 		+ " playing an archer type character trying to get headshots, it is recommended you"
 		+ " keep this setting fairly conservative.");
-
+	
+	helpInfo.put(Settings.STATS_HEALTH_MAX, "This determines the maximum percentage difference from "
+		+ "the normal health pool an actor can have. \n\n"
+		
+		+ "The probability of how much health an actor will spawn "
+		+ "with follows a bell curve, where normal health is most"
+		+ " common, and the (max / min) health is very rare (about 0.5% chance).");
+	
+	helpInfo.put(Settings.STATS_MAGIC_MAX, "This determines the maximum percentage difference from "
+		+ "the normal mana pool an actor can have. \n\n"
+		
+		+ "The probability of how much mana an actor will spawn "
+		+ "with follows a bell curve, where normal size is most"
+		+ " common, and the (max / min) size is very rare (about 0.5% chance).");
+	
+	helpInfo.put(Settings.STATS_STAMINA_MAX, "This determines the maximum percentage difference from "
+		+ "the normal stamina pool an actor can have. \n\n"
+		
+		+ "The probability of how much stamina an actor will spawn "
+		+ "with follows a bell curve, where normal stamina is most"
+		+ " common, and the (max / min) stamina is very rare (about 0.5% chance).");
+	
+	helpInfo.put(Settings.STATS_SPEED_MAX, "This determines the maximum percentage difference from "
+		+ "the normal speed an actor can have. \n\n"
+		
+		+ "The probability of what speed an actor will spawn "
+		+ "with follows a bell curve, where normal speed is most"
+		+ " common, and the (max / min) speed is very rare (about 0.5% chance).");
+	
+	helpInfo.put(Settings.STATS_TIE, "This setting will tie all the stat differences together, "
+		+ "so that more often units will spawn either strong or weak in all areas, rather than"
+		+ " randomly getting differences for each stat.\n\n"
+		+ "For example, with this setting you will more likely encounter units that have more health and speed "
+		+ "if they are taller, and less health and speed if they are shorter.");
+	
 	helpInfo.put(Settings.AV_SETTINGS,
 		"These are AV settings related to this patcher program.");
 
@@ -119,8 +163,13 @@ public class AVSaveFile extends LSaveFile {
 	PACKAGES_COMPRESS,
 	PACKAGES_ENABLE,
 	PACKAGES_DISABLE,
-	HEIGHT_ON,
-	HEIGHT_MAX,
+	STATS_ON,
+	STATS_HEIGHT_MAX,
+	STATS_HEALTH_MAX,
+	STATS_MAGIC_MAX,
+	STATS_STAMINA_MAX,
+	STATS_SPEED_MAX,
+	STATS_TIE,
 	DEBUG_LEVEL,
 	IMPORT_AT_START,
 	MINIMIZE_PATCH,

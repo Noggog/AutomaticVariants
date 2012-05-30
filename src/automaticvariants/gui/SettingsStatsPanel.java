@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import lev.gui.LCheckBox;
 import lev.gui.LHelpPanel;
 import lev.gui.LNumericSetting;
 import skyproc.gui.SPMainMenuPanel;
@@ -22,31 +23,64 @@ import skyproc.gui.SUMGUI;
  *
  * @author Justin Swanson
  */
-public class SettingsHeightPanel extends SPSettingPanel {
+public class SettingsStatsPanel extends SPSettingPanel {
 
-    LNumericSetting stdDevSetting;
+    LNumericSetting heightDifference;
+    LNumericSetting healthDifference;
+    LNumericSetting magicDifference;
+    LNumericSetting staminaDifference;
+    LNumericSetting speedDifference;
+    LCheckBox tieDifferences;
+    
     HeightVarChart chart;
     static int minStd = 3;
     static int maxStd = 40;
     static double cutoff = 2.5;
 
-    public SettingsHeightPanel(SPMainMenuPanel parent_) {
-	super("Height Variants", AV.save, parent_, AV.orange);
+    public SettingsStatsPanel(SPMainMenuPanel parent_) {
+	super("Stat Variants", AV.save, parent_, AV.orange);
     }
 
     @Override
     public boolean initialize() {
 	if (super.initialize()) {
 
-	    chart = new HeightVarChart("Current Settings", new Dimension(SUMGUI.helpPanel.getBottomSize().width, 190),
+	    chart = new HeightVarChart("Current Height Settings", new Dimension(SUMGUI.helpPanel.getBottomSize().width, 190),
 		    AV.yellow, AV.orange, "Percent difference from normal height", "Probability / Height");
 	    chart.addSeries(AV.darkGreen);
 
-	    stdDevSetting = new LNumericSetting("Height Difference", AV.settingsFont, AV.yellow,
-		    0, maxStd, 1, Settings.HEIGHT_MAX, AV.save, SUMGUI.helpPanel);
-	    last = setPlacement(stdDevSetting, last);
-	    stdDevSetting.addChangeListener(new SettingsHeightPanel.UpdateChartChangeHandler());
-	    AddSetting(stdDevSetting);
+	    heightDifference = new LNumericSetting("Height Difference", AV.settingsFont, AV.yellow,
+		    0, maxStd, 1, Settings.STATS_HEIGHT_MAX, AV.save, SUMGUI.helpPanel);
+	    last = setPlacement(heightDifference, last);
+	    heightDifference.addChangeListener(new SettingsStatsPanel.UpdateChartChangeHandler());
+	    AddSetting(heightDifference);
+	    
+	    healthDifference = new LNumericSetting("Health Difference", AV.settingsFont, AV.yellow,
+		    0, maxStd, 1, Settings.STATS_HEALTH_MAX, AV.save, SUMGUI.helpPanel);
+	    last = setPlacement(healthDifference, last);
+	    AddSetting(healthDifference);
+	    
+	    magicDifference = new LNumericSetting("Mana Difference", AV.settingsFont, AV.yellow,
+		    0, maxStd, 1, Settings.STATS_MAGIC_MAX, AV.save, SUMGUI.helpPanel);
+	    last = setPlacement(magicDifference, last);
+	    AddSetting(magicDifference);
+	    
+	    staminaDifference = new LNumericSetting("Stamina Difference", AV.settingsFont, AV.yellow,
+		    0, maxStd, 1, Settings.STATS_STAMINA_MAX, AV.save, SUMGUI.helpPanel);
+	    last = setPlacement(staminaDifference, last);
+	    AddSetting(staminaDifference);
+	    
+	    speedDifference = new LNumericSetting("Speed Difference", AV.settingsFont, AV.yellow,
+		    0, maxStd, 1, Settings.STATS_SPEED_MAX, AV.save, SUMGUI.helpPanel);
+	    last = setPlacement(speedDifference, last);
+	    AddSetting(speedDifference);
+	    
+	    tieDifferences = new LCheckBox("Bundled Differences", AV.settingsFont, AV.yellow);
+	    tieDifferences.tie(Settings.STATS_TIE, saveFile, SUMGUI.helpPanel, true);
+	    tieDifferences.addShadow();
+	    tieDifferences.setOffset(2);
+	    last = setPlacement(tieDifferences, last);
+	    AddSetting(tieDifferences);
 
 	    alignRight();
 
@@ -60,7 +94,7 @@ public class SettingsHeightPanel extends SPSettingPanel {
     void updateChart() {
 	AV.save.update();
 	chart.clear();
-	double std = (AV.save.getInt(Settings.HEIGHT_MAX) + minStd) / 3.0;	
+	double std = (AV.save.getInt(Settings.STATS_HEIGHT_MAX) + minStd) / 3.0;	
 	if (std == 0) {
 	    return;
 	}
@@ -168,7 +202,7 @@ public class SettingsHeightPanel extends SPSettingPanel {
     }
 
     double estimateSTD() {
-	return estimateSTD(AV.save.getInt(Settings.HEIGHT_MAX), 1, .1, 1, .5, 0);
+	return estimateSTD(AV.save.getInt(Settings.STATS_HEIGHT_MAX), 1, .1, 1, .5, 0);
     }
 
     private class UpdateChartHandler implements ActionListener {
