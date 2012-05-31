@@ -49,7 +49,7 @@ public class Variant extends PackageComponent implements Serializable {
 		add(c);
 	    } else if (AVFileVars.isSpec(f)) {
 		try {
-		    spec = AVGlobal.parser.fromJson(new FileReader(f), VariantSpec.class);
+		    spec = AV.gson.fromJson(new FileReader(f), VariantSpec.class);
 		    if (SPGlobal.logging()) {
 			spec.print(src.getName());
 		    }
@@ -94,6 +94,17 @@ public class Variant extends PackageComponent implements Serializable {
     public class VariantSpec implements Serializable {
 
 	int Probability_Divider = 1;
+	String author;
+	String[][] regionExcludeFrom;
+	String[][] regionInclude;
+	boolean exclusiveRegion;
+	float healthMult;
+	float heightMult;
+	float magickaMult;
+	float staminaMult;
+	float speedMult;
+	String nameAffix;
+	String namePrefix;
 
 	VariantSpec() {
 	}

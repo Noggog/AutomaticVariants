@@ -39,7 +39,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 	for (File f : src.listFiles()) {
 	    if (AVFileVars.isSpec(f)) {
 		try {
-		    spec = AVGlobal.parser.fromJson(new FileReader(f), VariantSetSpec.class);
+		    spec = AV.gson.fromJson(new FileReader(f), VariantSetSpec.class);
 		    if (spec != null) {
 			spec.file = f;
 			if (SPGlobal.logging()) {

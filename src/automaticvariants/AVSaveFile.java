@@ -32,7 +32,7 @@ public class AVSaveFile extends LSaveFile {
 
     @Override
     protected void initHelp() {
-	helpInfo.put(Settings.PACKAGES_ON, "This feature will duplicate and reorganize records to make actors"
+	helpInfo.put(Settings.PACKAGES_ON, "This feature will create and reorganize records to make actors"
 		+ " with different textures spawn."
 		+ "\n\nThe variants will be created from the contents your enabled AV Packages."
 		+ "\n\nNOTE: If you disable a package that you have been playing with, "

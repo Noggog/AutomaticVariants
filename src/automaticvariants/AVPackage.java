@@ -88,6 +88,8 @@ public class AVPackage extends PackageComponent {
     class PackageSpec {
 
 	File file;
+	String packager;
+	String version;	
 
 	PackageSpec(File f) {
 	}

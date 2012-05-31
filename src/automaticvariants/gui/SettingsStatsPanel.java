@@ -49,28 +49,28 @@ public class SettingsStatsPanel extends SPSettingPanel {
 		    AV.yellow, AV.orange, "Percent difference from normal height", "Probability / Height");
 	    chart.addSeries(AV.darkGreen);
 
-	    heightDifference = new LNumericSetting("Height Difference", AV.settingsFont, AV.yellow,
+	    heightDifference = new LNumericSetting("Max Height Difference", AV.settingsFont, AV.yellow,
 		    0, maxStd, 1, Settings.STATS_HEIGHT_MAX, AV.save, SUMGUI.helpPanel);
 	    last = setPlacement(heightDifference, last);
 	    heightDifference.addChangeListener(new SettingsStatsPanel.UpdateChartChangeHandler());
 	    AddSetting(heightDifference);
 	    
-	    healthDifference = new LNumericSetting("Health Difference", AV.settingsFont, AV.yellow,
+	    healthDifference = new LNumericSetting("Max Health Difference", AV.settingsFont, AV.yellow,
 		    0, maxStd, 1, Settings.STATS_HEALTH_MAX, AV.save, SUMGUI.helpPanel);
 	    last = setPlacement(healthDifference, last);
 	    AddSetting(healthDifference);
 	    
-	    magicDifference = new LNumericSetting("Mana Difference", AV.settingsFont, AV.yellow,
+	    magicDifference = new LNumericSetting("Max Mana Difference", AV.settingsFont, AV.yellow,
 		    0, maxStd, 1, Settings.STATS_MAGIC_MAX, AV.save, SUMGUI.helpPanel);
 	    last = setPlacement(magicDifference, last);
 	    AddSetting(magicDifference);
 	    
-	    staminaDifference = new LNumericSetting("Stamina Difference", AV.settingsFont, AV.yellow,
+	    staminaDifference = new LNumericSetting("Max Stamina Difference", AV.settingsFont, AV.yellow,
 		    0, maxStd, 1, Settings.STATS_STAMINA_MAX, AV.save, SUMGUI.helpPanel);
 	    last = setPlacement(staminaDifference, last);
 	    AddSetting(staminaDifference);
 	    
-	    speedDifference = new LNumericSetting("Speed Difference", AV.settingsFont, AV.yellow,
+	    speedDifference = new LNumericSetting("Max Speed Difference", AV.settingsFont, AV.yellow,
 		    0, maxStd, 1, Settings.STATS_SPEED_MAX, AV.save, SUMGUI.helpPanel);
 	    last = setPlacement(speedDifference, last);
 	    AddSetting(speedDifference);

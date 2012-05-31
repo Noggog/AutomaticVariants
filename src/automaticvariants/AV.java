@@ -5,6 +5,7 @@ import automaticvariants.gui.SettingsStatsPanel;
 import automaticvariants.gui.SettingsOther;
 import automaticvariants.gui.SettingsPackagesManager;
 import automaticvariants.gui.SettingsPackagesOther;
+import com.google.gson.Gson;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Point;
@@ -64,6 +65,7 @@ public class AV implements SUM {
     public static LSaveFile save = new AVSaveFile();
     public static QUST quest;
     public static Thread parser;
+    public static Gson gson = new Gson();
     static boolean heightOnF = false;
     static String extraPath = "";
     static int numSteps = 8;
