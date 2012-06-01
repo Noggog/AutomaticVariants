@@ -1,10 +1,7 @@
 package automaticvariants;
 
 import automaticvariants.AVSaveFile.Settings;
-import automaticvariants.gui.SettingsStatsPanel;
-import automaticvariants.gui.SettingsOther;
-import automaticvariants.gui.SettingsPackagesManager;
-import automaticvariants.gui.SettingsPackagesOther;
+import automaticvariants.gui.*;
 import com.google.gson.Gson;
 import java.awt.Color;
 import java.awt.Font;
@@ -76,6 +73,7 @@ public class AV implements SUM {
     static public SPMainMenuConfig packageManagerConfig;
     static public SettingsPackagesManager packagesManagerPanel;
     static public SettingsPackagesOther packagesOtherPanel;
+    static public SettingsPackagesVariant packagesVariantPanel;
     static public SettingsOther otherPanel;
     static public SettingsStatsPanel heightPanel;
     static public Font settingsFont = new Font("Serif", Font.BOLD, 16);
@@ -345,7 +343,8 @@ public class AV implements SUM {
 
 	packagesManagerPanel = new SettingsPackagesManager(settingsMenu);
 	packagesOtherPanel = new SettingsPackagesOther(settingsMenu);
-	settingsMenu.addMenu(packagesManagerPanel, true, save, Settings.PACKAGES_ON);
+	packagesVariantPanel = new SettingsPackagesVariant(settingsMenu);
+	packageManagerConfig = settingsMenu.addMenu(packagesManagerPanel, true, save, Settings.PACKAGES_ON);
 	
 	heightPanel = new SettingsStatsPanel(settingsMenu);
 	settingsMenu.addMenu(heightPanel, true, save, Settings.STATS_ON);

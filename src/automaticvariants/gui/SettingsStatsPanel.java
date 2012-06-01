@@ -31,7 +31,6 @@ public class SettingsStatsPanel extends SPSettingPanel {
     LNumericSetting staminaDifference;
     LNumericSetting speedDifference;
     LCheckBox tieDifferences;
-    
     HeightVarChart chart;
     static int minStd = 3;
     static int maxStd = 40;
@@ -50,31 +49,36 @@ public class SettingsStatsPanel extends SPSettingPanel {
 	    chart.addSeries(AV.darkGreen);
 
 	    heightDifference = new LNumericSetting("Max Height Difference", AV.settingsFont, AV.yellow,
-		    0, maxStd, 1, Settings.STATS_HEIGHT_MAX, AV.save, SUMGUI.helpPanel);
+		    0, maxStd, 1);
+	    heightDifference.tie(Settings.STATS_HEIGHT_MAX, AV.save, SUMGUI.helpPanel, true);
 	    last = setPlacement(heightDifference, last);
 	    heightDifference.addChangeListener(new SettingsStatsPanel.UpdateChartChangeHandler());
 	    AddSetting(heightDifference);
-	    
+
 	    healthDifference = new LNumericSetting("Max Health Difference", AV.settingsFont, AV.yellow,
-		    0, maxStd, 1, Settings.STATS_HEALTH_MAX, AV.save, SUMGUI.helpPanel);
+		    0, maxStd, 1);
+	    healthDifference.tie(Settings.STATS_HEALTH_MAX, AV.save, SUMGUI.helpPanel, true);
 	    last = setPlacement(healthDifference, last);
 	    AddSetting(healthDifference);
-	    
+
 	    magicDifference = new LNumericSetting("Max Mana Difference", AV.settingsFont, AV.yellow,
-		    0, maxStd, 1, Settings.STATS_MAGIC_MAX, AV.save, SUMGUI.helpPanel);
+		    0, maxStd, 1);
+	    magicDifference.tie(Settings.STATS_MAGIC_MAX, AV.save, SUMGUI.helpPanel, true);
 	    last = setPlacement(magicDifference, last);
 	    AddSetting(magicDifference);
-	    
+
 	    staminaDifference = new LNumericSetting("Max Stamina Difference", AV.settingsFont, AV.yellow,
-		    0, maxStd, 1, Settings.STATS_STAMINA_MAX, AV.save, SUMGUI.helpPanel);
+		    0, maxStd, 1);
+	    staminaDifference.tie(Settings.STATS_STAMINA_MAX, AV.save, SUMGUI.helpPanel, true);
 	    last = setPlacement(staminaDifference, last);
 	    AddSetting(staminaDifference);
-	    
+
 	    speedDifference = new LNumericSetting("Max Speed Difference", AV.settingsFont, AV.yellow,
-		    0, maxStd, 1, Settings.STATS_SPEED_MAX, AV.save, SUMGUI.helpPanel);
+		    0, maxStd, 1);
+	    speedDifference.tie(Settings.STATS_SPEED_MAX, AV.save, SUMGUI.helpPanel, true);
 	    last = setPlacement(speedDifference, last);
 	    AddSetting(speedDifference);
-	    
+
 	    tieDifferences = new LCheckBox("Bundled Differences", AV.settingsFont, AV.yellow);
 	    tieDifferences.tie(Settings.STATS_TIE, saveFile, SUMGUI.helpPanel, true);
 	    tieDifferences.addShadow();
@@ -94,7 +98,7 @@ public class SettingsStatsPanel extends SPSettingPanel {
     void updateChart() {
 	AV.save.update();
 	chart.clear();
-	double std = (AV.save.getInt(Settings.STATS_HEIGHT_MAX) + minStd) / 3.0;	
+	double std = (AV.save.getInt(Settings.STATS_HEIGHT_MAX) + minStd) / 3.0;
 	if (std == 0) {
 	    return;
 	}
@@ -116,10 +120,10 @@ public class SettingsStatsPanel extends SPSettingPanel {
 	chart.plot.getDomainAxis().setRange(cutoff * -std, cutoff * std);
 	chart.plot.getRangeAxis().setRange(0, 1.5);
     }
-    
+
     void boxMullerTest() {
 	int[] array = new int[1000];
-	for (int i = 0 ; i < array.length ; i++) {
+	for (int i = 0; i < array.length; i++) {
 	    array[i] = 0;
 	}
 	int maxRange = 0;
@@ -132,26 +136,26 @@ public class SettingsStatsPanel extends SPSettingPanel {
 		if (max < val) {
 		    max = val;
 		}
-		
+
 		if (min > val) {
 		    min = val;
 		}
-		
+
 		average += val;
-		
+
 		val = val * 100 + 500;
-		array[(int)val]++;
-		if (array[(int)val] > maxRange) {
-		    maxRange = array[(int)val];
+		array[(int) val]++;
+		if (array[(int) val] > maxRange) {
+		    maxRange = array[(int) val];
 		}
 	    }
 	}
-	
+
 	System.out.println("Min " + min);
 	System.out.println("Max " + max);
 	System.out.println("Avg " + average / 1000 / 1000);
-	
-	for (int i = 0 ; i < array.length ; i++) {
+
+	for (int i = 0; i < array.length; i++) {
 	    chart.putPoint(1, i, array[i]);
 	}
 	chart.plot.getDomainAxis().setRange(0, array.length);

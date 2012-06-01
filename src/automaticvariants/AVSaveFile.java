@@ -28,14 +28,17 @@ public class AVSaveFile extends LSaveFile {
 	Add(Settings.STATS_TIE,			false, true);
 	Add(Settings.MINIMIZE_PATCH,		false, true);
 	Add(Settings.MAX_MEM,			false, 750);
+	Add(Settings.SPEC_VAR_PROB,		false, 15);
     }
 
     @Override
     protected void initHelp() {
 	helpInfo.put(Settings.PACKAGES_ON, "This feature will create and reorganize records to make actors"
 		+ " with different textures spawn."
-		+ "\n\nThe variants will be created from the contents your enabled AV Packages."
-		+ "\n\nNOTE: If you disable a package that you have been playing with, "
+		+ "\n\nThe variants are created from 3rd party AV Packages that you download and install."
+		+ "\n\nYou can right-click components for more options such as editing "
+		+ "specifications and compressing packages."
+		+ "\n\nIf you disable a package that you have been playing with, "
 		+ "make sure to reset the cells of your savegame.");
 
 	helpInfo.put(Settings.PACKAGES_DISABLE, "This will disable any selected items and their children.\n\n"
@@ -153,6 +156,55 @@ public class AVSaveFile extends LSaveFile {
 
 	helpInfo.put(Settings.MINIMIZE_PATCH,
 		"This will make AV do more processing in order to minimize the patch size.");
+	
+	helpInfo.put(Settings.SPEC_VAR_AUTHOR,
+		"Put the original author who created the material contained in this variant.");
+	
+	helpInfo.put(Settings.SPEC_VAR_HEALTH,
+		"This is a percentage that setting will modify the NPC's stat to be greater/smaller"
+		+ " than normal whenever this specific variant is picked.");
+	
+	helpInfo.put(Settings.SPEC_VAR_MAGICKA,
+		"This is a percentage that setting will modify the NPC's stat to be greater/smaller"
+		+ " than normal whenever this specific variant is picked.");
+	
+	helpInfo.put(Settings.SPEC_VAR_STAMINA,
+		"This is a percentage that setting will modify the NPC's stat to be greater/smaller"
+		+ " than normal whenever this specific variant is picked.");
+	
+	helpInfo.put(Settings.SPEC_VAR_SPEED,
+		"This is a percentage that setting will modify the NPC's stat to be greater/smaller"
+		+ " than normal whenever this specific variant is picked.");
+	
+	helpInfo.put(Settings.SPEC_VAR_HEIGHT,
+		"This is a percentage that setting will modify the NPC's stat to be greater/smaller"
+		+ " than normal whenever this specific variant is picked.");
+	
+	helpInfo.put(Settings.SPEC_VAR_NAME_AFFIX,
+		"This setting will append text to the end of the NPC's name.\n\n"
+		+ "For example, you could put \"Berzerker\" and the variant would "
+		+ "spawn as\n"
+		+ "\"(Troll/Skeever/Falmer) Berzerker\"" );
+	
+	helpInfo.put(Settings.SPEC_VAR_NAME_PREFIX,
+		"This setting will prepend text to the beginning of the NPC's name.\n\n"
+		+ "For example, you could put \"Diseased\" and the variant would "
+		+ "spawn as\n"
+		+ "\"Diseased (Troll/Skeever/Falmer)\"" );
+	
+	helpInfo.put(Settings.SPEC_VAR_PROB,
+		"This setting will reduce the chance this variant will spawn compared to others by 1/X.\n"
+		+ "A setting of 2 would mean the variant would spawn half as often as a normal variant.\n\n"
+		+ "This setting can be used to adjust the probabilities of variants spawning in your package."
+		+ "You can also use it to make your variants rare compared to other author's variants.");
+	
+	helpInfo.put(Settings.SPEC_VAR_REGION,
+		"This is a list of regions that this variant will be allowed to spawn in.  This means the "
+		+ "variant WILL NOT spawn anywhere else but the regions you specify.");
+	
+	helpInfo.put(Settings.SPEC_VAR_REGION_EXCLUDE,
+		"This will make the regions you specified for this variant to spawn in exclusive.  This means that no other variants besides this one will spawn there.  The one exception to this rule is that other variants that name these exclusive regions specifically will still spawn there.\n\n"
+		+ "NOTE: This setting only applies if regions have been specified for this variant.");
     }
 
     public enum Settings {
@@ -161,8 +213,20 @@ public class AVSaveFile extends LSaveFile {
 	PACKAGES_GATHER,
 	PACKAGES_ORIG_AS_VAR,
 	PACKAGES_COMPRESS,
+	PACKAGES_EDIT,
 	PACKAGES_ENABLE,
 	PACKAGES_DISABLE,
+	SPEC_VAR_AUTHOR,
+	SPEC_VAR_PROB,
+	SPEC_VAR_REGION,
+	SPEC_VAR_REGION_EXCLUDE,
+	SPEC_VAR_HEALTH,
+	SPEC_VAR_MAGICKA,
+	SPEC_VAR_STAMINA,
+	SPEC_VAR_SPEED,
+	SPEC_VAR_HEIGHT,
+	SPEC_VAR_NAME_AFFIX,
+	SPEC_VAR_NAME_PREFIX,
 	STATS_ON,
 	STATS_HEIGHT_MAX,
 	STATS_HEALTH_MAX,

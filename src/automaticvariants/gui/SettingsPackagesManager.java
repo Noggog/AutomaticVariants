@@ -26,9 +26,9 @@ import lev.gui.LButton;
 import lev.gui.LImagePane;
 import lev.gui.LMenuItem;
 import skyproc.SPGlobal;
-import skyproc.gui.SUMGUI;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPSettingPanel;
+import skyproc.gui.SUMGUI;
 
 /**
  *
@@ -46,6 +46,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
     LMenuItem enable;
     LMenuItem disable;
     LMenuItem compress;
+    LMenuItem editSpec;
 
     public SettingsPackagesManager(SPMainMenuPanel parent_) {
 	super("Texture Variants", AV.save, parent_, AV.orange);
@@ -136,6 +137,19 @@ public class SettingsPackagesManager extends SPSettingPanel {
 	    optionsMenu.add(compress.getItem());
 
 
+	    editSpec = new LMenuItem("Edit Specs");
+	    editSpec.linkTo(Settings.PACKAGES_EDIT, saveFile, SUMGUI.helpPanel, true);
+	    editSpec.setFollowPosition(false);
+	    editSpec.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		    editSpec();
+		}
+	    });
+	    optionsMenu.add(editSpec.getItem());
+
+
 	    //Add popup listener
 	    MouseAdapter ma = new MouseAdapter() {
 
@@ -154,6 +168,10 @@ public class SettingsPackagesManager extends SPSettingPanel {
 		    compress.setVisible(sel.type == PackageComponent.Type.PACKAGE
 			    || sel.type == PackageComponent.Type.VARSET
 			    || sel.type == PackageComponent.Type.ROOT);
+
+		    editSpec.setVisible(sel.type == PackageComponent.Type.VAR
+			    || sel.type == PackageComponent.Type.VARSET
+			    || sel.type == PackageComponent.Type.PACKAGE);
 
 		    optionsMenu.show(tree, x + 10, y);
 		}
@@ -200,7 +218,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
 //	parent.helpPanel.addToBottomArea(display);
 //	parent.helpPanel.setBottomAreaHeight(SPMainMenuPanel.rightDimensions.width - 50);
 
- 	otherSettings.addActionListener(AV.packagesOtherPanel.getOpenHandler(parent));
+	otherSettings.addActionListener(AV.packagesOtherPanel.getOpenHandler(parent));
     }
 
     public void enableSelection(boolean enable) {
@@ -239,11 +257,15 @@ public class SettingsPackagesManager extends SPSettingPanel {
 	tree.repaint();
     }
 
+    public PackageComponent getSelectedComponent() {
+	return (PackageComponent) tree.getSelectionPaths()[0].getLastPathComponent();
+    }
+
     public void compress() {
 	try {
 	    // Enable selecton and move files
 	    int row = tree.getLeadSelectionRow();
-	    PackageComponent p = (PackageComponent) tree.getSelectionPaths()[0].getLastPathComponent();
+	    PackageComponent p = getSelectedComponent();
 	    enableSelection(true);
 	    p.moveNode();
 	    loadPackageList();
@@ -281,6 +303,18 @@ public class SettingsPackagesManager extends SPSettingPanel {
     }
 
     public void editSpec() {
+	PackageComponent p = getSelectedComponent();
+	switch(p.type) {
+	    case VAR:
+		AV.packagesVariantPanel.open();
+		break;
+	    case VARSET:
+		
+		break;
+	    case PACKAGE:
+		
+		break;
+	}
     }
 
     public void loadPackageList() throws FileNotFoundException, IOException {

@@ -65,8 +65,8 @@ public class SettingsOther extends SPSettingPanel {
 	    Add(debugLabel);
 
 	    maxMem = new LNumericSetting("Max Allocated Memory",
-		    AV.settingsFont, AV.yellow, 250, 2000, 250,
-		    Settings.MAX_MEM, saveFile, SUMGUI.helpPanel);
+		    AV.settingsFont, AV.yellow, 250, 2000, 250);
+	    maxMem.tie(Settings.MAX_MEM, saveFile, SUMGUI.helpPanel, true);
 	    last = setPlacement(maxMem, last);
 	    AddSetting(maxMem);
 

@@ -4,8 +4,6 @@
  */
 package automaticvariants.gui;
 
-import skyproc.gui.SPSettingPanel;
-import skyproc.gui.SPMainMenuPanel;
 import automaticvariants.AV;
 import automaticvariants.AVFileVars;
 import automaticvariants.AVSaveFile;
@@ -13,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import lev.gui.LButton;
 import lev.gui.LCheckBox;
+import skyproc.gui.SPMainMenuPanel;
+import skyproc.gui.SPSettingPanel;
 import skyproc.gui.SUMGUI;
 
 /**
