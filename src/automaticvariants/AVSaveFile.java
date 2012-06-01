@@ -182,9 +182,9 @@ public class AVSaveFile extends LSaveFile {
 	
 	helpInfo.put(Settings.SPEC_VAR_NAME_AFFIX,
 		"This setting will append text to the end of the NPC's name.\n\n"
-		+ "For example, you could put \"Berzerker\" and the variant would "
+		+ "For example, you could put \"of Doom\" and the variant would "
 		+ "spawn as\n"
-		+ "\"(Troll/Skeever/Falmer) Berzerker\"" );
+		+ "\"(Troll/Skeever/Falmer) of Doom\"" );
 	
 	helpInfo.put(Settings.SPEC_VAR_NAME_PREFIX,
 		"This setting will prepend text to the beginning of the NPC's name.\n\n"
@@ -200,7 +200,8 @@ public class AVSaveFile extends LSaveFile {
 	
 	helpInfo.put(Settings.SPEC_VAR_REGION,
 		"This is a list of regions that this variant will be allowed to spawn in.  This means the "
-		+ "variant WILL NOT spawn anywhere else but the regions you specify.");
+		+ "variant WILL NOT spawn anywhere else but the regions you specify.\n\n"
+		+ "If you don't specify any regions, the variant will spawn anywhere.");
 	
 	helpInfo.put(Settings.SPEC_VAR_REGION_EXCLUDE,
 		"This will make the regions you specified for this variant to spawn in exclusive.  This means that no other variants besides this one will spawn there.  The one exception to this rule is that other variants that name these exclusive regions specifically will still spawn there.\n\n"

@@ -6,6 +6,7 @@ package automaticvariants;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import lev.LMergeMap;
@@ -77,7 +78,8 @@ public class AVPackage extends PackageComponent {
 		    add(set);
 		}
 	    } else if (AVFileVars.isSpec(f)) {
-		spec = new PackageSpec(f);
+		spec = AV.gson.fromJson(new FileReader(f), PackageSpec.class);
+		spec.src = f;
 	    }
 	}
 	if (SPGlobal.logging()) {
@@ -85,13 +87,23 @@ public class AVPackage extends PackageComponent {
 	}
     }
 
-    class PackageSpec {
+    class PackageSpec extends SpecFile {
 
-	File file;
 	String packager;
 	String version;	
 
 	PackageSpec(File f) {
+	    super(f);
+	}
+
+	@Override
+	void printToLog(String header) {
+	    throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public String printHelpInfo() {
+	    throw new UnsupportedOperationException("Not supported yet.");
 	}
     }
 }

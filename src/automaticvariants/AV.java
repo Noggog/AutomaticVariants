@@ -77,6 +77,7 @@ public class AV implements SUM {
     static public SettingsOther otherPanel;
     static public SettingsStatsPanel heightPanel;
     static public Font settingsFont = new Font("Serif", Font.BOLD, 16);
+    static public Font settingsFontSmall = new Font("Serif", Font.BOLD, 12);
     static public Color green = new Color(67, 162, 10);
     static public Color darkGreen = new Color(61, 128, 21);
     static public Color orange = new Color(247, 163, 52);

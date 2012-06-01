@@ -4,9 +4,8 @@
  */
 package automaticvariants;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import com.google.gson.stream.JsonWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -391,6 +390,10 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	return "";
     }
 
+    public String printName() {
+	return src.getName();
+    }
+
     public enum Type {
 
 	DEFAULT,
@@ -402,5 +405,28 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	TEXTURE,
 	GENTEXTURE,
 	REROUTE;
+    }
+
+    public abstract class SpecFile implements Serializable {
+
+	File src;
+
+	SpecFile(File folderDir) {
+	    this.src = new File(folderDir.getPath() + "\\" + "Specifications.json");
+	}
+
+	abstract void printToLog(String header);
+
+	abstract public String printHelpInfo();
+
+	public void export() throws IOException {
+	    if (src.isFile()) {
+		src.delete();
+	    }
+
+	    BufferedWriter out = new BufferedWriter(new FileWriter(src));
+	    out.write(Ln.toJsonPretty(AV.gson.toJsonTree(this), "src"));
+	    out.close();
+	}
     }
 }

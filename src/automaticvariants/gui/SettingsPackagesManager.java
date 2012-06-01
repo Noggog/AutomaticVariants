@@ -4,11 +4,8 @@
  */
 package automaticvariants.gui;
 
-import automaticvariants.AV;
-import automaticvariants.AVFileVars;
-import automaticvariants.AVPackage;
+import automaticvariants.*;
 import automaticvariants.AVSaveFile.Settings;
-import automaticvariants.PackageComponent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -307,6 +304,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
 	switch(p.type) {
 	    case VAR:
 		AV.packagesVariantPanel.open();
+		AV.packagesVariantPanel.load((Variant)p);
 		break;
 	    case VARSET:
 		

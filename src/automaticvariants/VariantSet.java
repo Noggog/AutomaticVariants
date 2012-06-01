@@ -13,7 +13,7 @@ import skyproc.*;
 
 /**
  *
- * @author Justin Swanson
+ * @Author Justin Swanson
  */
 public class VariantSet extends PackageComponent implements Serializable {
 
@@ -41,9 +41,9 @@ public class VariantSet extends PackageComponent implements Serializable {
 		try {
 		    spec = AV.gson.fromJson(new FileReader(f), VariantSetSpec.class);
 		    if (spec != null) {
-			spec.file = f;
+			spec.src = f;
 			if (SPGlobal.logging()) {
-			    spec.print(src.getName());
+			    spec.printToLog(src.getName());
 			}
 		    }
 		} catch (com.google.gson.JsonSyntaxException ex) {
@@ -205,13 +205,17 @@ public class VariantSet extends PackageComponent implements Serializable {
 	return true;
     }
 
-    public class VariantSetSpec implements Serializable {
+    public class VariantSetSpec extends SpecFile {
 
-	File file;
 	String[][] Target_FormIDs;
 	Boolean Apply_To_Similar = true;
 
-	void print(String set) {
+	VariantSetSpec(File src) {
+	    super(src);
+	}
+	
+	@Override
+	void printToLog(String set) {
 	    SPGlobal.log(set, depth + "   --- Set Specifications loaded: --");
 	    SPGlobal.log(set, depth + "   |   Target FormIDs: ");
 	    for (String[] s : Target_FormIDs) {
@@ -221,6 +225,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 	    SPGlobal.log(set, depth + "   -------------------------------------");
 	}
 
+	@Override
 	public String printHelpInfo() {
 	    String content = "Seeds:";
 	    for (String[] formID : Target_FormIDs) {
@@ -255,5 +260,11 @@ public class VariantSet extends PackageComponent implements Serializable {
 	} else {
 	    return "MISSING SPEC FILE!" + divider;
 	}
+    }
+    
+    @Override
+    public String printName() {
+	PackageComponent p = (PackageComponent) this.getParent();
+	return p.printName() + " - " + src.getName();
     }
 }

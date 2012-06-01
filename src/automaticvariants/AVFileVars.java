@@ -27,7 +27,7 @@ import skyproc.gui.SPProgressBarPlug;
  *
  * Texture variants
  *
- * @author Justin Swanson
+ * @Author Justin Swanson
  */
 public class AVFileVars {
 

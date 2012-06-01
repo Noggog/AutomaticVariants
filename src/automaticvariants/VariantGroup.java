@@ -136,4 +136,10 @@ public class VariantGroup extends PackageComponent {
 	}
 	return out;
     }
+    
+    @Override
+    public String printName() {
+	PackageComponent p = (PackageComponent) this.getParent();
+	return p.printName() + " - " + src.getName();
+    }
 }

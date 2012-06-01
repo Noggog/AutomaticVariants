@@ -11,14 +11,14 @@ import skyproc.SPGlobal;
 
 /**
  *
- * @author Justin Swanson
+ * @Author Justin Swanson
  */
 public class Variant extends PackageComponent implements Serializable {
 
     String name;
     ArrayList<PackageComponent> textures = new ArrayList<PackageComponent>();
     TextureVariant[] TXSTs;
-    VariantSpec spec = new VariantSpec();
+    public VariantSpec spec;
     static String depth = "* +   # ";
 
     Variant(File variantDir) {
@@ -29,6 +29,7 @@ public class Variant extends PackageComponent implements Serializable {
 	    name = "_" + tmp[tmp.length - i].replaceAll(" ", "") + name;
 	}
 	name = "AV" + name;
+	spec = new VariantSpec(variantDir);
     }
 
     Variant() {
@@ -50,8 +51,11 @@ public class Variant extends PackageComponent implements Serializable {
 	    } else if (AVFileVars.isSpec(f)) {
 		try {
 		    spec = AV.gson.fromJson(new FileReader(f), VariantSpec.class);
-		    if (SPGlobal.logging()) {
-			spec.print(src.getName());
+		    if (spec != null) {
+			spec.src = f;
+			if (SPGlobal.logging()) {
+			    spec.printToLog(src.getName());
+			}
 		    }
 		} catch (com.google.gson.JsonSyntaxException ex) {
 		    SPGlobal.logException(ex);
@@ -91,30 +95,32 @@ public class Variant extends PackageComponent implements Serializable {
 	}
     }
 
-    public class VariantSpec implements Serializable {
+    public class VariantSpec extends SpecFile {
 
-	int Probability_Divider = 1;
-	String author;
-	String[][] regionExcludeFrom;
-	String[][] regionInclude;
-	boolean exclusiveRegion;
-	float healthMult;
-	float heightMult;
-	float magickaMult;
-	float staminaMult;
-	float speedMult;
-	String nameAffix;
-	String namePrefix;
+	public int Probability_Divider = 1;
+	public String Author = "";
+	public String[][] Region_Include = new String[0][0];
+	public boolean Exclusive_Region = false;
+	public int Health_Mult = 100;
+	public int Height_Mult = 100;
+	public int Magicka_Mult = 100;
+	public int Stamina_Mult = 100;
+	public int Speed_Mult = 100;
+	public String Name_Affix = "";
+	public String Name_Prefix = "";
 
-	VariantSpec() {
+	VariantSpec(File src) {
+	    super(src);
 	}
 
-	void print(String header) {
+	@Override
+	void printToLog(String header) {
 	    SPGlobal.log(header, depth + "    --- Variant Specifications loaded: --");
 	    SPGlobal.log(header, depth + "    |   Probability Div: 1/" + Probability_Divider);
 	    SPGlobal.log(header, depth + "    -------------------------------------");
 	}
 
+	@Override
 	public String printHelpInfo() {
 	    return "Relative Probability: 1/" + Probability_Divider;
 	}
@@ -135,6 +141,16 @@ public class Variant extends PackageComponent implements Serializable {
 
     @Override
     public String printSpec() {
-	return spec.printHelpInfo() + divider;
+	if (spec != null) {
+	    return spec.printHelpInfo() + divider;
+	} else {
+	    return "BAD SPEC FILE";
+	}
+    }
+
+    @Override
+    public String printName() {
+	PackageComponent p = (PackageComponent) this.getParent();
+	return p.printName() + " - " + src.getName();
     }
 }
