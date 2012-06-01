@@ -6,17 +6,12 @@ package automaticvariants.gui;
 
 import automaticvariants.AV;
 import automaticvariants.AVSaveFile.Settings;
-import automaticvariants.Variant;
+import automaticvariants.PackageComponent.SpecFile;
+import automaticvariants.Variant.VariantSpec;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import lev.gui.*;
-import skyproc.FormID;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPSettingPanel;
 import skyproc.gui.SUMGUI;
@@ -25,11 +20,8 @@ import skyproc.gui.SUMGUI;
  *
  * @Author Justin Swanson
  */
-public class SettingsPackagesVariant extends SPSettingPanel {
+public class SettingsPackagesVariant extends SettingsPackagesSpecs {
 
-    LLabel editing;
-    LLabel packageName;
-    LLabel variantName;
     LTextField author;
     LNumericSetting probDiv;
     LFormIDPicker region;
@@ -41,13 +33,9 @@ public class SettingsPackagesVariant extends SPSettingPanel {
     LNumericSetting speed;
     LTextField namePrefix;
     LTextField nameAffix;
-    LButton saveSpec;
-    LButton cancel;
-    
-    Variant target;
 
     public SettingsPackagesVariant(SPMainMenuPanel parent_) {
-	super("Variant Specifications", AV.save, parent_, AV.orange);
+	super(parent_, "Variant Specifications");
     }
 
     @Override
@@ -57,22 +45,9 @@ public class SettingsPackagesVariant extends SPSettingPanel {
 	    save.setVisible(false);
 	    defaults.setVisible(false);
 
-	    editing = new LLabel("EDITING", AV.settingsFont, AV.green);
-	    editing.addShadow();
-	    editing.setLocation(15, 55);
-	    Add(editing);
-
-	    packageName = new LLabel("Test", AV.settingsFontSmall, Color.LIGHT_GRAY);
-	    packageName.setLocation(0, 55);
-	    Add(packageName);
-
-	    variantName = new LLabel("Test", AV.settingsFontSmall, Color.LIGHT_GRAY);
-	    variantName.setLocation(0, 68);
-	    Add(variantName);
-
 	    author = new LTextField("Author", AV.settingsFont, AV.yellow);
 	    author.linkTo(Settings.SPEC_VAR_AUTHOR, saveFile, SUMGUI.helpPanel, true);
-	    last = setPlacement(author, last.x, last.y + 15);
+	    last = setPlacement(author, last);
 	    Add(author);
 
 	    probDiv = new LNumericSetting("Probability Divider", AV.settingsFont, AV.yellow, 1, 99, 1);
@@ -127,23 +102,6 @@ public class SettingsPackagesVariant extends SPSettingPanel {
 	    last = setPlacement(nameAffix, last);
 	    Add(nameAffix);
 
-	    saveSpec = new LButton("Save");
-	    saveSpec.setLocation(defaults.getLocation());
-	    saveSpec.setSize(defaults.getSize());
-	    saveSpec.addActionListener(new ActionListener() {
-
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-		    save();
-		}
-	    });
-	    Add(saveSpec);
-	    
-	    cancel = new LButton("Cancel");
-	    cancel.setLocation(save.getLocation());
-	    cancel.setSize(save.getSize());
-	    Add(cancel);
-	    
 	    alignRight();
 
 	    return true;
@@ -152,55 +110,41 @@ public class SettingsPackagesVariant extends SPSettingPanel {
     }
 
     @Override
-    public void specialOpen(SPMainMenuPanel parent) {
-	cancel.addActionListener(AV.packagesManagerPanel.getOpenHandler(parent));
-	saveSpec.addActionListener(AV.packagesManagerPanel.getOpenHandler(parent));
-    }
-
-    public void load(Variant v) {
-	// Title alignment
-	String name = v.printName();
-	packageName.setText(name.substring(0, name.indexOf(" - ")));
-	variantName.setText(name.substring(name.indexOf(" - ") + 3));
-	int totalLength;
-	if (variantName.getWidth() > packageName.getWidth()) {
-	    totalLength = variantName.getWidth();
-	} else {
-	    totalLength = packageName.getWidth();
-	}
-	totalLength += editing.getWidth() + 10;
-	editing.setLocation(settingsPanel.getWidth() / 2 - totalLength / 2, editing.getY());
-	packageName.setLocation(editing.getX() + editing.getWidth() + 10, packageName.getY());
-	variantName.setLocation(packageName.getX(), variantName.getY());
+    public void load(String name, SpecFile s) {
+	super.load(name, s);
+	VariantSpec v = (VariantSpec) s;
 	
-	author.setText(v.spec.Author);
+	author.setText(v.Author);
 	
-	probDiv.setValue(v.spec.Probability_Divider);
+	probDiv.setValue(v.Probability_Divider);
 	
 //	region.load(v.spec.Region_Include);
 //	
 //	exclusiveRegion.setSelected(v.spec.Exclusive_Region);
 	
-	health.setValue(v.spec.Health_Mult);
-	magicka.setValue(v.spec.Magicka_Mult);
-	stamina.setValue(v.spec.Stamina_Mult);
-	speed.setValue(v.spec.Speed_Mult);
-	height.setValue(v.spec.Height_Mult);
+	health.setValue(v.Health_Mult);
+	magicka.setValue(v.Magicka_Mult);
+	stamina.setValue(v.Stamina_Mult);
+	speed.setValue(v.Speed_Mult);
+	height.setValue(v.Height_Mult);
 	
-	namePrefix.setText(v.spec.Name_Prefix);
+	namePrefix.setText(v.Name_Prefix);
 	
-	nameAffix.setText(v.spec.Name_Affix);
+	nameAffix.setText(v.Name_Affix);
 	
 	target = v;
     }
-    
+
+    @Override
     public void save() {
 	if (target == null) {
 	    return;
 	}
 	
-	target.spec.Author = author.getText();
-	target.spec.Probability_Divider = probDiv.getValue();
+	VariantSpec v = (VariantSpec) target;
+	
+	v.Author = author.getText();
+	v.Probability_Divider = probDiv.getValue();
 //	ArrayList<FormID> regionsList = region.getPickedIDs();
 //	String[][] regions = new String[regionsList.size()][];
 //	for (int i = 0 ; i < regionsList.size() ; i++) {
@@ -210,17 +154,16 @@ public class SettingsPackagesVariant extends SPSettingPanel {
 //	}
 //	target.spec.Region_Include = regions;
 //	target.spec.Exclusive_Region = this.exclusiveRegion.isSelected();
-	target.spec.Health_Mult = health.getValue();
-	target.spec.Magicka_Mult = magicka.getValue();
-	target.spec.Stamina_Mult = stamina.getValue();
-	target.spec.Speed_Mult = speed.getValue();
-	target.spec.Height_Mult = height.getValue();
-	target.spec.Name_Prefix = this.namePrefix.getText();
-	target.spec.Name_Affix = this.nameAffix.getText();
-	try {
-	    target.spec.export();
-	} catch (IOException ex) {
-	    JOptionPane.showMessageDialog(null, "There was an error exporting the spec file, please contact Leviathan1753");
-	}
+	v.Health_Mult = health.getValue();
+	v.Magicka_Mult = magicka.getValue();
+	v.Stamina_Mult = stamina.getValue();
+	v.Speed_Mult = speed.getValue();
+	v.Height_Mult = height.getValue();
+	v.Name_Prefix = this.namePrefix.getText();
+	v.Name_Affix = this.nameAffix.getText();
+	
+	super.save();
     }
+    
+    
 }
