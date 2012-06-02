@@ -309,7 +309,7 @@ public class AV implements SUM {
 	save.saveToFile();
 	LDebug.wrapUpAndExit();
     }
-    
+
     public enum SpecialLogs {
 	WARNINGS;
     }
