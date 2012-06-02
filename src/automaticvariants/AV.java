@@ -74,6 +74,7 @@ public class AV implements SUM {
     static public SettingsPackagesManager packagesManagerPanel;
     static public SettingsPackagesOther packagesOtherPanel;
     static public SettingsPackagesVariant packagesVariantPanel;
+    static public SettingsPackagesVariantSet packagesVariantSetPanel;
     static public SettingsOther otherPanel;
     static public SettingsStatsPanel heightPanel;
     static public Font settingsFont = new Font("Serif", Font.BOLD, 16);
@@ -345,6 +346,7 @@ public class AV implements SUM {
 	packagesManagerPanel = new SettingsPackagesManager(settingsMenu);
 	packagesOtherPanel = new SettingsPackagesOther(settingsMenu);
 	packagesVariantPanel = new SettingsPackagesVariant(settingsMenu);
+	packagesVariantSetPanel = new SettingsPackagesVariantSet(settingsMenu);
 	packageManagerConfig = settingsMenu.addMenu(packagesManagerPanel, true, save, Settings.PACKAGES_ON);
 	
 	heightPanel = new SettingsStatsPanel(settingsMenu);

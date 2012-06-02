@@ -1107,4 +1107,8 @@ public class AVFileVars {
 	    this.key = key;
 	}
     }
+    
+    public enum VariantType {
+	NPC_;
+    }
 }

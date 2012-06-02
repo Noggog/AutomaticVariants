@@ -207,8 +207,8 @@ public class VariantSet extends PackageComponent implements Serializable {
 
     public class VariantSetSpec extends SpecFile {
 
-	String[][] Target_FormIDs;
-	Boolean Apply_To_Similar = true;
+	AVFileVars.VariantType type = AVFileVars.VariantType.NPC_;
+	String[][] Target_FormIDs = new String[0][];
 
 	VariantSetSpec(File src) {
 	    super(src);
@@ -217,11 +217,11 @@ public class VariantSet extends PackageComponent implements Serializable {
 	@Override
 	void printToLog(String set) {
 	    SPGlobal.log(set, depth + "   --- Set Specifications loaded: --");
+	    SPGlobal.log(set, depth + "   |   Type: " + type);
 	    SPGlobal.log(set, depth + "   |   Target FormIDs: ");
 	    for (String[] s : Target_FormIDs) {
 		SPGlobal.log(set, depth + "   |     " + s[0] + " | " + s[1]);
 	    }
-	    SPGlobal.log(set, depth + "   |   Apply to Similar: " + Apply_To_Similar);
 	    SPGlobal.log(set, depth + "   -------------------------------------");
 	}
 
@@ -230,12 +230,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 	    String content = "Seeds:";
 	    for (String[] formID : Target_FormIDs) {
 		content += "\n    ";
-		FormID id = new FormID(formID[0], formID[1]);
-		NPC_ npc = (NPC_) SPDatabase.getMajor(id, GRUP_TYPE.NPC_);
-		if (npc != null) {
-		    content += npc.getEDID() + "  |  ";
-		}
-		content += id.getFormStr();
+		content += printFormID(formID, GRUP_TYPE.NPC_);
 	    }
 	    return content;
 	}

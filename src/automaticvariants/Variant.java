@@ -7,6 +7,7 @@ package automaticvariants;
 import java.io.*;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import skyproc.GRUP_TYPE;
 import skyproc.SPGlobal;
 
 /**
@@ -116,13 +117,83 @@ public class Variant extends PackageComponent implements Serializable {
 	@Override
 	void printToLog(String header) {
 	    SPGlobal.log(header, depth + "    --- Variant Specifications loaded: --");
-	    SPGlobal.log(header, depth + "    |   Probability Div: 1/" + Probability_Divider);
+	    if (!Author.equals("")) {
+		SPGlobal.log(header, depth + "    |   Author: " + Author);
+	    }
+	    if (Probability_Divider != 1) {
+		SPGlobal.log(header, depth + "    |   Probability Div: 1/" + Probability_Divider);
+	    }
+	    if (Region_Include.length > 0) {
+		SPGlobal.log(header, depth + "    |   Region Include: ");
+		for (String[] s : Region_Include) {
+		    String tmp = "";
+		    for (String part : s) {
+			tmp += part + " ";
+		    }
+		    SPGlobal.log(header, depth + "    |      " + tmp);
+		}
+		SPGlobal.log(header, depth + "    |   Exclusive Region: " + Exclusive_Region);
+	    }
+	    if (Health_Mult != 100) {
+		SPGlobal.log(header, depth + "    |   Relative Health: " + Health_Mult);
+	    }
+	    if (Magicka_Mult != 100) {
+		SPGlobal.log(header, depth + "    |   Relative Magicka: " + Magicka_Mult);
+	    }
+	    if (Stamina_Mult != 100) {
+		SPGlobal.log(header, depth + "    |   Relative Stamina: " + Stamina_Mult);
+	    }
+	    if (Speed_Mult != 100) {
+		SPGlobal.log(header, depth + "    |   Relative Speed: " + Speed_Mult);
+	    }
+	    if (Height_Mult != 100) {
+		SPGlobal.log(header, depth + "    |   Relative Height: " + Height_Mult);
+	    }
+	    if (!Name_Prefix.equals("")) {
+		SPGlobal.log(header, depth + "    |   Name Prefix: " + Name_Prefix);
+	    }
+	    if (!Name_Affix.equals("")) {
+		SPGlobal.log(header, depth + "    |   Name Affix: " + Name_Affix);
+	    }
 	    SPGlobal.log(header, depth + "    -------------------------------------");
 	}
 
 	@Override
 	public String printHelpInfo() {
-	    return "Relative Probability: 1/" + Probability_Divider;
+	    String out = "";
+	    if (!Name_Affix.equals("") || !Name_Prefix.equals("")) {
+		out += "Spawning Name: " + Name_Prefix + " [NAME] " + Name_Affix + "\n"; 
+	    }
+	    if (!Author.equals("")) {
+		out += "Author: " + Author + "\n";
+	    }
+	    if (Probability_Divider != 1) {
+		out += "Relative Probability: 1/" + Probability_Divider + "\n";
+	    }
+	    if (Region_Include.length > 0) {
+		out += "Regions To Spawn In:";
+		for (String[] formID : Region_Include) {
+		    out += "\n    " + printFormID(formID, GRUP_TYPE.ALCH);
+		}
+		out += "\n";
+	    }
+	    if (Height_Mult != 100) {
+		out += "Relative Height: " + (Height_Mult / 100.0) + "\n";
+	    }
+	    if (Health_Mult != 100) {
+		out += "Relative Health: " + (Health_Mult / 100.0) + "\n";
+	    }
+	    if (Magicka_Mult != 100) {
+		out += "Relative Magicka: " + (Magicka_Mult / 100.0) + "\n";
+	    }
+	    if (Stamina_Mult != 100) {
+		out += "Relative Stamina: " + (Stamina_Mult / 100.0) + "\n";
+	    }
+	    if (Speed_Mult != 100) {
+		out += "Relative Speed: " + (Speed_Mult / 100.0) + "\n";
+	    }
+
+	    return out;
 	}
     }
 

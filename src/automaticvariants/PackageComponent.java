@@ -4,7 +4,6 @@
  */
 package automaticvariants;
 
-import com.google.gson.stream.JsonWriter;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +13,10 @@ import lev.Ln;
 import lev.gui.LHelpPanel;
 import lev.gui.LImagePane;
 import lev.gui.LSwingTreeNode;
+import skyproc.FormID;
+import skyproc.GRUP_TYPE;
+import skyproc.MajorRecord;
+import skyproc.SPDatabase;
 
 /**
  *
@@ -427,6 +430,17 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	    BufferedWriter out = new BufferedWriter(new FileWriter(src));
 	    out.write(Ln.toJsonPretty(AV.gson.toJsonTree(this), "src"));
 	    out.close();
+	}
+
+	public String printFormID(String[] formID, GRUP_TYPE type) {
+	    FormID id = new FormID(formID[0], formID[1]);
+	    MajorRecord r = SPDatabase.getMajor(id, type);
+	    String content = "";
+	    if (r != null) {
+		content += r.getEDID() + "  |  ";
+	    }
+	    content += id.getFormStr();
+	    return content;
 	}
     }
 }

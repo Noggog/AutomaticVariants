@@ -42,9 +42,6 @@ public class SettingsPackagesVariant extends SettingsPackagesSpecs {
     public boolean initialize() {
 	if (super.initialize()) {
 
-	    save.setVisible(false);
-	    defaults.setVisible(false);
-
 	    author = new LTextField("Author", AV.settingsFont, AV.yellow);
 	    author.linkTo(Settings.SPEC_VAR_AUTHOR, saveFile, SUMGUI.helpPanel, true);
 	    last = setPlacement(author, last);
@@ -55,7 +52,7 @@ public class SettingsPackagesVariant extends SettingsPackagesSpecs {
 	    last = setPlacement(probDiv, last);
 	    Add(probDiv);
 
-//	    region = new LFormIDPicker("Regions to Spawn in", AV.settingsFont, AV.yellow);
+//	    region = new LFormIDPicker("Regions To Spawn In", AV.settingsFont, AV.yellow);
 //	    region.linkTo(Settings.SPEC_VAR_REGION, saveFile, SUMGUI.helpPanel, true);
 //	    last = setPlacement(region, last.x, last.y - 5);
 //	    Add(region);
