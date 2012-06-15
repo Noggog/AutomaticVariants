@@ -35,6 +35,7 @@ public class Variant extends PackageComponent implements Serializable {
 
     Variant() {
 	super(null, Type.VAR);
+	spec = new VariantSpec();
     }
 
     public void load() throws FileNotFoundException, IOException {
@@ -49,6 +50,11 @@ public class Variant extends PackageComponent implements Serializable {
 		PackageComponent c = new PackageComponent(f, Type.TEXTURE);
 		textures.add(c);
 		add(c);
+	    } else if (AVFileVars.isNIF(f)) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(src.getName(), depth + "    Added nif: " + f);
+		}
+//		PackageComponent c = new PackageComponent(f, Type.)
 	    } else if (AVFileVars.isSpec(f)) {
 		try {
 		    spec = AV.gson.fromJson(new FileReader(f), VariantSpec.class);
@@ -110,6 +116,10 @@ public class Variant extends PackageComponent implements Serializable {
 	public String Name_Affix = "";
 	public String Name_Prefix = "";
 
+	VariantSpec() {
+	    
+	}
+	
 	VariantSpec(File src) {
 	    super(src);
 	}
@@ -117,13 +127,13 @@ public class Variant extends PackageComponent implements Serializable {
 	@Override
 	void printToLog(String header) {
 	    SPGlobal.log(header, depth + "    --- Variant Specifications loaded: --");
-	    if (!Author.equals("")) {
+	    if (Author != null && !Author.equals("")) {
 		SPGlobal.log(header, depth + "    |   Author: " + Author);
 	    }
 	    if (Probability_Divider != 1) {
 		SPGlobal.log(header, depth + "    |   Probability Div: 1/" + Probability_Divider);
 	    }
-	    if (Region_Include.length > 0) {
+	    if (Region_Include != null && Region_Include.length > 0) {
 		SPGlobal.log(header, depth + "    |   Region Include: ");
 		for (String[] s : Region_Include) {
 		    String tmp = "";
@@ -149,10 +159,10 @@ public class Variant extends PackageComponent implements Serializable {
 	    if (Height_Mult != 100) {
 		SPGlobal.log(header, depth + "    |   Relative Height: " + Height_Mult);
 	    }
-	    if (!Name_Prefix.equals("")) {
+	    if (Name_Prefix != null && !Name_Prefix.equals("")) {
 		SPGlobal.log(header, depth + "    |   Name Prefix: " + Name_Prefix);
 	    }
-	    if (!Name_Affix.equals("")) {
+	    if (Name_Affix != null && !Name_Affix.equals("")) {
 		SPGlobal.log(header, depth + "    |   Name Affix: " + Name_Affix);
 	    }
 	    SPGlobal.log(header, depth + "    -------------------------------------");
@@ -162,7 +172,7 @@ public class Variant extends PackageComponent implements Serializable {
 	public String printHelpInfo() {
 	    String out = "";
 	    if (!Name_Affix.equals("") || !Name_Prefix.equals("")) {
-		out += "Spawning Name: " + Name_Prefix + " [NAME] " + Name_Affix + "\n"; 
+		out += "Spawning Name: " + Name_Prefix + " [NAME] " + Name_Affix + "\n";
 	    }
 	    if (!Author.equals("")) {
 		out += "Author: " + Author + "\n";

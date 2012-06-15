@@ -406,6 +406,7 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	VARGROUP,
 	VAR,
 	TEXTURE,
+	NIF,
 	GENTEXTURE,
 	REROUTE;
     }
@@ -414,6 +415,10 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 
 	File src;
 
+	SpecFile() {
+	    
+	}
+	
 	SpecFile(File folderDir) {
 	    this.src = new File(folderDir.getPath() + "\\" + "Specifications.json");
 	}

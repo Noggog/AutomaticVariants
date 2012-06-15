@@ -256,8 +256,7 @@ public class AVFileVars {
 			}
 
 			// NPC's skin field
-			ARMO skin;
-			skin = (ARMO) SPDatabase.getMajor(record.getSkin(), GRUP_TYPE.ARMO);
+			ARMO skin = (ARMO) SPDatabase.getMajor(record.getSkin(), GRUP_TYPE.ARMO);
 
 			if (skin == null) {
 			    RACE race = (RACE) SPDatabase.getMajor(record.getRace(), GRUP_TYPE.RACE);
@@ -293,7 +292,7 @@ public class AVFileVars {
 			    piece = null;
 			}
 			if (piece == null) {
-			    SPGlobal.logError(header, "Could not locate ARMA matching ARMO's race");
+			    SPGlobal.logError(header, "Could not locate ARMA matching " + skin + "'s race");
 			    continue;
 			} else if (uniqueArmas.contains(piece.getForm())) {
 			    SPGlobal.log(header, "  Already logged " + piece + " for this variant set.");
@@ -919,6 +918,10 @@ public class AVFileVars {
 
     static boolean isDDS(File f) {
 	return Ln.isFileType(f, "DDS");
+    }
+    
+    static boolean isNIF(File f) {
+	return Ln.isFileType(f, "NIF");
     }
 
     static boolean isReroute(File f) {

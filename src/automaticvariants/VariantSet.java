@@ -25,6 +25,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 
     VariantSet(File setDir) {
 	super(setDir, Type.VARSET);
+	spec = new VariantSetSpec(src);
     }
 
     final public boolean loadVariants() throws FileNotFoundException, IOException {
@@ -115,6 +116,9 @@ public class VariantSet extends PackageComponent implements Serializable {
 		    int avg = Math.round(sum);
 
 		    for (Variant v : flat) {
+			if (v.spec == null) {
+			    int wer = 23;
+			}
 			v.spec.Probability_Divider *= (avg * (groups.size() - 1));
 		    }
 
@@ -209,7 +213,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 
 	AVFileVars.VariantType type = AVFileVars.VariantType.NPC_;
 	String[][] Target_FormIDs = new String[0][];
-
+	
 	VariantSetSpec(File src) {
 	    super(src);
 	}
