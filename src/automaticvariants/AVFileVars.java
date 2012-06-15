@@ -59,11 +59,11 @@ public class AVFileVars {
     // ArmaSrc is key
     //////////////////
     static Map<FormID, String> armaToNif = new HashMap<FormID, String>();
-    static LMergeMap<FormID, AVFileVars.ARMA_spec> armatures = new LMergeMap<FormID, AVFileVars.ARMA_spec>(false);
+    static LMergeMap<FormID, ARMA_spec> armatures = new LMergeMap<FormID, ARMA_spec>(false);
     //////////////////
     // ArmoSrc is key for outer, race of arma piece is inner key
     //////////////////
-    static Map<FormID, LMergeMap<FormID, AVFileVars.ARMO_spec>> armors = new HashMap<FormID, LMergeMap<FormID, AVFileVars.ARMO_spec>>();
+    static Map<FormID, LMergeMap<FormID, ARMO_spec>> armors = new HashMap<FormID, LMergeMap<FormID, ARMO_spec>>();
     //////////////////
     // RaceSrc of piece is key for outer, armo is inner key
     //////////////////
@@ -736,8 +736,49 @@ public class AVFileVars {
 		}
 
 		script.setProperty("AltOptions", flstArray.getForm());
-		script.setProperty("RaceHeightOffset", raceSrc.getHeight(Gender.MALE));
+		script.setProperty("RaceHeightOffsetMale", raceSrc.getHeight(Gender.MALE));
+		script.setProperty("RaceHeightOffsetFemale", raceSrc.getHeight(Gender.FEMALE));
+		
+		// Loop through all variants for this race
+		// and load up non-standard spec file info
+		ArrayList<Integer> heights = new ArrayList<Integer>();
+		ArrayList<Integer> healths = new ArrayList<Integer>();
+		ArrayList<Integer> magickas = new ArrayList<Integer>();
+		ArrayList<Integer> staminas = new ArrayList<Integer>();
+		ArrayList<Integer> speeds = new ArrayList<Integer>();
+		int index = 0;
+		LMergeMap<FormID, ARMO_spec> map = armors.get(raceSrc.getWornArmor());
+		ArrayList<ARMO_spec> variants = map.get(raceSrc.getForm());
+		for (ARMO_spec variant : variants) {
+		    if (variant.spec.Height_Mult != SpecVariant.prototype.Height_Mult) {
+			heights.add(index);
+			heights.add(variant.spec.Height_Mult);
+		    }
+		    if (variant.spec.Health_Mult != SpecVariant.prototype.Health_Mult) {
+			healths.add(index);
+			healths.add(variant.spec.Health_Mult);
+		    }
+		    if (variant.spec.Magicka_Mult != SpecVariant.prototype.Magicka_Mult) {
+			magickas.add(index);
+			magickas.add(variant.spec.Magicka_Mult);
+		    }
+		    if (variant.spec.Stamina_Mult != SpecVariant.prototype.Stamina_Mult) {
+			staminas.add(index);
+			staminas.add(variant.spec.Stamina_Mult);
+		    }
+		    if (variant.spec.Speed_Mult != SpecVariant.prototype.Speed_Mult) {
+			speeds.add(index);
+			speeds.add(variant.spec.Speed_Mult);
+		    }
+		    index++;
+		}
+		script.setProperty("HeightVariants", heights.toArray(new Integer[0]));
+		script.setProperty("HealthVariants", healths.toArray(new Integer[0]));
+		script.setProperty("MagickaVariants", magickas.toArray(new Integer[0]));
+		script.setProperty("StaminaVariants", staminas.toArray(new Integer[0]));
+		script.setProperty("SpeedVariants", speeds.toArray(new Integer[0]));
 
+		// Generate the spell
 		SPEL spell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), script, raceSrc.getEDID());
 		switcherSpells.put(raceSrc.getForm(), new AV_SPEL(spell, flstArray, skinKey));
 		raceSrc.addSpell(spell.getForm());

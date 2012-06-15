@@ -26,6 +26,8 @@ public class SpecVariant extends SpecFile {
     public int Speed_Mult = 100;
     public String Name_Affix = "";
     public String Name_Prefix = "";
+    
+    public static SpecVariant prototype = new SpecVariant();
 
     SpecVariant() {
 	super();
@@ -35,6 +37,7 @@ public class SpecVariant extends SpecFile {
 	super(src);
     }
 
+    @Override
     ArrayList<String> print() {
 	ArrayList<String> out = new ArrayList<String>();
 	if (Author != null && !Author.equals("")) {
