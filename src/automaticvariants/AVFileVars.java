@@ -284,15 +284,22 @@ public class AVFileVars {
 
 			// Locate armature that matches armor's race
 			ARMA piece = null;
+			boolean found = false;
 			for (FormID arma : skin.getArmatures()) {
 			    piece = (ARMA) SPDatabase.getMajor(arma);
-			    if (piece.getRace().equals(record.getRace())) {
+			    if (record.getRace().equals(piece.getRace())) {
+				found = true;
 				break;
 			    }
-			    piece = null;
+			    for (FormID additionalRace : piece.getAdditionalRaces()) {
+				if (record.getRace().equals(additionalRace)) {
+				    found = true;
+				    break;
+				}
+			    }
 			}
-			if (piece == null) {
-			    SPGlobal.logError(header, "Could not locate ARMA matching " + skin + "'s race");
+			if (!found || piece == null) {
+			    SPGlobal.logError(header, "Could not locate ARMA matching " + record + "'s race");
 			    continue;
 			} else if (uniqueArmas.contains(piece.getForm())) {
 			    SPGlobal.log(header, "  Already logged " + piece + " for this variant set.");
