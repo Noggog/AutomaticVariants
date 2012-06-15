@@ -19,7 +19,7 @@ import skyproc.SPGlobal;
 public class AVPackage extends PackageComponent {
 
     ArrayList<VariantSet> sets = new ArrayList<VariantSet>();
-    PackageSpec spec;
+    SpecPackage spec;
     static String depth = "";
 
     public AVPackage(File packageFolder) throws FileNotFoundException, IOException {
@@ -78,32 +78,12 @@ public class AVPackage extends PackageComponent {
 		    add(set);
 		}
 	    } else if (AVFileVars.isSpec(f)) {
-		spec = AV.gson.fromJson(new FileReader(f), PackageSpec.class);
+		spec = AV.gson.fromJson(new FileReader(f), SpecPackage.class);
 		spec.src = f;
 	    }
 	}
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(src.getName(), depth + "*** END package: " + src);
-	}
-    }
-
-    class PackageSpec extends SpecFile {
-
-	String packager;
-	String version;	
-
-	PackageSpec(File f) {
-	    super(f);
-	}
-
-	@Override
-	void printToLog(String header) {
-	    throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	public String printHelpInfo() {
-	    throw new UnsupportedOperationException("Not supported yet.");
 	}
     }
 }

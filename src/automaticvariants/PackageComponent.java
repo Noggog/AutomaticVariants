@@ -411,41 +411,4 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	REROUTE;
     }
 
-    public abstract class SpecFile implements Serializable {
-
-	File src;
-
-	SpecFile() {
-	    
-	}
-	
-	SpecFile(File folderDir) {
-	    this.src = new File(folderDir.getPath() + "\\" + "Specifications.json");
-	}
-
-	abstract void printToLog(String header);
-
-	abstract public String printHelpInfo();
-
-	public void export() throws IOException {
-	    if (src.isFile()) {
-		src.delete();
-	    }
-
-	    BufferedWriter out = new BufferedWriter(new FileWriter(src));
-	    out.write(Ln.toJsonPretty(AV.gson.toJsonTree(this), "src"));
-	    out.close();
-	}
-
-	public String printFormID(String[] formID, GRUP_TYPE type) {
-	    FormID id = new FormID(formID[0], formID[1]);
-	    MajorRecord r = SPDatabase.getMajor(id, type);
-	    String content = "";
-	    if (r != null) {
-		content += r.getEDID() + "  |  ";
-	    }
-	    content += id.getFormStr();
-	    return content;
-	}
-    }
 }

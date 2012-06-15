@@ -19,13 +19,13 @@ public class VariantSet extends PackageComponent implements Serializable {
 
     ArrayList<VariantGroup> groups;
     ArrayList<PackageComponent> commonTextures = new ArrayList<PackageComponent>(2);
-    public VariantSetSpec spec;
+    public SpecVariantSet spec;
     static String depth = "* +";
     ArrayList<Variant> flat;
 
     VariantSet(File setDir) {
 	super(setDir, Type.VARSET);
-	spec = new VariantSetSpec(src);
+	spec = new SpecVariantSet(src);
     }
 
     final public boolean loadVariants() throws FileNotFoundException, IOException {
@@ -40,7 +40,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 	for (File f : src.listFiles()) {
 	    if (AVFileVars.isSpec(f)) {
 		try {
-		    spec = AV.gson.fromJson(new FileReader(f), VariantSetSpec.class);
+		    spec = AV.gson.fromJson(new FileReader(f), SpecVariantSet.class);
 		    if (spec != null) {
 			spec.src = f;
 			if (SPGlobal.logging()) {
@@ -207,37 +207,6 @@ public class VariantSet extends PackageComponent implements Serializable {
 	    }
 	}
 	return true;
-    }
-
-    public class VariantSetSpec extends SpecFile {
-
-	AVFileVars.VariantType type = AVFileVars.VariantType.NPC_;
-	String[][] Target_FormIDs = new String[0][];
-	
-	VariantSetSpec(File src) {
-	    super(src);
-	}
-	
-	@Override
-	void printToLog(String set) {
-	    SPGlobal.log(set, depth + "   --- Set Specifications loaded: --");
-	    SPGlobal.log(set, depth + "   |   Type: " + type);
-	    SPGlobal.log(set, depth + "   |   Target FormIDs: ");
-	    for (String[] s : Target_FormIDs) {
-		SPGlobal.log(set, depth + "   |     " + s[0] + " | " + s[1]);
-	    }
-	    SPGlobal.log(set, depth + "   -------------------------------------");
-	}
-
-	@Override
-	public String printHelpInfo() {
-	    String content = "Seeds:";
-	    for (String[] formID : Target_FormIDs) {
-		content += "\n    ";
-		content += printFormID(formID, GRUP_TYPE.NPC_);
-	    }
-	    return content;
-	}
     }
 
     @Override

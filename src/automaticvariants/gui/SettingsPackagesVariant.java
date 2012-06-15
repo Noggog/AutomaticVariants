@@ -6,14 +6,10 @@ package automaticvariants.gui;
 
 import automaticvariants.AV;
 import automaticvariants.AVSaveFile.Settings;
-import automaticvariants.PackageComponent.SpecFile;
-import automaticvariants.Variant.VariantSpec;
-import java.awt.Color;
-import java.io.IOException;
-import javax.swing.JOptionPane;
+import automaticvariants.SpecFile;
+import automaticvariants.SpecVariant;
 import lev.gui.*;
 import skyproc.gui.SPMainMenuPanel;
-import skyproc.gui.SPSettingPanel;
 import skyproc.gui.SUMGUI;
 
 /**
@@ -109,7 +105,7 @@ public class SettingsPackagesVariant extends SettingsPackagesSpecs {
     @Override
     public void load(String name, SpecFile s) {
 	super.load(name, s);
-	VariantSpec v = (VariantSpec) s;
+	SpecVariant v = (SpecVariant) s;
 	
 	author.setText(v.Author);
 	
@@ -138,7 +134,7 @@ public class SettingsPackagesVariant extends SettingsPackagesSpecs {
 	    return;
 	}
 	
-	VariantSpec v = (VariantSpec) target;
+	SpecVariant v = (SpecVariant) target;
 	
 	v.Author = author.getText();
 	v.Probability_Divider = probDiv.getValue();

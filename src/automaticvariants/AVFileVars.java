@@ -5,7 +5,6 @@
 package automaticvariants;
 
 import automaticvariants.AVSaveFile.Settings;
-import automaticvariants.Variant.VariantSpec;
 import automaticvariants.gui.PackageTree;
 import automaticvariants.gui.SettingsPackagesManager;
 import java.io.File;
@@ -53,7 +52,7 @@ public class AVFileVars {
     ///////////////////
     // AV_Nif name is key
     ///////////////////
-    static Map<String, AVFileVars.AV_Nif> nifs = new HashMap<String, AVFileVars.AV_Nif>();
+    static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     static LMergeMap<String, ARMA> nifToARMA = new LMergeMap<String, ARMA>(false);
     static LMergeMap<ARMO, FormID> ARMOToRace = new LMergeMap<ARMO, FormID>(false);
     //////////////////
@@ -644,16 +643,16 @@ public class AVFileVars {
 		for (FormID race : armors.get(srcArmor).keySet()) {
 		    SPGlobal.log(header, "    For race: " + SPDatabase.getMajor(race, GRUP_TYPE.RACE));
 		    for (AVFileVars.ARMO_spec variant : armors.get(srcArmor).get(race)) {
-			SPGlobal.log(header, "      " + variant.armo + ", prob divider: 1/" + variant.probDiv);
+			SPGlobal.log(header, "      " + variant.armo);
+			for (String spec : variant.spec.print()) {
+			    SPGlobal.log(header, "         " + spec);
+			}
 		    }
 		}
 	    }
 	}
     }
 
-    /*
-     * Race Switch Methods
-     */
     static void generateFormLists(Mod source) {
 	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Generating Form Lists.");
 	if (SPGlobal.logging()) {
@@ -673,18 +672,18 @@ public class AVFileVars {
 		    SPGlobal.log(header, "    Generating FLST for race " + raceSrc);
 		}
 		FLST flst = new FLST(SPGlobal.getGlobalPatch(), "AV_" + armoSrc.getEDID() + "_" + raceSrc.getEDID() + "_flst");
-		ArrayList<AVFileVars.ARMO_spec> armoVars = armors.get(armoSrcForm).get(race);
+		ArrayList<ARMO_spec> armoVars = armors.get(armoSrcForm).get(race);
 		int[] divs = new int[armoVars.size()];
 		for (int i = 0; i < divs.length; i++) {
-		    divs[i] = armoVars.get(i).probDiv;
+		    divs[i] = armoVars.get(i).spec.Probability_Divider;
 		}
 		int lowestCommMult = Ln.lcmm(divs);
 
-		for (AVFileVars.ARMO_spec armorSpec : armors.get(armoSrcForm).get(race)) {
+		for (ARMO_spec armorSpec : armors.get(armoSrcForm).get(race)) {
 		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "      Generating " + (lowestCommMult / armorSpec.probDiv) + " entries for " + armorSpec.armo);
+			SPGlobal.log(header, "      Generating " + (lowestCommMult / armorSpec.spec.Probability_Divider) + " entries for " + armorSpec.armo);
 		    }
-		    for (int i = 0; i < lowestCommMult / armorSpec.probDiv; i++) {
+		    for (int i = 0; i < lowestCommMult / armorSpec.spec.Probability_Divider; i++) {
 			flst.addFormEntry(armorSpec.armo.getForm());
 		    }
 		}
@@ -1070,38 +1069,32 @@ public class AVFileVars {
     static class ARMA_spec {
 
 	ARMA arma;
-	int probDiv;
+	SpecVariant spec;
 
-	ARMA_spec(ARMA arma, VariantSpec spec) {
+	ARMA_spec(ARMA arma, SpecVariant spec) {
 	    this.arma = arma;
-	    probDiv = spec.Probability_Divider;
+	    this.spec = spec;
 	}
     }
 
     static class ARMO_spec {
 
 	ARMO armo;
-	int probDiv;
+	SpecVariant spec;
 	ARMA targetArma;
 	FormID targetRace;
-
-	ARMO_spec(NPC_ src) {
-	    armo = (ARMO) SPDatabase.getMajor(getUsedSkin(src), GRUP_TYPE.ARMO);
-	    probDiv = 1;
-	    targetRace = src.getRace();
-	}
 
 	ARMO_spec(ARMO armoSrc, FormID targetRace) {
 	    this.armo = armoSrc;
 	    this.targetRace = targetRace;
-	    probDiv = 1;
+	    spec = new SpecVariant();
 	}
 
-	ARMO_spec(ARMO armo, AVFileVars.ARMA_spec spec, FormID targetRace) {
+	ARMO_spec(ARMO armo, ARMA_spec spec, FormID targetRace) {
 	    this.armo = armo;
 	    targetArma = spec.arma;
 	    this.targetRace = targetRace;
-	    probDiv = spec.probDiv;
+	    this.spec = spec.spec;
 	}
     }
 

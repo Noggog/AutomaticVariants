@@ -19,7 +19,7 @@ public class Variant extends PackageComponent implements Serializable {
     String name;
     ArrayList<PackageComponent> textures = new ArrayList<PackageComponent>();
     TextureVariant[] TXSTs;
-    public VariantSpec spec;
+    public SpecVariant spec;
     static String depth = "* +   # ";
 
     Variant(File variantDir) {
@@ -30,12 +30,12 @@ public class Variant extends PackageComponent implements Serializable {
 	    name = "_" + tmp[tmp.length - i].replaceAll(" ", "") + name;
 	}
 	name = "AV" + name;
-	spec = new VariantSpec(variantDir);
+	spec = new SpecVariant(variantDir);
     }
 
     Variant() {
 	super(null, Type.VAR);
-	spec = new VariantSpec();
+	spec = new SpecVariant();
     }
 
     public void load() throws FileNotFoundException, IOException {
@@ -57,7 +57,7 @@ public class Variant extends PackageComponent implements Serializable {
 //		PackageComponent c = new PackageComponent(f, Type.)
 	    } else if (AVFileVars.isSpec(f)) {
 		try {
-		    spec = AV.gson.fromJson(new FileReader(f), VariantSpec.class);
+		    spec = AV.gson.fromJson(new FileReader(f), SpecVariant.class);
 		    if (spec != null) {
 			spec.src = f;
 			if (SPGlobal.logging()) {
@@ -99,111 +99,6 @@ public class Variant extends PackageComponent implements Serializable {
 
 	for (File f : toAdd) {
 	    textures.add(new PackageComponent(f, Type.TEXTURE));
-	}
-    }
-
-    public class VariantSpec extends SpecFile {
-
-	public int Probability_Divider = 1;
-	public String Author = "";
-	public String[][] Region_Include = new String[0][0];
-	public boolean Exclusive_Region = false;
-	public int Health_Mult = 100;
-	public int Height_Mult = 100;
-	public int Magicka_Mult = 100;
-	public int Stamina_Mult = 100;
-	public int Speed_Mult = 100;
-	public String Name_Affix = "";
-	public String Name_Prefix = "";
-
-	VariantSpec() {
-	    
-	}
-	
-	VariantSpec(File src) {
-	    super(src);
-	}
-
-	@Override
-	void printToLog(String header) {
-	    SPGlobal.log(header, depth + "    --- Variant Specifications loaded: --");
-	    if (Author != null && !Author.equals("")) {
-		SPGlobal.log(header, depth + "    |   Author: " + Author);
-	    }
-	    if (Probability_Divider != 1) {
-		SPGlobal.log(header, depth + "    |   Probability Div: 1/" + Probability_Divider);
-	    }
-	    if (Region_Include != null && Region_Include.length > 0) {
-		SPGlobal.log(header, depth + "    |   Region Include: ");
-		for (String[] s : Region_Include) {
-		    String tmp = "";
-		    for (String part : s) {
-			tmp += part + " ";
-		    }
-		    SPGlobal.log(header, depth + "    |      " + tmp);
-		}
-		SPGlobal.log(header, depth + "    |   Exclusive Region: " + Exclusive_Region);
-	    }
-	    if (Health_Mult != 100) {
-		SPGlobal.log(header, depth + "    |   Relative Health: " + Health_Mult);
-	    }
-	    if (Magicka_Mult != 100) {
-		SPGlobal.log(header, depth + "    |   Relative Magicka: " + Magicka_Mult);
-	    }
-	    if (Stamina_Mult != 100) {
-		SPGlobal.log(header, depth + "    |   Relative Stamina: " + Stamina_Mult);
-	    }
-	    if (Speed_Mult != 100) {
-		SPGlobal.log(header, depth + "    |   Relative Speed: " + Speed_Mult);
-	    }
-	    if (Height_Mult != 100) {
-		SPGlobal.log(header, depth + "    |   Relative Height: " + Height_Mult);
-	    }
-	    if (Name_Prefix != null && !Name_Prefix.equals("")) {
-		SPGlobal.log(header, depth + "    |   Name Prefix: " + Name_Prefix);
-	    }
-	    if (Name_Affix != null && !Name_Affix.equals("")) {
-		SPGlobal.log(header, depth + "    |   Name Affix: " + Name_Affix);
-	    }
-	    SPGlobal.log(header, depth + "    -------------------------------------");
-	}
-
-	@Override
-	public String printHelpInfo() {
-	    String out = "";
-	    if (!Name_Affix.equals("") || !Name_Prefix.equals("")) {
-		out += "Spawning Name: " + Name_Prefix + " [NAME] " + Name_Affix + "\n";
-	    }
-	    if (!Author.equals("")) {
-		out += "Author: " + Author + "\n";
-	    }
-	    if (Probability_Divider != 1) {
-		out += "Relative Probability: 1/" + Probability_Divider + "\n";
-	    }
-	    if (Region_Include.length > 0) {
-		out += "Regions To Spawn In:";
-		for (String[] formID : Region_Include) {
-		    out += "\n    " + printFormID(formID, GRUP_TYPE.ALCH);
-		}
-		out += "\n";
-	    }
-	    if (Height_Mult != 100) {
-		out += "Relative Height: " + (Height_Mult / 100.0) + "\n";
-	    }
-	    if (Health_Mult != 100) {
-		out += "Relative Health: " + (Health_Mult / 100.0) + "\n";
-	    }
-	    if (Magicka_Mult != 100) {
-		out += "Relative Magicka: " + (Magicka_Mult / 100.0) + "\n";
-	    }
-	    if (Stamina_Mult != 100) {
-		out += "Relative Stamina: " + (Stamina_Mult / 100.0) + "\n";
-	    }
-	    if (Speed_Mult != 100) {
-		out += "Relative Speed: " + (Speed_Mult / 100.0) + "\n";
-	    }
-
-	    return out;
 	}
     }
 
