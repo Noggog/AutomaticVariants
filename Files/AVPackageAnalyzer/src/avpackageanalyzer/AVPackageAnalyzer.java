@@ -17,6 +17,7 @@ import skyproc.NIF.NodeType;
 import skyproc.*;
 import skyproc.exceptions.BadParameter;
 import skyproc.gui.SPDefaultGUI;
+import skyproc.gui.SPProgressBarPlug;
 
 /**
  *
@@ -301,7 +302,7 @@ public class AVPackageAnalyzer {
 	for (BSA b : bsas) {
 	    numFiles += b.numFiles();
 	}
-	SPGUI.progress.setMax(numFiles);
+	SPProgressBarPlug.progress.setMax(numFiles);
 
 	for (BSA b : bsas) {
 	    for (String folderPath : b.getFiles().keySet()) {
@@ -310,14 +311,14 @@ public class AVPackageAnalyzer {
 		    if (fileName.endsWith(".NIF")) {
 			try {
 			    checkNif(new File(folderPath + fileName), b.getFile(folderPath + fileName));
-			    SPGUI.progress.setStatus("Processed: " + fileName);
+			    SPProgressBarPlug.progress.setStatus("Processed: " + fileName);
 			} catch (IOException ex) {
 			    SPGlobal.logException(ex);
 			} catch (DataFormatException ex) {
 			    SPGlobal.logException(ex);
 			}
 		    }
-		    SPGUI.progress.incrementBar();
+		    SPProgressBarPlug.progress.incrementBar();
 		}
 	    }
 	}

@@ -26,7 +26,7 @@ public class SpecVariant extends SpecFile {
     public int Speed_Mult = 100;
     public String Name_Affix = "";
     public String Name_Prefix = "";
-    
+
     public static SpecVariant prototype = new SpecVariant();
 
     SpecVariant() {
@@ -110,19 +110,19 @@ public class SpecVariant extends SpecFile {
 	    out += "\n";
 	}
 	if (Height_Mult != 100) {
-	    out += "Relative Height: " + (Height_Mult / 100.0) + "\n";
+	    out += "Relative Height: " + Height_Mult + "%\n";
 	}
 	if (Health_Mult != 100) {
-	    out += "Relative Health: " + (Health_Mult / 100.0) + "\n";
+	    out += "Relative Health: " + Health_Mult + "%\n";
 	}
 	if (Magicka_Mult != 100) {
-	    out += "Relative Magicka: " + (Magicka_Mult / 100.0) + "\n";
+	    out += "Relative Magicka: " + Magicka_Mult + "%\n";
 	}
 	if (Stamina_Mult != 100) {
-	    out += "Relative Stamina: " + (Stamina_Mult / 100.0) + "\n";
+	    out += "Relative Stamina: " + Stamina_Mult + "%\n";
 	}
 	if (Speed_Mult != 100) {
-	    out += "Relative Speed: " + (Speed_Mult / 100.0) + "\n";
+	    out += "Relative Speed: " + Speed_Mult + "%\n";
 	}
 
 	return out;

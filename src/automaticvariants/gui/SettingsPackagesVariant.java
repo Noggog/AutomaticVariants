@@ -88,12 +88,12 @@ public class SettingsPackagesVariant extends SettingsPackagesSpecs {
 	    namePrefix = new LTextField("Name Prefix", AV.settingsFont, AV.yellow);
 	    namePrefix.linkTo(Settings.SPEC_VAR_NAME_PREFIX, saveFile, SUMGUI.helpPanel, true);
 	    last = setPlacement(namePrefix, last);
-	    Add(namePrefix);
+//	    Add(namePrefix);
 
 	    nameAffix = new LTextField("Name Affix", AV.settingsFont, AV.yellow);
 	    nameAffix.linkTo(Settings.SPEC_VAR_NAME_AFFIX, saveFile, SUMGUI.helpPanel, true);
 	    last = setPlacement(nameAffix, last);
-	    Add(nameAffix);
+//	    Add(nameAffix);
 
 	    alignRight();
 
@@ -106,25 +106,25 @@ public class SettingsPackagesVariant extends SettingsPackagesSpecs {
     public void load(String name, SpecFile s) {
 	super.load(name, s);
 	SpecVariant v = (SpecVariant) s;
-	
+
 	author.setText(v.Author);
-	
+
 	probDiv.setValue(v.Probability_Divider);
-	
+
 //	region.load(v.spec.Region_Include);
-//	
+//
 //	exclusiveRegion.setSelected(v.spec.Exclusive_Region);
-	
+
 	health.setValue(v.Health_Mult);
 	magicka.setValue(v.Magicka_Mult);
 	stamina.setValue(v.Stamina_Mult);
 	speed.setValue(v.Speed_Mult);
 	height.setValue(v.Height_Mult);
-	
+
 	namePrefix.setText(v.Name_Prefix);
-	
+
 	nameAffix.setText(v.Name_Affix);
-	
+
 	target = v;
     }
 
@@ -133,9 +133,9 @@ public class SettingsPackagesVariant extends SettingsPackagesSpecs {
 	if (target == null) {
 	    return;
 	}
-	
+
 	SpecVariant v = (SpecVariant) target;
-	
+
 	v.Author = author.getText();
 	v.Probability_Divider = probDiv.getValue();
 //	ArrayList<FormID> regionsList = region.getPickedIDs();
@@ -154,9 +154,9 @@ public class SettingsPackagesVariant extends SettingsPackagesSpecs {
 	v.Height_Mult = height.getValue();
 	v.Name_Prefix = this.namePrefix.getText();
 	v.Name_Affix = this.nameAffix.getText();
-	
+
 	super.save();
     }
-    
-    
+
+
 }

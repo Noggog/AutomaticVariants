@@ -7,7 +7,6 @@ package automaticvariants;
 import java.io.*;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import skyproc.GRUP_TYPE;
 import skyproc.SPGlobal;
 
 /**

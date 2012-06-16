@@ -13,7 +13,7 @@ import skyproc.SPGlobal;
  *
  * @author Justin Swanson
  */
-class SpecVariantSet extends SpecFile {
+public class SpecVariantSet extends SpecFile {
 
     AVFileVars.VariantType type = AVFileVars.VariantType.NPC_;
     String[][] Target_FormIDs = new String[0][];

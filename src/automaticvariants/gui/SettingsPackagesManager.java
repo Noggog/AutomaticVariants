@@ -166,9 +166,11 @@ public class SettingsPackagesManager extends SPSettingPanel {
 			    || sel.type == PackageComponent.Type.VARSET
 			    || sel.type == PackageComponent.Type.ROOT);
 
-		    editSpec.setVisible(sel.type == PackageComponent.Type.VAR
-			    || sel.type == PackageComponent.Type.VARSET
-			    || sel.type == PackageComponent.Type.PACKAGE);
+		    editSpec.setVisible(
+			    sel.type == PackageComponent.Type.VAR
+//			    || sel.type == PackageComponent.Type.VARSET
+//			    || sel.type == PackageComponent.Type.PACKAGE
+			    );
 
 		    optionsMenu.show(tree, x + 10, y);
 		}
@@ -313,7 +315,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
 		AV.packagesVariantSetPanel.load(vs.printName(), vs.spec);
 		break;
 	    case PACKAGE:
-		
+
 		break;
 	}
     }

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
 import lev.Ln;
-import skyproc.*;
+import skyproc.SPGlobal;
 
 /**
  *
@@ -229,7 +229,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 	    return "MISSING SPEC FILE!" + divider;
 	}
     }
-    
+
     @Override
     public String printName() {
 	PackageComponent p = (PackageComponent) this.getParent();

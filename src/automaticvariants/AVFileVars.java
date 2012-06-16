@@ -54,6 +54,7 @@ public class AVFileVars {
     ///////////////////
     static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
     static LMergeMap<String, ARMA> nifToARMA = new LMergeMap<String, ARMA>(false);
+    // Used to detect alt race variants
     static LMergeMap<ARMO, FormID> ARMOToRace = new LMergeMap<ARMO, FormID>(false);
     //////////////////
     // ArmaSrc is key
@@ -68,6 +69,7 @@ public class AVFileVars {
     // RaceSrc of piece is key for outer, armo is inner key
     //////////////////
     static Map<FormID, Map<FormID, FLST>> formLists = new HashMap<FormID, Map<FormID, FLST>>();
+    static LMergeMap<FormID, ARMO_spec> compiledVariants = new LMergeMap<FormID, ARMO_spec>(false);
     //////////////////
     // RaceSrc is key
     //////////////////
@@ -686,6 +688,7 @@ public class AVFileVars {
 		    for (int i = 0; i < lowestCommMult / armorSpec.spec.Probability_Divider; i++) {
 			flst.addFormEntry(armorSpec.armo.getForm());
 		    }
+		    compiledVariants.put(race, armorSpec);
 		}
 		if (!formLists.containsKey(race)) {
 		    formLists.put(race, new HashMap<FormID, FLST>());
@@ -736,9 +739,8 @@ public class AVFileVars {
 		}
 
 		script.setProperty("AltOptions", flstArray.getForm());
-		script.setProperty("RaceHeightOffsetMale", raceSrc.getHeight(Gender.MALE));
-		script.setProperty("RaceHeightOffsetFemale", raceSrc.getHeight(Gender.FEMALE));
-		
+		script.setProperty("RaceHeightOffset", raceSrc.getHeight(Gender.MALE));
+
 		// Loop through all variants for this race
 		// and load up non-standard spec file info
 		ArrayList<Integer> heights = new ArrayList<Integer>();
@@ -746,10 +748,12 @@ public class AVFileVars {
 		ArrayList<Integer> magickas = new ArrayList<Integer>();
 		ArrayList<Integer> staminas = new ArrayList<Integer>();
 		ArrayList<Integer> speeds = new ArrayList<Integer>();
+		ArrayList<Integer> prefixKey = new ArrayList<Integer>();
+		ArrayList<String> prefix = new ArrayList<String>();
+		ArrayList<Integer> affixKey = new ArrayList<Integer>();
+		ArrayList<String> affix = new ArrayList<String>();
 		int index = 0;
-		LMergeMap<FormID, ARMO_spec> map = armors.get(raceSrc.getWornArmor());
-		ArrayList<ARMO_spec> variants = map.get(raceSrc.getForm());
-		for (ARMO_spec variant : variants) {
+		for (ARMO_spec variant : compiledVariants.get(raceSrc.getForm())) {
 		    if (variant.spec.Height_Mult != SpecVariant.prototype.Height_Mult) {
 			heights.add(index);
 			heights.add(variant.spec.Height_Mult);
@@ -770,13 +774,39 @@ public class AVFileVars {
 			speeds.add(index);
 			speeds.add(variant.spec.Speed_Mult);
 		    }
+		    if (!variant.spec.Name_Prefix.equals("")) {
+			prefixKey.add(index);
+			prefix.add(variant.spec.Name_Prefix);
+		    }
+		    if (!variant.spec.Name_Affix.equals("")) {
+			affixKey.add(index);
+			affix.add(variant.spec.Name_Affix);
+		    }
 		    index++;
 		}
-		script.setProperty("HeightVariants", heights.toArray(new Integer[0]));
-		script.setProperty("HealthVariants", healths.toArray(new Integer[0]));
-		script.setProperty("MagickaVariants", magickas.toArray(new Integer[0]));
-		script.setProperty("StaminaVariants", staminas.toArray(new Integer[0]));
-		script.setProperty("SpeedVariants", speeds.toArray(new Integer[0]));
+		if (!heights.isEmpty()) {
+		    script.setProperty("HeightVariants", heights.toArray(new Integer[0]));
+		}
+		if (!healths.isEmpty()) {
+		    script.setProperty("HealthVariants", healths.toArray(new Integer[0]));
+		}
+		if (!magickas.isEmpty()) {
+		    script.setProperty("MagickaVariants", magickas.toArray(new Integer[0]));
+		}
+		if (!staminas.isEmpty()) {
+		    script.setProperty("StaminaVariants", staminas.toArray(new Integer[0]));
+		}
+		if (!speeds.isEmpty()) {
+		    script.setProperty("SpeedVariants", speeds.toArray(new Integer[0]));
+		}
+		if (!prefixKey.isEmpty()) {
+		    script.setProperty("PrefixKey", prefixKey.toArray(new Integer[0]));
+		    script.setProperty("Prefix", prefix.toArray(new String[0]));
+		}
+		if (!affixKey.isEmpty()) {
+		    script.setProperty("AffixKey", affixKey.toArray(new Integer[0]));
+		    script.setProperty("Affix", affix.toArray(new String[0]));
+		}
 
 		// Generate the spell
 		SPEL spell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), script, raceSrc.getEDID());
@@ -966,7 +996,7 @@ public class AVFileVars {
     static boolean isDDS(File f) {
 	return Ln.isFileType(f, "DDS");
     }
-    
+
     static boolean isNIF(File f) {
 	return Ln.isFileType(f, "NIF");
     }
@@ -1151,8 +1181,9 @@ public class AVFileVars {
 	    this.key = key;
 	}
     }
-    
+
     public enum VariantType {
+
 	NPC_;
     }
 }
