@@ -310,6 +310,11 @@ public class AV implements SUM {
 	LDebug.wrapUpAndExit();
     }
 
+    @Override
+    public JFrame openCustomMenu() {
+	throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     public enum SpecialLogs {
 	WARNINGS;
     }
@@ -320,7 +325,7 @@ public class AV implements SUM {
     }
 
     @Override
-    public GRUP_TYPE[] duplicateOriginalsReport() {
+    public GRUP_TYPE[] dangerousRecordReport() {
 	throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -348,7 +353,7 @@ public class AV implements SUM {
 	packagesVariantPanel = new SettingsPackagesVariant(settingsMenu);
 	packagesVariantSetPanel = new SettingsPackagesVariantSet(settingsMenu);
 	packageManagerConfig = settingsMenu.addMenu(packagesManagerPanel, true, save, Settings.PACKAGES_ON);
-	
+
 	heightPanel = new SettingsStatsPanel(settingsMenu);
 	settingsMenu.addMenu(heightPanel, true, save, Settings.STATS_ON);
 
@@ -379,12 +384,12 @@ public class AV implements SUM {
 
     @Override
     public void runChangesToPatch() throws Exception {
-	
+
 	readInExceptions();
 
 	SPGlobal.loggingSync(true);
 	SPGlobal.logging(true);
-	
+
 	makeAVQuest();
 
 	SPProgressBarPlug.progress.setMax(numSteps);
@@ -413,17 +418,17 @@ public class AV implements SUM {
 	questScript.setProperty(staminaScale, (float)(save.getInt(Settings.STATS_STAMINA_MAX) / scale));
 	questScript.setProperty(speedScale, (float)(save.getInt(Settings.STATS_SPEED_MAX) / scale));
 	questScript.setProperty(tieStats, save.getBool(Settings.STATS_TIE));
-	
+
 	// Log Table
 	Float[] logTable = new Float[1000];
 	for (int i = 0 ; i < logTable.length ; i++) {
 	    logTable[i] = (float) Math.log((i + 1) / 1000.0);
 	}
 	questScript.setProperty("LogTable", logTable);
-	
+
 	quest = NiftyFunc.makeScriptQuest(SPGlobal.getGlobalPatch(), questScript);
     }
-    
+
     @Override
     public boolean hasCustomMenu() {
 	return false;
@@ -450,11 +455,6 @@ public class AV implements SUM {
     @Override
     public Color getHeaderColor() {
 	return green;
-    }
-
-    @Override
-    public JFrame getCustomMenu() {
-	throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

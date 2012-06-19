@@ -37,7 +37,7 @@ public class SettingsStatsPanel extends SPSettingPanel {
     static double cutoff = 2.5;
 
     public SettingsStatsPanel(SPMainMenuPanel parent_) {
-	super("Stat Variants", AV.save, parent_, AV.orange);
+	super("Stat Variants", parent_, AV.orange, AV.save);
     }
 
     @Override
@@ -51,39 +51,39 @@ public class SettingsStatsPanel extends SPSettingPanel {
 	    heightDifference = new LNumericSetting("Max Height Difference", AV.settingsFont, AV.yellow,
 		    0, maxStd, 1);
 	    heightDifference.tie(Settings.STATS_HEIGHT_MAX, AV.save, SUMGUI.helpPanel, true);
-	    last = setPlacement(heightDifference, last);
+	    setPlacement(heightDifference);
 	    heightDifference.addChangeListener(new SettingsStatsPanel.UpdateChartChangeHandler());
 	    AddSetting(heightDifference);
 
 	    healthDifference = new LNumericSetting("Max Health Difference", AV.settingsFont, AV.yellow,
 		    0, maxStd, 1);
 	    healthDifference.tie(Settings.STATS_HEALTH_MAX, AV.save, SUMGUI.helpPanel, true);
-	    last = setPlacement(healthDifference, last);
+	    setPlacement(healthDifference);
 	    AddSetting(healthDifference);
 
 	    magicDifference = new LNumericSetting("Max Mana Difference", AV.settingsFont, AV.yellow,
 		    0, maxStd, 1);
 	    magicDifference.tie(Settings.STATS_MAGIC_MAX, AV.save, SUMGUI.helpPanel, true);
-	    last = setPlacement(magicDifference, last);
+	    setPlacement(magicDifference);
 	    AddSetting(magicDifference);
 
 	    staminaDifference = new LNumericSetting("Max Stamina Difference", AV.settingsFont, AV.yellow,
 		    0, maxStd, 1);
 	    staminaDifference.tie(Settings.STATS_STAMINA_MAX, AV.save, SUMGUI.helpPanel, true);
-	    last = setPlacement(staminaDifference, last);
+	    setPlacement(staminaDifference);
 	    AddSetting(staminaDifference);
 
 	    speedDifference = new LNumericSetting("Max Speed Difference", AV.settingsFont, AV.yellow,
 		    0, maxStd, 1);
 	    speedDifference.tie(Settings.STATS_SPEED_MAX, AV.save, SUMGUI.helpPanel, true);
-	    last = setPlacement(speedDifference, last);
+	    setPlacement(speedDifference);
 	    AddSetting(speedDifference);
 
 	    tieDifferences = new LCheckBox("Bundled Differences", AV.settingsFont, AV.yellow);
 	    tieDifferences.tie(Settings.STATS_TIE, saveFile, SUMGUI.helpPanel, true);
 	    tieDifferences.addShadow();
 	    tieDifferences.setOffset(2);
-	    last = setPlacement(tieDifferences, last);
+	    setPlacement(tieDifferences);
 	    AddSetting(tieDifferences);
 
 	    alignRight();

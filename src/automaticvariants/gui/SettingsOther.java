@@ -28,7 +28,7 @@ public class SettingsOther extends SPSettingPanel {
     LNumericSetting maxMem;
 
     public SettingsOther(SPMainMenuPanel parent_) {
-	super("Other Settings", AV.save, parent_, AV.orange);
+	super("Other Settings", parent_, AV.orange, AV.save);
     }
 
     @Override
@@ -39,14 +39,14 @@ public class SettingsOther extends SPSettingPanel {
 	    importOnStartup.tie(AVSaveFile.Settings.IMPORT_AT_START, saveFile, SUMGUI.helpPanel, true);
 	    importOnStartup.setOffset(2);
 	    importOnStartup.addShadow();
-	    last = setPlacement(importOnStartup, last);
+	    setPlacement(importOnStartup);
 	    AddSetting(importOnStartup);
 
 	    minimize = new LCheckBox("Minimize Patch", AV.settingsFont, AV.yellow);
 	    minimize.tie(AVSaveFile.Settings.MINIMIZE_PATCH, saveFile, SUMGUI.helpPanel, true);
 	    minimize.setOffset(2);
 	    minimize.addShadow();
-	    last = setPlacement(minimize, last);
+	    setPlacement(minimize);
 	    AddSetting(minimize);
 
 	    debugLabel = new LLabel ("Debug Level", AV.settingsFont, AV.yellow);
@@ -57,7 +57,7 @@ public class SettingsOther extends SPSettingPanel {
 	    debugLevel.addItem("AV Debug");
 	    debugLevel.addItem("AV + SkyProc Debug");
 	    debugLevel.tie(Settings.DEBUG_LEVEL, saveFile, SUMGUI.helpPanel, true);
-	    last = setPlacement(debugLevel, last.x + debugLabel.getWidth() + 15,last.y);
+	    setPlacement(debugLevel, last.x + debugLabel.getWidth() + 15,last.y);
 	    AddSetting(debugLevel);
 
 	    debugLabel.setLocation(debugLevel.getX() - debugLabel.getWidth() - 15, debugLevel.getY());
@@ -67,7 +67,7 @@ public class SettingsOther extends SPSettingPanel {
 	    maxMem = new LNumericSetting("Max Allocated Memory",
 		    AV.settingsFont, AV.yellow, 250, 2000, 250);
 	    maxMem.tie(Settings.MAX_MEM, saveFile, SUMGUI.helpPanel, true);
-	    last = setPlacement(maxMem, last);
+	    setPlacement(maxMem);
 	    AddSetting(maxMem);
 
 	    alignRight();

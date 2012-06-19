@@ -204,13 +204,13 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	help.setBottomAreaVisible(false);
 	switch (type) {
 	    case PACKAGE:
-		help.setSetting(src.getName());
+		help.setTitle(src.getName());
 		break;
 	    case GENTEXTURE:
 		((PackageComponent) parent).updateHelp(help);
 		return;
 	    case VARSET:
-		help.setSetting(((PackageComponent) parent).src.getName());
+		help.setTitle(((PackageComponent) parent).src.getName());
 		content += src.getName() + divider;
 
 		content += printSpec();

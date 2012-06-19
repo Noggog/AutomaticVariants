@@ -46,7 +46,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
     LMenuItem editSpec;
 
     public SettingsPackagesManager(SPMainMenuPanel parent_) {
-	super("Texture Variants", AV.save, parent_, AV.orange);
+	super("Texture Variants", parent_, AV.orange, AV.save);
     }
 
     @Override
@@ -217,7 +217,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
 //	parent.helpPanel.addToBottomArea(display);
 //	parent.helpPanel.setBottomAreaHeight(SPMainMenuPanel.rightDimensions.width - 50);
 
-	otherSettings.addActionListener(AV.packagesOtherPanel.getOpenHandler(parent));
+	otherSettings.addActionListener(AV.packagesOtherPanel.getOpenHandler());
     }
 
     public void enableSelection(boolean enable) {

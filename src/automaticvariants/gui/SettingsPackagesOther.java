@@ -26,7 +26,7 @@ public class SettingsPackagesOther extends SPSettingPanel {
     LButton packageManager;
 
     public SettingsPackagesOther(SPMainMenuPanel parent_) {
-	super("Texture Variants", AV.save, parent_, AV.orange);
+	super("Texture Variants", parent_, AV.orange, AV.save);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class SettingsPackagesOther extends SPSettingPanel {
 	    origAsVar.setOffset(0);
 	    origAsVar.tie(AVSaveFile.Settings.PACKAGES_ORIG_AS_VAR, AV.save, SUMGUI.helpPanel, true);
 	    origAsVar.addShadow();
-	    last = setPlacement(origAsVar, last);
+	    setPlacement(origAsVar);
 	    Add(origAsVar);
 
 	    gatherAndExit = new LButton("Gather Files and Exit");
@@ -54,7 +54,7 @@ public class SettingsPackagesOther extends SPSettingPanel {
 		}
 	    });
 	    gatherAndExit.linkTo(AVSaveFile.Settings.PACKAGES_GATHER, saveFile, SUMGUI.helpPanel, true);
-	    last = setPlacement(gatherAndExit, last);
+	    setPlacement(gatherAndExit);
 	    Add(gatherAndExit);
 
 	    packageManager = new LButton("Package Manager");
@@ -70,7 +70,7 @@ public class SettingsPackagesOther extends SPSettingPanel {
 
     @Override
     public void specialOpen(SPMainMenuPanel parent) {
-	packageManager.addActionListener(AV.packagesManagerPanel.getOpenHandler(parent));
+	packageManager.addActionListener(AV.packagesManagerPanel.getOpenHandler());
     }
 
 

@@ -22,23 +22,23 @@ import skyproc.gui.SPSettingPanel;
  * @author Justin Swanson
  */
 public class SettingsPackagesSpecs extends SPSettingPanel {
- 
+
     LLabel editing;
     LLabel packageName;
     LLabel variantName;
     LButton saveSpec;
     LButton cancel;
-    
+
     SpecFile target;
-    
+
     public SettingsPackagesSpecs(SPMainMenuPanel parent_, String title) {
-	super(title, AV.save, parent_, AV.orange);
+	super(title, parent_, AV.orange, AV.save);
     }
-    
+
      @Override
     public boolean initialize() {
 	if (super.initialize()) {
-	    
+
 	    editing = new LLabel("EDITING", AV.settingsFont, AV.green);
 	    editing.addShadow();
 	    editing.setLocation(15, 55);
@@ -51,9 +51,9 @@ public class SettingsPackagesSpecs extends SPSettingPanel {
 	    variantName = new LLabel("Test", AV.settingsFontSmall, Color.LIGHT_GRAY);
 	    variantName.setLocation(0, 68);
 	    Add(variantName);
-	    
+
 	    last = new Point(last.x, last.y + 15);
-	    
+
 	    save.setVisible(false);
 	    defaults.setVisible(false);
 
@@ -68,7 +68,7 @@ public class SettingsPackagesSpecs extends SPSettingPanel {
 		}
 	    });
 	    Add(saveSpec);
-	    
+
 	    cancel = new LButton("Cancel");
 	    cancel.setLocation(save.getLocation());
 	    cancel.setSize(save.getSize());
@@ -81,22 +81,22 @@ public class SettingsPackagesSpecs extends SPSettingPanel {
 
     @Override
     public void specialOpen(SPMainMenuPanel parent) {
-	cancel.addActionListener(AV.packagesManagerPanel.getOpenHandler(parent));
-	saveSpec.addActionListener(AV.packagesManagerPanel.getOpenHandler(parent));
+	cancel.addActionListener(AV.packagesManagerPanel.getOpenHandler());
+	saveSpec.addActionListener(AV.packagesManagerPanel.getOpenHandler());
     }
-    
+
     public void save() {
 	if (target == null) {
 	    return;
 	}
-	
+
 	try {
 	    target.export();
 	} catch (IOException ex) {
 	    JOptionPane.showMessageDialog(null, "There was an error exporting the spec file, please contact Leviathan1753");
 	}
     }
-    
+
     public void load(String name, SpecFile spec) {
 	packageName.setText(name.substring(0, name.indexOf(" - ")));
 	variantName.setText(name.substring(name.indexOf(" - ") + 3));
@@ -110,6 +110,6 @@ public class SettingsPackagesSpecs extends SPSettingPanel {
 	editing.setLocation(settingsPanel.getWidth() / 2 - totalLength / 2, editing.getY());
 	packageName.setLocation(editing.getX() + editing.getWidth() + 10, packageName.getY());
 	variantName.setLocation(packageName.getX(), variantName.getY());
-	
+
     }
 }
