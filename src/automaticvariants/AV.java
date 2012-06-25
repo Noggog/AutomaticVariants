@@ -29,7 +29,7 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.4.1 Alpha";
+    public static String version = "1.4.1.2 Alpha";
 
     /*
      * Static Strings
@@ -280,19 +280,7 @@ public class AV implements SUM {
 	if (!arguments.contains(nonew)) {
 	    // Less than 1GB max memory, spawn new process with more memory
 	    if (Runtime.getRuntime().maxMemory() < Math.pow(1024, 3)) {
-		ProcessBuilder proc = new ProcessBuilder("java", "-jar", "-Xms100m", "-Xmx" + AV.save.getInt(Settings.MAX_MEM) + "m", "Automatic Variants.jar", "-nonew");
-		Process start = proc.start();
-		InputStream shellIn = start.getInputStream();
-		int exitStatus = start.waitFor();
-		String response = Ln.convertStreamToStr(shellIn);
-		if (exitStatus != 0) {
-		    JOptionPane.showMessageDialog(null, "Error allocating " + AV.save.getInt(Settings.MAX_MEM) + "MB memory:\n"
-			    + response
-			    + "\nMemory defaulted to lowest levels.  Please lower your\n"
-			    + "allocated memory in Other Settings and start the program again.");
-		} else {
-		    System.exit(0);
-		}
+		NiftyFunc.allocateMoreMemory("100m", AV.save.getInt(Settings.MAX_MEM) + "m", "Automatic Variants.jar", "-nonew");
 	    }
 	}
 

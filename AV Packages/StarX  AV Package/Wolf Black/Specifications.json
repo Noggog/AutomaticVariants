@@ -1,0 +1,11 @@
+{
+	"Type" : "NPC",
+	
+	"Target_FormIDs" : 
+	[ 
+		["023ABE","Skyrim.esm"]   // Wolf with black skin
+	],
+	
+	"Apply_To_Similar" : true
+	
+}

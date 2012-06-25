@@ -19,7 +19,7 @@ public class AVSaveFile extends LSaveFile {
 	Add(Settings.PACKAGES_ORIG_AS_VAR,	false, true);
 	Add(Settings.DEBUG_LEVEL,		false, 1);
 	Add(Settings.IMPORT_AT_START,		false, false);
-	Add(Settings.STATS_ON,			false, true);
+	Add(Settings.STATS_ON,			false, false);
 	Add(Settings.STATS_HEIGHT_MAX,		false, 15);
 	Add(Settings.STATS_HEALTH_MAX,		false, 25);
 	Add(Settings.STATS_MAGIC_MAX,		false, 25);
@@ -54,7 +54,7 @@ public class AVSaveFile extends LSaveFile {
 		+ " deleting things.\n\n"
 		+ "This function will enable the selection before compressing.\n\n"
 		+ "This may take a while to process.  A popup will appear showing the results when it is complete.");
-	
+
 	helpInfo.put(Settings.PACKAGES_ORIG_AS_VAR, "This will add the non-AV actor setup as a variant, and add it to the list of options. \n\n"
 		+ "If turned off, then only variants explicitly part of an AV Package will spawn.");
 
@@ -72,54 +72,55 @@ public class AVSaveFile extends LSaveFile {
 		+ " put on their specific variants.  So, for example, if one of your AV Packages introduces "
 		+ "a red troll with 15% more health, then any red troll spawns will have 15% bonus health that "
 		+ "the modder desired, but will then be skewed by this setup to be slightly higher or lower for "
-		+ "each spawn.");
-	
+		+ "each spawn.\n\n"
+		+ "NOTE:  This type of variant is very new, and has large potential for bugs.  Use at your own risk.");
+
 	helpInfo.put(Settings.STATS_HEIGHT_MAX, "This determines the maximum percentage difference from "
 		+ "the normal height an actor can be. \n\n"
-		
+
 		+ "The probability of what height an actor will spawn "
 		+ "as follows a bell curve, where normal height is most"
 		+ " common, and the (max / min) height is very rare (about 0.5% chance).\n\n"
-		
+
 		+ "NOTE: The Bethesda function used to set the size of an"
 		+ " actor does NOT change its hitbox size.  Therefore, if you're"
 		+ " playing an archer type character trying to get headshots, it is recommended you"
 		+ " keep this setting fairly conservative.");
-	
+
 	helpInfo.put(Settings.STATS_HEALTH_MAX, "This determines the maximum percentage difference from "
 		+ "the normal health pool an actor can have. \n\n"
-		
+
 		+ "The probability of how much health an actor will spawn "
 		+ "with follows a bell curve, where normal health is most"
 		+ " common, and the (max / min) health is very rare (about 0.5% chance).");
-	
+
 	helpInfo.put(Settings.STATS_MAGIC_MAX, "This determines the maximum percentage difference from "
 		+ "the normal mana pool an actor can have. \n\n"
-		
+
 		+ "The probability of how much mana an actor will spawn "
 		+ "with follows a bell curve, where normal size is most"
 		+ " common, and the (max / min) size is very rare (about 0.5% chance).");
-	
+
 	helpInfo.put(Settings.STATS_STAMINA_MAX, "This determines the maximum percentage difference from "
 		+ "the normal stamina pool an actor can have. \n\n"
-		
+
 		+ "The probability of how much stamina an actor will spawn "
 		+ "with follows a bell curve, where normal stamina is most"
 		+ " common, and the (max / min) stamina is very rare (about 0.5% chance).");
-	
+
 	helpInfo.put(Settings.STATS_SPEED_MAX, "This determines the maximum percentage difference from "
 		+ "the normal speed an actor can have. \n\n"
-		
+
 		+ "The probability of what speed an actor will spawn "
 		+ "with follows a bell curve, where normal speed is most"
 		+ " common, and the (max / min) speed is very rare (about 0.5% chance).");
-	
+
 	helpInfo.put(Settings.STATS_TIE, "This setting will tie all the stat differences together, "
 		+ "so that more often units will spawn either strong or weak in all areas, rather than"
 		+ " randomly getting differences for each stat.\n\n"
 		+ "For example, with this setting you will more likely encounter units that have more health and speed "
 		+ "if they are taller, and less health and speed if they are shorter.");
-	
+
 	helpInfo.put(Settings.AV_SETTINGS,
 		"These are AV settings related to this patcher program.");
 
@@ -156,53 +157,53 @@ public class AVSaveFile extends LSaveFile {
 
 	helpInfo.put(Settings.MINIMIZE_PATCH,
 		"This will make AV do more processing in order to minimize the patch size.");
-	
+
 	helpInfo.put(Settings.SPEC_VAR_AUTHOR,
 		"Put the original author who created the material contained in this variant.");
-	
+
 	helpInfo.put(Settings.SPEC_VAR_HEALTH,
 		"This is a percentage that setting will modify the NPC's stat to be greater/smaller"
 		+ " than normal whenever this specific variant is picked.");
-	
+
 	helpInfo.put(Settings.SPEC_VAR_MAGICKA,
 		"This is a percentage that setting will modify the NPC's stat to be greater/smaller"
 		+ " than normal whenever this specific variant is picked.");
-	
+
 	helpInfo.put(Settings.SPEC_VAR_STAMINA,
 		"This is a percentage that setting will modify the NPC's stat to be greater/smaller"
 		+ " than normal whenever this specific variant is picked.");
-	
+
 	helpInfo.put(Settings.SPEC_VAR_SPEED,
 		"This is a percentage that setting will modify the NPC's stat to be greater/smaller"
 		+ " than normal whenever this specific variant is picked.");
-	
+
 	helpInfo.put(Settings.SPEC_VAR_HEIGHT,
 		"This is a percentage that setting will modify the NPC's stat to be greater/smaller"
 		+ " than normal whenever this specific variant is picked.");
-	
+
 	helpInfo.put(Settings.SPEC_VAR_NAME_AFFIX,
 		"This setting will append text to the end of the NPC's name.\n\n"
 		+ "For example, you could put \"of Doom\" and the variant would "
 		+ "spawn as\n"
 		+ "\"(Troll/Skeever/Falmer) of Doom\"" );
-	
+
 	helpInfo.put(Settings.SPEC_VAR_NAME_PREFIX,
 		"This setting will prepend text to the beginning of the NPC's name.\n\n"
 		+ "For example, you could put \"Diseased\" and the variant would "
 		+ "spawn as\n"
 		+ "\"Diseased (Troll/Skeever/Falmer)\"" );
-	
+
 	helpInfo.put(Settings.SPEC_VAR_PROB,
 		"This setting will reduce the chance this variant will spawn compared to others by 1/X.\n"
 		+ "A setting of 2 would mean the variant would spawn half as often as a normal variant.\n\n"
 		+ "This setting can be used to adjust the probabilities of variants spawning in your package."
 		+ "You can also use it to make your variants rare compared to other author's variants.");
-	
+
 	helpInfo.put(Settings.SPEC_VAR_REGION,
 		"This is a list of regions that this variant will be allowed to spawn in.  This means the "
 		+ "variant WILL NOT spawn anywhere else but the regions you specify.\n\n"
 		+ "If you don't specify any regions, the variant will spawn anywhere.");
-	
+
 	helpInfo.put(Settings.SPEC_VAR_REGION_EXCLUDE,
 		"This will make the regions you specified for this variant to spawn in exclusive.  This means that no other variants besides this one will spawn there.  The one exception to this rule is that other variants that name these exclusive regions specifically will still spawn there.\n\n"
 		+ "NOTE: This setting only applies if regions have been specified for this variant.");

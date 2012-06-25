@@ -167,9 +167,8 @@ public class SettingsPackagesManager extends SPSettingPanel {
 			    || sel.type == PackageComponent.Type.ROOT);
 
 		    editSpec.setVisible(
-			    sel.type == PackageComponent.Type.VAR
-//			    || sel.type == PackageComponent.Type.VARSET
-//			    || sel.type == PackageComponent.Type.PACKAGE
+			    sel.type == PackageComponent.Type.VAR //			    || sel.type == PackageComponent.Type.VARSET
+			    //			    || sel.type == PackageComponent.Type.PACKAGE
 			    );
 
 		    optionsMenu.show(tree, x + 10, y);
@@ -191,13 +190,10 @@ public class SettingsPackagesManager extends SPSettingPanel {
 	    };
 	    tree.addMouseListener(ma);
 
-	    //	    reader = new DDSreader();
-	    //	    display = new LImagePane();
-	    //	    display.setMaxSize(AVGUI.rightDimensions.width - 50, 0);
-	    //	    display.setVisible(true);
-
-	    //	    parent.helpPanel.addToBottomArea(display);
-	    //	    display.setVisible(true);
+	    display = new LImagePane();
+	    display.setMaxSize(SUMGUI.rightDimensions.width, 0);
+	    display.setVisible(true);
+	    PackageComponent.display = display;
 
 	    try {
 		loadPackageList();
@@ -214,8 +210,10 @@ public class SettingsPackagesManager extends SPSettingPanel {
 
     @Override
     public void specialOpen(SPMainMenuPanel parent) {
-//	parent.helpPanel.addToBottomArea(display);
-//	parent.helpPanel.setBottomAreaHeight(SPMainMenuPanel.rightDimensions.width - 50);
+	SUMGUI.helpPanel.clearBottomArea();
+	SUMGUI.helpPanel.addToBottomArea(display);
+	SUMGUI.helpPanel.setBottomAreaHeight(SUMGUI.rightDimensions.width);
+	SUMGUI.helpPanel.setBottomAreaVisible(false);
 
 	otherSettings.addActionListener(AV.packagesOtherPanel.getOpenHandler());
     }
@@ -303,10 +301,10 @@ public class SettingsPackagesManager extends SPSettingPanel {
 
     public void editSpec() {
 	PackageComponent p = getSelectedComponent();
-	switch(p.type) {
+	switch (p.type) {
 	    case VAR:
 		AV.packagesVariantPanel.open();
-		Variant v = ((Variant)p);
+		Variant v = ((Variant) p);
 		AV.packagesVariantPanel.load(v.printName(), v.spec);
 		break;
 	    case VARSET:
@@ -322,8 +320,8 @@ public class SettingsPackagesManager extends SPSettingPanel {
 
     public void loadPackageList() throws FileNotFoundException, IOException {
 
-	boolean logging = SPGlobal.logging();
-	SPGlobal.logging(false);
+	boolean logging = SPGlobal.loggingAsync();
+	SPGlobal.loggingAsync(false);
 
 	AVFileVars.importVariants();
 
@@ -337,7 +335,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
 	    }
 	}
 
-	SPGlobal.logging(logging);
+	SPGlobal.loggingAsync(logging);
 
 	AVFileVars.AVPackages.sort();
 	tree.setModel(new DefaultTreeModel(AVFileVars.AVPackages));

@@ -253,7 +253,9 @@ public class SettingsStatsPanel extends SPSettingPanel {
 
     @Override
     public void specialOpen(SPMainMenuPanel parent) {
-	addChart(SUMGUI.helpPanel);
+	SUMGUI.helpPanel.clearBottomArea();
+	SUMGUI.helpPanel.addToBottomArea(chart);
+	SUMGUI.helpPanel.setBottomAreaHeight(190);
     }
 
     @Override
@@ -265,10 +267,5 @@ public class SettingsStatsPanel extends SPSettingPanel {
 		updateChart();  // Double nest to ensure it's the last listener
 	    }
 	});
-    }
-
-    public void addChart(LHelpPanel help) {
-	help.addToBottomArea(chart);
-	help.setBottomAreaHeight(190);
     }
 }

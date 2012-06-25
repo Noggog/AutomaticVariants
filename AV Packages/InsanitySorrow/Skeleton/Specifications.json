@@ -1,0 +1,17 @@
+{
+	"Type" : "NPC",
+	
+	"Target_FormIDs" : 
+	[ 
+		["0F5BBA","Skyrim.esm"],	// EncSkeletonNecroSC01Missile
+		["0F5BB9","Skyrim.esm"],	// EncSkeletonNecroImp01Missile
+		["02D1DE","Skyrim.esm"],	// EncSkeleton01Melee1H
+		["09192C","Skyrim.esm"],	// dunLabyrinthianUndeadDragon
+		["0EBE2E","Skyrim.esm"],	// DA09ShadeUnique
+		["0EB876","Skyrim.esm"]		// EncSkeletonNecro01Melee1H
+
+	],
+	
+	"Apply_To_Similar" : true
+	
+}

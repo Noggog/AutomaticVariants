@@ -73,7 +73,7 @@ public class Variant extends PackageComponent implements Serializable {
 		    c.type = PackageComponent.Type.TEXTURE;
 		    textures.add(c);
 		    if (SPGlobal.logging()) {
-			SPGlobal.log(src.getName(), depth + "    Added ROUTED texture: " + c.src);
+			SPGlobal.log(src.getName(), depth + "    Added ROUTED texture: " + c.routeFile);
 		    }
 		}
 		add(c);

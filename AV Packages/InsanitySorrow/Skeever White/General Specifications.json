@@ -1,0 +1,11 @@
+{
+	"Type" : "NPC",
+	
+	"Target_FormIDs" : 
+	[ 
+		["10FC24","Skyrim.esm"]   // White Skeever
+	],
+	
+	"Apply_To_Similar" : true
+	
+}

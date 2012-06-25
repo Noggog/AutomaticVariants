@@ -1,0 +1,11 @@
+{
+	"Type" : "NPC",
+	
+	"Target_FormIDs" : 
+	[ 
+		["023AAA","Skyrim.esm"]   //EncFrostbiteSpider
+	],
+	
+	"Apply_To_Similar" : true
+	
+}

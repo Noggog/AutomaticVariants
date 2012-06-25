@@ -1,0 +1,11 @@
+{
+	"Type" : "NPC",
+	
+	"Target_FormIDs" : 
+	[ 
+		["06DC9D","Skyrim.esm"]   //EncHare
+	],
+	
+	"Apply_To_Similar" : true
+	
+}

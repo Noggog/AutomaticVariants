@@ -38,10 +38,29 @@ public class RerouteFile extends PackageComponent {
     }
 
     @Override
+    public String toString() {
+	return routeFile.getName().replace(".reroute", "") + " (R)";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+	if (obj == null) {
+	    return false;
+	}
+	if (getClass() != obj.getClass()) {
+	    return false;
+	}
+	final RerouteFile other = (RerouteFile) obj;
+	if (this.routeFile != other.routeFile && (this.routeFile == null || !this.routeFile.getName().equalsIgnoreCase(other.routeFile.getName()))) {
+	    return false;
+	}
+	return true;
+    }
+
+    @Override
     public boolean moveFile(File src) throws IOException {
 	return super.moveFile(routeFile);
     }
-
 
     public static File createRerouteFile(File from, File to) throws IOException {
 	File reroute = new File(from.getPath() + ".reroute");

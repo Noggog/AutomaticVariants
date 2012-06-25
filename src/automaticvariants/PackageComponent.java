@@ -4,19 +4,22 @@
  */
 package automaticvariants;
 
-import java.io.*;
+import ddsutil.DDSUtil;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import javax.swing.SwingUtilities;
 import lev.LMergeMap;
 import lev.Ln;
 import lev.gui.LHelpPanel;
 import lev.gui.LImagePane;
 import lev.gui.LSwingTreeNode;
-import skyproc.FormID;
-import skyproc.GRUP_TYPE;
-import skyproc.MajorRecord;
-import skyproc.SPDatabase;
+import skyproc.SPGlobal;
+import skyproc.gui.SUMGUI;
 
 /**
  *
@@ -24,14 +27,14 @@ import skyproc.SPDatabase;
  */
 public class PackageComponent extends LSwingTreeNode implements Comparable {
 
-    static PackageComponent lastDisplayed;
-    static LHelpPanel help;
-    static LImagePane display;
+    static File lastDisplayed;
     static String divider = "\n\n";
+    public static LImagePane display;
     public File src;
     public boolean disabled = false;
     public boolean disabledOrig = false;
     public Type type;
+    static int tmp = 0;
 
     public PackageComponent(File source, Type type) {
 	if (source != null) {
@@ -86,14 +89,23 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
     }
 
     public ArrayList<PackageComponent> getAll() {
+	return getAll(false);
+    }
+
+    ArrayList<PackageComponent> getAll(boolean recursive) {
 	ArrayList<PackageComponent> out = new ArrayList<PackageComponent>();
 	if (children != null) {
 	    for (Object o : children) {
 		PackageComponent child = (PackageComponent) o;
 		out.add(child);
+		out.addAll(child.getAll(recursive));
 	    }
 	}
 	return out;
+    }
+
+    public ArrayList<PackageComponent> flattenChildren() {
+	return getAll(true);
     }
 
     @Override
@@ -201,13 +213,14 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	    content += "DISABLED - ";
 	}
 	ArrayList<PackageComponent> genTextures;
-	help.setBottomAreaVisible(false);
 	switch (type) {
 	    case PACKAGE:
 		help.setTitle(src.getName());
+		SUMGUI.helpPanel.setBottomAreaVisible(false);
 		break;
 	    case GENTEXTURE:
 		((PackageComponent) parent).updateHelp(help);
+		displayImage(src);
 		return;
 	    case VARSET:
 		help.setTitle(((PackageComponent) parent).src.getName());
@@ -217,6 +230,7 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 
 		content += printGenTextures();
 
+		displayFirstImage();
 		break;
 	    case VARGROUP:
 		set = (PackageComponent) parent;
@@ -226,6 +240,7 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 
 		content += set.printGenTextures();
 
+		displayFirstImage();
 		break;
 	    case VAR:
 		group = ((PackageComponent) parent);
@@ -251,25 +266,51 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 		    content += "    " + child.src.getName() + "\n";
 		}
 
+		displayFirstImage();
 		break;
 	    case TEXTURE:
-//		if (!equals(lastDisplayed)) {
-//		    try {
-//			BufferedImage image = SettingsPackagesPanel.reader.read(src.toURL());
-//			display.setImage(image);
-//			help.setBottomAreaVisible(true);
-//			lastDisplayed = this;
-//		    } catch (Exception ex) {
-//			SPGlobal.logError("PackageComponent", "Could not display " + src);
-//		    }
-//		}
 		((PackageComponent) parent).updateHelp(help);
+		displayImage(src);
 		return;
 	    default:
 		AV.packageManagerConfig.updateHelp();
+		SUMGUI.helpPanel.setBottomAreaVisible(false);
 	}
 	help.setContent(content);
 	help.hideArrow();
+    }
+
+    void displayFirstImage() {
+	for (PackageComponent p : flattenChildren()) {
+	    if (Ln.isFileType(p.src, "DDS")
+		    && !p.src.getPath().contains("_n")
+		    && !p.src.getPath().contains("_g")) {
+		displayImage(p.src);
+		return;
+	    }
+	}
+	SUMGUI.helpPanel.setBottomAreaVisible(false);
+    }
+
+    void displayImage(final File src) {
+	SwingUtilities.invokeLater(new Runnable() {
+
+	    @Override
+	    public void run() {
+		if (!src.equals(lastDisplayed)) {
+		    try {
+			BufferedImage image = DDSUtil.read(src);
+			display.setImage(image);
+			display.setLocation(SUMGUI.helpPanel.getBottomSize().width / 2 - display.getWidth() / 2, display.getY());
+			lastDisplayed = src;
+		    } catch (Exception ex) {
+			SPGlobal.logException(ex);
+			SPGlobal.logError("PackageComponent", "Could not display " + src);
+		    }
+		}
+		SUMGUI.helpPanel.setBottomAreaVisible(true);
+	    }
+	});
     }
 
     public String printGenTextures() {
@@ -410,5 +451,4 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	GENTEXTURE,
 	REROUTE;
     }
-
 }

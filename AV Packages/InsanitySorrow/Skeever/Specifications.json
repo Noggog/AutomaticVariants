@@ -1,0 +1,11 @@
+{
+	"Type" : "NPC",
+	
+	"Target_FormIDs" : 
+	[ 
+		["023AB7","Skyrim.esm"]   // Standard Skeever
+	],
+	
+	"Apply_To_Similar" : true
+	
+}
