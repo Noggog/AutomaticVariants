@@ -30,7 +30,7 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.4.2 Alpha";
+    public static String version = "1.4.2.1 Alpha";
 
     /*
      * Static Strings
@@ -337,9 +337,9 @@ public class AV implements SUM {
 	}
 
 	if (!arguments.contains(nonew)) {
-	    // Less than 1GB max memory, spawn new process with more memory
-	    if (Runtime.getRuntime().maxMemory() < Math.pow(1024, 3)) {
-//		NiftyFunc.allocateMoreMemory("100m", AV.save.getInt(Settings.MAX_MEM) + "m", "Automatic Variants.jar", "-nonew");
+	    // Less than .85 * max memory desired
+	    if (Runtime.getRuntime().maxMemory() < AV.save.getInt(Settings.MAX_MEM) * 0.85 * 1024 * 1024) {
+		NiftyFunc.allocateMoreMemory("100m", AV.save.getInt(Settings.MAX_MEM) + "m", "Automatic Variants.jar", "-nonew");
 	    }
 	}
 
