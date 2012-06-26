@@ -1,0 +1,11 @@
+{
+	"Type" : "NPC",
+	
+	"Target_FormIDs" : 
+	[ 
+		["023AB5","Skyrim.esm"]   // EncSabreCat
+	],
+	
+	"Apply_To_Similar" : true
+	
+}

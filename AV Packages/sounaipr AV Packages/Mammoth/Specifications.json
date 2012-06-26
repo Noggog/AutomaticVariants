@@ -1,0 +1,12 @@
+{
+	"Type" : "NPC",
+	
+	"Target_FormIDs" : 
+	[ 
+		["023AB4","Skyrim.esm"],   //EncMammothWild
+		["0DD641","Skyrim.esm"]   //EncMammothTamed
+	],
+	
+	"Apply_To_Similar" : true
+	
+}

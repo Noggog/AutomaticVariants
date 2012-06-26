@@ -4,6 +4,7 @@
  */
 package automaticvariants;
 
+import automaticvariants.gui.HeightVarChart;
 import ddsutil.DDSUtil;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -98,7 +99,9 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	    for (Object o : children) {
 		PackageComponent child = (PackageComponent) o;
 		out.add(child);
-		out.addAll(child.getAll(recursive));
+		if (recursive) {
+		    out.addAll(child.getAll(recursive));
+		}
 	    }
 	}
 	return out;
@@ -118,7 +121,8 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	if (disabled != disabledOrig) {
 	    if (src.isDirectory()) {
 		for (File f : src.listFiles()) {
-		    if (f.getPath().toUpperCase().endsWith(".JSON")) {
+		    if (!f.isDirectory()
+			    && !Ln.isFileType(f, "DDS")) {
 			proper = proper && moveFile(f);
 		    }
 		}
@@ -216,7 +220,7 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	switch (type) {
 	    case PACKAGE:
 		help.setTitle(src.getName());
-		SUMGUI.helpPanel.setBottomAreaVisible(false);
+		displayFirstImage();
 		break;
 	    case GENTEXTURE:
 		((PackageComponent) parent).updateHelp(help);
@@ -298,12 +302,15 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	    @Override
 	    public void run() {
 		if (!src.equals(lastDisplayed)) {
+		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, "TEST", "Displaying " + src.getPath());
 		    try {
 			BufferedImage image = DDSUtil.read(src);
+			SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, "TEST", "Image is " + image);
 			display.setImage(image);
 			display.setLocation(SUMGUI.helpPanel.getBottomSize().width / 2 - display.getWidth() / 2, display.getY());
 			lastDisplayed = src;
 		    } catch (Exception ex) {
+			SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, "TEST", "FAILED");
 			SPGlobal.logException(ex);
 			SPGlobal.logError("PackageComponent", "Could not display " + src);
 		    }

@@ -1,0 +1,16 @@
+{
+	"Type" : "NPC",
+	
+	"Target_FormIDs" : 
+	[ 
+		["0936D1","Skyrim.esm"],
+		["0936D3","Skyrim.esm"],
+		["023AAE","Skyrim.esm"],
+		["030437","Skyrim.esm"],
+		["030438","Skyrim.esm"],
+		["048D97","Skyrim.esm"]
+	],
+	
+	"Apply_To_Similar" : true
+	
+}

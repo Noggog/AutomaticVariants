@@ -19,6 +19,7 @@ import lev.Ln;
 import lev.debug.LDebug;
 import lev.gui.LSaveFile;
 import skyproc.*;
+import skyproc.GLOB.GLOBType;
 import skyproc.gui.*;
 
 /**
@@ -29,7 +30,7 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.4.1.2 Alpha";
+    public static String version = "1.4.2 Alpha";
 
     /*
      * Static Strings
@@ -48,14 +49,14 @@ public class AV implements SUM {
      * Script/Property names
      */
     static String raceAttachScript = "AVRaceAttachment";
-    static String changeSkinOn = "SkinVariantOn";
-    static String statOn = "StatVariantOn";
-    static String heightScale = "HeightScale";
-    static String healthScale = "HealthScale";
-    static String magicScale = "MagicScale";
-    static String staminaScale = "StaminaScale";
-    static String speedScale = "SpeedScale";
-    static String tieStats = "TieStats";
+    GLOB texturesOn;
+    GLOB statsOn;
+    GLOB heightScale;
+    GLOB healthScale;
+    GLOB magickaScale;
+    GLOB staminaScale;
+    GLOB speedScale;
+    GLOB tieStats;
     /*
      * Other
      */
@@ -97,7 +98,7 @@ public class AV implements SUM {
 		return;
 	    }
 	    cleanUp();
-	    setGlobals();
+	    setSkyProcGlobals();
 	    setDebugLevel();
 	    AVFileVars.gatherFiles();
 
@@ -216,7 +217,65 @@ public class AV implements SUM {
 	return script;
     }
 
-    private static void setGlobals() {
+    public void makeAVQuest() {
+	ScriptRef questScript = new ScriptRef("AVQuestScript");
+	questScript.setProperty("TexturesOn", texturesOn.getForm());
+	questScript.setProperty("StatsOn", statsOn.getForm());
+	questScript.setProperty("HeightScale", heightScale.getForm());
+	questScript.setProperty("HealthScale", healthScale.getForm());
+	questScript.setProperty("MagickaScale", magickaScale.getForm());
+	questScript.setProperty("StaminaScale", staminaScale.getForm());
+	questScript.setProperty("SpeedScale", speedScale.getForm());
+	questScript.setProperty("TieStats", tieStats.getForm());
+
+	// Log Table
+	Float[] logTable = new Float[1000];
+	for (int i = 0 ; i < logTable.length ; i++) {
+	    logTable[i] = (float) Math.log((i + 1) / 1000.0);
+	}
+	questScript.setProperty("LogTable", logTable);
+
+	quest = NiftyFunc.makeScriptQuest(SPGlobal.getGlobalPatch(), questScript);
+    }
+
+    public void makeGlobals() {
+	texturesOn = new GLOB(SPGlobal.getGlobalPatch(), "AVTexturesOn", GLOBType.Short);
+	texturesOn.setValue(save.getBool(Settings.PACKAGES_ON));
+	texturesOn.setConstant(true);
+
+	statsOn = new GLOB(SPGlobal.getGlobalPatch(), "AVStatsOn", GLOBType.Short);
+	statsOn.setValue(save.getBool(Settings.STATS_ON));
+	statsOn.setConstant(true);
+
+	double scale =	100.0  // To percent (.01) instead of ints (1)
+			* 3.0; // Scaled to 3 standard deviations
+
+	heightScale = new GLOB(SPGlobal.getGlobalPatch(), "AVHeightScale", GLOBType.Float);
+	heightScale.setValue((float)(save.getInt(Settings.STATS_HEIGHT_MAX) / scale));
+	heightScale.setConstant(true);
+
+	healthScale = new GLOB(SPGlobal.getGlobalPatch(), "AVHealthScale", GLOBType.Float);
+	healthScale.setValue((float)(save.getInt(Settings.STATS_HEALTH_MAX) / scale));
+	healthScale.setConstant(true);
+
+	magickaScale = new GLOB(SPGlobal.getGlobalPatch(), "AVMagickaScale", GLOBType.Float);
+	magickaScale.setValue((float)(save.getInt(Settings.STATS_MAGIC_MAX) / scale));
+	magickaScale.setConstant(true);
+
+	staminaScale = new GLOB(SPGlobal.getGlobalPatch(), "AVStaminaScale", GLOBType.Float);
+	staminaScale.setValue((float)(save.getInt(Settings.STATS_STAMINA_MAX) / scale));
+	staminaScale.setConstant(true);
+
+	speedScale = new GLOB(SPGlobal.getGlobalPatch(), "AVSpeedScale", GLOBType.Float);
+	speedScale.setValue((float)(save.getInt(Settings.STATS_SPEED_MAX) / scale));
+	speedScale.setConstant(true);
+
+	tieStats = new GLOB(SPGlobal.getGlobalPatch(), "AVTieStats", GLOBType.Short);
+	tieStats.setValue(save.getBool(Settings.STATS_TIE));
+	tieStats.setConstant(true);
+    }
+
+    private static void setSkyProcGlobals() {
 	/*
 	 * Initializing Debug Log and Globals
 	 */
@@ -280,7 +339,7 @@ public class AV implements SUM {
 	if (!arguments.contains(nonew)) {
 	    // Less than 1GB max memory, spawn new process with more memory
 	    if (Runtime.getRuntime().maxMemory() < Math.pow(1024, 3)) {
-		NiftyFunc.allocateMoreMemory("100m", AV.save.getInt(Settings.MAX_MEM) + "m", "Automatic Variants.jar", "-nonew");
+//		NiftyFunc.allocateMoreMemory("100m", AV.save.getInt(Settings.MAX_MEM) + "m", "Automatic Variants.jar", "-nonew");
 	    }
 	}
 
@@ -378,6 +437,7 @@ public class AV implements SUM {
 	SPGlobal.loggingSync(true);
 	SPGlobal.logging(true);
 
+	makeGlobals();
 	makeAVQuest();
 
 	SPProgressBarPlug.progress.setMax(numSteps);
@@ -388,33 +448,10 @@ public class AV implements SUM {
 	// For all race SWITCHING variants
 	// (such as texture variants)
 	AVFileVars.setUpFileVariants(source);
-
-	// For all non-skin SWITCHING variants
-	// (such as height variant scripting)
-	setUpInGameScriptBasedVariants(source);
-    }
-
-    public void makeAVQuest() {
-	ScriptRef questScript = new ScriptRef("AVQuestScript");
-	questScript.setProperty(changeSkinOn, save.getBool(Settings.PACKAGES_ON));
-	questScript.setProperty(statOn, save.getBool(Settings.STATS_ON));
-	double scale =	100.0  // To percent (.01) instead of ints (1)
-			* 3.0; // Scaled to 3 standard deviations
-	questScript.setProperty(heightScale, (float)(save.getInt(Settings.STATS_HEIGHT_MAX) / scale));
-	questScript.setProperty(healthScale, (float)(save.getInt(Settings.STATS_HEALTH_MAX) / scale));
-	questScript.setProperty(magicScale, (float)(save.getInt(Settings.STATS_MAGIC_MAX) / scale));
-	questScript.setProperty(staminaScale, (float)(save.getInt(Settings.STATS_STAMINA_MAX) / scale));
-	questScript.setProperty(speedScale, (float)(save.getInt(Settings.STATS_SPEED_MAX) / scale));
-	questScript.setProperty(tieStats, save.getBool(Settings.STATS_TIE));
-
-	// Log Table
-	Float[] logTable = new Float[1000];
-	for (int i = 0 ; i < logTable.length ; i++) {
-	    logTable[i] = (float) Math.log((i + 1) / 1000.0);
-	}
-	questScript.setProperty("LogTable", logTable);
-
-	quest = NiftyFunc.makeScriptQuest(SPGlobal.getGlobalPatch(), questScript);
+//
+//	// For all non-skin SWITCHING variants
+//	// (such as height variant scripting)
+//	setUpInGameScriptBasedVariants(source);
     }
 
     @Override

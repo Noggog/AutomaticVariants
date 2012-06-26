@@ -213,7 +213,6 @@ public class SettingsPackagesManager extends SPSettingPanel {
 	SUMGUI.helpPanel.clearBottomArea();
 	SUMGUI.helpPanel.addToBottomArea(display);
 	SUMGUI.helpPanel.setBottomAreaHeight(SUMGUI.rightDimensions.width);
-	SUMGUI.helpPanel.setBottomAreaVisible(false);
 
 	otherSettings.addActionListener(AV.packagesOtherPanel.getOpenHandler());
     }
