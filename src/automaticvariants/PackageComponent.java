@@ -121,12 +121,16 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	if (disabled != disabledOrig) {
 	    if (src.isDirectory()) {
 		for (File f : src.listFiles()) {
-		    if (!f.isDirectory()
-			    && !Ln.isFileType(f, "DDS")) {
+		    if (f.getPath().toUpperCase().endsWith(".JSON")) {
+//		    if (f.isFile()
+//			    && !Ln.isFileType(f, "DDS")) {
 			proper = proper && moveFile(f);
 		    }
 		}
-	    } else {
+	    } 
+	    else
+//	    else if (src.isFile()) 
+	    {
 		proper = proper && moveFile(src);
 	    }
 	}

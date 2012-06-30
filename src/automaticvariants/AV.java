@@ -30,7 +30,7 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.4.2.1 Alpha";
+    public static String version = "1.4.2.2 Alpha";
 
     /*
      * Static Strings
