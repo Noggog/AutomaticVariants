@@ -30,7 +30,7 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.4.2.2 Alpha";
+    public static String version = "1.4.3 Beta";
 
     /*
      * Static Strings
@@ -399,10 +399,10 @@ public class AV implements SUM {
 	packagesOtherPanel = new SettingsPackagesOther(settingsMenu);
 	packagesVariantPanel = new SettingsPackagesVariant(settingsMenu);
 	packagesVariantSetPanel = new SettingsPackagesVariantSet(settingsMenu);
-	packageManagerConfig = settingsMenu.addMenu(packagesManagerPanel, true, save, Settings.PACKAGES_ON);
+	packageManagerConfig = settingsMenu.addMenu(packagesManagerPanel, false, save, Settings.PACKAGES_ON);
 
-	heightPanel = new SettingsStatsPanel(settingsMenu);
-	settingsMenu.addMenu(heightPanel, true, save, Settings.STATS_ON);
+//	heightPanel = new SettingsStatsPanel(settingsMenu);
+//	settingsMenu.addMenu(heightPanel, true, save, Settings.STATS_ON);
 
 	otherPanel = new SettingsOther(settingsMenu);
 	settingsMenu.addMenu(otherPanel, false, save, Settings.AV_SETTINGS);
