@@ -218,6 +218,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
     }
 
     public void enableSelection(boolean enable) {
+	SUMGUI.setPatchNeeded(true);
 	TreePath[] paths = tree.getSelectionPaths();
 	for (TreePath p : paths) {
 	    ((PackageComponent) p.getLastPathComponent()).enable(enable);

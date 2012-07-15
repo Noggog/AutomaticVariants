@@ -7,9 +7,7 @@ package automaticvariants;
 import automaticvariants.AVSaveFile.Settings;
 import automaticvariants.gui.PackageTree;
 import automaticvariants.gui.SettingsPackagesManager;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
@@ -34,6 +32,7 @@ public class AVFileVars {
     static ArrayList<BSA> BSAs;
     final public static String AVPackagesDir = "AV Packages\\";
     public static String inactiveAVPackagesDir = "Inactive AV Packages\\";
+    public static String AVPackageListing = SPGlobal.pathToInternalFiles + "Last AV Package Listing.txt";
     public static String AVTexturesDir = SPGlobal.pathToData + "textures\\AV Packages\\";
     public static String AVMeshesDir = SPGlobal.pathToData + "meshes\\AV Packages\\";
     static String debugFolder = "File Variants/";
@@ -917,6 +916,28 @@ public class AVFileVars {
 	for (PackageComponent p : AVPackages.getAll()) {
 	    p.moveOut();
 	}
+    }
+
+    public static void saveAVPackagesListing () throws IOException {
+	File packageDir = new File(AVPackagesDir);
+	ArrayList<File> files = Ln.generateFileList(packageDir, false);
+	File save = new File(AVPackageListing);
+	BufferedWriter out = new BufferedWriter(new FileWriter(save));
+	for (File f : files) {
+	    out.write(f.getPath() + "\n");
+	}
+	out.close();
+    }
+
+    public static ArrayList<String> getAVPackagesListing () throws IOException {
+	ArrayList<String> out = new ArrayList<>();
+	BufferedReader in = new BufferedReader(new FileReader(AVPackageListing));
+	String line;
+	while ((line = in.readLine()) != null) {
+	    out.add(line);
+	}
+	in.close();
+	return out;
     }
 
     /*

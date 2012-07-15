@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import lev.gui.LButton;
 import lev.gui.LCheckBox;
+import skyproc.SPGlobal;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPSettingPanel;
 import skyproc.gui.SUMGUI;
@@ -36,7 +37,7 @@ public class SettingsPackagesOther extends SPSettingPanel {
 	    save.setVisible(false);
 	    defaults.setVisible(false);
 
-	    origAsVar = new LCheckBox ("Original As Variant", AV.settingsFont, AV.yellow);
+	    origAsVar = new LCheckBox("Original As Variant", AV.settingsFont, AV.yellow);
 	    origAsVar.setOffset(0);
 	    origAsVar.tie(AVSaveFile.Settings.PACKAGES_ORIG_AS_VAR, AV.save, SUMGUI.helpPanel, true);
 	    origAsVar.addShadow();
@@ -51,6 +52,9 @@ public class SettingsPackagesOther extends SPSettingPanel {
 		    AVFileVars.shufflePackages();
 		    AVFileVars.gatherFiles();
 		    AV.gatheringAndExiting = true;
+		    if (SPGlobal.logging()) {
+			SPGlobal.logMain("AV", "Closing program early because of gather and exit command.");
+		    }
 		    SUMGUI.exitProgram(false);
 		}
 	    });
@@ -73,6 +77,4 @@ public class SettingsPackagesOther extends SPSettingPanel {
     public void specialOpen(SPMainMenuPanel parent) {
 	packageManager.addActionListener(AV.packagesManagerPanel.getOpenHandler());
     }
-
-
 }

@@ -364,12 +364,33 @@ public class AV implements SUM {
 
     @Override
     public boolean needsPatching() {
+	//Need to check if packages have changed.
+	ArrayList<File> files = Ln.generateFileList(new File(AVFileVars.AVPackagesDir), false);
+	try {
+	    ArrayList<String> last = AVFileVars.getAVPackagesListing();
+	    ArrayList<String> lastTmp = new ArrayList<>(last);
+	    if (files.size() != last.size()) {
+		return true;
+	    }
+
+	    for (File f : files) {
+		String path = f.getPath();
+		if (!lastTmp.contains(path)) {
+		    return true;
+		}
+	    }
+
+	} catch (IOException ex) {
+	    SPGlobal.logException(ex);
+	    return true;
+	}
 	return false;
     }
 
     @Override
     public void onExit(boolean patchWasGenerated) throws IOException {
 	if (!gatheringAndExiting) {
+	    AVFileVars.saveAVPackagesListing();
 	    AVFileVars.moveOut();
 	}
     }
