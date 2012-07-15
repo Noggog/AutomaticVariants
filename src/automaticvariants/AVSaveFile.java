@@ -15,20 +15,20 @@ public class AVSaveFile extends LSaveFile {
 
     @Override
     protected void initSettings() {
-	Add(Settings.PACKAGES_ON,		false, true);
-	Add(Settings.PACKAGES_ORIG_AS_VAR,	false, true);
-	Add(Settings.DEBUG_LEVEL,		false, 1);
-	Add(Settings.IMPORT_AT_START,		false, false);
-	Add(Settings.STATS_ON,			false, false);
-	Add(Settings.STATS_HEIGHT_MAX,		false, 15);
-	Add(Settings.STATS_HEALTH_MAX,		false, 25);
-	Add(Settings.STATS_MAGIC_MAX,		false, 25);
-	Add(Settings.STATS_STAMINA_MAX,		false, 25);
-	Add(Settings.STATS_SPEED_MAX,		false, 10);
-	Add(Settings.STATS_TIE,			false, true);
-	Add(Settings.MINIMIZE_PATCH,		false, true);
-	Add(Settings.MAX_MEM,			false, 750);
-	Add(Settings.SPEC_VAR_PROB,		false, 15);
+	Add(Settings.PACKAGES_ON,		true,	    true);
+	Add(Settings.PACKAGES_ORIG_AS_VAR,	true,	    true);
+	Add(Settings.DEBUG_LEVEL,		1,	    false);
+	Add(Settings.IMPORT_AT_START,		false,	    false);
+	Add(Settings.STATS_ON,			false,	    true);
+	Add(Settings.STATS_HEIGHT_MAX,		15,	    true);
+	Add(Settings.STATS_HEALTH_MAX,		25,	    true);
+	Add(Settings.STATS_MAGIC_MAX,		25,	    true);
+	Add(Settings.STATS_STAMINA_MAX,		25,	    true);
+	Add(Settings.STATS_SPEED_MAX,		10,	    true);
+	Add(Settings.STATS_TIE,			true,	    true);
+	Add(Settings.MINIMIZE_PATCH,		true,	    true);
+	Add(Settings.MAX_MEM,			750,	    false);
+	Add(Settings.SPEC_VAR_PROB,		15,	    false);
     }
 
     @Override
