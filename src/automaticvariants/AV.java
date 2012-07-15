@@ -87,6 +87,7 @@ public class AV implements SUM {
     static public Color yellow = new Color(255, 204, 26);
     static public Color lightGray = new Color(190, 190, 190);
     static public Color darkGray = new Color(110, 110, 110);
+    static public boolean gatheringAndExiting = false;
 
     public static void main(String[] args) {
 	ArrayList<String> arguments = new ArrayList<String>(Arrays.asList(args));
@@ -230,7 +231,7 @@ public class AV implements SUM {
 
 	// Log Table
 	Float[] logTable = new Float[1000];
-	for (int i = 0 ; i < logTable.length ; i++) {
+	for (int i = 0; i < logTable.length; i++) {
 	    logTable[i] = (float) Math.log((i + 1) / 1000.0);
 	}
 	questScript.setProperty("LogTable", logTable);
@@ -247,27 +248,27 @@ public class AV implements SUM {
 	statsOn.setValue(save.getBool(Settings.STATS_ON));
 	statsOn.setConstant(true);
 
-	double scale =	100.0  // To percent (.01) instead of ints (1)
-			* 3.0; // Scaled to 3 standard deviations
+	double scale = 100.0 // To percent (.01) instead of ints (1)
+		* 3.0; // Scaled to 3 standard deviations
 
 	heightScale = new GLOB(SPGlobal.getGlobalPatch(), "AVHeightScale", GLOBType.Float);
-	heightScale.setValue((float)(save.getInt(Settings.STATS_HEIGHT_MAX) / scale));
+	heightScale.setValue((float) (save.getInt(Settings.STATS_HEIGHT_MAX) / scale));
 	heightScale.setConstant(true);
 
 	healthScale = new GLOB(SPGlobal.getGlobalPatch(), "AVHealthScale", GLOBType.Float);
-	healthScale.setValue((float)(save.getInt(Settings.STATS_HEALTH_MAX) / scale));
+	healthScale.setValue((float) (save.getInt(Settings.STATS_HEALTH_MAX) / scale));
 	healthScale.setConstant(true);
 
 	magickaScale = new GLOB(SPGlobal.getGlobalPatch(), "AVMagickaScale", GLOBType.Float);
-	magickaScale.setValue((float)(save.getInt(Settings.STATS_MAGIC_MAX) / scale));
+	magickaScale.setValue((float) (save.getInt(Settings.STATS_MAGIC_MAX) / scale));
 	magickaScale.setConstant(true);
 
 	staminaScale = new GLOB(SPGlobal.getGlobalPatch(), "AVStaminaScale", GLOBType.Float);
-	staminaScale.setValue((float)(save.getInt(Settings.STATS_STAMINA_MAX) / scale));
+	staminaScale.setValue((float) (save.getInt(Settings.STATS_STAMINA_MAX) / scale));
 	staminaScale.setConstant(true);
 
 	speedScale = new GLOB(SPGlobal.getGlobalPatch(), "AVSpeedScale", GLOBType.Float);
-	speedScale.setValue((float)(save.getInt(Settings.STATS_SPEED_MAX) / scale));
+	speedScale.setValue((float) (save.getInt(Settings.STATS_SPEED_MAX) / scale));
 	speedScale.setConstant(true);
 
 	tieStats = new GLOB(SPGlobal.getGlobalPatch(), "AVTieStats", GLOBType.Short);
@@ -362,7 +363,22 @@ public class AV implements SUM {
 	throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public boolean needsPatching() {
+	return false;
+    }
+
+    @Override
+    public void onExit(boolean patchWasGenerated) throws IOException {
+	if (!gatheringAndExiting) {
+	    AVFileVars.gatherFiles();
+	    AVFileVars.importVariants();
+	    AVFileVars.moveOut();
+	}
+    }
+
     public enum SpecialLogs {
+
 	WARNINGS;
     }
 

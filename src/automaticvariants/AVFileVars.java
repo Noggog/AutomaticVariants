@@ -114,10 +114,6 @@ public class AVFileVars {
 	printVariants();
 
 	skinSwitchMethod(source);
-
-	for (PackageComponent p : AVPackages.getAll()) {
-	    p.moveOut();
-	}
     }
 
     static void skinSwitchMethod(Mod source) {
@@ -914,6 +910,12 @@ public class AVFileVars {
 		}
 		SPGlobal.log(header, "--------------------------------------");
 	    }
+	}
+    }
+
+    static public void moveOut (){
+	for (PackageComponent p : AVPackages.getAll()) {
+	    p.moveOut();
 	}
     }
 

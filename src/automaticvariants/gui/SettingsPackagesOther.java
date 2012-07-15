@@ -50,7 +50,8 @@ public class SettingsPackagesOther extends SPSettingPanel {
 		public void actionPerformed(ActionEvent e) {
 		    AVFileVars.shufflePackages();
 		    AVFileVars.gatherFiles();
-		    SUMGUI.exitProgram();
+		    AV.gatheringAndExiting = true;
+		    SUMGUI.exitProgram(false);
 		}
 	    });
 	    gatherAndExit.linkTo(AVSaveFile.Settings.PACKAGES_GATHER, saveFile, SUMGUI.helpPanel, true);

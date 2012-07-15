@@ -4,7 +4,6 @@
  */
 package automaticvariants;
 
-import automaticvariants.gui.HeightVarChart;
 import ddsutil.DDSUtil;
 import java.awt.image.BufferedImage;
 import java.io.File;
