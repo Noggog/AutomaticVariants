@@ -322,9 +322,6 @@ public class SettingsPackagesManager extends SPSettingPanel {
 	boolean logging = SPGlobal.loggingAsync();
 	SPGlobal.loggingAsync(false);
 
-	AVFileVars.gatherFiles();
-	AVFileVars.importVariants();
-
 	File inactivePackages = new File(AVFileVars.inactiveAVPackagesDir);
 	if (inactivePackages.isDirectory()) {
 	    for (File packageFolder : inactivePackages.listFiles()) {

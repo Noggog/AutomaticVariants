@@ -101,7 +101,6 @@ public class AV implements SUM {
 	    cleanUp();
 	    setSkyProcGlobals();
 	    setDebugLevel();
-	    AVFileVars.gatherFiles();
 
 	    SUMGUI.open(new AV());
 
@@ -371,10 +370,14 @@ public class AV implements SUM {
     @Override
     public void onExit(boolean patchWasGenerated) throws IOException {
 	if (!gatheringAndExiting) {
-	    AVFileVars.gatherFiles();
-	    AVFileVars.importVariants();
 	    AVFileVars.moveOut();
 	}
+    }
+
+    @Override
+    public void onStart() throws Exception {
+	AVFileVars.gatherFiles();
+	AVFileVars.importVariants();
     }
 
     public enum SpecialLogs {
