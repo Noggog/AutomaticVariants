@@ -15,10 +15,10 @@ import skyproc.SPGlobal;
  *
  * @Author Justin Swanson
  */
-public class VariantSet extends PackageComponent implements Serializable {
+public class VariantSet extends PackageNode implements Serializable {
 
     ArrayList<VariantGroup> groups;
-    ArrayList<PackageComponent> commonTextures = new ArrayList<PackageComponent>(2);
+    ArrayList<PackageNode> commonTextures = new ArrayList<PackageNode>(2);
     public SpecVariantSet spec;
     static String depth = "* +";
     ArrayList<Variant> flat;
@@ -61,7 +61,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 		add(v);
 
 	    } else if (AVFileVars.isDDS(f)) {
-		PackageComponent c = new PackageComponent(f, Type.GENTEXTURE);
+		PackageNode c = new PackageNode(f, Type.GENTEXTURE);
 		commonTextures.add(c);
 		add(c);
 		if (SPGlobal.logging()) {
@@ -71,7 +71,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 	    } else if (AVFileVars.isReroute(f)) {
 		RerouteFile c = new RerouteFile(f);
 		if (AVFileVars.isDDS(c.src)) {
-		    c.type = PackageComponent.Type.GENTEXTURE;
+		    c.type = PackageNode.Type.GENTEXTURE;
 		    if (SPGlobal.logging()) {
 			SPGlobal.log(src.getName(), depth + "   Loaded ROUTED common texture: " + c.src);
 		    }
@@ -138,18 +138,18 @@ public class VariantSet extends PackageComponent implements Serializable {
 	}
 
 	// Check each Variant against each other and return any files that are common to all.
-	ArrayList<PackageComponent> commonFiles = new ArrayList<PackageComponent>();
+	ArrayList<PackageNode> commonFiles = new ArrayList<PackageNode>();
 	ArrayList<File> moved = new ArrayList<File>();
 	for (VariantGroup g : groups) {
 	    commonFiles.addAll(g.consolidateCommonFilesInternal());
 	}
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(src.getName(), "Common Files:");
-	    for (PackageComponent c : commonFiles) {
+	    for (PackageNode c : commonFiles) {
 		SPGlobal.log(src.getName(), "  " + c.src.getName());
 	    }
 	}
-	for (PackageComponent c : commonFiles) {
+	for (PackageNode c : commonFiles) {
 	    File dest = new File(c.src.getParentFile().getParentFile().getParent() + "/" + c.src.getName());
 	    if (!Ln.moveFile(c.src, dest, true)) {
 		SPGlobal.logError(src.getName(), "!!!" + c.src + " was NOT successfully moved.");
@@ -168,7 +168,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 	LMergeMap<File, File> duplicates = new LMergeMap<File, File>(false);
 	for (VariantGroup group : groups) {
 	    for (Variant var : group.variants) {
-		for (PackageComponent tex : var.textures) {
+		for (PackageNode tex : var.textures) {
 		    if (!tex.getClass().equals(RerouteFile.class)) {
 			boolean found = false;
 			for (File key : duplicates.keySet()) {
@@ -232,7 +232,7 @@ public class VariantSet extends PackageComponent implements Serializable {
 
     @Override
     public String printName() {
-	PackageComponent p = (PackageComponent) this.getParent();
+	PackageNode p = (PackageNode) this.getParent();
 	return p.printName() + " - " + src.getName();
     }
 }

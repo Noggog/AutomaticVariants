@@ -1,6 +1,6 @@
 Savefile used for the application.
 set PACKAGES_ON to 1
-set PACKAGES_ORIG_AS_VAR to 0
+set PACKAGES_ORIG_AS_VAR to 1
 set SPEC_VAR_PROB to 15
 set STATS_ON to 0
 set STATS_HEIGHT_MAX to 15

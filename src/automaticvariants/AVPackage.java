@@ -16,7 +16,7 @@ import skyproc.SPGlobal;
  *
  * @author Justin Swanson
  */
-public class AVPackage extends PackageComponent {
+public class AVPackage extends PackageNode {
 
     ArrayList<VariantSet> sets = new ArrayList<VariantSet>();
     SpecPackage spec;

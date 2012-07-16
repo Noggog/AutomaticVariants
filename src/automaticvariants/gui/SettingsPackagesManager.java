@@ -160,14 +160,14 @@ public class SettingsPackagesManager extends SPSettingPanel {
 		    }
 
 		    tree.setSelectionPath(path);
-		    PackageComponent sel = (PackageComponent) path.getLastPathComponent();
+		    PackageNode sel = (PackageNode) path.getLastPathComponent();
 
-		    compress.setVisible(sel.type == PackageComponent.Type.PACKAGE
-			    || sel.type == PackageComponent.Type.VARSET
-			    || sel.type == PackageComponent.Type.ROOT);
+		    compress.setVisible(sel.type == PackageNode.Type.PACKAGE
+			    || sel.type == PackageNode.Type.VARSET
+			    || sel.type == PackageNode.Type.ROOT);
 
 		    editSpec.setVisible(
-			    sel.type == PackageComponent.Type.VAR //			    || sel.type == PackageComponent.Type.VARSET
+			    sel.type == PackageNode.Type.VAR //			    || sel.type == PackageComponent.Type.VARSET
 			    //			    || sel.type == PackageComponent.Type.PACKAGE
 			    );
 
@@ -193,7 +193,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
 	    display = new LImagePane();
 	    display.setMaxSize(SUMGUI.rightDimensions.width, 0);
 	    display.setVisible(true);
-	    PackageComponent.display = display;
+	    PackageNode.display = display;
 
 	    try {
 		loadPackageList();
@@ -221,16 +221,16 @@ public class SettingsPackagesManager extends SPSettingPanel {
 	SUMGUI.setPatchNeeded(true);
 	TreePath[] paths = tree.getSelectionPaths();
 	for (TreePath p : paths) {
-	    ((PackageComponent) p.getLastPathComponent()).enable(enable);
+	    ((PackageNode) p.getLastPathComponent()).enable(enable);
 	}
 
 	// adjust folders to enable/disable based on their contents
 	for (TreePath p : paths) {
 	    for (int i = p.getPathCount() - 1; i >= 0; i--) {
-		PackageComponent node = (PackageComponent) p.getPathComponent(i);
+		PackageNode node = (PackageNode) p.getPathComponent(i);
 		if (node.src.isDirectory()) {
 		    if (node.disabled) {
-			for (PackageComponent child : node.getAll()) {
+			for (PackageNode child : node.getAll()) {
 			    if (!child.disabled) {
 				node.disabled = false;
 				break;
@@ -238,7 +238,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
 			}
 		    } else {
 			boolean allDisabled = true;
-			for (PackageComponent child : node.getAll()) {
+			for (PackageNode child : node.getAll()) {
 			    if (!child.disabled) {
 				allDisabled = false;
 				break;
@@ -254,21 +254,21 @@ public class SettingsPackagesManager extends SPSettingPanel {
 	tree.repaint();
     }
 
-    public PackageComponent getSelectedComponent() {
-	return (PackageComponent) tree.getSelectionPaths()[0].getLastPathComponent();
+    public PackageNode getSelectedComponent() {
+	return (PackageNode) tree.getSelectionPaths()[0].getLastPathComponent();
     }
 
     public void compress() {
 	try {
 	    // Enable selecton and move files
 	    int row = tree.getLeadSelectionRow();
-	    PackageComponent p = getSelectedComponent();
+	    PackageNode p = getSelectedComponent();
 	    enableSelection(true);
 	    p.moveNode();
 	    loadPackageList();
 
 	    // Select the same node
-	    p = (PackageComponent) tree.getPathForRow(row).getLastPathComponent();
+	    p = (PackageNode) tree.getPathForRow(row).getLastPathComponent();
 
 	    // Compress
 	    long before = p.fileSize();
@@ -278,7 +278,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
 
 	    p.consolidateCommonFiles();
 	    loadPackageList();
-	    PackageComponent.rerouteFiles(p.getDuplicateFiles());
+	    PackageNode.rerouteFiles(p.getDuplicateFiles());
 	    loadPackageList();
 
 	    long after = p.fileSize();
@@ -300,7 +300,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
     }
 
     public void editSpec() {
-	PackageComponent p = getSelectedComponent();
+	PackageNode p = getSelectedComponent();
 	switch (p.type) {
 	    case VAR:
 		AV.packagesVariantPanel.open();

@@ -12,7 +12,7 @@ import skyproc.SPGlobal;
  *
  * @author Justin Swanson
  */
-public class RerouteFile extends PackageComponent {
+public class RerouteFile extends PackageNode {
 
     File routeFile;
     static LMergeMap<File, RerouteFile> reroutes = new LMergeMap<File, RerouteFile>(false, false);

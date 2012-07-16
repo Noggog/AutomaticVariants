@@ -15,7 +15,7 @@ import skyproc.SPGlobal;
  *
  * @author Justin Swanson
  */
-public class VariantGroup extends PackageComponent {
+public class VariantGroup extends PackageNode {
 
     ArrayList<Variant> variants = new ArrayList<Variant>();
     static String depth = "* +   ";
@@ -41,7 +41,7 @@ public class VariantGroup extends PackageComponent {
 	}
     }
 
-    public void mergeInGlobals(ArrayList<PackageComponent> globalFiles) {
+    public void mergeInGlobals(ArrayList<PackageNode> globalFiles) {
 	for (Variant v : variants) {
 	    v.mergeInGlobals(globalFiles);
 	}
@@ -50,7 +50,7 @@ public class VariantGroup extends PackageComponent {
     public void deleteMatches(ArrayList<File> files) throws FileNotFoundException, IOException {
 	for (File common : files) {
 	    for (Variant v : variants) {
-		for (PackageComponent c : v.textures) {
+		for (PackageNode c : v.textures) {
 		    if (common.getName().equalsIgnoreCase(c.src.getName())) {
 			if (SPGlobal.logging()) {
 			    SPGlobal.log(src.getName(), "  ------------------------------");
@@ -74,23 +74,23 @@ public class VariantGroup extends PackageComponent {
 	}
     }
 
-    public ArrayList<PackageComponent> consolidateCommonFilesInternal() throws FileNotFoundException, IOException {
-	ArrayList<PackageComponent> out = new ArrayList<PackageComponent>();
+    public ArrayList<PackageNode> consolidateCommonFilesInternal() throws FileNotFoundException, IOException {
+	ArrayList<PackageNode> out = new ArrayList<PackageNode>();
 	if (variants.size() > 1) {
 	    Variant first = variants.get(0);
 	    // For each texture in the first variant
-	    for (PackageComponent tex : first.textures) {
+	    for (PackageNode tex : first.textures) {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(src.getName(), "  ---------------");
 		    SPGlobal.log(src.getName(), "  CHECKING " + tex.src);
 		    SPGlobal.log(src.getName(), "  ---------------");
 		}
 		boolean textureCommon = true;
-		ArrayList<PackageComponent> delete = new ArrayList<PackageComponent>();
+		ArrayList<PackageNode> delete = new ArrayList<PackageNode>();
 		// Check each other variant's textures.
 		for (int i = 1; i < variants.size(); i++) {
 		    boolean variantContained = false;
-		    for (PackageComponent texRhs : variants.get(i).textures) {
+		    for (PackageNode texRhs : variants.get(i).textures) {
 			if (SPGlobal.logging()) {
 			    SPGlobal.log(src.getName(), "    ------------------------------");
 			    SPGlobal.log(src.getName(), "    Comparing");
@@ -124,7 +124,7 @@ public class VariantGroup extends PackageComponent {
 		if (textureCommon) {
 		    SPGlobal.log(src.getName(), "  == WAS a common texture: " + tex.src);
 		    out.add(tex);
-		    for (PackageComponent p : delete) {
+		    for (PackageNode p : delete) {
 			if (!p.isReroute() && p.src.delete()) {
 			    SPGlobal.log(src.getName(), "  " + p.src + " was deleted.");
 			} else {
@@ -136,10 +136,10 @@ public class VariantGroup extends PackageComponent {
 	}
 	return out;
     }
-    
+
     @Override
     public String printName() {
-	PackageComponent p = (PackageComponent) this.getParent();
+	PackageNode p = (PackageNode) this.getParent();
 	return p.printName() + " - " + src.getName();
     }
 }

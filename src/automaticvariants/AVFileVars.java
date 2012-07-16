@@ -37,7 +37,7 @@ public class AVFileVars {
     public static String AVMeshesDir = SPGlobal.pathToData + "meshes\\AV Packages\\";
     static String debugFolder = "File Variants/";
     static int numSupportedTextures = 8;
-    public static PackageComponent AVPackages = new PackageComponent(new File(AVPackagesDir), PackageComponent.Type.ROOT);
+    public static PackageNode AVPackages = new PackageNode(new File(AVPackagesDir), PackageNode.Type.ROOT);
     /*
      * Variant storage lists/maps
      */
@@ -135,7 +135,7 @@ public class AVFileVars {
 	File AVPackagesDirFile = new File(SPGlobal.SUMpath + AVPackagesDir);
 
 	// wipe
-	AVPackages = new PackageComponent(AVPackagesDirFile, PackageComponent.Type.ROOT);
+	AVPackages = new PackageNode(AVPackagesDirFile, PackageNode.Type.ROOT);
 	if (AVPackagesDirFile.isDirectory()) {
 	    for (File packageFolder : AVPackagesDirFile.listFiles()) {
 		if (packageFolder.isDirectory()) {
@@ -224,7 +224,7 @@ public class AVFileVars {
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + "3 - Link to NIFs.txt");
 	}
-	for (PackageComponent avPackageC : AVPackages.getAll(PackageComponent.Type.PACKAGE)) {
+	for (PackageNode avPackageC : AVPackages.getAll(PackageNode.Type.PACKAGE)) {
 	    AVPackage avPackage = (AVPackage) avPackageC;
 	    for (VariantSet varSet : avPackage.sets) {
 		if (varSet.spec == null || varSet.isEmpty()) {
@@ -453,7 +453,7 @@ public class AVFileVars {
 		// Find out which TXSTs need to be generated
 		String[][] replacements = new String[n.textureFields.size()][numSupportedTextures];
 		boolean[] needed = new boolean[n.textureFields.size()];
-		for (PackageComponent f : v.textures) {
+		for (PackageNode f : v.textures) {
 		    int i = 0;
 		    for (AVFileVars.AV_Nif.TextureField textureSet : n.textureFields) {
 			int j = 0;
@@ -913,7 +913,7 @@ public class AVFileVars {
     }
 
     static public void moveOut (){
-	for (PackageComponent p : AVPackages.getAll()) {
+	for (PackageNode p : AVPackages.getAll()) {
 	    p.moveOut();
 	}
     }
@@ -962,7 +962,7 @@ public class AVFileVars {
     static public void shufflePackages() {
 	PackageTree tree = SettingsPackagesManager.tree;
 	if (tree != null) {
-	    PackageComponent root = (PackageComponent) tree.getRoot();
+	    PackageNode root = (PackageNode) tree.getRoot();
 	    boolean fail;
 	    try {
 		fail = !root.moveNode();

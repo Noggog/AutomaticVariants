@@ -4,7 +4,7 @@
  */
 package automaticvariants.gui;
 
-import automaticvariants.PackageComponent;
+import automaticvariants.PackageNode;
 import automaticvariants.VariantSet;
 import java.awt.Color;
 import java.awt.Component;
@@ -42,7 +42,7 @@ public class PackageTree extends LSwingTree {
 
 	@Override
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-	    PackageComponent item = (PackageComponent) value;
+	    PackageNode item = (PackageNode) value;
 
 	    if (hasFocus) {
 		item.updateHelp(help);
@@ -53,7 +53,7 @@ public class PackageTree extends LSwingTree {
 		defaultC.setForeground(disabledColor);
 	    }
 
-	    if (item.type == PackageComponent.Type.VARSET && ((VariantSet)item).spec == null) {
+	    if (item.type == PackageNode.Type.VARSET && ((VariantSet)item).spec == null) {
 		defaultC.setForeground(Color.RED);
 	    }
 

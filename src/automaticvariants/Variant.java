@@ -13,10 +13,10 @@ import skyproc.SPGlobal;
  *
  * @Author Justin Swanson
  */
-public class Variant extends PackageComponent implements Serializable {
+public class Variant extends PackageNode implements Serializable {
 
     String name;
-    ArrayList<PackageComponent> textures = new ArrayList<PackageComponent>();
+    ArrayList<PackageNode> textures = new ArrayList<PackageNode>();
     TextureVariant[] TXSTs;
     public SpecVariant spec;
     static String depth = "* +   # ";
@@ -46,7 +46,7 @@ public class Variant extends PackageComponent implements Serializable {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(src.getName(), depth + "    Added texture: " + f);
 		}
-		PackageComponent c = new PackageComponent(f, Type.TEXTURE);
+		PackageNode c = new PackageNode(f, Type.TEXTURE);
 		textures.add(c);
 		add(c);
 	    } else if (AVFileVars.isNIF(f)) {
@@ -70,7 +70,7 @@ public class Variant extends PackageComponent implements Serializable {
 	    } else if (AVFileVars.isReroute(f)) {
 		RerouteFile c = new RerouteFile(f);
 		if (AVFileVars.isDDS(c.src)) {
-		    c.type = PackageComponent.Type.TEXTURE;
+		    c.type = PackageNode.Type.TEXTURE;
 		    textures.add(c);
 		    if (SPGlobal.logging()) {
 			SPGlobal.log(src.getName(), depth + "    Added ROUTED texture: " + c.routeFile);
@@ -81,11 +81,11 @@ public class Variant extends PackageComponent implements Serializable {
 	}
     }
 
-    public void mergeInGlobals(ArrayList<PackageComponent> globalFiles) {
+    public void mergeInGlobals(ArrayList<PackageNode> globalFiles) {
 	ArrayList<File> toAdd = new ArrayList<File>();
-	for (PackageComponent global : globalFiles) {
+	for (PackageNode global : globalFiles) {
 	    boolean exists = false;
-	    for (PackageComponent tex : textures) {
+	    for (PackageNode tex : textures) {
 		if (global.src.getName().equalsIgnoreCase(tex.src.getName())) {
 		    exists = true;
 		    break;
@@ -97,7 +97,7 @@ public class Variant extends PackageComponent implements Serializable {
 	}
 
 	for (File f : toAdd) {
-	    textures.add(new PackageComponent(f, Type.TEXTURE));
+	    textures.add(new PackageNode(f, Type.TEXTURE));
 	}
     }
 
@@ -105,7 +105,7 @@ public class Variant extends PackageComponent implements Serializable {
 	Variant out = new Variant();
 	out.name = name + "_" + rhs.src.getName();
 	out.textures.addAll(textures);
-	for (PackageComponent p : rhs.textures) {
+	for (PackageNode p : rhs.textures) {
 	    if (!out.textures.contains(p)) {
 		out.textures.add(p);
 	    }
@@ -125,7 +125,7 @@ public class Variant extends PackageComponent implements Serializable {
 
     @Override
     public String printName() {
-	PackageComponent p = (PackageComponent) this.getParent();
+	PackageNode p = (PackageNode) this.getParent();
 	return p.printName() + " - " + src.getName();
     }
 }
