@@ -16,6 +16,7 @@ import lev.gui.LButton;
 import lev.gui.LLabel;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPSettingPanel;
+import skyproc.gui.SUMGUI;
 
 /**
  *
@@ -67,12 +68,12 @@ public class SettingsPackagesSpecs extends SPSettingPanel {
 		    save();
 		}
 	    });
-	    Add(saveSpec);
+	    settingsPanel.add(saveSpec);
 
 	    cancel = new LButton("Cancel");
 	    cancel.setLocation(save.getLocation());
 	    cancel.setSize(save.getSize());
-	    Add(cancel);
+	    settingsPanel.add(cancel);
 
 	    return true;
 	}
@@ -91,6 +92,7 @@ public class SettingsPackagesSpecs extends SPSettingPanel {
 	}
 
 	try {
+	    SUMGUI.setPatchNeeded(true);
 	    target.export();
 	} catch (IOException ex) {
 	    JOptionPane.showMessageDialog(null, "There was an error exporting the spec file, please contact Leviathan1753");

@@ -126,9 +126,9 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 			proper = proper && moveFile(f);
 		    }
 		}
-	    } 
+	    }
 	    else
-//	    else if (src.isFile()) 
+//	    else if (src.isFile())
 	    {
 		proper = proper && moveFile(src);
 	    }
@@ -214,6 +214,7 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
     public void updateHelp(LHelpPanel help) {
 
 	String content = "";
+	PackageComponent packageNode;
 	PackageComponent set;
 	PackageComponent group;
 	if (disabled) {
@@ -241,6 +242,8 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 		break;
 	    case VARGROUP:
 		set = (PackageComponent) parent;
+		packageNode = ((PackageComponent) set.parent);
+		help.setTitle(packageNode.src.getName());
 		content += set.src.getName() + " => " + src.getName() + divider;
 
 		content += set.printSpec();
@@ -252,6 +255,8 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
 	    case VAR:
 		group = ((PackageComponent) parent);
 		set = ((PackageComponent) group.parent);
+		packageNode = ((PackageComponent) set.parent);
+		help.setTitle(packageNode.src.getName());
 		content += set.src.getName() + " => " + group.src.getName() + " => " + src.getName() + divider;
 
 		content += group.printSpec();
@@ -288,10 +293,17 @@ public class PackageComponent extends LSwingTreeNode implements Comparable {
     }
 
     void displayFirstImage() {
-	for (PackageComponent p : flattenChildren()) {
+	ArrayList<PackageComponent> flat = flattenChildren();
+	for (PackageComponent p : flat) {
 	    if (Ln.isFileType(p.src, "DDS")
 		    && !p.src.getPath().contains("_n")
 		    && !p.src.getPath().contains("_g")) {
+		displayImage(p.src);
+		return;
+	    }
+	}
+	for (PackageComponent p : flat) {
+	    if (Ln.isFileType(p.src, "DDS")) {
 		displayImage(p.src);
 		return;
 	    }
