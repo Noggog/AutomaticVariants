@@ -117,7 +117,11 @@ public class Variant extends PackageNode implements Serializable {
     @Override
     public String printSpec() {
 	if (spec != null) {
-	    return spec.printHelpInfo() + divider;
+	    String out = spec.printHelpInfo();
+	    if (!out.equals("")) {
+		out += "\n";
+	    }
+	    return out;
 	} else {
 	    return "BAD SPEC FILE";
 	}
