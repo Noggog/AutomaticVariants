@@ -38,12 +38,12 @@ public class SettingsPackagesVariant extends SettingsPackagesSpecs {
     public boolean initialize() {
 	if (super.initialize()) {
 
-	    author = new LTextField("Author", AV.settingsFont, AV.yellow);
+	    author = new LTextField("Author", AV.AVFont, AV.yellow);
 	    author.linkTo(Settings.SPEC_VAR_AUTHOR, saveFile, SUMGUI.helpPanel, true);
 	    setPlacement(author);
 	    Add(author);
 
-	    probDiv = new LNumericSetting("Probability Divider", AV.settingsFont, AV.yellow, 1, 99, 1);
+	    probDiv = new LNumericSetting("Probability Divider", AV.AVFont, AV.yellow, 1, 99, 1);
 	    probDiv.linkTo(Settings.SPEC_VAR_PROB, saveFile, SUMGUI.helpPanel, true);
 	    setPlacement(probDiv);
 	    Add(probDiv);
@@ -60,37 +60,37 @@ public class SettingsPackagesVariant extends SettingsPackagesSpecs {
 //	    last = setPlacement(exclusiveRegion, last.x, last.y - 5);
 //	    Add(exclusiveRegion);
 
-	    height = new LNumericSetting("Relative Height", AV.settingsFont, AV.yellow, 1, 1000, 1);
+	    height = new LNumericSetting("Relative Height", AV.AVFont, AV.yellow, 1, 1000, 1);
 	    height.linkTo(Settings.SPEC_VAR_HEIGHT, saveFile, SUMGUI.helpPanel, true);
 	    setPlacement(height);
 	    Add(height);
 
-	    health = new LNumericSetting("Relative Health", AV.settingsFont, AV.yellow, 1, 1000, 1);
+	    health = new LNumericSetting("Relative Health", AV.AVFont, AV.yellow, 1, 1000, 1);
 	    health.linkTo(Settings.SPEC_VAR_HEALTH, saveFile, SUMGUI.helpPanel, true);
 	    setPlacement(health);
 	    Add(health);
 
-	    magicka = new LNumericSetting("Relative Magicka", AV.settingsFont, AV.yellow, 1, 1000, 1);
+	    magicka = new LNumericSetting("Relative Magicka", AV.AVFont, AV.yellow, 1, 1000, 1);
 	    magicka.linkTo(Settings.SPEC_VAR_MAGICKA, saveFile, SUMGUI.helpPanel, true);
 	    setPlacement(magicka);
 	    Add(magicka);
 
-	    stamina = new LNumericSetting("Relative Stamina", AV.settingsFont, AV.yellow, 1, 1000, 1);
+	    stamina = new LNumericSetting("Relative Stamina", AV.AVFont, AV.yellow, 1, 1000, 1);
 	    stamina.linkTo(Settings.SPEC_VAR_STAMINA, saveFile, SUMGUI.helpPanel, true);
 	    setPlacement(stamina);
 	    Add(stamina);
 
-	    speed = new LNumericSetting("Relative Speed", AV.settingsFont, AV.yellow, 1, 1000, 1);
+	    speed = new LNumericSetting("Relative Speed", AV.AVFont, AV.yellow, 1, 1000, 1);
 	    speed.linkTo(Settings.SPEC_VAR_SPEED, saveFile, SUMGUI.helpPanel, true);
 	    setPlacement(speed);
 	    Add(speed);
 
-	    namePrefix = new LTextField("Name Prefix", AV.settingsFont, AV.yellow);
+	    namePrefix = new LTextField("Name Prefix", AV.AVFont, AV.yellow);
 	    namePrefix.linkTo(Settings.SPEC_VAR_NAME_PREFIX, saveFile, SUMGUI.helpPanel, true);
 	    setPlacement(namePrefix);
 //	    Add(namePrefix);
 
-	    nameAffix = new LTextField("Name Affix", AV.settingsFont, AV.yellow);
+	    nameAffix = new LTextField("Name Affix", AV.AVFont, AV.yellow);
 	    nameAffix.linkTo(Settings.SPEC_VAR_NAME_AFFIX, saveFile, SUMGUI.helpPanel, true);
 	    setPlacement(nameAffix);
 //	    Add(nameAffix);

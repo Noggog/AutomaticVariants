@@ -40,16 +40,16 @@ public class SettingsPackagesSpecs extends SPSettingPanel {
     public boolean initialize() {
 	if (super.initialize()) {
 
-	    editing = new LLabel("EDITING", AV.settingsFont, AV.green);
+	    editing = new LLabel("EDITING", AV.AVFont, AV.green);
 	    editing.addShadow();
 	    editing.setLocation(15, 55);
 	    Add(editing);
 
-	    packageName = new LLabel("Test", AV.settingsFontSmall, Color.LIGHT_GRAY);
+	    packageName = new LLabel("Test", AV.AVFontSmall, Color.LIGHT_GRAY);
 	    packageName.setLocation(0, 55);
 	    Add(packageName);
 
-	    variantName = new LLabel("Test", AV.settingsFontSmall, Color.LIGHT_GRAY);
+	    variantName = new LLabel("Test", AV.AVFontSmall, Color.LIGHT_GRAY);
 	    variantName.setLocation(0, 68);
 	    Add(variantName);
 

@@ -26,7 +26,7 @@ public class SettingsPackagesVariantSet extends SettingsPackagesSpecs {
     public boolean initialize() {
 	if (super.initialize()) {
 
-	    seeds = new LFormIDPicker("Seed NPCs", AV.settingsFont, AV.yellow);
+	    seeds = new LFormIDPicker("Seed NPCs", AV.AVFont, AV.yellow);
 	    seeds.linkTo(AVSaveFile.Settings.SPEC_VAR_AUTHOR, saveFile, SUMGUI.helpPanel, true);
 	    setPlacement(seeds);
 	    Add(seeds);

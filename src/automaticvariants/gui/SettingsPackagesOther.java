@@ -37,7 +37,7 @@ public class SettingsPackagesOther extends SPSettingPanel {
 	    save.setVisible(false);
 	    defaults.setVisible(false);
 
-	    origAsVar = new LCheckBox("Original As Variant", AV.settingsFont, AV.yellow);
+	    origAsVar = new LCheckBox("Original As Variant", AV.AVFont, AV.yellow);
 	    origAsVar.setOffset(0);
 	    origAsVar.tie(AVSaveFile.Settings.PACKAGES_ORIG_AS_VAR, AV.save, SUMGUI.helpPanel, true);
 	    origAsVar.addShadow();

@@ -35,21 +35,21 @@ public class SettingsOther extends SPSettingPanel {
     public boolean initialize() {
 	if (super.initialize()) {
 
-	    importOnStartup = new LCheckBox("Import Mods on Startup", AV.settingsFont, AV.yellow);
+	    importOnStartup = new LCheckBox("Import Mods on Startup", AV.AVFont, AV.yellow);
 	    importOnStartup.tie(AVSaveFile.Settings.IMPORT_AT_START, saveFile, SUMGUI.helpPanel, true);
 	    importOnStartup.setOffset(2);
 	    importOnStartup.addShadow();
 	    setPlacement(importOnStartup);
 	    AddSetting(importOnStartup);
 
-	    minimize = new LCheckBox("Minimize Patch", AV.settingsFont, AV.yellow);
+	    minimize = new LCheckBox("Minimize Patch", AV.AVFont, AV.yellow);
 	    minimize.tie(AVSaveFile.Settings.MINIMIZE_PATCH, saveFile, SUMGUI.helpPanel, true);
 	    minimize.setOffset(2);
 	    minimize.addShadow();
 	    setPlacement(minimize);
 	    AddSetting(minimize);
 
-	    debugLabel = new LLabel ("Debug Level", AV.settingsFont, AV.yellow);
+	    debugLabel = new LLabel ("Debug Level", AV.AVFont, AV.yellow);
 
 	    debugLevel = new LComboBox("Debug Level");
 	    debugLevel.setSize(150, 25);
@@ -65,7 +65,7 @@ public class SettingsOther extends SPSettingPanel {
 	    Add(debugLabel);
 
 	    maxMem = new LNumericSetting("Max Allocated Memory",
-		    AV.settingsFont, AV.yellow, 250, 2000, 250);
+		    AV.AVFont, AV.yellow, 250, 2000, 250);
 	    maxMem.tie(Settings.MAX_MEM, saveFile, SUMGUI.helpPanel, true);
 	    setPlacement(maxMem);
 	    AddSetting(maxMem);

@@ -48,38 +48,38 @@ public class SettingsStatsPanel extends SPSettingPanel {
 		    AV.yellow, AV.orange, "Percent difference from normal height", "Probability / Height");
 	    chart.addSeries(AV.darkGreen);
 
-	    heightDifference = new LNumericSetting("Max Height Difference", AV.settingsFont, AV.yellow,
+	    heightDifference = new LNumericSetting("Max Height Difference", AV.AVFont, AV.yellow,
 		    0, maxStd, 1);
 	    heightDifference.tie(Settings.STATS_HEIGHT_MAX, AV.save, SUMGUI.helpPanel, true);
 	    setPlacement(heightDifference);
 	    heightDifference.addChangeListener(new SettingsStatsPanel.UpdateChartChangeHandler());
 	    AddSetting(heightDifference);
 
-	    healthDifference = new LNumericSetting("Max Health Difference", AV.settingsFont, AV.yellow,
+	    healthDifference = new LNumericSetting("Max Health Difference", AV.AVFont, AV.yellow,
 		    0, maxStd, 1);
 	    healthDifference.tie(Settings.STATS_HEALTH_MAX, AV.save, SUMGUI.helpPanel, true);
 	    setPlacement(healthDifference);
 	    AddSetting(healthDifference);
 
-	    magicDifference = new LNumericSetting("Max Mana Difference", AV.settingsFont, AV.yellow,
+	    magicDifference = new LNumericSetting("Max Mana Difference", AV.AVFont, AV.yellow,
 		    0, maxStd, 1);
 	    magicDifference.tie(Settings.STATS_MAGIC_MAX, AV.save, SUMGUI.helpPanel, true);
 	    setPlacement(magicDifference);
 	    AddSetting(magicDifference);
 
-	    staminaDifference = new LNumericSetting("Max Stamina Difference", AV.settingsFont, AV.yellow,
+	    staminaDifference = new LNumericSetting("Max Stamina Difference", AV.AVFont, AV.yellow,
 		    0, maxStd, 1);
 	    staminaDifference.tie(Settings.STATS_STAMINA_MAX, AV.save, SUMGUI.helpPanel, true);
 	    setPlacement(staminaDifference);
 	    AddSetting(staminaDifference);
 
-	    speedDifference = new LNumericSetting("Max Speed Difference", AV.settingsFont, AV.yellow,
+	    speedDifference = new LNumericSetting("Max Speed Difference", AV.AVFont, AV.yellow,
 		    0, maxStd, 1);
 	    speedDifference.tie(Settings.STATS_SPEED_MAX, AV.save, SUMGUI.helpPanel, true);
 	    setPlacement(speedDifference);
 	    AddSetting(speedDifference);
 
-	    tieDifferences = new LCheckBox("Bundled Differences", AV.settingsFont, AV.yellow);
+	    tieDifferences = new LCheckBox("Bundled Differences", AV.AVFont, AV.yellow);
 	    tieDifferences.tie(Settings.STATS_TIE, saveFile, SUMGUI.helpPanel, true);
 	    tieDifferences.addShadow();
 	    tieDifferences.setOffset(2);

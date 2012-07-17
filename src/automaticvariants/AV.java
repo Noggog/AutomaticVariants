@@ -5,6 +5,7 @@ import automaticvariants.gui.*;
 import com.google.gson.Gson;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Point;
 import java.io.*;
 import java.net.URL;
@@ -18,6 +19,7 @@ import lev.LMergeMap;
 import lev.Ln;
 import lev.debug.LDebug;
 import lev.gui.LSaveFile;
+import lev.gui.resources.LFonts;
 import skyproc.*;
 import skyproc.GLOB.GLOBType;
 import skyproc.gui.*;
@@ -39,12 +41,12 @@ public class AV implements SUM {
     /*
      * Storage Maps
      */
-    static LMergeMap<FormID, NPC_> modifiedNPCs = new LMergeMap<FormID, NPC_>(false);
+    static LMergeMap<FormID, NPC_> modifiedNPCs = new LMergeMap<>(false);
     /*
      * Exception lists
      */
-    static Set<FormID> block = new HashSet<FormID>();
-    static Set<String> edidExclude = new HashSet<String>();
+    static Set<FormID> block = new HashSet<>();
+    static Set<String> edidExclude = new HashSet<>();
     /*
      * Script/Property names
      */
@@ -78,8 +80,8 @@ public class AV implements SUM {
     static public SettingsPackagesVariantSet packagesVariantSetPanel;
     static public SettingsOther otherPanel;
     static public SettingsStatsPanel heightPanel;
-    static public Font settingsFont = new Font("Serif", Font.BOLD, 16);
-    static public Font settingsFontSmall = new Font("Serif", Font.BOLD, 12);
+    static public Font AVFont;
+    static public Font AVFontSmall;
     static public Color green = new Color(67, 162, 10);
     static public Color darkGreen = new Color(61, 128, 21);
     static public Color orange = new Color(247, 163, 52);
@@ -90,7 +92,7 @@ public class AV implements SUM {
     static public boolean gatheringAndExiting = false;
 
     public static void main(String[] args) {
-	ArrayList<String> arguments = new ArrayList<String>(Arrays.asList(args));
+	ArrayList<String> arguments = new ArrayList<>(Arrays.asList(args));
 	try {
 	    save.init();
 
@@ -397,6 +399,14 @@ public class AV implements SUM {
 
     @Override
     public void onStart() throws Exception {
+	try {
+	    AVFont = Font.createFont(Font.TRUETYPE_FONT, SettingsOther.class.getResource("Sony_Sketch_EF.ttf").openStream());
+	    AVFont = AVFont.deriveFont(Font.BOLD, 19);
+	} catch (IOException | FontFormatException ex) {
+	    SPGlobal.logException(ex);
+	    AVFont = new Font("Serif", Font.BOLD, 16);
+	}
+	AVFontSmall = AVFont.deriveFont(Font.PLAIN, 12);
 	AVFileVars.gatherFiles();
 	AVFileVars.importVariants();
     }
@@ -431,9 +441,13 @@ public class AV implements SUM {
 
     @Override
     public SPMainMenuPanel getStandardMenu() {
+
 	settingsMenu = new SPMainMenuPanel(green);
 	settingsMenu.addLogo(this.getLogo());
 	settingsMenu.setVersion(version, new Point(80, 88));
+	settingsMenu.setBackgroundPicture(SettingsOther.class.getResource("AV background.jpg"));
+	settingsMenu.setMainFont(AVFont, 25, 40, 27);
+//	SUMGUI.helpPanel.setHeaderFont(new Font("Serif", Font.PLAIN, 10));
 
 	packagesManagerPanel = new SettingsPackagesManager(settingsMenu);
 	packagesOtherPanel = new SettingsPackagesOther(settingsMenu);
@@ -446,6 +460,9 @@ public class AV implements SUM {
 
 	otherPanel = new SettingsOther(settingsMenu);
 	settingsMenu.addMenu(otherPanel, false, save, Settings.AV_SETTINGS);
+
+	settingsMenu.setWelcomePanel(new WelcomePage(settingsMenu));
+
 	return settingsMenu;
     }
 
