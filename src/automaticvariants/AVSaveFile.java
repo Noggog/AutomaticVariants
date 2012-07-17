@@ -64,7 +64,7 @@ public class AVSaveFile extends LSaveFile {
 		+ "In normal operation, AV moves all of the variant textures out of the AV Packages folder and into "
 		+ "the 'Data/Textures/' folder for in-game use.\n"
 		+ "This button will simply gather them back to the AV Packages folder and quit, so that you can modify "
-		+ "AV Packages manually in windows.  Make sure to re-run the patcher before attemting to play with AV again.");
+		+ "AV Packages manually in windows.  Make sure to re-run the patcher before attempting to play with AV again.");
 
 	helpInfo.put(Settings.STATS_ON, "This variant setup will randomly skew the stats of an actor "
 		+ "so that each spawn has a different height, health, speed, etc.\n\n"
@@ -136,15 +136,15 @@ public class AVSaveFile extends LSaveFile {
 		+ "mods on your load order.");
 
 	helpInfo.put(Settings.IMPORT_AT_START,
-		"If enabled, AV will begin importing your mods when the program starts.\n"
+		"If enabled, AV will begin importing your mods when the program starts.\n\n"
 		+ "If turned off, the program will wait until it is necessary before importing.\n\n"
 		+ "NOTE: This setting will not take effect until the next time the program is run.\n\n"
 		+ "Benefits:\n"
 		+ "- Faster patching when you close the program.\n"
-		+ "- More information displayed in GUI, as it will have access to the records."
+		+ "- More information displayed in GUI, as it will have access to the records from your mods."
 		+ "\n\n"
 		+ "Downsides:\n"
-		+ "- catch Having this on might make the GUI respond sluggishly while it processes in the"
+		+ "- Having this on might make the GUI respond sluggishly while it processes in the "
 		+ "background.");
 
 	helpInfo.put(Settings.MAX_MEM,
