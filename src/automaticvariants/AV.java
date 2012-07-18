@@ -74,12 +74,12 @@ public class AV implements SUM {
     //GUI
     static public SPMainMenuPanel settingsMenu;
     static public SPMainMenuConfig packageManagerConfig;
-    static public SettingsPackagesManager packagesManagerPanel;
-    static public SettingsPackagesOther packagesOtherPanel;
-    static public SettingsPackagesVariant packagesVariantPanel;
-    static public SettingsPackagesVariantSet packagesVariantSetPanel;
+    static public PackagesManager packagesManagerPanel;
+    static public PackagesOther packagesOtherPanel;
+    static public PackagesVariant packagesVariantPanel;
+    static public PackagesVariantSet packagesVariantSetPanel;
     static public SettingsOther otherPanel;
-    static public SettingsStatsPanel heightPanel;
+    static public StatsPanel heightPanel;
     static public Font AVFont;
     static public Font AVFontSmall;
     static public Color green = new Color(67, 162, 10);
@@ -461,10 +461,10 @@ public class AV implements SUM {
 	settingsMenu.setMainFont(AVFont, 25, 40, 27);
 //	SUMGUI.helpPanel.setHeaderFont(new Font("Serif", Font.PLAIN, 10));
 
-	packagesManagerPanel = new SettingsPackagesManager(settingsMenu);
-	packagesOtherPanel = new SettingsPackagesOther(settingsMenu);
-	packagesVariantPanel = new SettingsPackagesVariant(settingsMenu);
-	packagesVariantSetPanel = new SettingsPackagesVariantSet(settingsMenu);
+	packagesManagerPanel = new PackagesManager(settingsMenu);
+	packagesOtherPanel = new PackagesOther(settingsMenu);
+	packagesVariantPanel = new PackagesVariant(settingsMenu);
+	packagesVariantSetPanel = new PackagesVariantSet(settingsMenu);
 	packageManagerConfig = settingsMenu.addMenu(packagesManagerPanel, false, save, Settings.PACKAGES_ON);
 
 //	heightPanel = new SettingsStatsPanel(settingsMenu);

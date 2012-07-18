@@ -6,6 +6,7 @@ package automaticvariants.gui;
 
 import automaticvariants.AVSaveFile.Settings;
 import automaticvariants.*;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -31,182 +32,183 @@ import skyproc.gui.SUMGUI;
  *
  * @author Justin Swanson
  */
-public class SettingsPackagesManager extends SPSettingPanel {
+public class PackagesManager extends SPSettingPanel {
 
     public static PackageTree tree;
-//    static DDSreader reader;
     LImagePane display;
     LButton enableButton;
     LButton disableButton;
     LButton otherSettings;
+    LButton createNewPackage;
     JPopupMenu optionsMenu;
     LMenuItem enable;
     LMenuItem disable;
     LMenuItem compress;
     LMenuItem editSpec;
 
-    public SettingsPackagesManager(SPMainMenuPanel parent_) {
-	super("Texture Variants", parent_, AV.orange, AV.save);
+    public PackagesManager(SPMainMenuPanel parent_) {
+	super(parent_, "Texture Variants", AV.orange, AV.save);
     }
 
     @Override
-    public boolean initialize() {
-	if (super.initialize()) {
+    public void initialize() {
+	super.initialize();
 
-	    tree = new PackageTree(SUMGUI.middleDimensions.width - 30,
-		    SUMGUI.middleDimensions.height - 165, SUMGUI.helpPanel);
-	    tree.setLocation(SUMGUI.middleDimensions.width / 2 - tree.getWidth() / 2, last.y + 10);
-	    tree.setMargin(10, 5);
-	    tree.removeBorder();
-	    Add(tree);
+	tree = new PackageTree(SUMGUI.middleDimensions.width - 30,
+		SUMGUI.middleDimensions.height - 165, SUMGUI.helpPanel);
+	tree.setLocation(SUMGUI.middleDimensions.width / 2 - tree.getWidth() / 2, last.y + 10);
+	tree.setMargin(10, 5);
+	tree.removeBorder();
+	Add(tree);
 
+	Dimension size = new Dimension(125, 25);
 
-	    defaults.setVisible(false);
-	    enableButton = new LButton("Enable", defaults.getSize(), defaults.getLocation());
-	    enableButton.setLocation(enableButton.getX(), tree.getY() + tree.getHeight() + 15);
-	    enableButton.addActionListener(new ActionListener() {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-		    enableSelection(true);
-		}
-	    });
-	    enableButton.linkTo(Settings.PACKAGES_ENABLE, saveFile, SUMGUI.helpPanel, true);
-	    enableButton.setFollowPosition(false);
-	    Add(enableButton);
+	otherSettings = new LButton("Other Settings", size);
+	createNewPackage = new LButton("Create New Variant", size);
+	otherSettings.setLocation(getSpacing(otherSettings, createNewPackage, true));
+	otherSettings.addActionListener(AV.packagesOtherPanel.getOpenHandler());
+	Add(otherSettings);
 
 
-	    save.setVisible(false);
-	    disableButton = new LButton("Disable", save.getSize(), save.getLocation());
-	    disableButton.setLocation(disableButton.getX(), tree.getY() + tree.getHeight() + 15);
-	    disableButton.addActionListener(new ActionListener() {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-		    enableSelection(false);
-		}
-	    });
-	    disableButton.linkTo(Settings.PACKAGES_DISABLE, saveFile, SUMGUI.helpPanel, true);
-	    disableButton.setFollowPosition(false);
-	    Add(disableButton);
+	createNewPackage.setLocation(getSpacing(otherSettings, createNewPackage, false));
+	Add(createNewPackage);
 
 
-	    otherSettings = new LButton("Other Settings");
-	    otherSettings.centerIn(settingsPanel, defaults.getY());
-	    Add(otherSettings);
+
+	enableButton = new LButton("Enable", size);
+	enableButton.setLocation(otherSettings.getX(), otherSettings.getY() - enableButton.getHeight() - 15);
+	enableButton.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		enableSelection(true);
+	    }
+	});
+	enableButton.linkTo(Settings.PACKAGES_ENABLE, saveFile, SUMGUI.helpPanel, true);
+	enableButton.setFollowPosition(false);
+	Add(enableButton);
 
 
-	    optionsMenu = new JPopupMenu();
-	    enable = new LMenuItem("Enable");
-	    enable.linkTo(Settings.PACKAGES_ENABLE, saveFile, SUMGUI.helpPanel, true);
-	    enable.setFollowPosition(false);
-	    enable.addActionListener(new ActionListener() {
+	disableButton = new LButton("Disable", size);
+	disableButton.setLocation(createNewPackage.getX(), otherSettings.getY() - enableButton.getHeight() - 15);
+	disableButton.addActionListener(new ActionListener() {
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-		    enableSelection(true);
-		}
-	    });
-	    optionsMenu.add(enable.getItem());
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		enableSelection(false);
+	    }
+	});
+	disableButton.linkTo(Settings.PACKAGES_DISABLE, saveFile, SUMGUI.helpPanel, true);
+	disableButton.setFollowPosition(false);
+	Add(disableButton);
 
-	    disable = new LMenuItem("Disable");
-	    disable.linkTo(Settings.PACKAGES_DISABLE, saveFile, SUMGUI.helpPanel, true);
-	    disable.setFollowPosition(false);
-	    disable.addActionListener(new ActionListener() {
+	optionsMenu = new JPopupMenu();
+	enable = new LMenuItem("Enable");
+	enable.linkTo(Settings.PACKAGES_ENABLE, saveFile, SUMGUI.helpPanel, true);
+	enable.setFollowPosition(false);
+	enable.addActionListener(new ActionListener() {
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-		    enableSelection(false);
-		}
-	    });
-	    optionsMenu.add(disable.getItem());
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		enableSelection(true);
+	    }
+	});
+	optionsMenu.add(enable.getItem());
 
-	    compress = new LMenuItem("Compress");
-	    compress.linkTo(Settings.PACKAGES_COMPRESS, saveFile, SUMGUI.helpPanel, true);
-	    compress.setFollowPosition(false);
-	    compress.addActionListener(new ActionListener() {
+	disable = new LMenuItem("Disable");
+	disable.linkTo(Settings.PACKAGES_DISABLE, saveFile, SUMGUI.helpPanel, true);
+	disable.setFollowPosition(false);
+	disable.addActionListener(new ActionListener() {
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-		    compress();
-		}
-	    });
-	    optionsMenu.add(compress.getItem());
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		enableSelection(false);
+	    }
+	});
+	optionsMenu.add(disable.getItem());
+
+	compress = new LMenuItem("Compress");
+	compress.linkTo(Settings.PACKAGES_COMPRESS, saveFile, SUMGUI.helpPanel, true);
+	compress.setFollowPosition(false);
+	compress.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		compress();
+	    }
+	});
+	optionsMenu.add(compress.getItem());
+
+	editSpec = new LMenuItem("Edit Specs");
+	editSpec.linkTo(Settings.PACKAGES_EDIT, saveFile, SUMGUI.helpPanel, true);
+	editSpec.setFollowPosition(false);
+	editSpec.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		editSpec();
+	    }
+	});
+	optionsMenu.add(editSpec.getItem());
 
 
-	    editSpec = new LMenuItem("Edit Specs");
-	    editSpec.linkTo(Settings.PACKAGES_EDIT, saveFile, SUMGUI.helpPanel, true);
-	    editSpec.setFollowPosition(false);
-	    editSpec.addActionListener(new ActionListener() {
+	//Add popup listener
+	MouseAdapter ma = new MouseAdapter() {
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-		    editSpec();
-		}
-	    });
-	    optionsMenu.add(editSpec.getItem());
-
-
-	    //Add popup listener
-	    MouseAdapter ma = new MouseAdapter() {
-
-		private void myPopupEvent(MouseEvent e) {
-		    int x = e.getX();
-		    int y = e.getY();
-		    JTree tree = (JTree) e.getSource();
-		    TreePath path = tree.getPathForLocation(x, y);
-		    if (path == null) {
-			return;
-		    }
-
-		    tree.setSelectionPath(path);
-		    PackageNode sel = (PackageNode) path.getLastPathComponent();
-
-		    compress.setVisible(sel.type == PackageNode.Type.PACKAGE
-			    || sel.type == PackageNode.Type.VARSET
-			    || sel.type == PackageNode.Type.ROOT);
-
-		    editSpec.setVisible(
-			    sel.type == PackageNode.Type.VAR //			    || sel.type == PackageComponent.Type.VARSET
-			    //			    || sel.type == PackageComponent.Type.PACKAGE
-			    );
-
-		    optionsMenu.show(tree, x + 10, y);
+	    private void myPopupEvent(MouseEvent e) {
+		int x = e.getX();
+		int y = e.getY();
+		JTree tree = (JTree) e.getSource();
+		TreePath path = tree.getPathForLocation(x, y);
+		if (path == null) {
+		    return;
 		}
 
-		@Override
-		public void mousePressed(MouseEvent e) {
-		    if (e.isPopupTrigger()) {
-			myPopupEvent(e);
-		    }
-		}
+		tree.setSelectionPath(path);
+		PackageNode sel = (PackageNode) path.getLastPathComponent();
 
-		@Override
-		public void mouseReleased(MouseEvent e) {
-		    if (e.isPopupTrigger()) {
-			myPopupEvent(e);
-		    }
-		}
-	    };
-	    tree.addMouseListener(ma);
+		compress.setVisible(sel.type == PackageNode.Type.PACKAGE
+			|| sel.type == PackageNode.Type.VARSET
+			|| sel.type == PackageNode.Type.ROOT);
 
-	    display = new LImagePane();
-	    display.setMaxSize(SUMGUI.rightDimensions.width, 0);
-	    display.allowAlpha(false);
-	    display.setVisible(true);
-	    PackageNode.display = display;
+		editSpec.setVisible(
+			sel.type == PackageNode.Type.VAR //			    || sel.type == PackageComponent.Type.VARSET
+			//			    || sel.type == PackageComponent.Type.PACKAGE
+			);
 
-	    try {
-		loadPackageList();
-	    } catch (FileNotFoundException ex) {
-		SPGlobal.logException(ex);
-	    } catch (IOException ex) {
-		SPGlobal.logException(ex);
+		optionsMenu.show(tree, x + 10, y);
 	    }
 
-	    return true;
+	    @Override
+	    public void mousePressed(MouseEvent e) {
+		if (e.isPopupTrigger()) {
+		    myPopupEvent(e);
+		}
+	    }
+
+	    @Override
+	    public void mouseReleased(MouseEvent e) {
+		if (e.isPopupTrigger()) {
+		    myPopupEvent(e);
+		}
+	    }
+	};
+	tree.addMouseListener(ma);
+
+	display = new LImagePane();
+	display.setMaxSize(SUMGUI.rightDimensions.width, 0);
+	display.allowAlpha(false);
+	display.setVisible(true);
+	PackageNode.display = display;
+
+	try {
+	    loadPackageList();
+	} catch (FileNotFoundException ex) {
+	    SPGlobal.logException(ex);
+	} catch (IOException ex) {
+	    SPGlobal.logException(ex);
 	}
-	return false;
+
     }
 
     @Override
@@ -214,8 +216,6 @@ public class SettingsPackagesManager extends SPSettingPanel {
 	SUMGUI.helpPanel.clearBottomArea();
 	SUMGUI.helpPanel.addToBottomArea(display);
 	SUMGUI.helpPanel.setBottomAreaHeight(SUMGUI.rightDimensions.width);
-
-	otherSettings.addActionListener(AV.packagesOtherPanel.getOpenHandler());
     }
 
     public void enableSelection(boolean enable) {

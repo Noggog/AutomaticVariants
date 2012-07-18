@@ -1,0 +1,35 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package automaticvariants.gui;
+
+import automaticvariants.AV;
+import automaticvariants.AVSaveFile;
+import lev.gui.LFormIDPicker;
+import skyproc.gui.SPMainMenuPanel;
+import skyproc.gui.SUMGUI;
+
+/**
+ *
+ * @author Justin Swanson
+ */
+public class PackagesVariantSet extends PackagesSpecs {
+
+    LFormIDPicker seeds;
+
+    public PackagesVariantSet(SPMainMenuPanel parent_) {
+	super(parent_, "Variant Set Specifications");
+    }
+
+    @Override
+    public void initialize() {
+	super.initialize();
+	seeds = new LFormIDPicker("Seed NPCs", AV.AVFont, AV.yellow);
+	seeds.linkTo(AVSaveFile.Settings.SPEC_VAR_AUTHOR, saveFile, SUMGUI.helpPanel, true);
+	setPlacement(seeds);
+	Add(seeds);
+
+	alignRight();
+    }
+}

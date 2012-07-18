@@ -6,12 +6,13 @@ package automaticvariants;
 
 import automaticvariants.AVSaveFile.Settings;
 import automaticvariants.gui.PackageTree;
-import automaticvariants.gui.SettingsPackagesManager;
+import automaticvariants.gui.PackagesManager;
 import java.io.*;
 import java.util.*;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
+import lev.LShrinkArray;
 import lev.Ln;
 import skyproc.*;
 import skyproc.exceptions.BadParameter;
@@ -314,11 +315,14 @@ public class AVFileVars {
 			// Load in and add to maps
 			if (!armaToNif.containsKey(piece.getForm()) && shouldSplit(nifPath, piece, skin)) {
 			    // Has alt texture, separate
-			    splitVariant(nifPath, piece);
+			    if (!splitVariant(nifPath, piece)) {
+				continue;
+			    }
 			} else if (!nifs.containsKey(nifPath)) {
 			    AVFileVars.AV_Nif nif = new AVFileVars.AV_Nif(nifPath);
-			    nif.load();
-
+			    if (!nif.load()) {
+				continue;
+			    }
 			    SPGlobal.log(header, "  Nif path: " + nifPath);
 			    nif.print();
 
@@ -396,9 +400,11 @@ public class AVFileVars {
 	return false;
     }
 
-    static void splitVariant(String nifPath, ARMA piece) throws IOException, BadParameter, DataFormatException {
+    static boolean splitVariant(String nifPath, ARMA piece) throws IOException, BadParameter, DataFormatException {
 	AVFileVars.AV_Nif nif = new AVFileVars.AV_Nif(nifPath);
-	nif.load();
+	if(!nif.load()){
+	    return false;
+	}
 	SPGlobal.log(header, "  Nif path: " + nifPath);
 	nif.print();
 
@@ -434,6 +440,7 @@ public class AVFileVars {
 	nif.name = nifPath + "_ALT_" + piece.getForm();
 	nifs.put(nif.name, nif);
 	armaToNif.put(piece.getForm(), nif.name);
+	return true;
     }
 
     static void generateTXSTvariants() throws IOException {
@@ -912,13 +919,13 @@ public class AVFileVars {
 	}
     }
 
-    static public void moveOut (){
+    static public void moveOut() {
 	for (PackageNode p : AVPackages.getAll()) {
 	    p.moveOut();
 	}
     }
 
-    public static void saveAVPackagesListing () throws IOException {
+    public static void saveAVPackagesListing() throws IOException {
 	File packageDir = new File(AVPackagesDir);
 	ArrayList<File> files = Ln.generateFileList(packageDir, false);
 	File save = new File(AVPackageListing);
@@ -929,7 +936,7 @@ public class AVFileVars {
 	out.close();
     }
 
-    public static ArrayList<String> getAVPackagesListing () throws IOException {
+    public static ArrayList<String> getAVPackagesListing() throws IOException {
 	ArrayList<String> out = new ArrayList<>();
 	BufferedReader in = new BufferedReader(new FileReader(AVPackageListing));
 	String line;
@@ -960,7 +967,7 @@ public class AVFileVars {
     }
 
     static public void shufflePackages() {
-	PackageTree tree = SettingsPackagesManager.tree;
+	PackageTree tree = PackagesManager.tree;
 	if (tree != null) {
 	    PackageNode root = (PackageNode) tree.getRoot();
 	    boolean fail;
@@ -1043,11 +1050,13 @@ public class AVFileVars {
 	    this.path = "meshes\\" + path;
 	}
 
-	final void load() throws BadParameter, FileNotFoundException, IOException, DataFormatException {
-	    NIF nif = new NIF(path, BSA.getUsedFile(path));
-	    if (nif == null) {
-		throw new FileNotFoundException("NIF file did not exist for path: " + path);
+	final boolean load() throws BadParameter, IOException, DataFormatException {
+	    LShrinkArray usedFileData = BSA.getUsedFile(path);
+	    if (usedFileData == null) {
+		SPGlobal.logError(header, "NIF file " + path + " did not exist.");
+		return false;
 	    }
+	    NIF nif = new NIF(path, usedFileData);
 
 	    Map<Integer, NIF.Node> BiLightingShaderProperties = nif.getNodes(NIF.NodeType.BSLIGHTINGSHADERPROPERTY);
 	    Map<Integer, NIF.Node> BiShaderTextureNodes = nif.getNodes(NIF.NodeType.BSSHADERTEXTURESET);
@@ -1079,6 +1088,8 @@ public class AVFileVars {
 		this.textureFields.add(next);
 		i++;
 	    }
+
+	    return true;
 	}
 
 	public void print() {

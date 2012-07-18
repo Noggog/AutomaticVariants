@@ -13,13 +13,13 @@ import lev.gui.LLabel;
 import lev.gui.LNumericSetting;
 import skyproc.gui.SUMGUI;
 import skyproc.gui.SPMainMenuPanel;
-import skyproc.gui.SPSettingPanel;
+import skyproc.gui.SPSettingDefaultsPanel;
 
 /**
  *
  * @author Justin Swanson
  */
-public class SettingsOther extends SPSettingPanel {
+public class SettingsOther extends SPSettingDefaultsPanel {
 
     LLabel debugLabel;
     LComboBox debugLevel;
@@ -28,53 +28,49 @@ public class SettingsOther extends SPSettingPanel {
     LNumericSetting maxMem;
 
     public SettingsOther(SPMainMenuPanel parent_) {
-	super("Other Settings", parent_, AV.orange, AV.save);
+	super(parent_, "Other Settings", AV.orange, AV.save);
     }
 
     @Override
-    public boolean initialize() {
-	if (super.initialize()) {
+    public void initialize() {
+	super.initialize();
 
-	    importOnStartup = new LCheckBox("Import Mods on Startup", AV.AVFont, AV.yellow);
-	    importOnStartup.tie(AVSaveFile.Settings.IMPORT_AT_START, saveFile, SUMGUI.helpPanel, true);
-	    importOnStartup.setOffset(2);
-	    importOnStartup.addShadow();
-	    setPlacement(importOnStartup);
-	    AddSetting(importOnStartup);
+	importOnStartup = new LCheckBox("Import Mods on Startup", AV.AVFont, AV.yellow);
+	importOnStartup.tie(AVSaveFile.Settings.IMPORT_AT_START, saveFile, SUMGUI.helpPanel, true);
+	importOnStartup.setOffset(2);
+	importOnStartup.addShadow();
+	setPlacement(importOnStartup);
+	AddSetting(importOnStartup);
 
-	    minimize = new LCheckBox("Minimize Patch", AV.AVFont, AV.yellow);
-	    minimize.tie(AVSaveFile.Settings.MINIMIZE_PATCH, saveFile, SUMGUI.helpPanel, true);
-	    minimize.setOffset(2);
-	    minimize.addShadow();
-	    setPlacement(minimize);
-	    AddSetting(minimize);
+	minimize = new LCheckBox("Minimize Patch", AV.AVFont, AV.yellow);
+	minimize.tie(AVSaveFile.Settings.MINIMIZE_PATCH, saveFile, SUMGUI.helpPanel, true);
+	minimize.setOffset(2);
+	minimize.addShadow();
+	setPlacement(minimize);
+	AddSetting(minimize);
 
-	    debugLabel = new LLabel ("Debug Level", AV.AVFont, AV.yellow);
+	debugLabel = new LLabel("Debug Level", AV.AVFont, AV.yellow);
 
-	    debugLevel = new LComboBox("Debug Level");
-	    debugLevel.setSize(150, 25);
-	    debugLevel.addItem("Off");
-	    debugLevel.addItem("AV Debug");
-	    debugLevel.addItem("AV + SkyProc Debug");
-	    debugLevel.tie(Settings.DEBUG_LEVEL, saveFile, SUMGUI.helpPanel, true);
-	    setPlacement(debugLevel, last.x + debugLabel.getWidth() + 15,last.y);
-	    AddSetting(debugLevel);
+	debugLevel = new LComboBox("Debug Level");
+	debugLevel.setSize(150, 25);
+	debugLevel.addItem("Off");
+	debugLevel.addItem("AV Debug");
+	debugLevel.addItem("AV + SkyProc Debug");
+	debugLevel.tie(Settings.DEBUG_LEVEL, saveFile, SUMGUI.helpPanel, true);
+	setPlacement(debugLevel, last.x + debugLabel.getWidth() + 15, last.y);
+	AddSetting(debugLevel);
 
-	    debugLabel.setLocation(debugLevel.getX() - debugLabel.getWidth() - 15, debugLevel.getY());
-	    debugLabel.addShadow();
-	    Add(debugLabel);
+	debugLabel.setLocation(debugLevel.getX() - debugLabel.getWidth() - 15, debugLevel.getY());
+	debugLabel.addShadow();
+	Add(debugLabel);
 
-	    maxMem = new LNumericSetting("Max Allocated Memory",
-		    AV.AVFont, AV.yellow, 250, 2000, 250);
-	    maxMem.tie(Settings.MAX_MEM, saveFile, SUMGUI.helpPanel, true);
-	    setPlacement(maxMem);
-	    AddSetting(maxMem);
+	maxMem = new LNumericSetting("Max Allocated Memory",
+		AV.AVFont, AV.yellow, 250, 2000, 250);
+	maxMem.tie(Settings.MAX_MEM, saveFile, SUMGUI.helpPanel, true);
+	setPlacement(maxMem);
+	AddSetting(maxMem);
 
-	    alignRight();
+	alignRight();
 
-	    return true;
-	}
-	return false;
     }
-
 }

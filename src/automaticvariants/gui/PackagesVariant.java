@@ -16,7 +16,7 @@ import skyproc.gui.SUMGUI;
  *
  * @Author Justin Swanson
  */
-public class SettingsPackagesVariant extends SettingsPackagesSpecs {
+public class PackagesVariant extends PackagesSpecs {
 
     LTextField author;
     LNumericSetting probDiv;
@@ -30,23 +30,23 @@ public class SettingsPackagesVariant extends SettingsPackagesSpecs {
     LTextField namePrefix;
     LTextField nameAffix;
 
-    public SettingsPackagesVariant(SPMainMenuPanel parent_) {
+    public PackagesVariant(SPMainMenuPanel parent_) {
 	super(parent_, "Variant Specifications");
     }
 
     @Override
-    public boolean initialize() {
-	if (super.initialize()) {
+    public void initialize() {
+	super.initialize();
 
-	    author = new LTextField("Author", AV.AVFont, AV.yellow);
-	    author.linkTo(Settings.SPEC_VAR_AUTHOR, saveFile, SUMGUI.helpPanel, true);
-	    setPlacement(author);
-	    Add(author);
+	author = new LTextField("Author", AV.AVFont, AV.yellow);
+	author.linkTo(Settings.SPEC_VAR_AUTHOR, saveFile, SUMGUI.helpPanel, true);
+	setPlacement(author);
+	Add(author);
 
-	    probDiv = new LNumericSetting("Probability Divider", AV.AVFont, AV.yellow, 1, 99, 1);
-	    probDiv.linkTo(Settings.SPEC_VAR_PROB, saveFile, SUMGUI.helpPanel, true);
-	    setPlacement(probDiv);
-	    Add(probDiv);
+	probDiv = new LNumericSetting("Probability Divider", AV.AVFont, AV.yellow, 1, 99, 1);
+	probDiv.linkTo(Settings.SPEC_VAR_PROB, saveFile, SUMGUI.helpPanel, true);
+	setPlacement(probDiv);
+	Add(probDiv);
 
 //	    region = new LFormIDPicker("Regions To Spawn In", AV.settingsFont, AV.yellow);
 //	    region.linkTo(Settings.SPEC_VAR_REGION, saveFile, SUMGUI.helpPanel, true);
@@ -60,46 +60,43 @@ public class SettingsPackagesVariant extends SettingsPackagesSpecs {
 //	    last = setPlacement(exclusiveRegion, last.x, last.y - 5);
 //	    Add(exclusiveRegion);
 
-	    height = new LNumericSetting("Relative Height", AV.AVFont, AV.yellow, 1, 1000, 1);
-	    height.linkTo(Settings.SPEC_VAR_HEIGHT, saveFile, SUMGUI.helpPanel, true);
-	    setPlacement(height);
-	    Add(height);
+	height = new LNumericSetting("Relative Height", AV.AVFont, AV.yellow, 1, 1000, 1);
+	height.linkTo(Settings.SPEC_VAR_HEIGHT, saveFile, SUMGUI.helpPanel, true);
+	setPlacement(height);
+	Add(height);
 
-	    health = new LNumericSetting("Relative Health", AV.AVFont, AV.yellow, 1, 1000, 1);
-	    health.linkTo(Settings.SPEC_VAR_HEALTH, saveFile, SUMGUI.helpPanel, true);
-	    setPlacement(health);
-	    Add(health);
+	health = new LNumericSetting("Relative Health", AV.AVFont, AV.yellow, 1, 1000, 1);
+	health.linkTo(Settings.SPEC_VAR_HEALTH, saveFile, SUMGUI.helpPanel, true);
+	setPlacement(health);
+	Add(health);
 
-	    magicka = new LNumericSetting("Relative Magicka", AV.AVFont, AV.yellow, 1, 1000, 1);
-	    magicka.linkTo(Settings.SPEC_VAR_MAGICKA, saveFile, SUMGUI.helpPanel, true);
-	    setPlacement(magicka);
-	    Add(magicka);
+	magicka = new LNumericSetting("Relative Magicka", AV.AVFont, AV.yellow, 1, 1000, 1);
+	magicka.linkTo(Settings.SPEC_VAR_MAGICKA, saveFile, SUMGUI.helpPanel, true);
+	setPlacement(magicka);
+	Add(magicka);
 
-	    stamina = new LNumericSetting("Relative Stamina", AV.AVFont, AV.yellow, 1, 1000, 1);
-	    stamina.linkTo(Settings.SPEC_VAR_STAMINA, saveFile, SUMGUI.helpPanel, true);
-	    setPlacement(stamina);
-	    Add(stamina);
+	stamina = new LNumericSetting("Relative Stamina", AV.AVFont, AV.yellow, 1, 1000, 1);
+	stamina.linkTo(Settings.SPEC_VAR_STAMINA, saveFile, SUMGUI.helpPanel, true);
+	setPlacement(stamina);
+	Add(stamina);
 
-	    speed = new LNumericSetting("Relative Speed", AV.AVFont, AV.yellow, 1, 1000, 1);
-	    speed.linkTo(Settings.SPEC_VAR_SPEED, saveFile, SUMGUI.helpPanel, true);
-	    setPlacement(speed);
-	    Add(speed);
+	speed = new LNumericSetting("Relative Speed", AV.AVFont, AV.yellow, 1, 1000, 1);
+	speed.linkTo(Settings.SPEC_VAR_SPEED, saveFile, SUMGUI.helpPanel, true);
+	setPlacement(speed);
+	Add(speed);
 
-	    namePrefix = new LTextField("Name Prefix", AV.AVFont, AV.yellow);
-	    namePrefix.linkTo(Settings.SPEC_VAR_NAME_PREFIX, saveFile, SUMGUI.helpPanel, true);
-	    setPlacement(namePrefix);
+	namePrefix = new LTextField("Name Prefix", AV.AVFont, AV.yellow);
+	namePrefix.linkTo(Settings.SPEC_VAR_NAME_PREFIX, saveFile, SUMGUI.helpPanel, true);
+	setPlacement(namePrefix);
 //	    Add(namePrefix);
 
-	    nameAffix = new LTextField("Name Affix", AV.AVFont, AV.yellow);
-	    nameAffix.linkTo(Settings.SPEC_VAR_NAME_AFFIX, saveFile, SUMGUI.helpPanel, true);
-	    setPlacement(nameAffix);
+	nameAffix = new LTextField("Name Affix", AV.AVFont, AV.yellow);
+	nameAffix.linkTo(Settings.SPEC_VAR_NAME_AFFIX, saveFile, SUMGUI.helpPanel, true);
+	setPlacement(nameAffix);
 //	    Add(nameAffix);
 
-	    alignRight();
+	alignRight();
 
-	    return true;
-	}
-	return false;
     }
 
     @Override
@@ -157,6 +154,4 @@ public class SettingsPackagesVariant extends SettingsPackagesSpecs {
 
 	super.save();
     }
-
-
 }

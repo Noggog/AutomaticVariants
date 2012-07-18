@@ -23,7 +23,7 @@ import skyproc.gui.SUMGUI;
  *
  * @author Justin Swanson
  */
-public class SettingsStatsPanel extends SPSettingPanel {
+public class StatsPanel extends SPSettingPanel {
 
     LNumericSetting heightDifference;
     LNumericSetting healthDifference;
@@ -36,63 +36,60 @@ public class SettingsStatsPanel extends SPSettingPanel {
     static int maxStd = 40;
     static double cutoff = 2.5;
 
-    public SettingsStatsPanel(SPMainMenuPanel parent_) {
-	super("Stat Variants", parent_, AV.orange, AV.save);
+    public StatsPanel(SPMainMenuPanel parent_) {
+	super(parent_, "Stat Variants", AV.orange, AV.save);
     }
 
     @Override
-    public boolean initialize() {
-	if (super.initialize()) {
+    public void initialize() {
+	super.initialize();
 
-	    chart = new HeightVarChart("Current Height Settings", new Dimension(SUMGUI.helpPanel.getBottomSize().width, 190),
-		    AV.yellow, AV.orange, "Percent difference from normal height", "Probability / Height");
-	    chart.addSeries(AV.darkGreen);
+	chart = new HeightVarChart("Current Height Settings", new Dimension(SUMGUI.helpPanel.getBottomSize().width, 190),
+		AV.yellow, AV.orange, "Percent difference from normal height", "Probability / Height");
+	chart.addSeries(AV.darkGreen);
 
-	    heightDifference = new LNumericSetting("Max Height Difference", AV.AVFont, AV.yellow,
-		    0, maxStd, 1);
-	    heightDifference.tie(Settings.STATS_HEIGHT_MAX, AV.save, SUMGUI.helpPanel, true);
-	    setPlacement(heightDifference);
-	    heightDifference.addChangeListener(new SettingsStatsPanel.UpdateChartChangeHandler());
-	    AddSetting(heightDifference);
+	heightDifference = new LNumericSetting("Max Height Difference", AV.AVFont, AV.yellow,
+		0, maxStd, 1);
+	heightDifference.tie(Settings.STATS_HEIGHT_MAX, AV.save, SUMGUI.helpPanel, true);
+	setPlacement(heightDifference);
+	heightDifference.addChangeListener(new StatsPanel.UpdateChartChangeHandler());
+	AddSetting(heightDifference);
 
-	    healthDifference = new LNumericSetting("Max Health Difference", AV.AVFont, AV.yellow,
-		    0, maxStd, 1);
-	    healthDifference.tie(Settings.STATS_HEALTH_MAX, AV.save, SUMGUI.helpPanel, true);
-	    setPlacement(healthDifference);
-	    AddSetting(healthDifference);
+	healthDifference = new LNumericSetting("Max Health Difference", AV.AVFont, AV.yellow,
+		0, maxStd, 1);
+	healthDifference.tie(Settings.STATS_HEALTH_MAX, AV.save, SUMGUI.helpPanel, true);
+	setPlacement(healthDifference);
+	AddSetting(healthDifference);
 
-	    magicDifference = new LNumericSetting("Max Mana Difference", AV.AVFont, AV.yellow,
-		    0, maxStd, 1);
-	    magicDifference.tie(Settings.STATS_MAGIC_MAX, AV.save, SUMGUI.helpPanel, true);
-	    setPlacement(magicDifference);
-	    AddSetting(magicDifference);
+	magicDifference = new LNumericSetting("Max Mana Difference", AV.AVFont, AV.yellow,
+		0, maxStd, 1);
+	magicDifference.tie(Settings.STATS_MAGIC_MAX, AV.save, SUMGUI.helpPanel, true);
+	setPlacement(magicDifference);
+	AddSetting(magicDifference);
 
-	    staminaDifference = new LNumericSetting("Max Stamina Difference", AV.AVFont, AV.yellow,
-		    0, maxStd, 1);
-	    staminaDifference.tie(Settings.STATS_STAMINA_MAX, AV.save, SUMGUI.helpPanel, true);
-	    setPlacement(staminaDifference);
-	    AddSetting(staminaDifference);
+	staminaDifference = new LNumericSetting("Max Stamina Difference", AV.AVFont, AV.yellow,
+		0, maxStd, 1);
+	staminaDifference.tie(Settings.STATS_STAMINA_MAX, AV.save, SUMGUI.helpPanel, true);
+	setPlacement(staminaDifference);
+	AddSetting(staminaDifference);
 
-	    speedDifference = new LNumericSetting("Max Speed Difference", AV.AVFont, AV.yellow,
-		    0, maxStd, 1);
-	    speedDifference.tie(Settings.STATS_SPEED_MAX, AV.save, SUMGUI.helpPanel, true);
-	    setPlacement(speedDifference);
-	    AddSetting(speedDifference);
+	speedDifference = new LNumericSetting("Max Speed Difference", AV.AVFont, AV.yellow,
+		0, maxStd, 1);
+	speedDifference.tie(Settings.STATS_SPEED_MAX, AV.save, SUMGUI.helpPanel, true);
+	setPlacement(speedDifference);
+	AddSetting(speedDifference);
 
-	    tieDifferences = new LCheckBox("Bundled Differences", AV.AVFont, AV.yellow);
-	    tieDifferences.tie(Settings.STATS_TIE, saveFile, SUMGUI.helpPanel, true);
-	    tieDifferences.addShadow();
-	    tieDifferences.setOffset(2);
-	    setPlacement(tieDifferences);
-	    AddSetting(tieDifferences);
+	tieDifferences = new LCheckBox("Bundled Differences", AV.AVFont, AV.yellow);
+	tieDifferences.tie(Settings.STATS_TIE, saveFile, SUMGUI.helpPanel, true);
+	tieDifferences.addShadow();
+	tieDifferences.setOffset(2);
+	setPlacement(tieDifferences);
+	AddSetting(tieDifferences);
 
-	    alignRight();
+	alignRight();
 
-	    updateChart();
+	updateChart();
 
-	    return true;
-	}
-	return false;
     }
 
     void updateChart() {

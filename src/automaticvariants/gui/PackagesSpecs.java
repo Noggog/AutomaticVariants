@@ -22,62 +22,54 @@ import skyproc.gui.SUMGUI;
  *
  * @author Justin Swanson
  */
-public class SettingsPackagesSpecs extends SPSettingPanel {
+public class PackagesSpecs extends SPSettingPanel {
 
     LLabel editing;
     LLabel packageName;
     LLabel variantName;
     LButton saveSpec;
     LButton cancel;
-
     SpecFile target;
 
-    public SettingsPackagesSpecs(SPMainMenuPanel parent_, String title) {
-	super(title, parent_, AV.orange, AV.save);
+    public PackagesSpecs(SPMainMenuPanel parent_, String title) {
+	super(parent_, title, AV.orange, AV.save);
     }
 
-     @Override
-    public boolean initialize() {
-	if (super.initialize()) {
+    @Override
+    public void initialize() {
+	super.initialize();
 
-	    editing = new LLabel("EDITING", AV.AVFont, AV.green);
-	    editing.addShadow();
-	    editing.setLocation(15, 55);
-	    Add(editing);
+	editing = new LLabel("EDITING", AV.AVFont, AV.green);
+	editing.addShadow();
+	editing.setLocation(15, 55);
+	Add(editing);
 
-	    packageName = new LLabel("Test", AV.AVFontSmall, Color.LIGHT_GRAY);
-	    packageName.setLocation(0, 55);
-	    Add(packageName);
+	packageName = new LLabel("Test", AV.AVFontSmall, Color.LIGHT_GRAY);
+	packageName.setLocation(0, 55);
+	Add(packageName);
 
-	    variantName = new LLabel("Test", AV.AVFontSmall, Color.LIGHT_GRAY);
-	    variantName.setLocation(0, 68);
-	    Add(variantName);
+	variantName = new LLabel("Test", AV.AVFontSmall, Color.LIGHT_GRAY);
+	variantName.setLocation(0, 68);
+	Add(variantName);
 
-	    last = new Point(last.x, last.y + 15);
+	last = new Point(last.x, last.y + 15);
 
-	    save.setVisible(false);
-	    defaults.setVisible(false);
 
-	    saveSpec = new LButton("Save");
-	    saveSpec.setLocation(defaults.getLocation());
-	    saveSpec.setSize(defaults.getSize());
-	    saveSpec.addActionListener(new ActionListener() {
+	saveSpec = new LButton("Save");
+	cancel = new LButton("Cancel");
+	saveSpec.setLocation(getSpacing(saveSpec, cancel, true));
+	saveSpec.addActionListener(new ActionListener() {
 
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-		    save();
-		}
-	    });
-	    settingsPanel.add(saveSpec);
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		save();
+	    }
+	});
+	settingsPanel.add(saveSpec);
 
-	    cancel = new LButton("Cancel");
-	    cancel.setLocation(save.getLocation());
-	    cancel.setSize(save.getSize());
-	    settingsPanel.add(cancel);
+	cancel.setLocation(getSpacing(saveSpec, cancel, false));
+	settingsPanel.add(cancel);
 
-	    return true;
-	}
-	return false;
     }
 
     @Override

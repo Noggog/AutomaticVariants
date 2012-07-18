@@ -20,25 +20,20 @@ public class WelcomePage extends SPSettingPanel {
     LImagePane picture;
 
     public WelcomePage(SPMainMenuPanel parent_) {
-	super("", parent_, AV.orange, AV.save);
+	super(parent_, "", AV.orange, AV.save);
     }
 
     @Override
-    public boolean initialize() {
-	if (super.initialize()) {
+    public void initialize() {
+	super.initialize();
 
-	    save.setVisible(false);
-	    defaults.setVisible(false);
-	    try {
-		picture = new LImagePane(WelcomePage.class.getResource("AV welcome.png"));
-		settingsPanel.add(picture);
-	    } catch (IOException ex) {
-		SPGlobal.logException(ex);
-	    }
-
-	    return true;
+	try {
+	    picture = new LImagePane(WelcomePage.class.getResource("AV welcome.png"));
+	    settingsPanel.add(picture);
+	} catch (IOException ex) {
+	    SPGlobal.logException(ex);
 	}
-	return false;
+
     }
 
     @Override
