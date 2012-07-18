@@ -67,10 +67,10 @@ public class AV implements SUM {
     public static Thread parser;
     public static Gson gson = new Gson();
     static boolean heightOnF = false;
-    static String extraPath = "";
     static int numSteps = 8;
     static int step = 0;
     static int initDebugLevel = -1;
+    static boolean secondF = false;
     //GUI
     static public SPMainMenuPanel settingsMenu;
     static public SPMainMenuConfig packageManagerConfig;
@@ -281,7 +281,7 @@ public class AV implements SUM {
 	/*
 	 * Initializing Debug Log and Globals
 	 */
-	SPGlobal.createGlobalLog(extraPath);
+	SPGlobal.createGlobalLog();
 	SPGlobal.debugModMerge = false;
 	SPGlobal.debugExportSummary = false;
 	SPGlobal.debugBSAimport = false;
@@ -291,6 +291,9 @@ public class AV implements SUM {
 	LDebug.timeStamp = true;
 
 	SPGlobal.logMain(header, "AV version: " + version);
+	if (secondF) {
+	    SPGlobal.logMain(header, "This is a second process started by a previous AV.");
+	}
 	SPGlobal.logMain(header, "Available Memory: " + Ln.toMB(Runtime.getRuntime().totalMemory()) + "MB");
 	SPGlobal.logMain(header, "Max Memory: " + Ln.toMB(Runtime.getRuntime().maxMemory()) + "MB");
 
@@ -298,7 +301,7 @@ public class AV implements SUM {
 
     static void readInExceptions() throws IOException {
 	try {
-	    BufferedReader in = new BufferedReader(new FileReader(extraPath + "Files/BlockList.txt"));
+	    BufferedReader in = new BufferedReader(new FileReader("Files/BlockList.txt"));
 	    Set target = null;
 	    String read;
 	    while (in.ready()) {
@@ -325,8 +328,11 @@ public class AV implements SUM {
     }
 
     static boolean handleArgs(ArrayList<String> arguments) throws IOException, InterruptedException {
-	String debug = "-debug";
-	String nonew = "-nonew";
+	Ln.toUpper(arguments);
+	String debug = "-DEBUG";
+	String nonew = "-NONEW";
+	String second = "-SECONDPROCESS";
+	String gather = "-GATHER";
 
 	for (String s : arguments) {
 	    if (s.contains(debug)) {
@@ -338,14 +344,20 @@ public class AV implements SUM {
 	    }
 	}
 
+	if (arguments.contains(second)) {
+	    secondF = true;
+	    AV.save.helpInfo.put(Settings.MAX_MEM, AV.save.helpInfo.get(Settings.MAX_MEM)
+		    + "\n\n(This AV process is currently a second one that was allocated more memory.)");
+	}
+
 	if (!arguments.contains(nonew)) {
 	    // Less than .85 * max memory desired
 	    if (Runtime.getRuntime().maxMemory() < AV.save.getInt(Settings.MAX_MEM) * 0.85 * 1024 * 1024) {
-		NiftyFunc.allocateMoreMemory("100m", AV.save.getInt(Settings.MAX_MEM) + "m", "Automatic Variants.jar", "-nonew");
+		NiftyFunc.allocateMoreMemory("100m", AV.save.getInt(Settings.MAX_MEM) + "m", "Automatic Variants.jar", nonew, second);
 	    }
 	}
 
-	if (arguments.contains("-gather")) {
+	if (arguments.contains(gather)) {
 	    AVFileVars.gatherFiles();
 	    return true;
 	}
@@ -418,7 +430,7 @@ public class AV implements SUM {
 
     @Override
     public String getName() {
-	return "Automatic Variants";
+	return "Automatic Variants" ;
     }
 
     @Override

@@ -4,8 +4,8 @@
  */
 package automaticvariants.gui;
 
-import automaticvariants.*;
 import automaticvariants.AVSaveFile.Settings;
+import automaticvariants.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -192,6 +192,7 @@ public class SettingsPackagesManager extends SPSettingPanel {
 
 	    display = new LImagePane();
 	    display.setMaxSize(SUMGUI.rightDimensions.width, 0);
+	    display.allowAlpha(false);
 	    display.setVisible(true);
 	    PackageNode.display = display;
 
