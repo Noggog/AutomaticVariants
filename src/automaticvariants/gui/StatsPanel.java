@@ -41,7 +41,7 @@ public class StatsPanel extends SPSettingPanel {
     }
 
     @Override
-    public void initialize() {
+    protected void initialize() {
 	super.initialize();
 
 	chart = new HeightVarChart("Current Height Settings", new Dimension(SUMGUI.helpPanel.getBottomSize().width, 190),
@@ -249,7 +249,7 @@ public class StatsPanel extends SPSettingPanel {
     }
 
     @Override
-    public void specialOpen(SPMainMenuPanel parent) {
+    public void specialOpen(SPMainMenuPanel parent_) {
 	SUMGUI.helpPanel.clearBottomArea();
 	SUMGUI.helpPanel.addToBottomArea(chart);
 	SUMGUI.helpPanel.setBottomAreaHeight(190);

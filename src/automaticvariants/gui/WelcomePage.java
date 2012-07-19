@@ -24,7 +24,7 @@ public class WelcomePage extends SPSettingPanel {
     }
 
     @Override
-    public void initialize() {
+    protected void initialize() {
 	super.initialize();
 
 	try {
@@ -37,6 +37,6 @@ public class WelcomePage extends SPSettingPanel {
     }
 
     @Override
-    public void specialOpen(SPMainMenuPanel parent) {
+    public void specialOpen(SPMainMenuPanel parent_) {
     }
 }

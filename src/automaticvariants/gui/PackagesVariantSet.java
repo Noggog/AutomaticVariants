@@ -23,7 +23,7 @@ public class PackagesVariantSet extends PackagesSpecs {
     }
 
     @Override
-    public void initialize() {
+    protected void initialize() {
 	super.initialize();
 	seeds = new LFormIDPicker("Seed NPCs", AV.AVFont, AV.yellow);
 	seeds.linkTo(AVSaveFile.Settings.SPEC_VAR_AUTHOR, saveFile, SUMGUI.helpPanel, true);

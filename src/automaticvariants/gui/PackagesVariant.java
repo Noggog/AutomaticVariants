@@ -35,7 +35,7 @@ public class PackagesVariant extends PackagesSpecs {
     }
 
     @Override
-    public void initialize() {
+    protected void initialize() {
 	super.initialize();
 
 	author = new LTextField("Author", AV.AVFont, AV.yellow);

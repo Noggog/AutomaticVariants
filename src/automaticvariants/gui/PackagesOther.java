@@ -31,7 +31,7 @@ public class PackagesOther extends SPSettingPanel {
     }
 
     @Override
-    public void initialize() {
+    protected void initialize() {
 	super.initialize();
 
 	origAsVar = new LCheckBox("Original As Variant", AV.AVFont, AV.yellow);
@@ -68,7 +68,7 @@ public class PackagesOther extends SPSettingPanel {
     }
 
     @Override
-    public void specialOpen(SPMainMenuPanel parent) {
+    public void specialOpen(SPMainMenuPanel parent_) {
 	packageManager.addActionListener(AV.packagesManagerPanel.getOpenHandler());
     }
 }

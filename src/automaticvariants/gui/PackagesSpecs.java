@@ -36,7 +36,7 @@ public class PackagesSpecs extends SPSettingPanel {
     }
 
     @Override
-    public void initialize() {
+    protected void initialize() {
 	super.initialize();
 
 	editing = new LLabel("EDITING", AV.AVFont, AV.green);
@@ -73,7 +73,7 @@ public class PackagesSpecs extends SPSettingPanel {
     }
 
     @Override
-    public void specialOpen(SPMainMenuPanel parent) {
+    public void specialOpen(SPMainMenuPanel parent_) {
 	cancel.addActionListener(AV.packagesManagerPanel.getOpenHandler());
 	saveSpec.addActionListener(AV.packagesManagerPanel.getOpenHandler());
     }

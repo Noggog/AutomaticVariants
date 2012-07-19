@@ -32,7 +32,7 @@ public class SettingsOther extends SPSettingDefaultsPanel {
     }
 
     @Override
-    public void initialize() {
+    protected void initialize() {
 	super.initialize();
 
 	importOnStartup = new LCheckBox("Import Mods on Startup", AV.AVFont, AV.yellow);

@@ -51,7 +51,7 @@ public class PackagesManager extends SPSettingPanel {
     }
 
     @Override
-    public void initialize() {
+    protected void initialize() {
 	super.initialize();
 
 	tree = new PackageTree(SUMGUI.middleDimensions.width - 30,
@@ -71,8 +71,8 @@ public class PackagesManager extends SPSettingPanel {
 
 
 	createNewPackage.setLocation(getSpacing(otherSettings, createNewPackage, false));
+	createNewPackage.addActionListener(AV.wizPackagesPanel.getOpenHandler());
 	Add(createNewPackage);
-
 
 
 	enableButton = new LButton("Enable", size);
@@ -212,7 +212,7 @@ public class PackagesManager extends SPSettingPanel {
     }
 
     @Override
-    public void specialOpen(SPMainMenuPanel parent) {
+    public void specialOpen(SPMainMenuPanel parent_) {
 	SUMGUI.helpPanel.clearBottomArea();
 	SUMGUI.helpPanel.addToBottomArea(display);
 	SUMGUI.helpPanel.setBottomAreaHeight(SUMGUI.rightDimensions.width);

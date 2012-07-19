@@ -78,6 +78,8 @@ public class AV implements SUM {
     static public PackagesOther packagesOtherPanel;
     static public PackagesVariant packagesVariantPanel;
     static public PackagesVariantSet packagesVariantSetPanel;
+    static public WizPackages wizPackagesPanel;
+    static public WizSet wizSetPanel;
     static public SettingsOther otherPanel;
     static public StatsPanel heightPanel;
     static public Font AVFont;
@@ -465,6 +467,8 @@ public class AV implements SUM {
 	packagesOtherPanel = new PackagesOther(settingsMenu);
 	packagesVariantPanel = new PackagesVariant(settingsMenu);
 	packagesVariantSetPanel = new PackagesVariantSet(settingsMenu);
+	wizPackagesPanel = new WizPackages(settingsMenu);
+	wizSetPanel = new WizSet(settingsMenu);
 	packageManagerConfig = settingsMenu.addMenu(packagesManagerPanel, false, save, Settings.PACKAGES_ON);
 
 //	heightPanel = new SettingsStatsPanel(settingsMenu);
