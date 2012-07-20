@@ -51,6 +51,7 @@ public class AV implements SUM {
      * Script/Property names
      */
     static String raceAttachScript = "AVRaceAttachment";
+    static private Mod merger;
     GLOB texturesOn;
     GLOB statsOn;
     GLOB heightScale;
@@ -432,7 +433,7 @@ public class AV implements SUM {
 
     @Override
     public String getName() {
-	return "Automatic Variants" ;
+	return "Automatic Variants";
     }
 
     @Override
@@ -455,7 +456,6 @@ public class AV implements SUM {
 
     @Override
     public SPMainMenuPanel getStandardMenu() {
-
 	settingsMenu = new SPMainMenuPanel(green);
 	settingsMenu.addLogo(this.getLogo());
 	settingsMenu.setVersion(version, new Point(80, 88));
@@ -515,16 +515,22 @@ public class AV implements SUM {
 
 	SPProgressBarPlug.progress.setMax(numSteps);
 	SPProgressBarPlug.progress.setStatus(step++, numSteps, "Initializing AV");
-	Mod source = new Mod("Temporary", false);
-	source.addAsOverrides(SPGlobal.getDB());
 
 	// For all race SWITCHING variants
 	// (such as texture variants)
-	AVFileVars.setUpFileVariants(source);
+	AVFileVars.setUpFileVariants(getMerger());
 //
 //	// For all non-skin SWITCHING variants
 //	// (such as height variant scripting)
 //	setUpInGameScriptBasedVariants(source);
+    }
+
+    static public Mod getMerger() {
+	if (merger == null) {
+	    merger = new Mod("AVTemporary", false);
+	    merger.addAsOverrides(SPGlobal.getDB());
+	}
+	return merger;
     }
 
     @Override

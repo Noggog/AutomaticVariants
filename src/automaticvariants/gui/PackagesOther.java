@@ -27,7 +27,7 @@ public class PackagesOther extends SPSettingPanel {
     LButton packageManager;
 
     public PackagesOther(SPMainMenuPanel parent_) {
-	super(parent_, "Texture Variants", AV.orange, AV.save);
+	super(parent_, "Texture Variants", AV.orange);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class PackagesOther extends SPSettingPanel {
 		SUMGUI.exitProgram(false);
 	    }
 	});
-	gatherAndExit.linkTo(AVSaveFile.Settings.PACKAGES_GATHER, saveFile, SUMGUI.helpPanel, true);
+	gatherAndExit.linkTo(AVSaveFile.Settings.PACKAGES_GATHER, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(gatherAndExit);
 	Add(gatherAndExit);
 

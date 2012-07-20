@@ -39,12 +39,12 @@ public class PackagesVariant extends PackagesSpecs {
 	super.initialize();
 
 	author = new LTextField("Author", AV.AVFont, AV.yellow);
-	author.linkTo(Settings.SPEC_VAR_AUTHOR, saveFile, SUMGUI.helpPanel, true);
+	author.linkTo(Settings.SPEC_VAR_AUTHOR, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(author);
 	Add(author);
 
 	probDiv = new LNumericSetting("Probability Divider", AV.AVFont, AV.yellow, 1, 99, 1);
-	probDiv.linkTo(Settings.SPEC_VAR_PROB, saveFile, SUMGUI.helpPanel, true);
+	probDiv.linkTo(Settings.SPEC_VAR_PROB, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(probDiv);
 	Add(probDiv);
 
@@ -61,37 +61,37 @@ public class PackagesVariant extends PackagesSpecs {
 //	    Add(exclusiveRegion);
 
 	height = new LNumericSetting("Relative Height", AV.AVFont, AV.yellow, 1, 1000, 1);
-	height.linkTo(Settings.SPEC_VAR_HEIGHT, saveFile, SUMGUI.helpPanel, true);
+	height.linkTo(Settings.SPEC_VAR_HEIGHT, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(height);
 	Add(height);
 
 	health = new LNumericSetting("Relative Health", AV.AVFont, AV.yellow, 1, 1000, 1);
-	health.linkTo(Settings.SPEC_VAR_HEALTH, saveFile, SUMGUI.helpPanel, true);
+	health.linkTo(Settings.SPEC_VAR_HEALTH, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(health);
 	Add(health);
 
 	magicka = new LNumericSetting("Relative Magicka", AV.AVFont, AV.yellow, 1, 1000, 1);
-	magicka.linkTo(Settings.SPEC_VAR_MAGICKA, saveFile, SUMGUI.helpPanel, true);
+	magicka.linkTo(Settings.SPEC_VAR_MAGICKA, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(magicka);
 	Add(magicka);
 
 	stamina = new LNumericSetting("Relative Stamina", AV.AVFont, AV.yellow, 1, 1000, 1);
-	stamina.linkTo(Settings.SPEC_VAR_STAMINA, saveFile, SUMGUI.helpPanel, true);
+	stamina.linkTo(Settings.SPEC_VAR_STAMINA, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(stamina);
 	Add(stamina);
 
 	speed = new LNumericSetting("Relative Speed", AV.AVFont, AV.yellow, 1, 1000, 1);
-	speed.linkTo(Settings.SPEC_VAR_SPEED, saveFile, SUMGUI.helpPanel, true);
+	speed.linkTo(Settings.SPEC_VAR_SPEED, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(speed);
 	Add(speed);
 
 	namePrefix = new LTextField("Name Prefix", AV.AVFont, AV.yellow);
-	namePrefix.linkTo(Settings.SPEC_VAR_NAME_PREFIX, saveFile, SUMGUI.helpPanel, true);
+	namePrefix.linkTo(Settings.SPEC_VAR_NAME_PREFIX, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(namePrefix);
 //	    Add(namePrefix);
 
 	nameAffix = new LTextField("Name Affix", AV.AVFont, AV.yellow);
-	nameAffix.linkTo(Settings.SPEC_VAR_NAME_AFFIX, saveFile, SUMGUI.helpPanel, true);
+	nameAffix.linkTo(Settings.SPEC_VAR_NAME_AFFIX, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(nameAffix);
 //	    Add(nameAffix);
 

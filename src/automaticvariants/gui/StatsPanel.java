@@ -37,7 +37,7 @@ public class StatsPanel extends SPSettingPanel {
     static double cutoff = 2.5;
 
     public StatsPanel(SPMainMenuPanel parent_) {
-	super(parent_, "Stat Variants", AV.orange, AV.save);
+	super(parent_, "Stat Variants", AV.orange);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class StatsPanel extends SPSettingPanel {
 	AddSetting(speedDifference);
 
 	tieDifferences = new LCheckBox("Bundled Differences", AV.AVFont, AV.yellow);
-	tieDifferences.tie(Settings.STATS_TIE, saveFile, SUMGUI.helpPanel, true);
+	tieDifferences.tie(Settings.STATS_TIE, AV.save, SUMGUI.helpPanel, true);
 	tieDifferences.addShadow();
 	tieDifferences.setOffset(2);
 	setPlacement(tieDifferences);

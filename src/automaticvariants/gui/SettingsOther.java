@@ -36,14 +36,14 @@ public class SettingsOther extends SPSettingDefaultsPanel {
 	super.initialize();
 
 	importOnStartup = new LCheckBox("Import Mods on Startup", AV.AVFont, AV.yellow);
-	importOnStartup.tie(AVSaveFile.Settings.IMPORT_AT_START, saveFile, SUMGUI.helpPanel, true);
+	importOnStartup.tie(AVSaveFile.Settings.IMPORT_AT_START, AV.save, SUMGUI.helpPanel, true);
 	importOnStartup.setOffset(2);
 	importOnStartup.addShadow();
 	setPlacement(importOnStartup);
 	AddSetting(importOnStartup);
 
 	minimize = new LCheckBox("Minimize Patch", AV.AVFont, AV.yellow);
-	minimize.tie(AVSaveFile.Settings.MINIMIZE_PATCH, saveFile, SUMGUI.helpPanel, true);
+	minimize.tie(AVSaveFile.Settings.MINIMIZE_PATCH, AV.save, SUMGUI.helpPanel, true);
 	minimize.setOffset(2);
 	minimize.addShadow();
 	setPlacement(minimize);
@@ -56,7 +56,7 @@ public class SettingsOther extends SPSettingDefaultsPanel {
 	debugLevel.addItem("Off");
 	debugLevel.addItem("AV Debug");
 	debugLevel.addItem("AV + SkyProc Debug");
-	debugLevel.tie(Settings.DEBUG_LEVEL, saveFile, SUMGUI.helpPanel, true);
+	debugLevel.tie(Settings.DEBUG_LEVEL, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(debugLevel, last.x + debugLabel.getWidth() + 15, last.y);
 	AddSetting(debugLevel);
 
@@ -66,7 +66,7 @@ public class SettingsOther extends SPSettingDefaultsPanel {
 
 	maxMem = new LNumericSetting("Max Allocated Memory",
 		AV.AVFont, AV.yellow, 250, 2000, 250);
-	maxMem.tie(Settings.MAX_MEM, saveFile, SUMGUI.helpPanel, true);
+	maxMem.tie(Settings.MAX_MEM, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(maxMem);
 	AddSetting(maxMem);
 

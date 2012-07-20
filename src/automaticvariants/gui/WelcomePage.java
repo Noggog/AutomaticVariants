@@ -20,7 +20,7 @@ public class WelcomePage extends SPSettingPanel {
     LImagePane picture;
 
     public WelcomePage(SPMainMenuPanel parent_) {
-	super(parent_, "", AV.orange, AV.save);
+	super(parent_, "", AV.orange);
     }
 
     @Override

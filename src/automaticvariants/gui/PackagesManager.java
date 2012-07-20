@@ -47,7 +47,7 @@ public class PackagesManager extends SPSettingPanel {
     LMenuItem editSpec;
 
     public PackagesManager(SPMainMenuPanel parent_) {
-	super(parent_, "Texture Variants", AV.orange, AV.save);
+	super(parent_, "Texture Variants", AV.orange);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class PackagesManager extends SPSettingPanel {
 		enableSelection(true);
 	    }
 	});
-	enableButton.linkTo(Settings.PACKAGES_ENABLE, saveFile, SUMGUI.helpPanel, true);
+	enableButton.linkTo(Settings.PACKAGES_ENABLE, AV.save, SUMGUI.helpPanel, true);
 	enableButton.setFollowPosition(false);
 	Add(enableButton);
 
@@ -98,13 +98,13 @@ public class PackagesManager extends SPSettingPanel {
 		enableSelection(false);
 	    }
 	});
-	disableButton.linkTo(Settings.PACKAGES_DISABLE, saveFile, SUMGUI.helpPanel, true);
+	disableButton.linkTo(Settings.PACKAGES_DISABLE, AV.save, SUMGUI.helpPanel, true);
 	disableButton.setFollowPosition(false);
 	Add(disableButton);
 
 	optionsMenu = new JPopupMenu();
 	enable = new LMenuItem("Enable");
-	enable.linkTo(Settings.PACKAGES_ENABLE, saveFile, SUMGUI.helpPanel, true);
+	enable.linkTo(Settings.PACKAGES_ENABLE, AV.save, SUMGUI.helpPanel, true);
 	enable.setFollowPosition(false);
 	enable.addActionListener(new ActionListener() {
 
@@ -116,7 +116,7 @@ public class PackagesManager extends SPSettingPanel {
 	optionsMenu.add(enable.getItem());
 
 	disable = new LMenuItem("Disable");
-	disable.linkTo(Settings.PACKAGES_DISABLE, saveFile, SUMGUI.helpPanel, true);
+	disable.linkTo(Settings.PACKAGES_DISABLE, AV.save, SUMGUI.helpPanel, true);
 	disable.setFollowPosition(false);
 	disable.addActionListener(new ActionListener() {
 
@@ -128,7 +128,7 @@ public class PackagesManager extends SPSettingPanel {
 	optionsMenu.add(disable.getItem());
 
 	compress = new LMenuItem("Compress");
-	compress.linkTo(Settings.PACKAGES_COMPRESS, saveFile, SUMGUI.helpPanel, true);
+	compress.linkTo(Settings.PACKAGES_COMPRESS, AV.save, SUMGUI.helpPanel, true);
 	compress.setFollowPosition(false);
 	compress.addActionListener(new ActionListener() {
 
@@ -140,7 +140,7 @@ public class PackagesManager extends SPSettingPanel {
 	optionsMenu.add(compress.getItem());
 
 	editSpec = new LMenuItem("Edit Specs");
-	editSpec.linkTo(Settings.PACKAGES_EDIT, saveFile, SUMGUI.helpPanel, true);
+	editSpec.linkTo(Settings.PACKAGES_EDIT, AV.save, SUMGUI.helpPanel, true);
 	editSpec.setFollowPosition(false);
 	editSpec.addActionListener(new ActionListener() {
 

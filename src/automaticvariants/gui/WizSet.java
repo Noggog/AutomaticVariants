@@ -7,12 +7,17 @@ package automaticvariants.gui;
 import automaticvariants.AV;
 import automaticvariants.AVFileVars;
 import automaticvariants.PackageNode;
+import java.util.Set;
+import java.util.TreeSet;
 import lev.gui.LButton;
 import lev.gui.LComboBox;
 import lev.gui.LLabel;
-import lev.gui.LTextField;
+import lev.gui.LList;
+import skyproc.ARMO;
+import skyproc.NPC_;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPQuestionPanel;
+import skyproc.gui.SUMGUI;
 
 /**
  *
@@ -20,72 +25,151 @@ import skyproc.gui.SPQuestionPanel;
  */
 public class WizSet extends SPQuestionPanel {
 
-    LComboBox packages;
-    LLabel existingPackage;
+    LComboBox sets;
+    LLabel existingSet;
     LButton nextExisting;
     LLabel or;
-    LLabel newPackage;
-    LTextField newPackagePicker;
-    LButton nextNew;
+
+    LLabel skin;
+    LComboBox skinPicker;
+    LButton addSkin;
+
+    LLabel npc;
+    LComboBox npcPicker;
+    LButton addNPC;
+
+    TreeSet<String> skins;
+    TreeSet<String> npcs;
+
+    LList newSkins;
 
     public WizSet(SPMainMenuPanel parent_) {
-	super(parent_, "Choose Target Skins", AV.orange, AV.save);
+	super(parent_, "Target Skins", AV.orange);
     }
 
     @Override
     protected void initialize() {
 	super.initialize();
 
-	spacing = 30;
-	int x = 25;
+	spacing = 15;
+	int x = 15;
 
 	setQuestionFont(AV.AVFont);
 	setQuestionCentered();
-	setQuestionColor(AV.yellow);
-	setQuestionText("Please select the package\n"
-		+ "or make a new package\n"
-		+ "for this variant.");
+	setQuestionColor(AV.green);
+	setQuestionText("Please select the set or skins you want to add variants to.");
 
-	existingPackage = new LLabel("Existing Package", AV.AVFont, AV.yellow);
-	existingPackage.putUnder(question, x, spacing);
-	Add(existingPackage);
+	existingSet = new LLabel("Existing Variant Set", AV.AVFont, AV.yellow);
+	existingSet.addShadow();
+	existingSet.putUnder(question, x, spacing);
+	Add(existingSet);
 
-	packages = new LComboBox("Package Picker");
-	packages.setSize(250, 40);
-	packages.putUnder(existingPackage, existingPackage.getX(), 10);
-	updateLast(packages);
-	Add(packages);
+	sets = new LComboBox("Set Picker");
+	sets.setSize(250, 25);
+	sets.putUnder(existingSet, existingSet.getX(), 10);
+	updateLast(sets);
+	Add(sets);
 
 	nextExisting = new LButton("Next");
-	nextExisting.centerOn(settingsPanel.getWidth() - nextExisting.getWidth() - 10, packages);
-	packages.setSize(nextExisting.getX() - packages.getX() - 10, packages.getHeight());
+	nextExisting.centerOn(settingsPanel.getWidth() - nextExisting.getWidth() - x, sets);
+	sets.setSize(nextExisting.getX() - sets.getX() - 10, sets.getHeight());
 	Add(nextExisting);
 
-	or = new LLabel ("-OR-", AV.AVFont, AV.yellow);
+	or = new LLabel("Or add a new set:", AV.AVFont, AV.green);
+	or.addShadow();
 	setPlacement(or);
 	Add(or);
 
-	newPackage = new LLabel("New Package", AV.AVFont, AV.yellow);
-	newPackage.putUnder(or, x, spacing);
-	Add(newPackage);
+	skin = new LLabel("Via Skin", AV.AVFont, AV.yellow);
+	skin.addShadow();
+	skin.putUnder(or, x, spacing);
+	Add(skin);
 
-	newPackagePicker = new LTextField("New Package Field");
-	newPackagePicker.putUnder(newPackage, newPackage.getX(), 10);
-	Add(newPackagePicker);
+	skinPicker = new LComboBox("Skin Picker");
+	skinPicker.setSize(250, 25);
+	skinPicker.putUnder(skin, skin.getX(), 10);
+	Add(skinPicker);
 
-	nextNew = new LButton("Next");
-	nextNew.centerOn(settingsPanel.getWidth() - nextNew.getWidth() - 10, newPackagePicker);
-	newPackagePicker.setSize(nextNew.getX() - newPackagePicker.getX() - 10, newPackagePicker.getHeight());
-	Add(nextNew);
+	addSkin = new LButton("Add Skin");
+	addSkin.centerOn(settingsPanel.getWidth() - addSkin.getWidth() - x, skinPicker);
+	skinPicker.setSize(addSkin.getX() - skinPicker.getX() - 10, skinPicker.getHeight());
+	Add(addSkin);
 
-	loadPackages();
+	npc = new LLabel("Via NPC's Skin", AV.AVFont, AV.yellow);
+	npc.addShadow();
+	npc.putUnder(addSkin, x, spacing);
+	Add(npc);
+
+	npcPicker = new LComboBox("NPC Picker");
+	npcPicker.setSize(250, 25);
+	npcPicker.putUnder(npc, npc.getX(), 10);
+	updateLast(npcPicker);
+	Add(npcPicker);
+
+	addNPC = new LButton("Add NPC's Skin");
+	addNPC.centerOn(settingsPanel.getWidth() - addNPC.getWidth() - x, npcPicker);
+	npcPicker.setSize(addNPC.getX() - npcPicker.getX() - 10, npcPicker.getHeight());
+	Add(addNPC);
+
+	newSkins = new LList();
+	newSkins.setSize(settingsPanel.getWidth() - 30, 150);
+	setPlacement(newSkins);
+	Add(newSkins);
+
+	SUMGUI.startImport(new SkinLoad());
     }
 
-    public void loadPackages (){
-	packages.removeAllItems();
-	for (PackageNode p : AVFileVars.AVPackages.getAll(PackageNode.Type.PACKAGE)) {
-	    packages.addItem(p);
+    @Override
+    public void specialOpen(SPMainMenuPanel parent_) {
+	loadSets();
+    }
+
+    public void loadSets() {
+	sets.removeAllItems();
+	for (PackageNode p : WizNewPackage.newPackage.targetPackage.getAll(PackageNode.Type.VARSET)) {
+	    sets.addItem(p);
 	}
     }
 
+    class SkinLoad implements Runnable {
+
+	@Override
+	public void run() {
+	    AVFileVars.locateUnused();
+	    loadSkins();
+	    loadNPCs();
+	}
+    }
+
+    void loadSkins() {
+	skinPicker.removeAllItems();
+	Set<String> toAdd = new TreeSet<>();
+	for (ARMO skin : AV.getMerger().getArmors()) {
+	    if (!AVFileVars.unusedSkins.contains(skin.getForm())) {
+		toAdd.add(skin.getEDID());
+	    }
+	}
+
+	toAdd.remove("SkinNaked");
+	toAdd.remove("SkinNakedBeast");
+	toAdd.remove("ArmorAfflicted");
+	toAdd.remove("ArmorAstrid");
+	toAdd.remove("ArmorManakin");
+
+	for (String s : toAdd) {
+	    skinPicker.addItem(s);
+	}
+    }
+
+    void loadNPCs() {
+	npcPicker.removeAllItems();
+	Set<String> toAdd = new TreeSet<>();
+	for (NPC_ npc : AV.getMerger().getNPCs()) {
+	    toAdd.add(npc.getEDID());
+	}
+
+	for (String s : toAdd) {
+	    npcPicker.addItem(s);
+	}
+    }
 }

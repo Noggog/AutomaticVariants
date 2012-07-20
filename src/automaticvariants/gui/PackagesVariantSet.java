@@ -26,7 +26,7 @@ public class PackagesVariantSet extends PackagesSpecs {
     protected void initialize() {
 	super.initialize();
 	seeds = new LFormIDPicker("Seed NPCs", AV.AVFont, AV.yellow);
-	seeds.linkTo(AVSaveFile.Settings.SPEC_VAR_AUTHOR, saveFile, SUMGUI.helpPanel, true);
+	seeds.linkTo(AVSaveFile.Settings.SPEC_VAR_AUTHOR, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(seeds);
 	Add(seeds);
 

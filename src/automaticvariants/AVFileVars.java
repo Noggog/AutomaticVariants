@@ -43,9 +43,9 @@ public class AVFileVars {
      * Variant storage lists/maps
      */
     // List of unused things to skip
-    static HashSet<FormID> unusedRaces;
-    static HashSet<FormID> unusedSkins;
-    static LMergeMap<FormID, FormID> unusedPieces;
+    static public HashSet<FormID> unusedRaces;
+    static public HashSet<FormID> unusedSkins;
+    static public LMergeMap<FormID, FormID> unusedPieces;
     // List of what races the armor "supports"
     static LMergeMap<FormID, FormID> armoRaces;
     static Set<FormID> taggedNPCs = new HashSet<FormID>();
@@ -95,7 +95,7 @@ public class AVFileVars {
 	SPProgressBarPlug.progress.incrementBar();
 
 	// Locate unused Races/Skins
-	locateUnused(source);
+	locateUnused();
 
 	// Locate and load NIFs, and assign their variants
 	linkToNifs();
@@ -149,7 +149,13 @@ public class AVFileVars {
 	}
     }
 
-    public static void locateUnused(Mod source) {
+    public static void locateUnused() {
+
+	if (unusedRaces != null) {
+	    return;
+	}
+
+	Mod source = AV.getMerger();
 
 	// Load all races, skins, pieces into containers
 	unusedRaces = new HashSet<FormID>(source.getRaces().numRecords());

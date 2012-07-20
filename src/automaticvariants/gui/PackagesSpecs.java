@@ -32,7 +32,7 @@ public class PackagesSpecs extends SPSettingPanel {
     SpecFile target;
 
     public PackagesSpecs(SPMainMenuPanel parent_, String title) {
-	super(parent_, title, AV.orange, AV.save);
+	super(parent_, title, AV.orange);
     }
 
     @Override
