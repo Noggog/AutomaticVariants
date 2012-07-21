@@ -15,4 +15,6 @@ public class WizNewPackage {
     public static WizNewPackage newPackage;
 
     PackageNode targetPackage;
+    PackageNode targetSet;
+    PackageNode targetGroup;
 }

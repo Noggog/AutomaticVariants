@@ -212,7 +212,7 @@ public class PackagesManager extends SPSettingPanel {
     }
 
     @Override
-    public void specialOpen(SPMainMenuPanel parent_) {
+    public void onOpen(SPMainMenuPanel parent_) {
 	SUMGUI.helpPanel.clearBottomArea();
 	SUMGUI.helpPanel.addToBottomArea(display);
 	SUMGUI.helpPanel.setBottomAreaHeight(SUMGUI.rightDimensions.width);

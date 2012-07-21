@@ -10,11 +10,9 @@ import automaticvariants.PackageNode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import javax.swing.SwingUtilities;
 import lev.Ln;
-import lev.gui.LButton;
-import lev.gui.LComboBox;
-import lev.gui.LLabel;
-import lev.gui.LTextField;
+import lev.gui.*;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPQuestionPanel;
 
@@ -24,16 +22,14 @@ import skyproc.gui.SPQuestionPanel;
  */
 public class WizPackages extends SPQuestionPanel {
 
-    LComboBox packages;
-    LLabel existingPackage;
-    LButton nextExisting;
+    LSearchComboBox packages;
     LLabel or;
     LLabel newPackage;
     LTextField newPackageField;
     LButton nextNew;
 
     public WizPackages(SPMainMenuPanel parent_) {
-	super(parent_, "Choose Package", AV.orange);
+	super(parent_, "Choose Package", AV.orange, AV.packagesManagerPanel, null, null);
     }
 
     @Override
@@ -41,7 +37,8 @@ public class WizPackages extends SPQuestionPanel {
 	super.initialize();
 
 	spacing = 25;
-	int x = 25;
+	int x = 15;
+	int fieldHeight = 65;
 
 	setQuestionFont(AV.AVFont);
 	setQuestionCentered();
@@ -50,20 +47,10 @@ public class WizPackages extends SPQuestionPanel {
 		+ "or make a new package\n"
 		+ "for this variant.");
 
-	existingPackage = new LLabel("Existing Package", AV.AVFont, AV.yellow);
-	existingPackage.addShadow();
-	existingPackage.putUnder(question, x, spacing);
-	Add(existingPackage);
-
-	packages = new LComboBox("Package Picker");
-	packages.setSize(250, 25);
-	packages.putUnder(existingPackage, existingPackage.getX(), 10);
-	updateLast(packages);
-	Add(packages);
-
-	nextExisting = new LButton("Next");
-	nextExisting.centerOn(settingsPanel.getWidth() - nextExisting.getWidth() - 10, packages);
-	nextExisting.addActionListener(new ActionListener() {
+	packages = new LSearchComboBox("Existing Package", AV.AVFont, AV.yellow);
+	packages.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
+	packages.putUnder(question, x, spacing);
+	packages.addEnterButton("Next", new ActionListener() {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
@@ -71,54 +58,59 @@ public class WizPackages extends SPQuestionPanel {
 		AV.wizSetPanel.open();
 	    }
 	});
-	packages.setSize(nextExisting.getX() - packages.getX() - 10, packages.getHeight());
-	Add(nextExisting);
+	updateLast(packages);
+	Add(packages);
 
-	or = new LLabel ("-OR-", AV.AVFont, AV.green);
+	or = new LLabel("-OR-", AV.AVFont, AV.green);
 	or.addShadow();
 	setPlacement(or);
 	Add(or);
 
-	newPackage = new LLabel("New Package", AV.AVFont, AV.yellow);
-	newPackage.addShadow();
-	newPackage.putUnder(or, x, spacing);
-	Add(newPackage);
-
-	newPackageField = new LTextField("New Package Field");
-	newPackageField.putUnder(newPackage, newPackage.getX(), 10);
-	Add(newPackageField);
-
-	nextNew = new LButton("Next");
-	nextNew.centerOn(settingsPanel.getWidth() - nextNew.getWidth() - 10, newPackageField);
-	nextNew.addActionListener(new ActionListener() {
+	newPackageField = new LTextField("New Package", AV.AVFont, AV.yellow);
+	newPackageField.putUnder(or, x, spacing);
+	newPackageField.setSize(settingsPanel.getWidth() - 2 * x, 50);
+	newPackageField.addEnterButton("Next", new ActionListener() {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		File f = new File(AVFileVars.AVPackagesDir + newPackageField.getText());
-		Ln.makeDirs(f);
-		PackageNode packageNode = new PackageNode(f, PackageNode.Type.PACKAGE);
-		WizNewPackage.newPackage.targetPackage = packageNode;
-		AV.wizSetPanel.open();
+		String trimmed = newPackageField.getText().trim();
+		if (!trimmed.equals("")) {
+		    File f = new File(AVFileVars.AVPackagesDir + newPackageField.getText());
+		    Ln.makeDirs(f);
+		    PackageNode packageNode = new PackageNode(f, PackageNode.Type.PACKAGE);
+		    WizNewPackage.newPackage.targetPackage = packageNode;
+		    AV.wizSetPanel.open();
+		}
 	    }
 	});
-	newPackageField.setSize(nextNew.getX() - newPackageField.getX() - 10, newPackageField.getHeight());
-	Add(nextNew);
+	Add(newPackageField);
 
     }
 
-    public void loadPackages (){
-	packages.removeAllItems();
-	for (PackageNode p : AVFileVars.AVPackages.getAll(PackageNode.Type.PACKAGE)) {
-	    packages.addItem(p);
-	}
+    public void loadPackages() {
+	SwingUtilities.invokeLater(new Runnable() {
+
+	    @Override
+	    public void run() {
+		packages.removeAllItems();
+	    }
+	});
+	SwingUtilities.invokeLater(new Runnable() {
+
+	    @Override
+	    public void run() {
+		for (PackageNode p : AVFileVars.AVPackages.getAll(PackageNode.Type.PACKAGE)) {
+		    packages.addItem(p);
+		}
+	    }
+	});
     }
 
     @Override
-    public void specialOpen(SPMainMenuPanel parent_) {
+    public void onOpen(SPMainMenuPanel parent_) {
 	WizNewPackage.newPackage = new WizNewPackage();
 	loadPackages();
 	newPackageField.setText("");
+	packages.reset();
     }
-
-
 }

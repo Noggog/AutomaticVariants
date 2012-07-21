@@ -86,13 +86,13 @@ public class AVFileVars {
 
 	BSAs = BSA.loadInBSAs(BSA.FileType.NIF, BSA.FileType.DDS);
 
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Importing AV Packages");
+	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Importing AV Packages");
 	if (!AVPackages.isLeaf()) {
 	    // Change packages to enabled/disabled based on GUI requests
 	    shufflePackages();
 	}
 	importVariants();
-	SPProgressBarPlug.progress.incrementBar();
+	SPProgressBarPlug.incrementBar();
 
 	// Locate unused Races/Skins
 	locateUnused();
@@ -227,7 +227,7 @@ public class AVFileVars {
     }
 
     static void linkToNifs() {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Linking packages to .nif files.");
+	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Linking packages to .nif files.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + "3 - Link to NIFs.txt");
 	}
@@ -372,7 +372,7 @@ public class AVFileVars {
 	    }
 
 	}
-	SPProgressBarPlug.progress.incrementBar();
+	SPProgressBarPlug.incrementBar();
     }
 
     static boolean shouldSplit(String nifPath, ARMA piece, ARMO skin) {
@@ -450,7 +450,7 @@ public class AVFileVars {
     }
 
     static void generateTXSTvariants() throws IOException {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Generating TXST variants.");
+	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating TXST variants.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + "4 - Generate TXST.txt");
 	}
@@ -530,11 +530,11 @@ public class AVFileVars {
 	    }
 	    n.textureFields = null; // Not needed anymore
 	}
-	SPProgressBarPlug.progress.incrementBar();
+	SPProgressBarPlug.incrementBar();
     }
 
     static void generateARMAvariants(Mod source) {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Generating ARMA variants.");
+	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating ARMA variants.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + "5 - Generate ARMA + ARMO.txt");
 	    SPGlobal.log(header, "====================================================================");
@@ -580,11 +580,11 @@ public class AVFileVars {
 		}
 	    }
 	}
-	SPProgressBarPlug.progress.incrementBar();
+	SPProgressBarPlug.incrementBar();
     }
 
     static void generateARMOvariants(Mod source) {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Generating ARMO variants.");
+	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating ARMO variants.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Generating ARMO skin duplicates for each ARMA");
@@ -631,7 +631,7 @@ public class AVFileVars {
 		}
 	    }
 	}
-	SPProgressBarPlug.progress.incrementBar();
+	SPProgressBarPlug.incrementBar();
     }
 
     static void implementOrigAsVar() {
@@ -664,7 +664,7 @@ public class AVFileVars {
     }
 
     static void generateFormLists(Mod source) {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Generating Form Lists.");
+	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating Form Lists.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + "6 - Generate Form Lists.txt");
 	    SPGlobal.log(header, "====================================================================");
@@ -705,11 +705,11 @@ public class AVFileVars {
 	    }
 
 	}
-	SPProgressBarPlug.progress.incrementBar();
+	SPProgressBarPlug.incrementBar();
     }
 
     static void generateSPELvariants(Mod source) {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Generating script attachment races.");
+	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating script attachment races.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + "7 - Generate Switcher Spells.txt");
 	    SPGlobal.log(header, "====================================================================");
@@ -823,7 +823,7 @@ public class AVFileVars {
 		SPGlobal.getGlobalPatch().addRecord(raceSrc);
 	    }
 	}
-	SPProgressBarPlug.progress.incrementBar();
+	SPProgressBarPlug.incrementBar();
     }
 
     static void standardizeNPC(NPC_ n) {
@@ -839,7 +839,7 @@ public class AVFileVars {
     }
 
     static void tagNPCs(Mod source) {
-	SPProgressBarPlug.progress.setStatus(AV.step++, AV.numSteps, "Tagging NPCs.");
+	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Tagging NPCs.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + "8 - Tagging NPCs.txt");
 	    SPGlobal.log(header, "====================================================================");

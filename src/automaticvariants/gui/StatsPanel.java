@@ -249,7 +249,7 @@ public class StatsPanel extends SPSettingPanel {
     }
 
     @Override
-    public void specialOpen(SPMainMenuPanel parent_) {
+    public void onOpen(SPMainMenuPanel parent_) {
 	SUMGUI.helpPanel.clearBottomArea();
 	SUMGUI.helpPanel.addToBottomArea(chart);
 	SUMGUI.helpPanel.setBottomAreaHeight(190);

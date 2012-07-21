@@ -37,6 +37,6 @@ public class WelcomePage extends SPSettingPanel {
     }
 
     @Override
-    public void specialOpen(SPMainMenuPanel parent_) {
+    public void onOpen(SPMainMenuPanel parent_) {
     }
 }

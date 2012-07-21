@@ -32,7 +32,7 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.4.3 Beta";
+    public static String version = "1.4.4 Beta";
 
     /*
      * Static Strings
@@ -81,6 +81,8 @@ public class AV implements SUM {
     static public PackagesVariantSet packagesVariantSetPanel;
     static public WizPackages wizPackagesPanel;
     static public WizSet wizSetPanel;
+    static public WizSetManual wizSetManualPanel;
+    static public WizGroup wizGroupPanel;
     static public SettingsOther otherPanel;
     static public StatsPanel heightPanel;
     static public Font AVFont;
@@ -421,7 +423,7 @@ public class AV implements SUM {
 	    SPGlobal.logException(ex);
 	    AVFont = new Font("Serif", Font.BOLD, 16);
 	}
-	AVFontSmall = AVFont.deriveFont(Font.PLAIN, 12);
+	AVFontSmall = AVFont.deriveFont(Font.PLAIN, 14);
 	AVFileVars.gatherFiles();
 	AVFileVars.importVariants();
     }
@@ -469,6 +471,8 @@ public class AV implements SUM {
 	packagesVariantSetPanel = new PackagesVariantSet(settingsMenu);
 	wizPackagesPanel = new WizPackages(settingsMenu);
 	wizSetPanel = new WizSet(settingsMenu);
+	wizSetManualPanel = new WizSetManual(settingsMenu);
+	wizGroupPanel = new WizGroup(settingsMenu);
 	packageManagerConfig = settingsMenu.addMenu(packagesManagerPanel, false, save, Settings.PACKAGES_ON);
 
 //	heightPanel = new SettingsStatsPanel(settingsMenu);
@@ -513,8 +517,8 @@ public class AV implements SUM {
 	makeGlobals();
 	makeAVQuest();
 
-	SPProgressBarPlug.progress.setMax(numSteps);
-	SPProgressBarPlug.progress.setStatus(step++, numSteps, "Initializing AV");
+	SPProgressBarPlug.setMax(numSteps);
+	SPProgressBarPlug.setStatus(step++, numSteps, "Initializing AV");
 
 	// For all race SWITCHING variants
 	// (such as texture variants)

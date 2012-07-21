@@ -73,7 +73,7 @@ public class PackagesSpecs extends SPSettingPanel {
     }
 
     @Override
-    public void specialOpen(SPMainMenuPanel parent_) {
+    public void onOpen(SPMainMenuPanel parent_) {
 	cancel.addActionListener(AV.packagesManagerPanel.getOpenHandler());
 	saveSpec.addActionListener(AV.packagesManagerPanel.getOpenHandler());
     }
