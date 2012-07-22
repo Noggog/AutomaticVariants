@@ -7,69 +7,42 @@ package automaticvariants.gui;
 import automaticvariants.AV;
 import automaticvariants.PackageNode;
 import automaticvariants.SpecFile;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import javax.swing.JOptionPane;
-import lev.gui.LButton;
 import skyproc.gui.SPMainMenuPanel;
-import skyproc.gui.SPSettingPanel;
 import skyproc.gui.SUMGUI;
 
 /**
  *
  * @author Justin Swanson
  */
-public class PackagesSpecs extends SPSettingPanel {
+public class PackagesSpecs extends WizTemplate {
 
-    PackageEditing editing;
-    LButton saveSpec;
-    LButton cancel;
     SpecFile target;
 
     public PackagesSpecs(SPMainMenuPanel parent_, String title) {
-	super(parent_, title, AV.orange);
+	super(parent_, title, AV.packagesManagerPanel, null);
     }
 
     @Override
     protected void initialize() {
 	super.initialize();
 
-	last = new Point(last.x, last.y + 15);
-
-	editing = new PackageEditing(settingsPanel);
-	editing.setLocation(0, header.getBottom());
-	Add(editing);
-
-	saveSpec = new LButton("Save");
-	cancel = new LButton("Cancel");
-	saveSpec.setLocation(getSpacing(saveSpec, cancel, true));
-	saveSpec.addActionListener(new ActionListener() {
-
-	    @Override
-	    public void actionPerformed(ActionEvent arg0) {
-		save();
-	    }
-	});
-	settingsPanel.add(saveSpec);
-
-	cancel.setLocation(getSpacing(saveSpec, cancel, false));
-	settingsPanel.add(cancel);
-
+	spacing = 12;
+	nextButton.setText("Save");
+	nextButton.setSize(45, nextButton.getHeight());
+	nextButton.setLocation(settingsPanel.getWidth() - nextButton.getWidth() - 15, nextButton.getY());
     }
 
     @Override
-    public void onOpen(SPMainMenuPanel parent_) {
-	cancel.addActionListener(AV.packagesManagerPanel.getOpenHandler());
-	saveSpec.addActionListener(AV.packagesManagerPanel.getOpenHandler());
+    public void onNext() {
+	save();
     }
 
     public void save() {
 	if (target == null) {
 	    return;
 	}
-
 	try {
 	    SUMGUI.setPatchNeeded(true);
 	    target.export();

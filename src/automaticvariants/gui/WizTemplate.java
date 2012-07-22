@@ -31,7 +31,7 @@ public class WizTemplate extends SPQuestionPanel {
 
 	editing = new PackageEditing(settingsPanel);
 	editing.setLocation(0, header.getBottom());
-	Add(editing);
+	settingsPanel.add(editing);
 
 	question.putUnder(editing, question.getX(), 0);
 	setQuestionFont(AV.AVFont);

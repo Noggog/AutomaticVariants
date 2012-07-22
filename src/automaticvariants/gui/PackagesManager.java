@@ -307,11 +307,13 @@ public class PackagesManager extends SPSettingPanel {
 		AV.packagesVariantPanel.open();
 		Variant v = ((Variant) p);
 		AV.packagesVariantPanel.load(v);
+		AV.packagesVariantPanel.setNext(this);
 		break;
 	    case VARSET:
 		AV.packagesVariantSetPanel.open();
 		VariantSet vs = ((VariantSet) p);
 		AV.packagesVariantSetPanel.load(vs);
+		AV.packagesVariantSetPanel.setNext(this);
 		break;
 	    case PACKAGE:
 
