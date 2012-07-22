@@ -45,6 +45,8 @@ public class WizSetManual extends WizTemplate {
     protected void initialize() {
 	super.initialize();
 
+	spacing = 40;
+
 	blockedSkins.add("SkinNaked");
 	blockedSkins.add("SkinNakedBeast");
 	blockedSkins.add("ArmorAfflicted");
@@ -94,7 +96,7 @@ public class WizSetManual extends WizTemplate {
 
 	npcPicker = new LSearchComboBox<>("Via NPC's Skin", AV.AVFont, AV.yellow);
 	npcPicker.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
-	npcPicker.putUnder(skinPicker, skinPicker.getX(), 30);
+	npcPicker.putUnder(skinPicker, skinPicker.getX(), spacing);
 	npcPicker.addEnterButton("Add Skin", new ActionListener() {
 
 	    @Override
@@ -140,7 +142,7 @@ public class WizSetManual extends WizTemplate {
 	newSkins = new LList<>("Chosen Target Skins", AV.AVFont, AV.yellow);
 	newSkins.setUnique(true);
 	newSkins.setSize(settingsPanel.getWidth() - 30, 150);
-	newSkins.putUnder(npcPicker, x, spacing * 3);
+	newSkins.centerIn(settingsPanel, backButton.getY() - newSkins.getHeight() - 20);
 	Add(newSkins);
 
 	progressLabel = new LLabel("Loading up mods, please wait...", AV.AVFontSmall, AV.lightGray);

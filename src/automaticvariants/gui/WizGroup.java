@@ -26,7 +26,6 @@ import skyproc.gui.SUMGUI;
 public class WizGroup extends WizTemplate {
 
     LSearchComboBox groups;
-    LLabel or;
     LTextField newGroupField;
 
     public WizGroup(SPMainMenuPanel parent_) {
@@ -36,6 +35,8 @@ public class WizGroup extends WizTemplate {
     @Override
     protected void initialize() {
 	super.initialize();
+
+	spacing = 60;
 
 	setQuestionText("Please select the group you want to add variants to.");
 
@@ -52,13 +53,8 @@ public class WizGroup extends WizTemplate {
 	});
 	Add(groups);
 
-	or = new LLabel("Or add a new group:", AV.AVFont, AV.green);
-	or.addShadow();
-	or.centerOn(groups, groups.getBottom() + 50);
-	Add(or);
-
 	newGroupField = new LTextField("New Group", AV.AVFont, AV.yellow);
-	newGroupField.putUnder(or, x, spacing);
+	newGroupField.putUnder(groups, x, spacing);
 	newGroupField.setSize(settingsPanel.getWidth() - 2 * x, 50);
 	newGroupField.addEnterButton("Next", new ActionListener() {
 

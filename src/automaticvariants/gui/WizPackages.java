@@ -24,7 +24,6 @@ import skyproc.gui.SUMGUI;
 public class WizPackages extends WizTemplate {
 
     LSearchComboBox packages;
-    LLabel or;
     LTextField newPackageField;
 
     public WizPackages(SPMainMenuPanel parent_) {
@@ -34,6 +33,8 @@ public class WizPackages extends WizTemplate {
     @Override
     protected void initialize() {
 	super.initialize();
+
+	spacing = 60;
 
 	question.putUnder(header, question.getX(), 0);
 	setQuestionText("Please select the package to add your variant to.");
@@ -55,13 +56,8 @@ public class WizPackages extends WizTemplate {
 	updateLast(packages);
 	Add(packages);
 
-	or = new LLabel("Or create a new package:", AV.AVFont, AV.green);
-	or.addShadow();
-	or.centerOn(packages, packages.getBottom() + 50);
-	Add(or);
-
 	newPackageField = new LTextField("New Package", AV.AVFont, AV.yellow);
-	newPackageField.putUnder(or, x, spacing);
+	newPackageField.putUnder(packages, x, spacing);
 	newPackageField.setSize(settingsPanel.getWidth() - 2 * x, 50);
 	newPackageField.addEnterButton("Next", new ActionListener() {
 

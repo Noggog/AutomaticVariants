@@ -41,7 +41,7 @@ public class WizSet extends WizTemplate {
 
 	sets = new LSearchComboBox("Existing Set", AV.AVFont, AV.yellow);
 	sets.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
-	sets.putUnder(question, x, spacing);
+	sets.putUnder(question, x, spacing + 5);
 	sets.addEnterButton("Next", new ActionListener() {
 
 	    @Override
@@ -56,12 +56,12 @@ public class WizSet extends WizTemplate {
 
 	or = new LLabel("Or add a new set:", AV.AVFont, AV.green);
 	or.addShadow();
-	or.centerOn(sets, sets.getBottom() + 50);
+	or.centerOn(sets, sets.getBottom() + 40);
 	Add(or);
 
 	newSetName = new LTextField("New Set Name", AV.AVFont, AV.yellow);
 	newSetName.setSize(settingsPanel.getWidth() - 2 * x, newSetName.getHeight());
-	newSetName.putUnder(or, x, spacing);
+	newSetName.putUnder(or, x, 10);
 	Add(newSetName);
 
 	locateTargetSkins = new LLabel("Locate Target Skins:", AV.AVFont, AV.yellow);
