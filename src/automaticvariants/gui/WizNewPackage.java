@@ -5,6 +5,9 @@
 package automaticvariants.gui;
 
 import automaticvariants.PackageNode;
+import java.io.File;
+import java.util.ArrayList;
+import skyproc.ARMO;
 
 /**
  *
@@ -16,5 +19,7 @@ public class WizNewPackage {
 
     PackageNode targetPackage;
     PackageNode targetSet;
+    ArrayList<ARMO> targetSkins;
+    ArrayList<File> genTextures;
     PackageNode targetGroup;
 }

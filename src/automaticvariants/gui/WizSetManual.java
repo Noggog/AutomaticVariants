@@ -6,12 +6,17 @@ package automaticvariants.gui;
 
 import automaticvariants.AV;
 import automaticvariants.AVFileVars;
-import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 import lev.gui.*;
-import skyproc.ARMO;
-import skyproc.NPC_;
+import skyproc.*;
+import skyproc.NPC_.NPCFlag;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPProgressBarPlug;
 import skyproc.gui.SPQuestionPanel;
@@ -21,69 +26,122 @@ import skyproc.gui.SUMGUI;
  *
  * @author Justin Swanson
  */
-public class WizSetManual extends SPQuestionPanel {
+public class WizSetManual extends WizTemplate {
 
-    LSearchComboBox skinPicker;
-    LSearchComboBox npcPicker;
+    LSearchComboBox<EDIDdisplay<ARMO>> skinPicker;
+    LSearchComboBox<EDIDdisplay<NPC_>> npcPicker;
     TreeSet<String> skins;
     TreeSet<String> npcs;
-    LLabel newSkinsLabel;
-    LList newSkins;
-    LButton remove;
-    LButton accept;
-
+    LList<ARMO> newSkins;
     LLabel progressLabel;
     LProgressBar progress;
+    ArrayList<String> blockedSkins = new ArrayList<>();
 
     public WizSetManual(SPMainMenuPanel parent_) {
-	super(parent_, "Target Skins", AV.orange, AV.packagesManagerPanel, AV.wizSetPanel, null);
+	super(parent_, "Target Skins", AV.packagesManagerPanel, AV.wizSetPanel);
     }
 
     @Override
     protected void initialize() {
 	super.initialize();
 
-	spacing = 15;
-	int x = 15;
-	int fieldHeight = 65;
+	blockedSkins.add("SkinNaked");
+	blockedSkins.add("SkinNakedBeast");
+	blockedSkins.add("ArmorAfflicted");
+	blockedSkins.add("ArmorAstrid");
+	blockedSkins.add("ArmorManakin");
 
-	setQuestionFont(AV.AVFont);
-	setQuestionCentered();
-	setQuestionColor(AV.green);
 	setQuestionText("Please select the skins your variant should target.");
 
-
-	skinPicker = new LSearchComboBox("Via Skin", AV.AVFont, AV.yellow);
+	skinPicker = new LSearchComboBox<>("Via Skin", AV.AVFont, AV.yellow);
 	skinPicker.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
-	skinPicker.addEnterButton("Add Skin", null);
+	skinPicker.addEnterButton("Add Skin", new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		newSkins.addElement(skinPicker.getSelectedItem().m);
+	    }
+	});
 	skinPicker.putUnder(question, x, spacing);
+	skinPicker.addMouseListener(new MouseListener() {
+
+	    @Override
+	    public void mouseClicked(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mousePressed(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseReleased(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseEntered(MouseEvent e) {
+		SUMGUI.helpPanel.setDefaultPos();
+		SUMGUI.helpPanel.setTitle("Pick Skin");
+		SUMGUI.helpPanel.setContent("Directly pick the skin to tie to the variant.");
+		SUMGUI.helpPanel.focusOn(skinPicker, 0);
+	    }
+
+	    @Override
+	    public void mouseExited(MouseEvent e) {
+		mainHelp();
+	    }
+	});
 	Add(skinPicker);
 
-	npcPicker = new LSearchComboBox("Via NPC's Skin", AV.AVFont, AV.yellow);
+	npcPicker = new LSearchComboBox<>("Via NPC's Skin", AV.AVFont, AV.yellow);
 	npcPicker.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
 	npcPicker.putUnder(skinPicker, skinPicker.getX(), 30);
-	npcPicker.addEnterButton("Add Skin", null);
+	npcPicker.addEnterButton("Add Skin", new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		NPC_ npc = npcPicker.getSelectedItem().m;
+		ARMO skin = (ARMO) SPDatabase.getMajor(AVFileVars.getUsedSkin(npc), GRUP_TYPE.ARMO);
+		if (skin != null) {
+		    newSkins.addElement(skin);
+		}
+	    }
+	});
+	npcPicker.addMouseListener(new MouseListener() {
+
+	    @Override
+	    public void mouseClicked(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mousePressed(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseReleased(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseEntered(MouseEvent e) {
+		SUMGUI.helpPanel.setDefaultPos();
+		SUMGUI.helpPanel.setTitle("Pick Skin via NPC");
+		SUMGUI.helpPanel.setContent("Pick an NPC and tie to the skin it uses.\n\n"
+			+ "If an NPC is missing it means it doesn't use a skin, or it was "
+			+ "blocked.");
+		SUMGUI.helpPanel.focusOn(npcPicker, 0);
+	    }
+
+	    @Override
+	    public void mouseExited(MouseEvent e) {
+		mainHelp();
+	    }
+	});
 	Add(npcPicker);
 
-	newSkins = new LList();
-	newSkins.setSize(settingsPanel.getWidth() - 30, 100);
+	newSkins = new LList<>("Chosen Target Skins", AV.AVFont, AV.yellow);
+	newSkins.setUnique(true);
+	newSkins.setSize(settingsPanel.getWidth() - 30, 150);
 	newSkins.putUnder(npcPicker, x, spacing * 3);
 	Add(newSkins);
-
-	newSkinsLabel = new LLabel("Target Skins For Variant", AV.AVFont, AV.yellow);
-	newSkinsLabel.setLocation(x, newSkins.getY() - 10 - newSkinsLabel.getHeight());
-	newSkinsLabel.addShadow();
-	Add(newSkinsLabel);
-
-	remove = new LButton("Remove Selected");
-	remove.setSize((newSkins.getWidth() - 15) / 2 , remove.getHeight());
-	remove.putUnder(newSkins, x, 10);
-	Add(remove);
-
-	accept = new LButton("Accept and Next");
-	accept.setSize((newSkins.getWidth() - 15) / 2 , remove.getHeight());
-	accept.putUnder(newSkins, remove.getRight() + spacing, 10);
-	Add(accept);
 
 	progressLabel = new LLabel("Loading up mods, please wait...", AV.AVFontSmall, AV.lightGray);
 	progressLabel.centerIn(settingsPanel, question.getBottom() + spacing * 3);
@@ -94,55 +152,95 @@ public class WizSetManual extends SPQuestionPanel {
 	SPProgressBarPlug.addProgressBar(progress);
 	Add(progress);
 
+	setNext(AV.wizGenPanel);
+
 	displaySwitch(true);
 	SUMGUI.startImport(new SkinLoad());
     }
 
     @Override
     public void onOpen(SPMainMenuPanel parent) {
+	mainHelp();
+	editing.load(WizNewPackage.newPackage.targetPackage);
+    }
+
+    public void reset() {
 	skinPicker.reset();
 	npcPicker.reset();
+	newSkins.clear();
     }
 
     void loadSkins() {
 	skinPicker.removeAllItems();
-	Set<String> toAdd = new TreeSet<>();
 	for (ARMO skin : AV.getMerger().getArmors()) {
-	    if (!AVFileVars.unusedSkins.contains(skin.getForm())) {
-		toAdd.add(skin.getEDID());
+	    if (!AVFileVars.unusedSkins.contains(skin.getForm())
+		    && !blockedSkins.contains(skin.getEDID())) {
+		skinPicker.addItem(new EDIDdisplay(skin));
 	    }
 	}
+	skinPicker.reset();
+    }
 
-	toAdd.remove("SkinNaked");
-	toAdd.remove("SkinNakedBeast");
-	toAdd.remove("ArmorAfflicted");
-	toAdd.remove("ArmorAstrid");
-	toAdd.remove("ArmorManakin");
-
-	for (String s : toAdd) {
-	    skinPicker.addItem(s);
-	}
+    void mainHelp() {
+	SUMGUI.helpPanel.setDefaultPos();
+	SUMGUI.helpPanel.setTitle("Manually Picking Skins");
+	SUMGUI.helpPanel.setContent("Pick all the skins that are used by NPCs that you want your variants to be added to.\n\n"
+		+ WizSet.multiSkin() + "\n\n"
+		+ "If you are not sure if your target NPCs have multiple skins, go back and use the AV tool.");
+	SUMGUI.helpPanel.hideArrow();
     }
 
     void loadNPCs() {
 	npcPicker.removeAllItems();
-	Set<String> toAdd = new TreeSet<>();
-	for (NPC_ npc : AV.getMerger().getNPCs()) {
-	    toAdd.add(npc.getEDID());
-	}
 
-	for (String s : toAdd) {
-	    npcPicker.addItem(s);
+	Set<String> block = new HashSet<>();
+	block.add("AUDIO");
+	block.add("DELETEWHENDONE");
+
+	for (NPC_ npc : AV.getMerger().getNPCs()) {
+	    boolean blocked = false;
+	    String upper = npc.getEDID().toUpperCase();
+	    for (String s : block) {
+		if (upper.contains(s)) {
+		    blocked = true;
+		    break;
+		}
+	    }
+	    if (blocked) {
+		continue;
+	    }
+
+	    if (!npc.getTemplate().equals(FormID.NULL) && npc.get(NPC_.TemplateFlag.USE_TRAITS)) {
+		continue;
+	    }
+
+	    ARMO skin = (ARMO) SPDatabase.getMajor(AVFileVars.getUsedSkin(npc), GRUP_TYPE.ARMO);
+	    if (skin == null || blockedSkins.contains(skin.getEDID())) {
+		continue;
+	    }
+
+	    npcPicker.addItem(new EDIDdisplay(npc));
 	}
+	npcPicker.reset();
     }
 
-    void displaySwitch (Boolean start) {
+    @Override
+    public boolean testNext() {
+	return !newSkins.isEmpty();
+    }
+
+    @Override
+    public void onNext() {
+	WizNewPackage.newPackage.targetSkins = newSkins.getAll();
+	AV.wizGenPanel.open();
+	AV.wizGenPanel.reset();
+	AV.wizGenPanel.setBack(AV.wizSetManualPanel);
+    }
+
+    void displaySwitch(Boolean start) {
 	skinPicker.setVisible(!start);
 	npcPicker.setVisible(!start);
 	newSkins.setVisible(!start);
-	newSkinsLabel.setVisible(!start);
-	accept.setVisible(!start);
-	remove.setVisible(!start);
 	progressLabel.setVisible(start);
 	progress.setVisible(start);
     }

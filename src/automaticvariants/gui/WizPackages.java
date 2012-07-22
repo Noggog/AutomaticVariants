@@ -15,37 +15,28 @@ import lev.Ln;
 import lev.gui.*;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPQuestionPanel;
+import skyproc.gui.SUMGUI;
 
 /**
  *
  * @author Justin Swanson
  */
-public class WizPackages extends SPQuestionPanel {
+public class WizPackages extends WizTemplate {
 
     LSearchComboBox packages;
     LLabel or;
-    LLabel newPackage;
     LTextField newPackageField;
-    LButton nextNew;
 
     public WizPackages(SPMainMenuPanel parent_) {
-	super(parent_, "Choose Package", AV.orange, AV.packagesManagerPanel, null, null);
+	super(parent_, "Choose Package", AV.packagesManagerPanel, null);
     }
 
     @Override
     protected void initialize() {
 	super.initialize();
 
-	spacing = 25;
-	int x = 15;
-	int fieldHeight = 65;
-
-	setQuestionFont(AV.AVFont);
-	setQuestionCentered();
-	setQuestionColor(AV.green);
-	setQuestionText("Please select the package\n"
-		+ "or make a new package\n"
-		+ "for this variant.");
+	question.putUnder(header, question.getX(), 0);
+	setQuestionText("Please select the package to add your variant to.");
 
 	packages = new LSearchComboBox("Existing Package", AV.AVFont, AV.yellow);
 	packages.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
@@ -54,16 +45,19 @@ public class WizPackages extends SPQuestionPanel {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		WizNewPackage.newPackage.targetPackage = (PackageNode) packages.getSelectedItem();
-		AV.wizSetPanel.open();
+		if (!packages.isEmpty()) {
+		    WizNewPackage.newPackage.targetPackage = (PackageNode) packages.getSelectedItem();
+		    AV.wizSetPanel.open();
+		    AV.wizSetPanel.reset();
+		}
 	    }
 	});
 	updateLast(packages);
 	Add(packages);
 
-	or = new LLabel("-OR-", AV.AVFont, AV.green);
+	or = new LLabel("Or create a new package:", AV.AVFont, AV.green);
 	or.addShadow();
-	setPlacement(or);
+	or.centerOn(packages, packages.getBottom() + 50);
 	Add(or);
 
 	newPackageField = new LTextField("New Package", AV.AVFont, AV.yellow);
@@ -75,11 +69,14 @@ public class WizPackages extends SPQuestionPanel {
 	    public void actionPerformed(ActionEvent e) {
 		String trimmed = newPackageField.getText().trim();
 		if (!trimmed.equals("")) {
-		    File f = new File(AVFileVars.AVPackagesDir + newPackageField.getText());
+		    File f = new File(AVFileVars.AVPackagesDir + trimmed);
 		    Ln.makeDirs(f);
 		    PackageNode packageNode = new PackageNode(f, PackageNode.Type.PACKAGE);
 		    WizNewPackage.newPackage.targetPackage = packageNode;
 		    AV.wizSetPanel.open();
+		    AV.wizSetPanel.reset();
+		} else {
+		    newPackageField.highlightChanged();
 		}
 	    }
 	});
@@ -108,9 +105,16 @@ public class WizPackages extends SPQuestionPanel {
 
     @Override
     public void onOpen(SPMainMenuPanel parent_) {
+	editing.setVisible(false);
+	SUMGUI.helpPanel.setTitle("AV Package");
+	SUMGUI.helpPanel.setContent("An AV Package is a collection of textures that are organized in a way "
+		+ "that AV can understand.\n\n"
+		+ "A single package should contain all the variants from a single author.");
+	SUMGUI.helpPanel.hideArrow();
 	WizNewPackage.newPackage = new WizNewPackage();
 	loadPackages();
 	newPackageField.setText("");
+	newPackageField.clearHighlight();
 	packages.reset();
     }
 }

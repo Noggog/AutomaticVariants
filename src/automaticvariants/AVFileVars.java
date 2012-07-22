@@ -956,7 +956,7 @@ public class AVFileVars {
     /*
      * Other Methods
      */
-    static FormID getUsedSkin(NPC_ npcSrc) {
+    static public FormID getUsedSkin(NPC_ npcSrc) {
 	if (!npcSrc.getSkin().equals(FormID.NULL)) {
 	    return npcSrc.getSkin();
 	} else {

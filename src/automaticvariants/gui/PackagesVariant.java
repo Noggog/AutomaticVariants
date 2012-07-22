@@ -6,8 +6,9 @@ package automaticvariants.gui;
 
 import automaticvariants.AV;
 import automaticvariants.AVSaveFile.Settings;
-import automaticvariants.SpecFile;
+import automaticvariants.PackageNode;
 import automaticvariants.SpecVariant;
+import automaticvariants.Variant;
 import lev.gui.*;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SUMGUI;
@@ -31,7 +32,7 @@ public class PackagesVariant extends PackagesSpecs {
     LTextField nameAffix;
 
     public PackagesVariant(SPMainMenuPanel parent_) {
-	super(parent_, "Variant Specifications");
+	super(parent_, "Variant Specs");
     }
 
     @Override
@@ -100,29 +101,30 @@ public class PackagesVariant extends PackagesSpecs {
     }
 
     @Override
-    public void load(String name, SpecFile s) {
-	super.load(name, s);
-	SpecVariant v = (SpecVariant) s;
+    public void load(PackageNode n) {
+	super.load(n);
+	Variant v = (Variant) n;
+	SpecVariant s = v.spec;
 
-	author.setText(v.Author);
+	author.setText(s.Author);
 
-	probDiv.setValue(v.Probability_Divider);
+	probDiv.setValue(s.Probability_Divider);
 
 //	region.load(v.spec.Region_Include);
 //
 //	exclusiveRegion.setSelected(v.spec.Exclusive_Region);
 
-	health.setValue(v.Health_Mult);
-	magicka.setValue(v.Magicka_Mult);
-	stamina.setValue(v.Stamina_Mult);
-	speed.setValue(v.Speed_Mult);
-	height.setValue(v.Height_Mult);
+	health.setValue(s.Health_Mult);
+	magicka.setValue(s.Magicka_Mult);
+	stamina.setValue(s.Stamina_Mult);
+	speed.setValue(s.Speed_Mult);
+	height.setValue(s.Height_Mult);
 
-	namePrefix.setText(v.Name_Prefix);
+	namePrefix.setText(s.Name_Prefix);
 
-	nameAffix.setText(v.Name_Affix);
+	nameAffix.setText(s.Name_Affix);
 
-	target = v;
+	target = s;
     }
 
     @Override

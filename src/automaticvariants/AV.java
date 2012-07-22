@@ -82,6 +82,8 @@ public class AV implements SUM {
     static public WizPackages wizPackagesPanel;
     static public WizSet wizSetPanel;
     static public WizSetManual wizSetManualPanel;
+    static public WizGenTexture wizGenPanel;
+    static public WizVariant wizVarPanel;
     static public WizGroup wizGroupPanel;
     static public SettingsOther otherPanel;
     static public StatsPanel heightPanel;
@@ -472,7 +474,9 @@ public class AV implements SUM {
 	wizPackagesPanel = new WizPackages(settingsMenu);
 	wizSetPanel = new WizSet(settingsMenu);
 	wizSetManualPanel = new WizSetManual(settingsMenu);
+	wizGenPanel = new WizGenTexture(settingsMenu);
 	wizGroupPanel = new WizGroup(settingsMenu);
+	wizVarPanel = new WizVariant(settingsMenu);
 	packageManagerConfig = settingsMenu.addMenu(packagesManagerPanel, false, save, Settings.PACKAGES_ON);
 
 //	heightPanel = new SettingsStatsPanel(settingsMenu);

@@ -19,7 +19,7 @@ public class PackagesVariantSet extends PackagesSpecs {
     LFormIDPicker seeds;
 
     public PackagesVariantSet(SPMainMenuPanel parent_) {
-	super(parent_, "Variant Set Specifications");
+	super(parent_, "Variant Set Specs");
     }
 
     @Override
