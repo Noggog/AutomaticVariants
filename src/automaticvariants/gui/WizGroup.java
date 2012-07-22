@@ -65,6 +65,12 @@ public class WizGroup extends WizTemplate {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		String trimmed = newGroupField.getText().trim();
+		for (PackageNode p : WizNewPackage.newPackage.targetSet.getAll(PackageNode.Type.VARGROUP)) {
+		    if (p.src.getName().equalsIgnoreCase(trimmed)) {
+			trimmed = "";
+			break;
+		    }
+		}
 		if (!trimmed.equals("")) {
 		    File f = new File(WizNewPackage.newPackage.targetSet.src.getPath() + "\\" + trimmed);
 		    Ln.makeDirs(f);
@@ -83,7 +89,10 @@ public class WizGroup extends WizTemplate {
     public void onOpen(SPMainMenuPanel parent_) {
 	groups.reset();
 	loadGroups();
-	editing.load(WizNewPackage.newPackage.targetSet);
+	editing.load(WizNewPackage.newPackage.targetPackage
+		, WizNewPackage.newPackage.targetSet
+		, null
+		, null);
 	mainHelp();
     }
 

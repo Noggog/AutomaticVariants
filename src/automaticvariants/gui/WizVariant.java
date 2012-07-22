@@ -5,8 +5,6 @@
 package automaticvariants.gui;
 
 import automaticvariants.AV;
-import automaticvariants.AVFileVars;
-import automaticvariants.PackageNode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -14,7 +12,6 @@ import lev.Ln;
 import lev.gui.LList;
 import lev.gui.LTextField;
 import skyproc.gui.SPMainMenuPanel;
-import skyproc.gui.SPQuestionPanel;
 import skyproc.gui.SUMGUI;
 
 /**
@@ -67,7 +64,10 @@ public class WizVariant extends WizTemplate {
 	    SUMGUI.helpPanel.setTitle("Create Variant");
 	    SUMGUI.helpPanel.setContent("Add the textures that make this variant unique from the others.");
 	    SUMGUI.helpPanel.hideArrow();
-	    editing.load(WizNewPackage.newPackage.targetGroup);
+	    editing.load(WizNewPackage.newPackage.targetPackage
+		, WizNewPackage.newPackage.targetSet
+		, WizNewPackage.newPackage.targetGroup
+		, null);
 	}
     }
 

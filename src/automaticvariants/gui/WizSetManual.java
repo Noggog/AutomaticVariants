@@ -161,7 +161,10 @@ public class WizSetManual extends WizTemplate {
     @Override
     public void onOpen(SPMainMenuPanel parent) {
 	mainHelp();
-	editing.load(WizNewPackage.newPackage.targetPackage);
+	editing.load(WizNewPackage.newPackage.targetPackage
+		, WizNewPackage.newPackage.targetSet
+		, null
+		, null);
     }
 
     public void reset() {

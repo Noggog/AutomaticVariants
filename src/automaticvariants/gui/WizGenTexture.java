@@ -65,7 +65,10 @@ public class WizGenTexture extends WizTemplate {
     @Override
     public void onOpen(SPMainMenuPanel parent) {
 	if (AV.wizGenPanel.isVisible()) {
-	    editing.load(WizNewPackage.newPackage.targetSet);
+	    editing.load(WizNewPackage.newPackage.targetPackage
+		    , WizNewPackage.newPackage.targetSet
+		    , null
+		    , null);
 	    SUMGUI.helpPanel.setDefaultPos();
 	    SUMGUI.helpPanel.setTitle("Common Textures");
 	    SUMGUI.helpPanel.setContent("Sometimes you have common textures that each variant will use.  A good example "

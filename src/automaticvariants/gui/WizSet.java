@@ -158,6 +158,12 @@ public class WizSet extends WizTemplate {
 
     boolean checkName() {
 	String trimmed = newSetName.getText().trim();
+	for (PackageNode p : WizNewPackage.newPackage.targetPackage.getAll(PackageNode.Type.VARSET)) {
+	    if (p.src.getName().equalsIgnoreCase(trimmed)) {
+		trimmed = "";
+		break;
+	    }
+	}
 	if (!trimmed.equals("")) {
 	    File f = new File(WizNewPackage.newPackage.targetPackage.src.getPath() + "\\" + trimmed);
 	    Ln.makeDirs(f);
@@ -172,7 +178,10 @@ public class WizSet extends WizTemplate {
     @Override
     public void onOpen(SPMainMenuPanel parent_) {
 	mainHelp();
-	editing.load(WizNewPackage.newPackage.targetPackage);
+	editing.load(WizNewPackage.newPackage.targetPackage
+		, null
+		, null
+		, null);
 	newSetName.clearHighlight();
     }
 

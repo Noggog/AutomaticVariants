@@ -68,6 +68,12 @@ public class WizPackages extends WizTemplate {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		String trimmed = newPackageField.getText().trim();
+		for (PackageNode p : AVFileVars.AVPackages.getAll(PackageNode.Type.PACKAGE)) {
+		    if (p.src.getName().equalsIgnoreCase(trimmed)) {
+			trimmed = "";
+			break;
+		    }
+		}
 		if (!trimmed.equals("")) {
 		    File f = new File(AVFileVars.AVPackagesDir + trimmed);
 		    Ln.makeDirs(f);

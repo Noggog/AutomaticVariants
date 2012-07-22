@@ -48,7 +48,6 @@ public class PackageEditing extends LComponent {
     }
 
     void load(PackageNode n) {
-	setVisible(true);
 	String name = n.printName();
 	if (n.type != PackageNode.Type.PACKAGE) {
 	    packageName.setText(name.substring(0, name.indexOf(" - ")));
@@ -57,6 +56,31 @@ public class PackageEditing extends LComponent {
 	    packageName.setText(name);
 	    variantName.setText("");
 	}
+	load();
+    }
+
+    void load(PackageNode p, PackageNode s, PackageNode g, PackageNode v) {
+	if (p == null) {
+	    packageName.setText("");
+	} else {
+	    packageName.setText(p.src.getName());
+	}
+	if (s == null) {
+	    variantName.setText("");
+	} else {
+	    String str = s.src.getName();
+	    if (g != null) {
+		str += " - " + g.src.getName();
+	    }
+	    if (v != null) {
+		str += " - " + v.src.getName();
+	    }
+	    variantName.setText(str);
+	}
+	load();
+    }
+
+    private void load() {
 	int totalLength;
 	if (variantName.getWidth() > packageName.getWidth()) {
 	    totalLength = variantName.getWidth();
@@ -68,6 +92,7 @@ public class PackageEditing extends LComponent {
 	variantName.setLocation(packageName.getX(), variantName.getY());
 	setSize(totalLength, getSize().height);
 	this.centerIn(center, getY());
+	setVisible(true);
     }
 
     @Override
