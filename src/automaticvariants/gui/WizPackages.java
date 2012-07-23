@@ -72,7 +72,6 @@ public class WizPackages extends WizTemplate {
 		}
 		if (!trimmed.equals("")) {
 		    File f = new File(AVFileVars.AVPackagesDir + trimmed);
-		    Ln.makeDirs(f);
 		    PackageNode packageNode = new PackageNode(f, PackageNode.Type.PACKAGE);
 		    WizNewPackage.newPackage.targetPackage = packageNode;
 		    AV.wizSetPanel.open();
@@ -113,7 +112,8 @@ public class WizPackages extends WizTemplate {
 		+ "that AV can understand.\n\n"
 		+ "A single package should contain all the variants from a single author.");
 	SUMGUI.helpPanel.hideArrow();
-	WizNewPackage.newPackage = new WizNewPackage();
+	WizNewPackage.open = true;
+	WizNewPackage.newPackage.clear();
 	loadPackages();
 	newPackageField.setText("");
 	newPackageField.clearHighlight();

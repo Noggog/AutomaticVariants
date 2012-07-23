@@ -7,6 +7,7 @@ package automaticvariants.gui;
 import automaticvariants.PackageNode;
 import java.io.File;
 import java.util.ArrayList;
+import lev.Ln;
 import skyproc.ARMO;
 
 /**
@@ -15,11 +16,29 @@ import skyproc.ARMO;
  */
 public class WizNewPackage {
 
-    public static WizNewPackage newPackage;
+    static boolean open = false;
 
+    public static WizNewPackage newPackage = new WizNewPackage();
     PackageNode targetPackage;
     PackageNode targetSet;
     ArrayList<ARMO> targetSkins;
     ArrayList<File> genTextures;
     PackageNode targetGroup;
+    PackageNode targetVariant;
+    ArrayList<File> varTextures;
+
+    public void save() {
+	File tmp = new File(targetVariant.src.getPath() + "\\tmp");
+	Ln.makeDirs(tmp);
+    }
+
+    public void clear() {
+	targetPackage = null;
+	targetSet = null;
+	targetSkins = null;
+	genTextures = null;
+	targetGroup = null;
+	targetVariant = null;
+	varTextures = null;
+    }
 }

@@ -5,6 +5,7 @@
 package automaticvariants.gui;
 
 import automaticvariants.AV;
+import automaticvariants.PackageNode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -55,6 +56,8 @@ public class WizVariant extends WizTemplate {
 	varTextures.putUnder(nameField, x, spacing);
 	varTextures.setSize(settingsPanel.getWidth() - x * 2, 250);
 	Add(varTextures);
+
+	setNext(AV.wizVarSpecPanel);
     }
 
     @Override
@@ -64,24 +67,51 @@ public class WizVariant extends WizTemplate {
 	    SUMGUI.helpPanel.setTitle("Create Variant");
 	    SUMGUI.helpPanel.setContent("Add the textures that make this variant unique from the others.");
 	    SUMGUI.helpPanel.hideArrow();
-	    editing.load(WizNewPackage.newPackage.targetPackage
-		, WizNewPackage.newPackage.targetSet
-		, WizNewPackage.newPackage.targetGroup
-		, null);
+	    editing.load(WizNewPackage.newPackage.targetPackage, WizNewPackage.newPackage.targetSet, WizNewPackage.newPackage.targetGroup, null);
+	    nameField.clearHighlight();
+	    varTextures.clearHighlight();
 	}
     }
 
     @Override
     public boolean testNext() {
-	boolean pass = true;
-	if (nameField.getText().trim().equals("")) {
-	    pass = false;
+	String trimmed = nameField.getText().trim();
+	if (trimmed.equals("")) {
 	    nameField.highlightChanged();
+	    return false;
+	} else {
+	    nameField.clearHighlight();
+	}
+	for (PackageNode p : WizNewPackage.newPackage.targetGroup.getAll(PackageNode.Type.VAR)) {
+	    if (p.src.getName().equalsIgnoreCase(trimmed)) {
+		return false;
+	    }
 	}
 	if (varTextures.getAll().isEmpty()) {
-	    pass = false;
 	    varTextures.highlightChanged();
+	    return false;
+	} else {
+	    varTextures.clearHighlight();
 	}
-	return pass;
+	return true;
+    }
+
+    public void reset() {
+	nameField.setText("");
+	varTextures.clear();
+    }
+
+    @Override
+    public void onNext() {
+	String trimmed = nameField.getText().trim();
+	File f = new File(WizNewPackage.newPackage.targetGroup.src.getPath() + "\\" + trimmed );
+	PackageNode packageNode = new PackageNode(f, PackageNode.Type.VAR);
+	WizNewPackage.newPackage.targetVariant = packageNode;
+	WizNewPackage.newPackage.varTextures = varTextures.getAll();
+
+	AV.wizVarSpecPanel.open();
+	AV.wizVarSpecPanel.setBack(AV.wizVarPanel);
+	AV.wizVarSpecPanel.setNext(AV.wizAnother);
+	AV.wizVarSpecPanel.editing.load(WizNewPackage.newPackage.targetPackage, WizNewPackage.newPackage.targetSet, WizNewPackage.newPackage.targetGroup, WizNewPackage.newPackage.targetVariant);
     }
 }

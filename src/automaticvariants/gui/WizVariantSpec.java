@@ -4,12 +4,13 @@
  */
 package automaticvariants.gui;
 
-import automaticvariants.AV;
+import automaticvariants.*;
 import automaticvariants.AVSaveFile.Settings;
-import automaticvariants.PackageNode;
-import automaticvariants.SpecVariant;
-import automaticvariants.Variant;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lev.gui.*;
+import skyproc.SPGlobal;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SUMGUI;
 
@@ -32,7 +33,7 @@ public class WizVariantSpec extends PackagesSpecs {
     LTextField nameAffix;
 
     public WizVariantSpec(SPMainMenuPanel parent_) {
-	super(parent_, "Variant Specs");
+	super(parent_, "Variant Spec");
     }
 
     @Override
@@ -98,6 +99,15 @@ public class WizVariantSpec extends PackagesSpecs {
 
 	alignRight();
 
+    }
+
+    @Override
+    public void onNext() {
+	if (WizNewPackage.open) {
+	    WizNewPackage.newPackage.save();
+	} else {
+	    super.onNext();
+	}
     }
 
     @Override

@@ -77,8 +77,9 @@ public class AV implements SUM {
     static public SPMainMenuConfig packageManagerConfig;
     static public PackagesManager packagesManagerPanel;
     static public PackagesOther packagesOtherPanel;
-    static public WizVariantSpec packagesVariantPanel;
-    static public PackagesVariantSet packagesVariantSetPanel;
+    static public WizVariantSpec wizVarSpecPanel;
+    static public PackagesVariantSet wizVarSetSpecPanel;
+    static public WizAnother wizAnother;
     static public WizPackages wizPackagesPanel;
     static public WizSet wizSetPanel;
     static public WizSetManual wizSetManualPanel;
@@ -469,8 +470,9 @@ public class AV implements SUM {
 
 	packagesManagerPanel = new PackagesManager(settingsMenu);
 	packagesOtherPanel = new PackagesOther(settingsMenu);
-	packagesVariantPanel = new WizVariantSpec(settingsMenu);
-	packagesVariantSetPanel = new PackagesVariantSet(settingsMenu);
+	wizVarSpecPanel = new WizVariantSpec(settingsMenu);
+	wizVarSetSpecPanel = new PackagesVariantSet(settingsMenu);
+	wizAnother = new WizAnother(settingsMenu);
 	wizPackagesPanel = new WizPackages(settingsMenu);
 	wizSetPanel = new WizSet(settingsMenu);
 	wizSetManualPanel = new WizSetManual(settingsMenu);

@@ -14,6 +14,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
@@ -202,7 +204,7 @@ public class PackagesManager extends SPSettingPanel {
 	PackageNode.display = display;
 
 	try {
-	    loadPackageList();
+	    loadInactivePackageList();
 	} catch (FileNotFoundException ex) {
 	    SPGlobal.logException(ex);
 	} catch (IOException ex) {
@@ -213,6 +215,7 @@ public class PackagesManager extends SPSettingPanel {
 
     @Override
     public void onOpen(SPMainMenuPanel parent_) {
+	SUMGUI.helpPanel.setDefaultPos();
 	SUMGUI.helpPanel.clearBottomArea();
 	SUMGUI.helpPanel.addToBottomArea(display);
 	SUMGUI.helpPanel.setBottomAreaHeight(SUMGUI.rightDimensions.width);
@@ -266,7 +269,7 @@ public class PackagesManager extends SPSettingPanel {
 	    PackageNode p = getSelectedComponent();
 	    enableSelection(true);
 	    p.moveNode();
-	    loadPackageList();
+	    loadInactivePackageList();
 
 	    // Select the same node
 	    p = (PackageNode) tree.getPathForRow(row).getLastPathComponent();
@@ -278,9 +281,9 @@ public class PackagesManager extends SPSettingPanel {
 	    }
 
 	    p.consolidateCommonFiles();
-	    loadPackageList();
+	    loadInactivePackageList();
 	    PackageNode.rerouteFiles(p.getDuplicateFiles());
-	    loadPackageList();
+	    loadInactivePackageList();
 
 	    long after = p.fileSize();
 	    if (SPGlobal.logging()) {
@@ -293,8 +296,6 @@ public class PackagesManager extends SPSettingPanel {
 		    + "    Ending size: " + Ln.toMB(after) + " MB<br>"
 		    + "    Saved space: " + Ln.toMB(before - after) + " MB"
 		    + "</html>");
-	} catch (FileNotFoundException ex) {
-	    SPGlobal.logException(ex);
 	} catch (IOException ex) {
 	    SPGlobal.logException(ex);
 	}
@@ -304,16 +305,18 @@ public class PackagesManager extends SPSettingPanel {
 	PackageNode p = getSelectedComponent();
 	switch (p.type) {
 	    case VAR:
-		AV.packagesVariantPanel.open();
+		AV.wizVarSpecPanel.open();
 		Variant v = ((Variant) p);
-		AV.packagesVariantPanel.load(v);
-		AV.packagesVariantPanel.setNext(this);
+		AV.wizVarSpecPanel.load(v);
+		AV.wizVarSpecPanel.setNext(this);
+		AV.wizVarSpecPanel.setBack(null);
 		break;
 	    case VARSET:
-		AV.packagesVariantSetPanel.open();
+		AV.wizVarSetSpecPanel.open();
 		VariantSet vs = ((VariantSet) p);
-		AV.packagesVariantSetPanel.load(vs);
-		AV.packagesVariantSetPanel.setNext(this);
+		AV.wizVarSetSpecPanel.load(vs);
+		AV.wizVarSetSpecPanel.setNext(this);
+		AV.wizVarSetSpecPanel.setBack(null);
 		break;
 	    case PACKAGE:
 
@@ -321,7 +324,7 @@ public class PackagesManager extends SPSettingPanel {
 	}
     }
 
-    public void loadPackageList() throws FileNotFoundException, IOException {
+    public static void loadInactivePackageList() throws IOException {
 
 	boolean logging = SPGlobal.loggingAsync();
 	SPGlobal.loggingAsync(false);
@@ -340,5 +343,14 @@ public class PackagesManager extends SPSettingPanel {
 
 	AVFileVars.AVPackages.sort();
 	tree.setModel(new DefaultTreeModel(AVFileVars.AVPackages));
+    }
+
+    public static void reloadPackageList(){
+	try {
+	    AVFileVars.importVariants();
+	    loadInactivePackageList();
+	} catch (IOException ex) {
+	    SPGlobal.logException(ex);
+	}
     }
 }

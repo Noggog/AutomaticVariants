@@ -39,4 +39,11 @@ public class WizTemplate extends SPQuestionPanel {
 	setQuestionColor(AV.green);
 
     }
+
+    @Override
+    public void onCancel() {
+	WizNewPackage.newPackage.clear();
+	WizNewPackage.open = false;
+    }
+
 }

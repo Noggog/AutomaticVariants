@@ -131,7 +131,7 @@ public class AVFileVars {
     /*
      * Shared methods
      */
-    public static void importVariants() throws FileNotFoundException, IOException {
+    public static void importVariants() throws IOException {
 	String header = "Import Variants";
 	File AVPackagesDirFile = new File(SPGlobal.SUMpath + AVPackagesDir);
 

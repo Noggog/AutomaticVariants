@@ -42,13 +42,14 @@ public class WizGroup extends WizTemplate {
 
 	groups = new LSearchComboBox("Existing Group", AV.AVFont, AV.yellow);
 	groups.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
-	groups.putUnder(question, x, spacing);
+	groups.putUnder(question, x, spacing - 25);
 	groups.addEnterButton("Next", new ActionListener() {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		WizNewPackage.newPackage.targetGroup = (PackageNode) groups.getSelectedItem();
 		AV.wizVarPanel.open();
+		AV.wizVarPanel.reset();
 	    }
 	});
 	Add(groups);
@@ -69,10 +70,10 @@ public class WizGroup extends WizTemplate {
 		}
 		if (!trimmed.equals("")) {
 		    File f = new File(WizNewPackage.newPackage.targetSet.src.getPath() + "\\" + trimmed);
-		    Ln.makeDirs(f);
 		    PackageNode packageNode = new PackageNode(f, PackageNode.Type.VARGROUP);
 		    WizNewPackage.newPackage.targetGroup = packageNode;
 		    AV.wizVarPanel.open();
+		    AV.wizVarPanel.reset();
 		} else {
 		    newGroupField.highlightChanged();
 		}
@@ -85,10 +86,7 @@ public class WizGroup extends WizTemplate {
     public void onOpen(SPMainMenuPanel parent_) {
 	groups.reset();
 	loadGroups();
-	editing.load(WizNewPackage.newPackage.targetPackage
-		, WizNewPackage.newPackage.targetSet
-		, null
-		, null);
+	editing.load(WizNewPackage.newPackage.targetPackage, WizNewPackage.newPackage.targetSet, null, null);
 	mainHelp();
     }
 

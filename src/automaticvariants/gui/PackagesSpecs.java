@@ -32,6 +32,8 @@ public class PackagesSpecs extends WizTemplate {
 	nextButton.setText("Save");
 	nextButton.setSize(45, nextButton.getHeight());
 	nextButton.setLocation(settingsPanel.getWidth() - nextButton.getWidth() - 15, nextButton.getY());
+
+	setNext(AV.packagesManagerPanel);
     }
 
     @Override

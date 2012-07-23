@@ -70,7 +70,7 @@ public class WizSet extends WizTemplate {
 	Add(locateTargetSkins);
 
 	analyzeTexture = new LButton("Use Tool to Locate Skins");
-	analyzeTexture.setSize(220, 60);
+	analyzeTexture.setSize(200, 50);
 	analyzeTexture.centerOn(or, locateTargetSkins.getBottom() + spacing);
 	analyzeTexture.setFocusable(true);
 	analyzeTexture.addActionListener(new ActionListener() {
@@ -113,7 +113,7 @@ public class WizSet extends WizTemplate {
 	Add(analyzeTexture);
 
 	manualPick = new LButton("Pick Skins Manually");
-	manualPick.setSize(220, 60);
+	manualPick.setSize(200, 50);
 	manualPick.centerOn(or, analyzeTexture.getBottom() + spacing);
 	manualPick.addActionListener(new ActionListener() {
 
@@ -166,7 +166,6 @@ public class WizSet extends WizTemplate {
 	}
 	if (!trimmed.equals("")) {
 	    File f = new File(WizNewPackage.newPackage.targetPackage.src.getPath() + "\\" + trimmed);
-	    Ln.makeDirs(f);
 	    PackageNode packageNode = new PackageNode(f, PackageNode.Type.VARSET);
 	    WizNewPackage.newPackage.targetSet = packageNode;
 	    return true;
