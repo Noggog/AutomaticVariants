@@ -7,9 +7,12 @@ package automaticvariants.gui;
 import automaticvariants.AV;
 import automaticvariants.PackageNode;
 import automaticvariants.SpecVariant;
+import automaticvariants.SpecVariantSet;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lev.Ln;
 import skyproc.ARMO;
 import skyproc.SPGlobal;
@@ -21,7 +24,6 @@ import skyproc.SPGlobal;
 public class WizNewPackage {
 
     static boolean open = false;
-
     public static WizNewPackage newPackage = new WizNewPackage();
     PackageNode targetPackage;
     PackageNode targetSet;
@@ -55,10 +57,20 @@ public class WizNewPackage {
 	    }
 	}
 
+	// Save Var Set Spec File
+	if (targetSkins != null) {
+	    SpecVariantSet setSpec = new SpecVariantSet(targetSet.src);
+	    setSpec.loadSkins(targetSkins);
+	    try {
+		setSpec.export();
+	    } catch (IOException ex) {
+		SPGlobal.logException(ex);
+	    }
+	}
+
+
 	// Save Var Spec file
 	AV.wizVarSpecPanel.save();
-
-	
     }
 
     public void clear() {

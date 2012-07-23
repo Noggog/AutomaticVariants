@@ -61,7 +61,9 @@ public class WizSetManual extends WizTemplate {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		newSkins.addElement(skinPicker.getSelectedItem().m);
+		if (npcPicker.getSelectedItem() != null) {
+		    newSkins.addElement(skinPicker.getSelectedItem().m);
+		}
 	    }
 	});
 	skinPicker.putUnder(question, x, spacing);
@@ -101,10 +103,12 @@ public class WizSetManual extends WizTemplate {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		NPC_ npc = npcPicker.getSelectedItem().m;
-		ARMO skin = (ARMO) SPDatabase.getMajor(AVFileVars.getUsedSkin(npc), GRUP_TYPE.ARMO);
-		if (skin != null) {
-		    newSkins.addElement(skin);
+		if (npcPicker.getSelectedItem() != null) {
+		    NPC_ npc = npcPicker.getSelectedItem().m;
+		    ARMO skin = (ARMO) SPDatabase.getMajor(AVFileVars.getUsedSkin(npc), GRUP_TYPE.ARMO);
+		    if (skin != null) {
+			newSkins.addElement(skin);
+		    }
 		}
 	    }
 	});
@@ -163,10 +167,7 @@ public class WizSetManual extends WizTemplate {
     @Override
     public void onOpen(SPMainMenuPanel parent) {
 	mainHelp();
-	editing.load(WizNewPackage.newPackage.targetPackage
-		, WizNewPackage.newPackage.targetSet
-		, null
-		, null);
+	editing.load(WizNewPackage.newPackage.targetPackage, WizNewPackage.newPackage.targetSet, null, null);
     }
 
     public void reset() {

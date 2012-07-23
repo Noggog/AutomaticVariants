@@ -6,6 +6,7 @@ package automaticvariants;
 
 import java.io.File;
 import java.util.ArrayList;
+import skyproc.ARMO;
 import skyproc.GRUP_TYPE;
 import skyproc.SPGlobal;
 
@@ -15,10 +16,10 @@ import skyproc.SPGlobal;
  */
 public class SpecVariantSet extends SpecFile {
 
-    AVFileVars.VariantType type = AVFileVars.VariantType.NPC_;
-    String[][] Target_FormIDs = new String[0][];
+    public AVFileVars.VariantType type = AVFileVars.VariantType.NPC_;
+    public String[][] Target_FormIDs = new String[0][];
 
-    SpecVariantSet(File src) {
+    public SpecVariantSet(File src) {
 	super(src);
     }
 
@@ -31,6 +32,14 @@ public class SpecVariantSet extends SpecFile {
 	    out.add("   " + s[0] + " | " + s[1]);
 	}
 	return out;
+    }
+
+    public void loadSkins(ArrayList<ARMO> in) {
+	Target_FormIDs = new String[in.size()][2];
+	for (int i = 0 ; i < in.size() ; i++) {
+	    Target_FormIDs[i][0] = in.get(i).getFormStr().substring(0, 6);
+	    Target_FormIDs[i][1] = in.get(i).getFormStr().substring(6);
+	}
     }
 
     @Override
