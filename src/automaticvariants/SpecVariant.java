@@ -33,7 +33,7 @@ public class SpecVariant extends SpecFile {
 	super();
     }
 
-    SpecVariant(File src) {
+    public SpecVariant(File src) {
 	super(src);
     }
 

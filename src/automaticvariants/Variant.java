@@ -21,7 +21,7 @@ public class Variant extends PackageNode implements Serializable {
     public SpecVariant spec;
     static String depth = "* +   # ";
 
-    Variant(File variantDir) {
+    public Variant(File variantDir) {
 	super(variantDir, Type.VAR);
 	this.name = "";
 	String[] tmp = variantDir.getPath().split("\\\\");

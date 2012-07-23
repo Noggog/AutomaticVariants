@@ -9,6 +9,7 @@ import automaticvariants.PackageNode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import javax.swing.JFileChooser;
 import lev.Ln;
 import lev.gui.LList;
 import lev.gui.LTextField;
@@ -23,6 +24,7 @@ public class WizVariant extends WizTemplate {
 
     LTextField nameField;
     LList<File> varTextures;
+    File lastQuery = new File(".");
 
     public WizVariant(SPMainMenuPanel parent_) {
 	super(parent_, "Create Variant", AV.packagesManagerPanel, AV.wizGroupPanel);
@@ -45,7 +47,13 @@ public class WizVariant extends WizTemplate {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		File[] chosen = Ln.fileDialog();
+		JFileChooser fd = new JFileChooser(lastQuery);
+		fd.setMultiSelectionEnabled(true);
+		File[] chosen = new File[0];
+		if (fd.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+		    lastQuery = fd.getSelectedFile().getParentFile();
+		    chosen = fd.getSelectedFiles();
+		}
 		for (File f : chosen) {
 		    if (Ln.isFileType(f, "DDS")) {
 			varTextures.addElement(f);
@@ -104,7 +112,7 @@ public class WizVariant extends WizTemplate {
     @Override
     public void onNext() {
 	String trimmed = nameField.getText().trim();
-	File f = new File(WizNewPackage.newPackage.targetGroup.src.getPath() + "\\" + trimmed );
+	File f = new File(WizNewPackage.newPackage.targetGroup.src.getPath() + "\\" + trimmed);
 	PackageNode packageNode = new PackageNode(f, PackageNode.Type.VAR);
 	WizNewPackage.newPackage.targetVariant = packageNode;
 	WizNewPackage.newPackage.varTextures = varTextures.getAll();

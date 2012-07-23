@@ -38,7 +38,9 @@ public class PackagesSpecs extends WizTemplate {
 
     @Override
     public void onNext() {
-	save();
+	if (!WizNewPackage.open) {
+	    save();
+	}
     }
 
     public void save() {

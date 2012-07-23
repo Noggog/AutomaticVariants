@@ -102,19 +102,13 @@ public class WizVariantSpec extends PackagesSpecs {
     }
 
     @Override
-    public void onNext() {
-	if (WizNewPackage.open) {
-	    WizNewPackage.newPackage.save();
-	} else {
-	    super.onNext();
-	}
-    }
-
-    @Override
     public void load(PackageNode n) {
 	super.load(n);
 	Variant v = (Variant) n;
-	SpecVariant s = v.spec;
+	load(v.spec);
+    }
+
+    public void load(SpecVariant s) {
 
 	author.setText(s.Author);
 
@@ -135,6 +129,13 @@ public class WizVariantSpec extends PackagesSpecs {
 	nameAffix.setText(s.Name_Affix);
 
 	target = s;
+    }
+
+    @Override
+    public void onOpen(SPMainMenuPanel parent) {
+	if (WizNewPackage.open) {
+	    load(new SpecVariant(WizNewPackage.newPackage.targetVariant.src));
+	}
     }
 
     @Override

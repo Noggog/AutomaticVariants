@@ -51,11 +51,16 @@ public class WizAnother extends WizTemplate {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		WizNewPackage.open = false;
-		PackagesManager.reloadPackageList();
 		AV.packagesManagerPanel.open();
 	    }
 	});
 	Add(no);
 
+    }
+
+    @Override
+    public void onOpen(SPMainMenuPanel parent) {
+	WizNewPackage.newPackage.save();
+	PackagesManager.reloadPackageList();
     }
 }

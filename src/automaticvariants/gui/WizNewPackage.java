@@ -4,11 +4,15 @@
  */
 package automaticvariants.gui;
 
+import automaticvariants.AV;
 import automaticvariants.PackageNode;
+import automaticvariants.SpecVariant;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import lev.Ln;
 import skyproc.ARMO;
+import skyproc.SPGlobal;
 
 /**
  *
@@ -25,11 +29,36 @@ public class WizNewPackage {
     ArrayList<File> genTextures;
     PackageNode targetGroup;
     PackageNode targetVariant;
+    SpecVariant varSpec;
     ArrayList<File> varTextures;
 
     public void save() {
+	// Variant directory
 	File tmp = new File(targetVariant.src.getPath() + "\\tmp");
 	Ln.makeDirs(tmp);
+
+	// Copy common textures
+	for (File from : genTextures) {
+	    try {
+		Ln.copyFileToDir(from, targetSet.src);
+	    } catch (IOException ex) {
+		SPGlobal.logException(ex);
+	    }
+	}
+
+	// Copy Variant textures
+	for (File from : varTextures) {
+	    try {
+		Ln.copyFileToDir(from, targetVariant.src);
+	    } catch (IOException ex) {
+		SPGlobal.logException(ex);
+	    }
+	}
+
+	// Save Var Spec file
+	AV.wizVarSpecPanel.save();
+
+	
     }
 
     public void clear() {
