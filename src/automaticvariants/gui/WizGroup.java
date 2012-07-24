@@ -13,7 +13,7 @@ import java.io.File;
 import javax.swing.SwingUtilities;
 import lev.Ln;
 import lev.gui.LLabel;
-import lev.gui.LSearchComboBox;
+import lev.gui.LComboSearchBox;
 import lev.gui.LTextField;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPQuestionPanel;
@@ -25,7 +25,7 @@ import skyproc.gui.SUMGUI;
  */
 public class WizGroup extends WizTemplate {
 
-    LSearchComboBox groups;
+    LComboSearchBox groups;
     LTextField newGroupField;
 
     public WizGroup(SPMainMenuPanel parent_) {
@@ -40,7 +40,7 @@ public class WizGroup extends WizTemplate {
 
 	setQuestionText("Please select the group you want to add variants to.");
 
-	groups = new LSearchComboBox("Existing Group", AV.AVFont, AV.yellow);
+	groups = new LComboSearchBox("Existing Group", AV.AVFont, AV.yellow);
 	groups.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
 	groups.putUnder(question, x, spacing - 25);
 	groups.addEnterButton("Next", new ActionListener() {

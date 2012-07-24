@@ -5,6 +5,7 @@
 package automaticvariants.gui;
 
 import automaticvariants.AV;
+import java.io.File;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPQuestionPanel;
 import skyproc.gui.SPSettingPanel;
@@ -18,6 +19,7 @@ public class WizTemplate extends SPQuestionPanel {
     int x = 15;
     int fieldHeight = 65;
     PackageEditing editing;
+    static File lastQuery = new File(".");
 
     public WizTemplate(SPMainMenuPanel parent_, String title, SPSettingPanel cancel, SPSettingPanel back) {
 	super(parent_, title, AV.orange, cancel, back);

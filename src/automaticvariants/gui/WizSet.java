@@ -22,7 +22,7 @@ import skyproc.gui.SUMGUI;
  */
 public class WizSet extends WizTemplate {
 
-    LSearchComboBox sets;
+    LComboSearchBox sets;
     LLabel or;
     LTextField newSetName;
     LLabel locateTargetSkins;
@@ -39,7 +39,7 @@ public class WizSet extends WizTemplate {
 
 	setQuestionText("Please select the set you want to add variants to.");
 
-	sets = new LSearchComboBox("Existing Set", AV.AVFont, AV.yellow);
+	sets = new LComboSearchBox("Existing Set", AV.AVFont, AV.yellow);
 	sets.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
 	sets.putUnder(question, x, spacing + 5);
 	sets.addEnterButton("Next", new ActionListener() {

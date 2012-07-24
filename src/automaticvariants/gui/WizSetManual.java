@@ -28,8 +28,8 @@ import skyproc.gui.SUMGUI;
  */
 public class WizSetManual extends WizTemplate {
 
-    LSearchComboBox<EDIDdisplay<ARMO>> skinPicker;
-    LSearchComboBox<EDIDdisplay<NPC_>> npcPicker;
+    LComboSearchBox<EDIDdisplay<ARMO>> skinPicker;
+    LComboSearchBox<EDIDdisplay<NPC_>> npcPicker;
     TreeSet<String> skins;
     TreeSet<String> npcs;
     LList<ARMO> newSkins;
@@ -55,7 +55,7 @@ public class WizSetManual extends WizTemplate {
 
 	setQuestionText("Please select the skins your variant should target.");
 
-	skinPicker = new LSearchComboBox<>("Via Skin", AV.AVFont, AV.yellow);
+	skinPicker = new LComboSearchBox<>("Via Skin", AV.AVFont, AV.yellow);
 	skinPicker.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
 	skinPicker.addEnterButton("Add Skin", new ActionListener() {
 
@@ -96,7 +96,7 @@ public class WizSetManual extends WizTemplate {
 	});
 	Add(skinPicker);
 
-	npcPicker = new LSearchComboBox<>("Via NPC's Skin", AV.AVFont, AV.yellow);
+	npcPicker = new LComboSearchBox<>("Via NPC's Skin", AV.AVFont, AV.yellow);
 	npcPicker.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
 	npcPicker.putUnder(skinPicker, skinPicker.getX(), spacing);
 	npcPicker.addEnterButton("Add Skin", new ActionListener() {

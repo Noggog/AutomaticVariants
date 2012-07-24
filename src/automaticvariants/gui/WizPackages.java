@@ -23,7 +23,7 @@ import skyproc.gui.SUMGUI;
  */
 public class WizPackages extends WizTemplate {
 
-    LSearchComboBox packages;
+    LComboSearchBox packages;
     LTextField newPackageField;
 
     public WizPackages(SPMainMenuPanel parent_) {
@@ -39,7 +39,7 @@ public class WizPackages extends WizTemplate {
 	question.putUnder(header, question.getX(), 0);
 	setQuestionText("Please select the package to add your variant to.");
 
-	packages = new LSearchComboBox("Existing Package", AV.AVFont, AV.yellow);
+	packages = new LComboSearchBox("Existing Package", AV.AVFont, AV.yellow);
 	packages.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
 	packages.putUnder(question, x, spacing);
 	packages.addEnterButton("Next", new ActionListener() {

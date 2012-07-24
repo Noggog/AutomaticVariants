@@ -258,25 +258,17 @@ public class AVFileVars {
 			    SPGlobal.log(header, "  " + record);
 			}
 
-			// NPC's skin field
-			ARMO skin = (ARMO) SPDatabase.getMajor(record.getSkin(), GRUP_TYPE.ARMO);
-
+			// Get Skin
+			FormID skinID = getUsedSkin(record);
+			if (skinID == null) {
+			    SPGlobal.logError(header, "NPC did not have a skin: " + record);
+			}
+			ARMO skin = (ARMO) SPDatabase.getMajor(skinID, GRUP_TYPE.ARMO);
 			if (skin == null) {
-			    RACE race = (RACE) SPDatabase.getMajor(record.getRace(), GRUP_TYPE.RACE);
-			    if (race == null) {
-				SPGlobal.logError(header, "Could not locate RACE with FormID: " + record.getRace());
-				continue;
-			    } else if (SPGlobal.logging()) {
-				SPGlobal.log(header, "  " + race);
-			    }
-
-			    skin = (ARMO) SPDatabase.getMajor(race.getWornArmor(), GRUP_TYPE.ARMO);
-			    if (skin == null) {
-				SPGlobal.logError(header, "Could not locate ARMO with FormID: " + race.getWornArmor());
-				continue;
-			    } else if (SPGlobal.logging()) {
-				SPGlobal.log(header, "  " + skin);
-			    }
+			    SPGlobal.logError(header, "Could not locate ARMO with FormID: " + skinID);
+			    continue;
+			} else if (SPGlobal.logging()) {
+			    SPGlobal.log(header, "  " + skin);
 			}
 
 			// Didn't have a skin
@@ -408,7 +400,7 @@ public class AVFileVars {
 
     static boolean splitVariant(String nifPath, ARMA piece) throws IOException, BadParameter, DataFormatException {
 	AVFileVars.AV_Nif nif = new AVFileVars.AV_Nif(nifPath);
-	if(!nif.load()){
+	if (!nif.load()) {
 	    return false;
 	}
 	SPGlobal.log(header, "  Nif path: " + nifPath);

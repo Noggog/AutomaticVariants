@@ -8,6 +8,7 @@ import automaticvariants.AV;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import javax.swing.JFileChooser;
 import lev.Ln;
 import lev.gui.LList;
 import skyproc.gui.SPMainMenuPanel;
@@ -40,7 +41,13 @@ public class WizGenTexture extends WizTemplate {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		File[] chosen = Ln.fileDialog();
+		JFileChooser fd = new JFileChooser(lastQuery);
+		fd.setMultiSelectionEnabled(true);
+		File[] chosen = new File[0];
+		if (fd.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+		    lastQuery = fd.getSelectedFile().getParentFile();
+		    chosen = fd.getSelectedFiles();
+		}
 		for (File f : chosen) {
 		    if (Ln.isFileType(f, "DDS")) {
 			genTextures.addElement(f);

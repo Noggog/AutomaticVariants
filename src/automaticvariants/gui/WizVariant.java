@@ -24,7 +24,6 @@ public class WizVariant extends WizTemplate {
 
     LTextField nameField;
     LList<File> varTextures;
-    File lastQuery = new File(".");
 
     public WizVariant(SPMainMenuPanel parent_) {
 	super(parent_, "Create Variant", AV.packagesManagerPanel, AV.wizGroupPanel);
