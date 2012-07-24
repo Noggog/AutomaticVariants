@@ -116,9 +116,6 @@ public class VariantSet extends PackageNode implements Serializable {
 		    int avg = Math.round(sum);
 
 		    for (Variant v : flat) {
-			if (v.spec == null) {
-			    int wer = 23;
-			}
 			v.spec.Probability_Divider *= (avg * (groups.size() - 1));
 		    }
 

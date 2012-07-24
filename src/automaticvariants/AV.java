@@ -83,6 +83,7 @@ public class AV implements SUM {
     static public WizPackages wizPackagesPanel;
     static public WizSet wizSetPanel;
     static public WizSetManual wizSetManualPanel;
+    static public WizSetTool wizSetToolPanel;
     static public WizGenTexture wizGenPanel;
     static public WizVariant wizVarPanel;
     static public WizGroup wizGroupPanel;
@@ -475,6 +476,7 @@ public class AV implements SUM {
 	wizAnother = new WizAnother(settingsMenu);
 	wizPackagesPanel = new WizPackages(settingsMenu);
 	wizSetPanel = new WizSet(settingsMenu);
+	wizSetToolPanel = new WizSetTool(settingsMenu);
 	wizSetManualPanel = new WizSetManual(settingsMenu);
 	wizGenPanel = new WizGenTexture(settingsMenu);
 	wizGroupPanel = new WizGroup(settingsMenu);

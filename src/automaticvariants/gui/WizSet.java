@@ -78,6 +78,8 @@ public class WizSet extends WizTemplate {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		if (checkName()) {
+		    AV.wizSetToolPanel.open();
+		    AV.wizSetToolPanel.reset();
 		}
 	    }
 	});
