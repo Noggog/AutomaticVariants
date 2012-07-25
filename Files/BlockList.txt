@@ -1,0 +1,7 @@
+==ARMO BLOCKS==  //FormIDs
+069CE3Skyrim.esm // SkinNakedBeast
+000D64Skyrim.esm // SkinNaked
+
+==EDID BLOCKS==  //Strings case insensitive
+
+AudioTemplate

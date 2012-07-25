@@ -9,14 +9,13 @@ import automaticvariants.gui.PackageTree;
 import automaticvariants.gui.PackagesManager;
 import java.io.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
 import lev.LShrinkArray;
 import lev.Ln;
 import skyproc.*;
+import skyproc.ARMA.AltTexture;
 import skyproc.exceptions.BadParameter;
 import skyproc.exceptions.Uninitialized;
 import skyproc.gui.SPProgressBarPlug;
@@ -101,6 +100,8 @@ public class AVFileVars {
 	locateUnused();
 
 	loadProfiles();
+
+	sortVariantSets();
 
 	// Locate and load NIFs, and assign their variants
 	linkToNifs();
@@ -239,7 +240,7 @@ public class AVFileVars {
 	SPGlobal.newLog("Load Variant Profiles.txt");
 	locateUsedNIFs();
 	loadUsedNIFs();
-	loadUsedARMOs();
+	loadProfileRecords();
 	VariantProfile.printProfiles();
     }
 
@@ -257,7 +258,7 @@ public class AVFileVars {
 			    SPGlobal.log(header, "Skipping " + arma + " because it had no nif.");
 			    continue;
 			}
-			if (VariantProfile.find(null, null, null, nifPath, null) == null) {
+			if (VariantProfile.find(null, null, null, nifPath) == null) {
 			    VariantProfile profile = new VariantProfile();
 			    profile.nifPath = nifPath;
 			}
@@ -286,14 +287,14 @@ public class AVFileVars {
 	}
     }
 
-    public static void loadUsedARMOs() {
+    public static void loadProfileRecords() {
 	SPGlobal.log(header, "===========================================================");
 	SPGlobal.log(header, "================      Loading Records     =================");
 	SPGlobal.log(header, "===========================================================");
 	for (ARMO armo : AV.getMerger().getArmors()) {
 	    if (!unusedSkins.contains(armo.getForm())) {
 		if (!AV.block.contains(armo.getForm())) {
-		    loadUsedARMAs(armo);
+		    loadProfileSkin(armo);
 		} else {
 		    SPGlobal.log(header, "Blocked because it was on the blocklist: " + armo);
 		}
@@ -301,7 +302,7 @@ public class AVFileVars {
 	}
     }
 
-    public static void loadUsedARMAs(ARMO armo) {
+    public static void loadProfileSkin(ARMO armo) {
 	for (FormID armaForm : armo.getArmatures()) {
 	    // If a used piece
 	    if (!unusedPieces.containsKey(armo.getForm())
@@ -316,7 +317,7 @@ public class AVFileVars {
 
 		// Find profile with that nif
 		String nifPath = "MESHES\\" + arma.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
-		VariantProfile profile = VariantProfile.find(null, null, null, nifPath, null);
+		VariantProfile profile = VariantProfile.find(null, null, null, nifPath);
 
 
 		if (profile != null) {
@@ -332,9 +333,32 @@ public class AVFileVars {
 			    SPGlobal.log(header, "Duplicating for " + profile.nifPath + " || " + profile.race);
 			    profile = new VariantProfile(profile);
 			}
+			//Load in record setup
 			profile.race = r;
 			profile.skin = armo;
 			profile.piece = arma;
+
+			//Modify textures to AltTextures
+			for (AltTexture t : arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON)) {
+			    TXST txst = (TXST) SPDatabase.getMajor(t.getTexture(), GRUP_TYPE.TXST);
+			    ArrayList<String> altTextures = txst.getTextures();
+			    ArrayList<String> textures = profile.textures.get(t.getName());
+			    if (txst == null) {
+				SPGlobal.logError(profile.toString(), "Error locating txst with formID: " + t.getTexture());
+				continue;
+			    }
+			    if (textures == null) {
+				SPGlobal.logError(profile.toString(), "Error locating profile texture with name: " + t.getName());
+				continue;
+			    }
+			    for (int i = 0 ; i < altTextures.size() ; i++) {
+				if (altTextures.get(i) == null) {
+				    textures.set(i, "");
+				} else {
+				    textures.set(i, "TEXTURES\\" + altTextures.get(i).toUpperCase());
+				}
+			    }
+			}
 		    }
 		} else {
 		    SPGlobal.log(header, "Skipped " + arma + ", could not find a profile matching nif: " + nifPath);
@@ -342,36 +366,30 @@ public class AVFileVars {
 	    }
 	}
     }
-
-    public static ArrayList<String> loadNif(String nifPath, LShrinkArray in) {
+    
+    public static Map<String, ArrayList<String>> loadNif(String nifPath, LShrinkArray in) {
 	NIF nif;
-	ArrayList<String> out = new ArrayList<>();
+	Map<String, ArrayList<String>> nifTextures = new HashMap<>();
 	try {
 	    nif = new NIF(nifPath, in);
-	    ArrayList<ArrayList<String>> nifTextures = new ArrayList<>();
+	    nifTextures = nif.extractTextures();
 
-	    ArrayList<ArrayList<NIF.Node>> NiTriShapes = nif.getNiTriShapePackages();
-	    for (ArrayList<NIF.Node> nodes : NiTriShapes) {
-		for (NIF.Node n : nodes) {
-		    if (n.type == NIF.NodeType.BSSHADERTEXTURESET) {
-			nifTextures.add(NIF.extractBSTextures(n));
-		    }
-		}
-	    }
-
-	    for (ArrayList<String> list : nifTextures) {
-		for (String texPath : list) {
-		    if (!texPath.equals("")) {
-			out.add(texPath.toUpperCase());
-		    }
+	    for (ArrayList<String> list : nifTextures.values()) {
+		for (int i = 0; i < list.size(); i++) {
+		    list.set(i, list.get(i).toUpperCase());
 		}
 	    }
 
 	} catch (BadParameter | java.nio.BufferUnderflowException ex) {
 	    SPGlobal.logException(ex);
 	}
-	return out;
+	return nifTextures;
     }
+
+    public static void sortVariantSets() {
+
+    }
+
 
     static void linkToNifs() {
 	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Linking packages to .nif files.");

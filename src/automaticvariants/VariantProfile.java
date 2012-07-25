@@ -5,6 +5,7 @@
 package automaticvariants;
 
 import java.util.ArrayList;
+import java.util.Map;
 import lev.Ln;
 import skyproc.ARMA;
 import skyproc.ARMO;
@@ -22,7 +23,7 @@ public class VariantProfile {
     ARMO skin;
     ARMA piece;
     String nifPath;
-    ArrayList<String> textures;
+    Map<String, ArrayList<String>> textures;
     ArrayList<VariantSet> sets;
     int ID;
     static int nextID = 0;
@@ -42,9 +43,9 @@ public class VariantProfile {
 	sets = rhs.sets;
     }
 
-    public static VariantProfile find(RACE race, ARMO skin, ARMA piece, String nifPath, ArrayList<String> textures) {
+    public static VariantProfile find(RACE race, ARMO skin, ARMA piece, String nifPath) {
 	for (int i = 0; i < profiles.size(); i++) {
-	    if (profiles.get(i).is(race, skin, piece, nifPath, textures)) {
+	    if (profiles.get(i).is(race, skin, piece, nifPath)) {
 		return profiles.get(i);
 	    }
 	}
@@ -59,8 +60,10 @@ public class VariantProfile {
 	    String id = v.toString();
 	    SPGlobal.log(id, "==============================");
 	    SPGlobal.log(id, "NIF: " + v.nifPath);
-	    for (String s : v.textures) {
-		SPGlobal.log(id, "    " + s);
+	    for (String n : v.textures.keySet()) {
+		for (String s : v.textures.get(n)) {
+		    SPGlobal.log(id, "   " + n + ": " + s);
+		}
 	    }
 	    SPGlobal.log(id, "Race: " + v.race);
 	    SPGlobal.log(id, "Skin: " + v.skin);
@@ -73,7 +76,7 @@ public class VariantProfile {
 	return "ID: " + ID;
     }
 
-    public boolean is(RACE race, ARMO skin, ARMA piece, String nifPath, ArrayList<String> textures) {
+    public boolean is(RACE race, ARMO skin, ARMA piece, String nifPath) {
 	if (race != null && race != this.race) {
 	    return false;
 	}
@@ -85,11 +88,6 @@ public class VariantProfile {
 	}
 	if (nifPath != null && !nifPath.equalsIgnoreCase(this.nifPath)) {
 	    return false;
-	}
-	if (textures != null) {
-	    if (!Ln.equals(this.textures, textures, false)) {
-		return false;
-	    }
 	}
 	return true;
     }
