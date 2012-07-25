@@ -9,6 +9,8 @@ import automaticvariants.gui.PackageTree;
 import automaticvariants.gui.PackagesManager;
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
@@ -74,6 +76,7 @@ public class AVFileVars {
     // RaceSrc is key
     //////////////////
     static Map<FormID, AV_SPEL> switcherSpells = new HashMap<FormID, AV_SPEL>();
+    static public ArrayList<VariantProfile> profiles;
 
     static void setUpFileVariants(Mod source) throws IOException, Uninitialized, BadParameter {
 	if (SPGlobal.logging()) {
@@ -96,6 +99,8 @@ public class AVFileVars {
 
 	// Locate unused Races/Skins
 	locateUnused();
+
+	loadProfiles();
 
 	// Locate and load NIFs, and assign their variants
 	linkToNifs();
@@ -182,8 +187,11 @@ public class AVFileVars {
 
 	// Removed used races/skins/pieces
 	for (NPC_ n : source.getNPCs()) {
-	    unusedRaces.remove(n.getRace());
 	    FormID skin = getUsedSkin(n);
+	    if (AV.block.contains(skin)) {
+		continue;
+	    }
+	    unusedRaces.remove(n.getRace());
 	    unusedSkins.remove(skin);
 	    if (unusedPiecesTmp.containsKey(skin)) {
 		ArrayList<ARMA> tmpPieces = new ArrayList<ARMA>(unusedPiecesTmp.get(skin));
@@ -224,6 +232,145 @@ public class AVFileVars {
 		}
 	    }
 	}
+    }
+
+    public static void loadProfiles() {
+	profiles = VariantProfile.profiles;
+	SPGlobal.newLog("Load Variant Profiles.txt");
+	locateUsedNIFs();
+	loadUsedNIFs();
+	loadUsedARMOs();
+	VariantProfile.printProfiles();
+    }
+
+    public static void locateUsedNIFs() {
+	SPGlobal.log(header, "===========================================================");
+	SPGlobal.log(header, "===================      Loading NIFs     =================");
+	SPGlobal.log(header, "===========================================================");
+	for (ARMO armo : AV.getMerger().getArmors()) {
+	    if (!AVFileVars.unusedSkins.contains(armo.getForm())) {
+		for (FormID piece : armo.getArmatures()) {
+		    if (!AVFileVars.unusedPieces.get(armo.getForm()).contains(piece)) {
+			ARMA arma = (ARMA) SPDatabase.getMajor(piece, GRUP_TYPE.ARMA);
+			String nifPath = "MESHES\\" + arma.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
+			if (nifPath.equals("MESHES\\")) {
+			    SPGlobal.log(header, "Skipping " + arma + " because it had no nif.");
+			    continue;
+			}
+			if (VariantProfile.find(null, null, null, nifPath, null) == null) {
+			    VariantProfile profile = new VariantProfile();
+			    profile.nifPath = nifPath;
+			}
+		    }
+		}
+	    }
+	}
+    }
+
+    public static void loadUsedNIFs() {
+	for (VariantProfile profile : new ArrayList<>(VariantProfile.profiles)) {
+	    try {
+		LShrinkArray nifData = BSA.getUsedFile(profile.nifPath);
+		if (nifData != null) {
+		    profile.textures = loadNif(profile.nifPath, nifData);
+		    if (profile.textures.isEmpty()) {
+			VariantProfile.profiles.remove(profile);
+			SPGlobal.log(profile.toString(), "Removing profile with nif because it had no textures: " + profile.nifPath);
+		    }
+		} else {
+		    SPGlobal.logError(header, "Error locating nif file: " + profile.nifPath);
+		}
+	    } catch (IOException | DataFormatException ex) {
+		SPGlobal.logException(ex);
+	    }
+	}
+    }
+
+    public static void loadUsedARMOs() {
+	SPGlobal.log(header, "===========================================================");
+	SPGlobal.log(header, "================      Loading Records     =================");
+	SPGlobal.log(header, "===========================================================");
+	for (ARMO armo : AV.getMerger().getArmors()) {
+	    if (!unusedSkins.contains(armo.getForm())) {
+		if (!AV.block.contains(armo.getForm())) {
+		    loadUsedARMAs(armo);
+		} else {
+		    SPGlobal.log(header, "Blocked because it was on the blocklist: " + armo);
+		}
+	    }
+	}
+    }
+
+    public static void loadUsedARMAs(ARMO armo) {
+	for (FormID armaForm : armo.getArmatures()) {
+	    // If a used piece
+	    if (!unusedPieces.containsKey(armo.getForm())
+		    || !unusedPieces.get(armo.getForm()).contains(armaForm)) {
+		ARMA arma = (ARMA) SPDatabase.getMajor(armaForm, GRUP_TYPE.ARMA);
+
+		// Make sure it has a race
+		if (arma.getRace().isNull()) {
+		    SPGlobal.logError(header, arma + " skipped because it had no race.");
+		    continue;
+		}
+
+		// Find profile with that nif
+		String nifPath = "MESHES\\" + arma.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
+		VariantProfile profile = VariantProfile.find(null, null, null, nifPath, null);
+
+
+		if (profile != null) {
+		    Set<RACE> races = new HashSet<>();
+		    races.add((RACE) SPDatabase.getMajor(arma.getRace(), GRUP_TYPE.RACE));
+		    for (FormID raceID : arma.getAdditionalRaces()) {
+			races.add((RACE) SPDatabase.getMajor(raceID, GRUP_TYPE.RACE));
+		    }
+
+		    for (RACE r : races) {
+			//If profile is already filled, make duplicate
+			if (profile.race != null) {
+			    SPGlobal.log(header, "Duplicating for " + profile.nifPath + " || " + profile.race);
+			    profile = new VariantProfile(profile);
+			}
+			profile.race = r;
+			profile.skin = armo;
+			profile.piece = arma;
+		    }
+		} else {
+		    SPGlobal.log(header, "Skipped " + arma + ", could not find a profile matching nif: " + nifPath);
+		}
+	    }
+	}
+    }
+
+    public static ArrayList<String> loadNif(String nifPath, LShrinkArray in) {
+	NIF nif;
+	ArrayList<String> out = new ArrayList<>();
+	try {
+	    nif = new NIF(nifPath, in);
+	    ArrayList<ArrayList<String>> nifTextures = new ArrayList<>();
+
+	    ArrayList<ArrayList<NIF.Node>> NiTriShapes = nif.getNiTriShapePackages();
+	    for (ArrayList<NIF.Node> nodes : NiTriShapes) {
+		for (NIF.Node n : nodes) {
+		    if (n.type == NIF.NodeType.BSSHADERTEXTURESET) {
+			nifTextures.add(NIF.extractBSTextures(n));
+		    }
+		}
+	    }
+
+	    for (ArrayList<String> list : nifTextures) {
+		for (String texPath : list) {
+		    if (!texPath.equals("")) {
+			out.add(texPath.toUpperCase());
+		    }
+		}
+	    }
+
+	} catch (BadParameter | java.nio.BufferUnderflowException ex) {
+	    SPGlobal.logException(ex);
+	}
+	return out;
     }
 
     static void linkToNifs() {
