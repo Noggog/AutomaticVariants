@@ -6,10 +6,12 @@ package automaticvariants;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
 import lev.Ln;
-import skyproc.SPGlobal;
+import skyproc.*;
 
 /**
  *
@@ -18,7 +20,7 @@ import skyproc.SPGlobal;
 public class VariantSet extends PackageNode implements Serializable {
 
     ArrayList<VariantGroup> groups;
-    ArrayList<PackageNode> commonTextures = new ArrayList<PackageNode>(2);
+    ArrayList<PackageNode> commonTextures = new ArrayList<>(2);
     public SpecVariantSet spec;
     static String depth = "* +";
     ArrayList<Variant> flat;
@@ -92,12 +94,12 @@ public class VariantSet extends PackageNode implements Serializable {
     ArrayList<Variant> multiplyAndFlatten() {
 	if (flat == null) {
 	    mergeInGlobals();
-	    flat = new ArrayList<Variant>();
+	    flat = new ArrayList<>();
 	    if (!groups.isEmpty()) {
 		flat.addAll(groups.get(0).variants);
 		if (groups.size() > 1) {
 		    for (int i = 1; i < groups.size(); i++) {
-			ArrayList<Variant> tmp = new ArrayList<Variant>(flat.size() * groups.get(i).variants.size());
+			ArrayList<Variant> tmp = new ArrayList<>(flat.size() * groups.get(i).variants.size());
 			for (Variant a : flat) {
 			    for (Variant b : groups.get(i).variants) {
 				Variant merge = a.merge(b);
@@ -165,7 +167,7 @@ public class VariantSet extends PackageNode implements Serializable {
 	LMergeMap<File, File> duplicates = new LMergeMap<File, File>(false);
 	for (VariantGroup group : groups) {
 	    for (Variant var : group.variants) {
-		for (PackageNode tex : var.textures) {
+		for (PackageNode tex : var.texturesNode) {
 		    if (!tex.getClass().equals(RerouteFile.class)) {
 			boolean found = false;
 			for (File key : duplicates.keySet()) {
@@ -206,6 +208,36 @@ public class VariantSet extends PackageNode implements Serializable {
 	return true;
     }
 
+    public ArrayList<NPC_> getSeedNPCs() {
+	ArrayList<NPC_> seedNPCs = new ArrayList<>();
+	for (String[] s : spec.Target_FormIDs) {
+	    FormID id = new FormID(s[0], s[1]);
+	    NPC_ npc = (NPC_) SPDatabase.getMajor(id, GRUP_TYPE.NPC_);
+	    if (npc == null) {
+		SPGlobal.logError(src.getPath(), "Could not locate NPC with FormID: " + id);
+		continue;
+	    } else {
+		seedNPCs.add(npc);
+	    }
+	}
+	return seedNPCs;
+    }
+
+    public Set<String> getTextures() {
+	Set<String> out = new HashSet<>();
+	for (PackageNode p : commonTextures) {
+	    out.add(p.src.getName().toUpperCase());
+	}
+	for (VariantGroup g : groups) {
+	    for (Variant v : g.variants) {
+		for (PackageNode p : v.texturesNode) {
+		    out.add(p.src.getName().toUpperCase());
+		}
+	    }
+	}
+	return out;
+    }
+
     @Override
     public void finalizeComponent() {
 	mergeInGlobals();
@@ -218,6 +250,10 @@ public class VariantSet extends PackageNode implements Serializable {
 	}
     }
 
+    public AVPackage getPackage() {
+	return (AVPackage) getParent();
+    }
+
     @Override
     public String printSpec() {
 	if (spec != null) {
@@ -228,8 +264,8 @@ public class VariantSet extends PackageNode implements Serializable {
     }
 
     @Override
-    public String printName() {
+    public String printName(String spacer) {
 	PackageNode p = (PackageNode) this.getParent();
-	return p.printName() + " - " + src.getName();
+	return p.printName(spacer) + spacer + src.getName();
     }
 }

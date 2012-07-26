@@ -24,6 +24,8 @@ public class PackageEditing extends LComponent {
     LLabel variantName;
     Component center;
 
+    static String spacer = " - ";
+
     public PackageEditing(Component centerIn) {
 	super();
 
@@ -48,10 +50,10 @@ public class PackageEditing extends LComponent {
     }
 
     void load(PackageNode n) {
-	String name = n.printName();
+	String name = n.printName(spacer);
 	if (n.type != PackageNode.Type.PACKAGE) {
-	    packageName.setText(name.substring(0, name.indexOf(" - ")));
-	    variantName.setText(name.substring(name.indexOf(" - ") + 3));
+	    packageName.setText(name.substring(0, name.indexOf(spacer)));
+	    variantName.setText(name.substring(name.indexOf(spacer) + 3));
 	} else {
 	    packageName.setText(name);
 	    variantName.setText("");

@@ -12,10 +12,10 @@ import java.util.*;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
+import lev.LPair;
 import lev.LShrinkArray;
 import lev.Ln;
 import skyproc.*;
-import skyproc.ARMA.AltTexture;
 import skyproc.exceptions.BadParameter;
 import skyproc.exceptions.Uninitialized;
 import skyproc.gui.SPProgressBarPlug;
@@ -38,6 +38,7 @@ public class AVFileVars {
     public static String AVTexturesDir = SPGlobal.pathToData + "textures\\AV Packages\\";
     public static String AVMeshesDir = SPGlobal.pathToData + "meshes\\AV Packages\\";
     static String debugFolder = "File Variants/";
+    static int debugNumber = 1;
     static int numSupportedTextures = 8;
     public static PackageNode AVPackages = new PackageNode(new File(AVPackagesDir), PackageNode.Type.ROOT);
     /*
@@ -49,37 +50,22 @@ public class AVFileVars {
     static public LMergeMap<FormID, FormID> unusedPieces;
     // List of what races the armor "supports"
     static LMergeMap<FormID, FormID> armoRaces;
-    static Set<FormID> taggedNPCs = new HashSet<FormID>();
-    ///////////////////
-    // AV_Nif name is key
-    ///////////////////
-    static Map<String, AV_Nif> nifs = new HashMap<String, AV_Nif>();
-    static LMergeMap<String, ARMA> nifToARMA = new LMergeMap<String, ARMA>(false);
-    // Used to detect alt race variants
-    static LMergeMap<ARMO, FormID> ARMOToRace = new LMergeMap<ARMO, FormID>(false);
-    //////////////////
-    // ArmaSrc is key
-    //////////////////
-    static Map<FormID, String> armaToNif = new HashMap<FormID, String>();
-    static LMergeMap<FormID, ARMA_spec> armatures = new LMergeMap<FormID, ARMA_spec>(false);
-    //////////////////
-    // ArmoSrc is key for outer, race of arma piece is inner key
-    //////////////////
-    static Map<FormID, LMergeMap<FormID, ARMO_spec>> armors = new HashMap<FormID, LMergeMap<FormID, ARMO_spec>>();
+    static Set<FormID> taggedNPCs = new HashSet<>();
+    static Map<FormID, LMergeMap<FormID, ARMO_spec>> armors = new HashMap<>();
     //////////////////
     // RaceSrc of piece is key for outer, armo is inner key
     //////////////////
-    static Map<FormID, Map<FormID, FLST>> formLists = new HashMap<FormID, Map<FormID, FLST>>();
+    static Map<FormID, Map<FormID, FLST>> formLists = new HashMap<>();
     static LMergeMap<FormID, ARMO_spec> compiledVariants = new LMergeMap<FormID, ARMO_spec>(false);
     //////////////////
     // RaceSrc is key
     //////////////////
-    static Map<FormID, AV_SPEL> switcherSpells = new HashMap<FormID, AV_SPEL>();
+    static Map<FormID, AV_SPEL> switcherSpells = new HashMap<>();
     static public ArrayList<VariantProfile> profiles;
 
     static void setUpFileVariants(Mod source) throws IOException, Uninitialized, BadParameter {
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "1 - Import Packages.txt");
+	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Import Packages.txt");
 	    File f = new File(SPGlobal.pathToDebug() + "Asynchronous log.txt");
 	    if (f.isFile()) {
 		f.delete();
@@ -96,28 +82,17 @@ public class AVFileVars {
 	importVariants();
 	SPProgressBarPlug.incrementBar();
 
-	// Locate unused Races/Skins
 	locateUnused();
 
 	loadProfiles();
 
-	sortVariantSets();
+	dropVariantSetsInProfiles();
 
-	// Locate and load NIFs, and assign their variants
-	linkToNifs();
+	clearUnusedProfiles();
 
-	// Generate TXSTs
-	generateTXSTvariants();
-
-	// Generate ARMA dups that use TXSTs
-	generateARMAvariants(source);
-
-	// Generate ARMO dups that use ARMAs
-	generateARMOvariants(source);
+	generateRecords();
 
 	implementOrigAsVar();
-
-	printVariants();
 
 	skinSwitchMethod(source);
     }
@@ -216,7 +191,7 @@ public class AVFileVars {
 	}
 
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "2 - Locate Unused.txt");
+	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Locate Unused.txt");
 	    SPGlobal.log(header, "Unused Races:");
 	    for (FormID race : unusedRaces) {
 		SPGlobal.log(header, "  " + SPDatabase.getMajor(race, GRUP_TYPE.RACE));
@@ -236,8 +211,10 @@ public class AVFileVars {
     }
 
     public static void loadProfiles() {
+	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Load Variant Profiles.txt");
+	}
 	profiles = VariantProfile.profiles;
-	SPGlobal.newLog("Load Variant Profiles.txt");
 	locateUsedNIFs();
 	loadUsedNIFs();
 	loadProfileRecords();
@@ -273,7 +250,13 @@ public class AVFileVars {
 	    try {
 		LShrinkArray nifData = BSA.getUsedFile(profile.nifPath);
 		if (nifData != null) {
-		    profile.textures = loadNif(profile.nifPath, nifData);
+		    if (profile.ID == 93) {
+			int wer = 23;
+		    }
+		    for (LPair<String, ArrayList<String>> pair : loadNif(profile.nifPath, nifData)) {
+			profile.textures.put(pair.a, pair.b);
+			profile.nifNodeNames.add(pair.a);
+		    }
 		    if (profile.textures.isEmpty()) {
 			VariantProfile.profiles.remove(profile);
 			SPGlobal.log(profile.toString(), "Removing profile with nif because it had no textures: " + profile.nifPath);
@@ -299,6 +282,9 @@ public class AVFileVars {
 		    SPGlobal.log(header, "Blocked because it was on the blocklist: " + armo);
 		}
 	    }
+	}
+	for (VariantProfile p : VariantProfile.profiles) {
+	    p.finalizeProfile();
 	}
     }
 
@@ -338,27 +324,8 @@ public class AVFileVars {
 			profile.skin = armo;
 			profile.piece = arma;
 
-			//Modify textures to AltTextures
-			for (AltTexture t : arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON)) {
-			    TXST txst = (TXST) SPDatabase.getMajor(t.getTexture(), GRUP_TYPE.TXST);
-			    ArrayList<String> altTextures = txst.getTextures();
-			    ArrayList<String> textures = profile.textures.get(t.getName());
-			    if (txst == null) {
-				SPGlobal.logError(profile.toString(), "Error locating txst with formID: " + t.getTexture());
-				continue;
-			    }
-			    if (textures == null) {
-				SPGlobal.logError(profile.toString(), "Error locating profile texture with name: " + t.getName());
-				continue;
-			    }
-			    for (int i = 0 ; i < altTextures.size() ; i++) {
-				if (altTextures.get(i) == null) {
-				    textures.set(i, "");
-				} else {
-				    textures.set(i, "TEXTURES\\" + altTextures.get(i).toUpperCase());
-				}
-			    }
-			}
+			//Load Alt Textures
+			profile.loadAltTextures(arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON));
 		    }
 		} else {
 		    SPGlobal.log(header, "Skipped " + arma + ", could not find a profile matching nif: " + nifPath);
@@ -366,17 +333,17 @@ public class AVFileVars {
 	    }
 	}
     }
-    
-    public static Map<String, ArrayList<String>> loadNif(String nifPath, LShrinkArray in) {
-	NIF nif;
-	Map<String, ArrayList<String>> nifTextures = new HashMap<>();
+
+    public static ArrayList<LPair<String, ArrayList<String>>> loadNif(String nifPath, LShrinkArray in) {
+	ArrayList<LPair<String, ArrayList<String>>> nifTextures = new ArrayList<>();
 	try {
-	    nif = new NIF(nifPath, in);
+	    NIF nif = new NIF(nifPath, in);
 	    nifTextures = nif.extractTextures();
 
-	    for (ArrayList<String> list : nifTextures.values()) {
-		for (int i = 0; i < list.size(); i++) {
-		    list.set(i, list.get(i).toUpperCase());
+	    // To uppercase
+	    for (LPair<String, ArrayList<String>> pair : nifTextures) {
+		for (int i = 0; i < pair.b.size(); i++) {
+		    pair.b.set(i, pair.b.get(i).toUpperCase());
 		}
 	    }
 
@@ -386,15 +353,9 @@ public class AVFileVars {
 	return nifTextures;
     }
 
-    public static void sortVariantSets() {
-
-    }
-
-
-    static void linkToNifs() {
-	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Linking packages to .nif files.");
+    public static void dropVariantSetsInProfiles() {
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "3 - Link to NIFs.txt");
+	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Processing Variant Seeds.txt");
 	}
 	for (PackageNode avPackageC : AVPackages.getAll(PackageNode.Type.PACKAGE)) {
 	    AVPackage avPackage = (AVPackage) avPackageC;
@@ -402,393 +363,74 @@ public class AVFileVars {
 		if (varSet.spec == null || varSet.isEmpty()) {
 		    SPGlobal.logError(header, "Skipping " + varSet.src + " because it was empty or missing a spec file.");
 		    continue;
-		}
-		ArrayList<FormID> uniqueArmas = new ArrayList<FormID>();
-		for (String[] s : varSet.spec.Target_FormIDs) {
-		    FormID id = new FormID(s[0], s[1]);
-		    String header = id.toString();
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "====================================================================");
-			SPGlobal.log(header, "Locating " + SPDatabase.getMajor(id, GRUP_TYPE.NPC_) + "'s NIF file and analyzing the Skin.");
-			SPGlobal.log(header, "====================================================================");
+		} else if (SPGlobal.logging()) {
+		    SPGlobal.log("SortVariantSets", "======================================");
+		    SPGlobal.log("SortVariantSets", "Processing " + varSet.src);
+		    SPGlobal.log("SortVariantSets", "  Files: ");
+		    for (String s : varSet.getTextures()) {
+			SPGlobal.log("SortVariantSets", "     " + s);
 		    }
-		    String nifPath = "...";
-		    try {
+		    SPGlobal.log("SortVariantSets", "  Seeds: ");
+		}
 
-			NPC_ record = (NPC_) SPDatabase.getMajor(id, GRUP_TYPE.NPC_);
-			if (record == null) {
-			    SPGlobal.logError(header, "Could not locate NPC with FormID: " + id);
-			    continue;
-			} else if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "  " + record);
+		ArrayList<SeedProfile> seeds = new ArrayList<>();
+		for (NPC_ n : varSet.getSeedNPCs()) {
+		    SeedProfile seed = new SeedProfile(n);
+		    if (seed.load()) {
+			seeds.add(seed);
+			if (SPGlobal.logging()) {
+			    seed.print();
 			}
-
-			// Get Skin
-			FormID skinID = getUsedSkin(record);
-			if (skinID == null) {
-			    SPGlobal.logError(header, "NPC did not have a skin: " + record);
-			}
-			ARMO skin = (ARMO) SPDatabase.getMajor(skinID, GRUP_TYPE.ARMO);
-			if (skin == null) {
-			    SPGlobal.logError(header, "Could not locate ARMO with FormID: " + skinID);
-			    continue;
-			} else if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "  " + skin);
-			}
-
-			// Didn't have a skin
-			if (skin.getArmatures().isEmpty()) {
-			    SPGlobal.logError(header, skin + " did not have any armatures.");
-			    continue;
-			}
-
-			// Locate armature that matches armor's race
-			ARMA piece = null;
-			boolean found = false;
-			for (FormID arma : skin.getArmatures()) {
-			    piece = (ARMA) SPDatabase.getMajor(arma);
-			    if (record.getRace().equals(piece.getRace())) {
-				found = true;
-				break;
-			    }
-			    for (FormID additionalRace : piece.getAdditionalRaces()) {
-				if (record.getRace().equals(additionalRace)) {
-				    found = true;
-				    break;
-				}
-			    }
-			}
-			if (!found || piece == null) {
-			    SPGlobal.logError(header, "Could not locate ARMA matching " + record + "'s race");
-			    continue;
-			} else if (uniqueArmas.contains(piece.getForm())) {
-			    SPGlobal.log(header, "  Already logged " + piece + " for this variant set.");
-			    continue;
-			} else if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "  " + piece);
-			}
-
-			// Locate armature's nif
-			nifPath = piece.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
-			if (nifPath.equals("")) {
-			    SPGlobal.logError(header, piece + " did not have a male third person model.");
-			    continue;
-			}
-
-			// Load in and add to maps
-			if (!armaToNif.containsKey(piece.getForm()) && shouldSplit(nifPath, piece, skin)) {
-			    // Has alt texture, separate
-			    if (!splitVariant(nifPath, piece)) {
-				continue;
-			    }
-			} else if (!nifs.containsKey(nifPath)) {
-			    AVFileVars.AV_Nif nif = new AVFileVars.AV_Nif(nifPath);
-			    if (!nif.load()) {
-				continue;
-			    }
-			    SPGlobal.log(header, "  Nif path: " + nifPath);
-			    nif.print();
-
-			    nifs.put(nif.name, nif);
-			    armaToNif.put(piece.getForm(), nif.name);
-			} else {
-			    if (SPGlobal.logging()) {
-				SPGlobal.log(header, "  Already a nif with path: " + nifPath);
-			    }
-			    // Doesn't have alt texture, just route to existing nif
-			    armaToNif.put(piece.getForm(), nifPath);
-			}
-
-			String nif = armaToNif.get(piece.getForm());
-			nifToARMA.put(nif, piece);
-			ARMOToRace.put(skin, piece.getRace());
-
-			uniqueArmas.add(piece.getForm());
-			for (Variant v : varSet.multiplyAndFlatten()) {
-			    nifs.get(nif).variants.add((Variant) Ln.deepCopy(v));
-			}
-
-			//Oh nos
-		    } catch (BadParameter ex) {
-			SPGlobal.logError(id.toString(), "Bad parameter passed to nif texture parser: " + nifPath);
-			SPGlobal.logException(ex);
-		    } catch (FileNotFoundException ex) {
-			SPGlobal.logError(id.toString(), "Could not find nif file: " + nifPath);
-			SPGlobal.logException(ex);
-		    } catch (IOException ex) {
-			SPGlobal.logError(id.toString(), "File IO error getting nif file: " + nifPath);
-			SPGlobal.logException(ex);
-		    } catch (DataFormatException ex) {
-			SPGlobal.logError(id.toString(), "BSA had a bad zipped file: " + nifPath);
-			SPGlobal.logException(ex);
-		    } catch (Exception e) {
-			SPGlobal.logError(header, "Exception occured while loading nif: " + nifPath);
-			SPGlobal.logException(e);
 		    }
 		}
-	    }
 
-	}
-	SPProgressBarPlug.incrementBar();
-    }
-
-    static boolean shouldSplit(String nifPath, ARMA piece, ARMO skin) {
-
-	// If has alt texture set and they aren't logged
-	if (!piece.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON).isEmpty()) {
-	    if (nifToARMA.containsKey(nifPath)) {
-		for (ARMA rhs : nifToARMA.get(nifPath)) {
-		    if (piece.equalAltTextures(rhs, Gender.MALE, Perspective.THIRD_PERSON)) {
-			return false;
+		boolean absorbed = false;
+		for (VariantProfile varProfile : VariantProfile.profiles) {
+		    if (varProfile.absorb(varSet, seeds)) {
+			SPGlobal.log("Absorb", varSet.src + " absorbed by:");
+			varProfile.printShort();
+			absorbed = true;
 		    }
 		}
-	    }
-	    if (SPGlobal.logging()) {
-		SPGlobal.log("SplitVar", "  Record warrents split due to alt textures in ARMA.");
-	    }
-	    return true;
-	}
 
-	// If different race
-	if (!skin.getRace().equals(piece.getRace())) {
-	    if (!ARMOToRace.containsKey(skin)
-		    || !ARMOToRace.get(skin).contains(piece.getRace())) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log("SplitVar", "  Record warrents split due to alt race.");
-		}
-		return true;
-	    }
-	}
-
-	return false;
-    }
-
-    static boolean splitVariant(String nifPath, ARMA piece) throws IOException, BadParameter, DataFormatException {
-	AVFileVars.AV_Nif nif = new AVFileVars.AV_Nif(nifPath);
-	if (!nif.load()) {
-	    return false;
-	}
-	SPGlobal.log(header, "  Nif path: " + nifPath);
-	nif.print();
-
-	// Need to change old filenames to alt texture filenames
-	for (ARMA.AltTexture t : piece.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON)) {
-	    TXST txst = (TXST) SPDatabase.getMajor(t.getTexture(), GRUP_TYPE.TXST);
-	    ArrayList<String> textureMaps = nif.textureFields.get(t.getIndex()).maps;
-	    for (int i = 0; i < TXST.NUM_MAPS; i++) {
-		if (i == 2) {
-		    continue;
-		}
-		int set;
-		if (i == 3) {
-		    set = 2;
-		} else {
-		    set = i;
-		}
-		if (!txst.getNthMap(i).equals("")) {
-		    String altMapName = "textures\\" + txst.getNthMap(i);
-		    if (SPGlobal.logging() && !textureMaps.get(set).equalsIgnoreCase(altMapName)) {
-			SPGlobal.log(header, "  Alt Texture index " + t.getIndex() + " texture map[" + set + "] replaced from " + textureMaps.get(set) + " to " + altMapName);
+		    if (!absorbed) {
+			SPGlobal.logError("Absorbing", "Variant Set " + varSet.src + " could not be absorbed by any profile.");
+		    } else {
+			SPGlobal.log(header, "");
+			SPGlobal.log(header, "");
+			SPGlobal.log(header, "");
+			SPGlobal.log(header, "");
 		    }
-		    textureMaps.set(set, altMapName);
-		} else if (!textureMaps.get(set).equals("")) {
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "  Alt Texture index " + t.getIndex() + " texture map[" + set + "] removed.  Was: " + textureMaps.get(set));
-		    }
-		    textureMaps.set(set, "");
 		}
 	    }
 	}
-
-	nif.name = nifPath + "_ALT_" + piece.getForm();
-	nifs.put(nif.name, nif);
-	armaToNif.put(piece.getForm(), nif.name);
-	return true;
     }
 
-    static void generateTXSTvariants() throws IOException {
-	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating TXST variants.");
+    static void clearUnusedProfiles() {
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "4 - Generate TXST.txt");
+	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Clear Unused Profiles.txt");
 	}
-	for (AVFileVars.AV_Nif n : nifs.values()) {
-
-	    if (SPGlobal.logging()) {
-		SPGlobal.log(header, "====================================================================");
-		SPGlobal.log(header, "Generating TXST records for Nif: " + n.name);
-		SPGlobal.log(header, "====================================================================");
-	    }
-	    for (Variant v : n.variants) {
-
-		// Find out which TXSTs need to be generated
-		String[][] replacements = new String[n.textureFields.size()][numSupportedTextures];
-		boolean[] needed = new boolean[n.textureFields.size()];
-		for (PackageNode f : v.textures) {
-		    int i = 0;
-		    for (AVFileVars.AV_Nif.TextureField textureSet : n.textureFields) {
-			int j = 0;
-			for (String texture : textureSet.maps) {
-			    if (!texture.equals("") && texture.lastIndexOf('\\') != -1) {
-				String textureName = texture.substring(texture.lastIndexOf('\\') + 1);
-				if (textureName.equalsIgnoreCase(f.src.getName())) {
-				    replacements[i][j] = f.src.getPath();
-				    needed[i] = true;
-				}
-			    }
-			    if (j == numSupportedTextures - 1) {
-				break;
-			    } else {
-				j++;
-			    }
-			}
-			i++;
-		    }
-		}
-
-		// Make new TXSTs
-		v.TXSTs = new TextureVariant[n.textureFields.size()];
-		int i = 0;
-		TXST last = null;
-		for (AVFileVars.AV_Nif.TextureField textureSet : n.textureFields) {
-		    if (needed[i]) {
-			if (textureSet.unique) {
-			    // New TXST
-			    TXST tmpTXST = new TXST(SPGlobal.getGlobalPatch(), v.name + "_" + n.uniqueName() + "_" + textureSet.title + "_txst");
-			    tmpTXST.set(TXST.TXSTflag.FACEGEN_TEXTURES, true);
-
-			    // Set maps
-			    int j = 0;
-			    for (String texture : textureSet.maps) {
-				int set = readjustTXSTindices(j);
-
-				if (replacements[i][j] != null) {
-				    tmpTXST.setNthMap(set, replacements[i][j]);
-				    if (SPGlobal.logging()) {
-					SPGlobal.log("Variant", "  Replaced set " + i + ", texture " + j + " with " + replacements[i][j] + " on variant " + v.name);
-				    }
-				} else if (!"".equals(texture)) {
-				    tmpTXST.setNthMap(set, texture.substring(texture.indexOf('\\') + 1));
-				}
-				if (j == numSupportedTextures - 1) {
-				    break;
-				} else {
-				    j++;
-				}
-			    }
-			    last = tmpTXST;
-			}
-			v.TXSTs[i] = new TextureVariant(last, textureSet.title);
-		    }
-		    i++;
-		}
+	ArrayList<VariantProfile> tmp = new ArrayList<>(VariantProfile.profiles);
+	for (VariantProfile profile : tmp) {
+	    if (profile.sets.isEmpty()) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log("Variant", "  --------------------------------------------------------------------------------");
+		    SPGlobal.log(header, "Removing profile " + profile + " because it was empty.");
+		    profile.print();
 		}
+		VariantProfile.profiles.remove(profile);
 	    }
-	    n.textureFields = null; // Not needed anymore
 	}
-	SPProgressBarPlug.incrementBar();
     }
 
-    static void generateARMAvariants(Mod source) {
-	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating ARMA variants.");
+    static void generateRecords() {
+	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating variant records.");
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "5 - Generate ARMA + ARMO.txt");
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Generating ARMA duplicates for each NIF");
-	    SPGlobal.log(header, "====================================================================");
+	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Generate Variants.txt");
 	}
-	for (ARMA armaSrc : source.getArmatures()) {
-	    if (AV.save.getBool(Settings.MINIMIZE_PATCH) && unusedSkins.contains(armaSrc.getForm())) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "  Skipping " + armaSrc + " because it was unused.");
-		}
-		continue;
-	    }
-
-	    // If we have variants for it
-	    if (armaToNif.containsKey(armaSrc.getForm())) {
-		AVFileVars.AV_Nif malenif = nifs.get(armaToNif.get(armaSrc.getForm()));
-		if (malenif != null) { // we have variants for that nif
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "  Duplicating " + armaSrc + ", for nif: " + armaToNif.get(armaSrc.getForm()));
-		    }
-		    ArrayList<AVFileVars.ARMA_spec> dups = new ArrayList<AVFileVars.ARMA_spec>();
-		    for (Variant v : malenif.variants) {
-			ARMA dup = (ARMA) SPGlobal.getGlobalPatch().makeCopy(armaSrc, v.name + "_ID_" + armaSrc.getEDID() + "_arma");
-
-			ArrayList<ARMA.AltTexture> alts = dup.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
-			alts.clear();
-			int i = 0;
-			for (TextureVariant texVar : v.TXSTs) {
-			    if (texVar != null) {
-				alts.add(new ARMA.AltTexture(texVar.nifFieldName, texVar.textureRecord.getForm(), i));
-			    }
-			    i++;
-			}
-
-//			ArrayList<ARMA.AltTexture> femalealts = dup.getAltTextures(Gender.FEMALE, Perspective.THIRD_PERSON);
-//			femalealts.clear();
-//			femalealts.addAll(alts);
-
-			dups.add(new AVFileVars.ARMA_spec(dup, v.spec));
-		    }
-		    armatures.put(armaSrc.getForm(), dups);
-		}
-	    }
+	for (VariantProfile profile : VariantProfile.profiles) {
+	    profile.generateRecords();
 	}
-	SPProgressBarPlug.incrementBar();
-    }
-
-    static void generateARMOvariants(Mod source) {
-	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating ARMO variants.");
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Generating ARMO skin duplicates for each ARMA");
-	    SPGlobal.log(header, "====================================================================");
-	}
-	for (ARMO armoSrc : source.getArmors()) {
-
-	    LMergeMap<FormID, AVFileVars.ARMA_spec> targets = new LMergeMap<FormID, AVFileVars.ARMA_spec>(false);
-	    for (FormID armaForm : armoSrc.getArmatures()) {
-		ARMA arma = (ARMA) SPDatabase.getMajor(armaForm);
-		if (arma != null) {
-		    if (armatures.containsKey(armaForm)) {
-			targets.put(armaForm, armatures.get(armaForm));
-		    }
-		}
-	    }
-
-	    if (AV.save.getBool(Settings.MINIMIZE_PATCH)
-		    && !targets.isEmpty() && unusedSkins.contains(armoSrc.getForm())) {
-		continue;
-	    }
-
-	    for (FormID arma : targets.keySet()) {
-		// See if piece is unused
-		if (AV.save.getBool(Settings.MINIMIZE_PATCH)
-			&& unusedPieces.get(armoSrc.getForm()).contains(arma)) {
-		    continue;
-		}
-
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "  Duplicating " + armoSrc + ", for " + SPDatabase.getMajor(arma, GRUP_TYPE.ARMA));
-		}
-		if (!armors.containsKey(armoSrc.getForm())) {
-		    armors.put(armoSrc.getForm(), new LMergeMap<FormID, AVFileVars.ARMO_spec>(false));
-		}
-		for (AVFileVars.ARMA_spec variant : targets.get(arma)) {
-		    String edid = variant.arma.getEDID().substring(0, variant.arma.getEDID().lastIndexOf("_arma"));
-		    edid = edid.substring(0, edid.lastIndexOf("_")) + "_" + armoSrc.getEDID() + "_armo";  // replace ARMA string with ARMO name
-		    ARMO dup = (ARMO) SPGlobal.getGlobalPatch().makeCopy(armoSrc, edid);
-
-		    dup.removeArmature(arma);
-		    dup.addArmature(variant.arma.getForm());
-		    armors.get(armoSrc.getForm()).put(variant.arma.getRace(), new AVFileVars.ARMO_spec(dup, variant, variant.arma.getRace()));
-		}
-	    }
-	}
-	SPProgressBarPlug.incrementBar();
     }
 
     static void implementOrigAsVar() {
@@ -796,25 +438,7 @@ public class AVFileVars {
 	    for (FormID armoSrc : armors.keySet()) {
 		ARMO src = (ARMO) SPDatabase.getMajor(armoSrc, GRUP_TYPE.ARMO);
 		for (FormID race : armors.get(armoSrc).keySet()) {
-		    armors.get(armoSrc).get(race).add(new ARMO_spec(src, race));
-		}
-	    }
-	}
-    }
-
-    static void printVariants() {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "Variants loaded: ");
-	    for (FormID srcArmor : armors.keySet()) {
-		SPGlobal.log(header, "  Armor " + SPDatabase.getMajor(srcArmor) + " has " + armors.get(srcArmor).size() + " variants.");
-		for (FormID race : armors.get(srcArmor).keySet()) {
-		    SPGlobal.log(header, "    For race: " + SPDatabase.getMajor(race, GRUP_TYPE.RACE));
-		    for (AVFileVars.ARMO_spec variant : armors.get(srcArmor).get(race)) {
-			SPGlobal.log(header, "      " + variant.armo);
-			for (String spec : variant.spec.print()) {
-			    SPGlobal.log(header, "         " + spec);
-			}
-		    }
+		    armors.get(armoSrc).put(race, new ARMO_spec(src));
 		}
 	    }
 	}
@@ -823,7 +447,7 @@ public class AVFileVars {
     static void generateFormLists(Mod source) {
 	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating Form Lists.");
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "6 - Generate Form Lists.txt");
+	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Generate Form Lists.txt");
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Generating FormLists for each ARMO variant");
 	    SPGlobal.log(header, "====================================================================");
@@ -868,7 +492,7 @@ public class AVFileVars {
     static void generateSPELvariants(Mod source) {
 	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating script attachment races.");
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "7 - Generate Switcher Spells.txt");
+	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Generate Switcher Spells.txt");
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Generating Spells which attach specialized scripts");
 	    SPGlobal.log(header, "====================================================================");
@@ -998,7 +622,7 @@ public class AVFileVars {
     static void tagNPCs(Mod source) {
 	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Tagging NPCs.");
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + "8 - Tagging NPCs.txt");
+	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Tagging NPCs.txt");
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Tagging NPCs that have alt races");
 	    SPGlobal.log(header, "====================================================================");
@@ -1201,171 +825,6 @@ public class AVFileVars {
     /*
      * Internal Classes
      */
-    static class AV_Nif {
-
-	String name;
-	String path;
-	ArrayList<AVFileVars.AV_Nif.TextureField> textureFields = new ArrayList<AVFileVars.AV_Nif.TextureField>();
-	ArrayList<Variant> variants = new ArrayList<Variant>();
-
-	AV_Nif(String path) {
-	    name = path;
-	    this.path = "meshes\\" + path;
-	}
-
-	final boolean load() throws BadParameter, IOException, DataFormatException {
-	    LShrinkArray usedFileData = BSA.getUsedFile(path);
-	    if (usedFileData == null) {
-		SPGlobal.logError(header, "NIF file " + path + " did not exist.");
-		return false;
-	    }
-	    NIF nif = new NIF(path, usedFileData);
-
-	    Map<Integer, NIF.Node> BiLightingShaderProperties = nif.getNodes(NIF.NodeType.BSLIGHTINGSHADERPROPERTY);
-	    Map<Integer, NIF.Node> BiShaderTextureNodes = nif.getNodes(NIF.NodeType.BSSHADERTEXTURESET);
-	    Map<Integer, ArrayList<String>> BiShaderTextureSets = new HashMap<Integer, ArrayList<String>>();
-	    Map<Integer, AVFileVars.AV_Nif.TextureField> fields = new HashMap<Integer, AVFileVars.AV_Nif.TextureField>();
-	    ArrayList<ArrayList<NIF.Node>> NiTriShapes = nif.getNiTriShapePackages();
-
-	    for (Integer i : BiShaderTextureNodes.keySet()) {
-		BiShaderTextureSets.put(i, NIF.extractBSTextures(BiShaderTextureNodes.get(i)));
-	    }
-
-	    int i = 0;
-	    for (Integer key : BiLightingShaderProperties.keySet()) {
-		int textureLink = BiLightingShaderProperties.get(key).data.extractInt(40, 4);
-		AVFileVars.AV_Nif.TextureField next = new AVFileVars.AV_Nif.TextureField();
-		if (fields.containsKey(textureLink)) {
-		    next.maps = fields.get(textureLink).maps;
-		    next.unique = false;
-		} else {
-		    next.maps = BiShaderTextureSets.get(textureLink);
-		    next.unique = true;
-		    fields.put(textureLink, next);
-		}
-
-		next.title = NiTriShapes.get(i).get(0).title;
-		if (SPGlobal.logging()) {
-		    SPGlobal.log("AV_Nif", "  Loaded NiTriShapes: " + next.title + " (" + BiLightingShaderProperties.get(key).number + ") linked to texture index " + textureLink);
-		}
-		this.textureFields.add(next);
-		i++;
-	    }
-
-	    return true;
-	}
-
-	public void print() {
-	    if (SPGlobal.logging()) {
-		int i = 0;
-		for (AVFileVars.AV_Nif.TextureField set : textureFields) {
-		    SPGlobal.log("AV_Nif", "  Texture index " + i++ + ": " + set.title);
-		    int j = 0;
-		    for (String s : set.maps) {
-			if (!s.equals("")) {
-			    SPGlobal.log("AV_Nif", "    " + j++ + ": " + s);
-			}
-		    }
-		}
-	    }
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-	    if (obj == null) {
-		return false;
-	    }
-	    if (getClass() != obj.getClass()) {
-		return false;
-	    }
-	    final AVFileVars.AV_Nif other = (AVFileVars.AV_Nif) obj;
-	    if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
-		return false;
-	    }
-	    return true;
-	}
-
-	@Override
-	public int hashCode() {
-	    int hash = 7;
-	    hash = 67 * hash + (this.name != null ? this.name.hashCode() : 0);
-	    return hash;
-	}
-
-	public String uniqueName() {
-	    return path.substring(path.lastIndexOf("\\") + 1) + hashCode();
-	}
-
-	class TextureField {
-
-	    String title = "No Title";
-	    ArrayList<String> maps = new ArrayList<String>(0);
-	    boolean unique = false;
-
-	    TextureField() {
-	    }
-
-	    TextureField(AVFileVars.AV_Nif.TextureField in) {
-		this.title = in.title;
-		this.maps = in.maps;
-	    }
-
-	    @Override
-	    public boolean equals(Object obj) {
-		if (obj == null) {
-		    return false;
-		}
-		if (getClass() != obj.getClass()) {
-		    return false;
-		}
-		final AVFileVars.AV_Nif.TextureField other = (AVFileVars.AV_Nif.TextureField) obj;
-		if (this.maps != other.maps && (this.maps == null || !this.maps.equals(other.maps))) {
-		    return false;
-		}
-		return true;
-	    }
-
-	    @Override
-	    public int hashCode() {
-		int hash = 7;
-		hash = 71 * hash + (this.maps != null ? this.maps.hashCode() : 0);
-		return hash;
-	    }
-	}
-    }
-
-    static class ARMA_spec {
-
-	ARMA arma;
-	SpecVariant spec;
-
-	ARMA_spec(ARMA arma, SpecVariant spec) {
-	    this.arma = arma;
-	    this.spec = spec;
-	}
-    }
-
-    static class ARMO_spec {
-
-	ARMO armo;
-	SpecVariant spec;
-	ARMA targetArma;
-	FormID targetRace;
-
-	ARMO_spec(ARMO armoSrc, FormID targetRace) {
-	    this.armo = armoSrc;
-	    this.targetRace = targetRace;
-	    spec = new SpecVariant();
-	}
-
-	ARMO_spec(ARMO armo, ARMA_spec spec, FormID targetRace) {
-	    this.armo = armo;
-	    targetArma = spec.arma;
-	    this.targetRace = targetRace;
-	    this.spec = spec.spec;
-	}
-    }
-
     static class AV_SPEL {
 
 	SPEL spell;
@@ -1376,6 +835,22 @@ public class AVFileVars {
 	    this.spell = spell;
 	    this.skins = skins;
 	    this.key = key;
+	}
+    }
+
+    static class ARMO_spec {
+
+	ARMO armo;
+	SpecVariant spec;
+
+	ARMO_spec(ARMO armoSrc) {
+	    this.armo = armoSrc;
+	    spec = new SpecVariant();
+	}
+
+	ARMO_spec(ARMO armo, SpecVariant spec) {
+	    this.armo = armo;
+	    this.spec = spec;
 	}
     }
 

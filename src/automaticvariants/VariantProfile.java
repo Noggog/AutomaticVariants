@@ -4,13 +4,12 @@
  */
 package automaticvariants;
 
-import java.util.ArrayList;
-import java.util.Map;
-import lev.Ln;
-import skyproc.ARMA;
-import skyproc.ARMO;
-import skyproc.RACE;
-import skyproc.SPGlobal;
+import automaticvariants.AVFileVars.ARMO_spec;
+import java.io.File;
+import java.util.*;
+import lev.LMergeMap;
+import skyproc.ARMA.AltTexture;
+import skyproc.*;
 
 /**
  *
@@ -18,15 +17,18 @@ import skyproc.SPGlobal;
  */
 public class VariantProfile {
 
-    public static ArrayList<VariantProfile> profiles = new ArrayList<>();
+    static ArrayList<VariantProfile> profiles = new ArrayList<>();
+    static int nextID = 0;
     RACE race;
     ARMO skin;
     ARMA piece;
     String nifPath;
-    Map<String, ArrayList<String>> textures;
-    ArrayList<VariantSet> sets;
+    ArrayList<String> nifNodeNames = new ArrayList<>();
+    Map<String, ArrayList<String>> textures = new HashMap<>();
+    Map<String, ArrayList<String>> altTextures = new HashMap<>();
+    Set<String> texturesFlat;
+    ArrayList<VariantSet> sets = new ArrayList<>();
     int ID;
-    static int nextID = 0;
 
     VariantProfile() {
 	ID = nextID++;
@@ -39,8 +41,47 @@ public class VariantProfile {
 	skin = rhs.skin;
 	piece = rhs.piece;
 	nifPath = rhs.nifPath;
-	textures = rhs.textures;
-	sets = rhs.sets;
+	textures = new HashMap<>();
+	nifNodeNames = new ArrayList<>(rhs.nifNodeNames);
+	for (String key : rhs.textures.keySet()) {
+	    ArrayList<String> list = new ArrayList<>();
+	    for (String value : rhs.textures.get(key)) {
+		list.add(value);
+	    }
+	    textures.put(key, list);
+	}
+	sets = new ArrayList<>(rhs.sets);
+    }
+
+    public void loadAltTextures(ArrayList<AltTexture> recordAltTextures) {
+	for (AltTexture t : recordAltTextures) {
+	    TXST txst = (TXST) SPDatabase.getMajor(t.getTexture(), GRUP_TYPE.TXST);
+	    ArrayList<String> txstTextures = txst.getTextures();
+	    altTextures.put(t.getName(), new ArrayList<>(textures.get(t.getName())));
+	    ArrayList<String> profileAltTextures = altTextures.get(t.getName());
+	    if (txst == null) {
+		SPGlobal.logError(toString(), "Error locating txst with formID: " + t.getTexture());
+		continue;
+	    }
+	    for (int i = 0; i < txstTextures.size(); i++) {
+		if (txstTextures.get(i) == null) {
+		    profileAltTextures.set(i, "");
+		} else {
+		    profileAltTextures.set(i, "TEXTURES\\" + txstTextures.get(i).toUpperCase());
+		}
+	    }
+	}
+    }
+
+    public void finalizeProfile() {
+	for (String key : altTextures.keySet()) {
+	    ArrayList<String> tex = textures.get(key);
+	    ArrayList<String> altTex = altTextures.get(key);
+	    for (int i = 0; i < tex.size() && i < altTex.size(); i++) {
+		tex.set(i, altTex.get(i));
+	    }
+	}
+	altTextures.clear();
     }
 
     public static VariantProfile find(RACE race, ARMO skin, ARMA piece, String nifPath) {
@@ -57,23 +98,30 @@ public class VariantProfile {
 	SPGlobal.log("Print", "=============      Printing all Profiles     ==============");
 	SPGlobal.log("Print", "===========================================================");
 	for (VariantProfile v : profiles) {
-	    String id = v.toString();
-	    SPGlobal.log(id, "==============================");
-	    SPGlobal.log(id, "NIF: " + v.nifPath);
-	    for (String n : v.textures.keySet()) {
-		for (String s : v.textures.get(n)) {
-		    SPGlobal.log(id, "   " + n + ": " + s);
-		}
-	    }
-	    SPGlobal.log(id, "Race: " + v.race);
-	    SPGlobal.log(id, "Skin: " + v.skin);
-	    SPGlobal.log(id, "Piece: " + v.piece);
+	    v.print();
 	}
     }
 
     @Override
     public String toString() {
 	return "ID: " + ID;
+    }
+
+    public void print() {
+	SPGlobal.log(toString(), "   ==============================");
+	printShort();
+	for (String n : textures.keySet()) {
+	    for (String s : textures.get(n)) {
+		SPGlobal.log(toString(), "   " + n + ": " + s);
+	    }
+	}
+    }
+
+    public void printShort() {
+	SPGlobal.log(toString(), "    " + nifPath);
+	SPGlobal.log(toString(), "    Race: " + race);
+	SPGlobal.log(toString(), "    Skin: " + skin);
+	SPGlobal.log(toString(), "   Piece: " + piece);
     }
 
     public boolean is(RACE race, ARMO skin, ARMA piece, String nifPath) {
@@ -107,10 +155,224 @@ public class VariantProfile {
 	return true;
     }
 
+    public boolean absorb(VariantSet varSet, Collection<SeedProfile> seeds) {
+
+	for (SeedProfile seed : seeds) {
+	    if (seed.race.equals(race)
+		    && seed.skin.equals(skin)
+		    && seed.piece.equals(piece)) {
+		if (!hasCommonTexture(varSet)) {
+		    return false;
+		}
+		sets.add(varSet);
+		return true;
+	    }
+	}
+	return false;
+    }
+
+    public boolean hasCommonTexture(VariantSet varSet) {
+	Set<String> profileTexFlat = getTexturesFlat();
+	Set<String> varTexFlat = varSet.getTextures();
+	for (String s : varTexFlat) {
+	    for (String s2 : profileTexFlat) {
+		if (s2.contains(s)) {
+		    return true;
+		}
+	    }
+	}
+	return false;
+    }
+
+    public boolean hasAllTextures(Collection<String> inTextures) {
+	getTexturesFlat();
+	for (String texture : inTextures) {
+	    if (!texturesFlat.contains(texture)) {
+		return false;
+	    }
+	}
+	return true;
+    }
+
+    public Set<String> getTexturesFlat() {
+	if (texturesFlat == null) {
+	    texturesFlat = new HashSet<>();
+	    for (ArrayList<String> list : textures.values()) {
+		texturesFlat.addAll(list);
+	    }
+	    texturesFlat.remove("");
+	}
+	return texturesFlat;
+    }
+
+    public void generateRecords() {
+	for (VariantSet varSet : sets) {
+	    ArrayList<Variant> vars = varSet.multiplyAndFlatten();
+	    for (Variant var : vars) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(toString(), " *************> Generating for " + var.printName("-"));
+		}
+
+		Map<String, TXST> txsts = generateTXSTs(var);
+		if (txsts.isEmpty()) {
+		    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated");
+		    continue;
+		}
+		ARMA arma = generateARMA(var, txsts);
+		ARMO armo = generateARMO(var, arma);
+
+		if (AV.save.getBool(AVSaveFile.Settings.PACKAGES_ORIG_AS_VAR)) {
+		}
+
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(toString(), " ******************************>");
+		    SPGlobal.log(toString(), "");
+		}
+	    }
+	}
+    }
+
+    public boolean shouldGenerate(Variant var, String nodeName) {
+	ArrayList<String> varTextures = var.getTextureNames();
+	for (String profileTexture : textures.get(nodeName)) {
+	    for (String varTex : varTextures) {
+		if (profileTexture.contains(varTex)) {
+		    return true;
+		}
+	    }
+	}
+	return false;
+    }
+
+    public Map<String, TXST> generateTXSTs(Variant var) {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(toString(), " * ==> Generating TXSTs");
+	}
+	Map<String, TXST> out = new HashMap<>();
+	for (String nodeName : nifNodeNames) {
+	    if (shouldGenerate(var, nodeName)) {
+		String edid = NiftyFunc.EDIDtrimmer(generateEDID(var) + "_" + nodeName + "_txst");
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(toString(), " * | Generating: " + edid);
+		}
+
+		// Create TXST
+		TXST txst = new TXST(SPGlobal.getGlobalPatch(), edid);
+		txst.set(TXST.TXSTflag.FACEGEN_TEXTURES, true);
+
+		// For each texture there normally...
+		ArrayList<File> varFiles = var.getTextures();
+		for (int i = 0; i < textures.get(nodeName).size(); i++) {
+		    String texture = textures.get(nodeName).get(i);
+		    if (texture.equals("")) {
+			continue;
+		    }
+		    // Then check if there is a variant file that matches
+		    int set = readjustTXSTindices(i);
+		    txst.setNthMap(set, texture.substring(9));
+		    for (File varFile : varFiles) {
+			if (texture.contains(varFile.getName().toUpperCase())) {
+			    // And then sub it in the TXST
+			    String varTex = varFile.getPath();
+			    txst.setNthMap(set, varTex);
+			    if (SPGlobal.logging()) {
+				SPGlobal.log(toString(), " * |    Loading " + i + ": " + varTex);
+			    }
+			    break;
+			}
+		    }
+		}
+
+		out.put(nodeName, txst);
+	    }
+	}
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(toString(), " * =====================================>");
+	}
+	return out;
+    }
+
+    static int readjustTXSTindices(int j) {
+	// Because nif fields map 2->3 if facegen flag is on.
+	if (j == 2) {
+	    return 3;
+	}
+	return j;
+    }
+
+    public ARMA generateARMA(Variant var, Map<String, TXST> txsts) {
+	String edid = NiftyFunc.EDIDtrimmer(generateEDID(var) + "_arma");
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(toString(), " * ==> Generating ARMA: " + edid);
+	}
+	ARMA arma = (ARMA) SPGlobal.getGlobalPatch().makeCopy(piece, edid);
+	arma.setRace(race.getForm());
+	arma.clearAdditionalRaces();
+
+	ArrayList<ARMA.AltTexture> alts = arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
+	alts.clear();
+
+	int i = 0;
+	for (String nifNodeName : nifNodeNames) {
+	    if (txsts.containsKey(nifNodeName)) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(toString(), " * | Loading TXST for " + nifNodeName + " index " + i);
+		}
+		alts.add(new ARMA.AltTexture(nifNodeName, txsts.get(nifNodeName).getForm(), i));
+	    }
+	    i++;
+	}
+
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(toString(), " * =====================================>");
+	}
+
+	return arma;
+    }
+
+    public ARMO generateARMO(Variant var, ARMA arma) {
+	String edid = NiftyFunc.EDIDtrimmer(generateEDID(var) + "_armo");
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(toString(), " * ==> Generating ARMO: " + edid);
+	}
+	ARMO armo = (ARMO) SPGlobal.getGlobalPatch().makeCopy(skin, edid);
+	armo.setRace(arma.getRace());
+
+	armo.removeArmature(piece.getForm());
+	armo.addArmature(arma.getForm());
+
+	if (!AVFileVars.armors.containsKey(skin.getForm())) {
+	    AVFileVars.armors.put(skin.getForm(), new LMergeMap<FormID, ARMO_spec>(false));
+	}
+	AVFileVars.armors.get(skin.getForm()).put(arma.getRace(), new ARMO_spec(armo, var.spec));
+
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(toString(), " * =====================================>");
+	}
+
+	return armo;
+    }
+
+    public String profileHashCode() {
+	int hash = 7;
+	hash = 29 * hash + Objects.hashCode(this.race);
+	hash = 29 * hash + Objects.hashCode(this.skin);
+	hash = 29 * hash + Objects.hashCode(this.piece);
+	if (hash >= 0) {
+	    return Integer.toString(hash);
+	} else {
+	    return "n" + Integer.toString(-hash);
+	}
+    }
+
+    public String generateEDID(Variant var) {
+	return "AV_" + profileHashCode() + "_" + var.printName("_");
+    }
+
     @Override
     public int hashCode() {
-	int hash = 5;
-	hash = 11 * hash + this.ID;
+	int hash = 3;
+	hash = 29 * hash + this.ID;
 	return hash;
     }
 }

@@ -15,20 +15,16 @@ import skyproc.SPGlobal;
  */
 public class Variant extends PackageNode implements Serializable {
 
-    String name;
-    ArrayList<PackageNode> textures = new ArrayList<PackageNode>();
-    TextureVariant[] TXSTs;
+    String name = "";
+    ArrayList<PackageNode> texturesNode = new ArrayList<>();
+    ArrayList<File> textureFiles;
+    ArrayList<String> textureNames;
     public SpecVariant spec;
     static String depth = "* +   # ";
 
     public Variant(File variantDir) {
 	super(variantDir, Type.VAR);
-	this.name = "";
-	String[] tmp = variantDir.getPath().split("\\\\");
-	for (int i = 1; i <= 4; i++) {
-	    name = "_" + tmp[tmp.length - i].replaceAll(" ", "") + name;
-	}
-	name = "AV" + name;
+	this.name = variantDir.getName();
 	spec = new SpecVariant(variantDir);
     }
 
@@ -47,7 +43,7 @@ public class Variant extends PackageNode implements Serializable {
 		    SPGlobal.log(src.getName(), depth + "    Added texture: " + f);
 		}
 		PackageNode c = new PackageNode(f, Type.TEXTURE);
-		textures.add(c);
+		texturesNode.add(c);
 		add(c);
 	    } else if (AVFileVars.isNIF(f)) {
 		if (SPGlobal.logging()) {
@@ -71,7 +67,7 @@ public class Variant extends PackageNode implements Serializable {
 		RerouteFile c = new RerouteFile(f);
 		if (AVFileVars.isDDS(c.src)) {
 		    c.type = PackageNode.Type.TEXTURE;
-		    textures.add(c);
+		    texturesNode.add(c);
 		    if (SPGlobal.logging()) {
 			SPGlobal.log(src.getName(), depth + "    Added ROUTED texture: " + c.routeFile);
 		    }
@@ -85,7 +81,7 @@ public class Variant extends PackageNode implements Serializable {
 	ArrayList<File> toAdd = new ArrayList<File>();
 	for (PackageNode global : globalFiles) {
 	    boolean exists = false;
-	    for (PackageNode tex : textures) {
+	    for (PackageNode tex : texturesNode) {
 		if (global.src.getName().equalsIgnoreCase(tex.src.getName())) {
 		    exists = true;
 		    break;
@@ -97,21 +93,47 @@ public class Variant extends PackageNode implements Serializable {
 	}
 
 	for (File f : toAdd) {
-	    textures.add(new PackageNode(f, Type.TEXTURE));
+	    texturesNode.add(new PackageNode(f, Type.TEXTURE));
 	}
     }
 
     public Variant merge(Variant rhs) {
 	Variant out = new Variant();
 	out.name = name + "_" + rhs.src.getName();
-	out.textures.addAll(textures);
-	for (PackageNode p : rhs.textures) {
-	    if (!out.textures.contains(p)) {
-		out.textures.add(p);
+	out.texturesNode.addAll(texturesNode);
+	for (PackageNode p : rhs.texturesNode) {
+	    if (!out.texturesNode.contains(p)) {
+		out.texturesNode.add(p);
 	    }
 	}
+	out.parent = rhs.parent;
 	spec.Probability_Divider *= rhs.spec.Probability_Divider;
 	return out;
+    }
+
+    public VariantGroup getGroup() {
+	return (VariantGroup) getParent();
+    }
+
+    public ArrayList<File> getTextures() {
+	if (textureFiles == null) {
+	    textureFiles = new ArrayList<>();
+	    for (PackageNode p : texturesNode) {
+		textureFiles.add(p.src);
+	    }
+	}
+	return textureFiles;
+    }
+
+    public ArrayList<String> getTextureNames() {
+	if (textureNames == null) {
+	    ArrayList<File> files = getTextures();
+	    textureNames = new ArrayList<>();
+	    for (int i = 0; i < files.size(); i++) {
+		textureNames.add(files.get(i).getName().toUpperCase());
+	    }
+	}
+	return textureNames;
     }
 
     @Override
@@ -128,8 +150,8 @@ public class Variant extends PackageNode implements Serializable {
     }
 
     @Override
-    public String printName() {
+    public String printName(String spacer) {
 	PackageNode p = (PackageNode) this.getParent();
-	return p.printName() + " - " + src.getName();
+	return p.printName(spacer) + spacer + name;
     }
 }

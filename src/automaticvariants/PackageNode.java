@@ -475,7 +475,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	return "";
     }
 
-    public String printName() {
+    public String printName(String spacer) {
 	return src.getName();
     }
 

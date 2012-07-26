@@ -50,7 +50,7 @@ public class VariantGroup extends PackageNode {
     public void deleteMatches(ArrayList<File> files) throws FileNotFoundException, IOException {
 	for (File common : files) {
 	    for (Variant v : variants) {
-		for (PackageNode c : v.textures) {
+		for (PackageNode c : v.texturesNode) {
 		    if (common.getName().equalsIgnoreCase(c.src.getName())) {
 			if (SPGlobal.logging()) {
 			    SPGlobal.log(src.getName(), "  ------------------------------");
@@ -79,7 +79,7 @@ public class VariantGroup extends PackageNode {
 	if (variants.size() > 1) {
 	    Variant first = variants.get(0);
 	    // For each texture in the first variant
-	    for (PackageNode tex : first.textures) {
+	    for (PackageNode tex : first.texturesNode) {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(src.getName(), "  ---------------");
 		    SPGlobal.log(src.getName(), "  CHECKING " + tex.src);
@@ -90,7 +90,7 @@ public class VariantGroup extends PackageNode {
 		// Check each other variant's textures.
 		for (int i = 1; i < variants.size(); i++) {
 		    boolean variantContained = false;
-		    for (PackageNode texRhs : variants.get(i).textures) {
+		    for (PackageNode texRhs : variants.get(i).texturesNode) {
 			if (SPGlobal.logging()) {
 			    SPGlobal.log(src.getName(), "    ------------------------------");
 			    SPGlobal.log(src.getName(), "    Comparing");
@@ -137,9 +137,13 @@ public class VariantGroup extends PackageNode {
 	return out;
     }
 
+    public VariantSet getSet() {
+	return (VariantSet) getParent();
+    }
+
     @Override
-    public String printName() {
+    public String printName(String spacer) {
 	PackageNode p = (PackageNode) this.getParent();
-	return p.printName() + " - " + src.getName();
+	return p.printName(spacer) + spacer + src.getName();
     }
 }
