@@ -97,6 +97,7 @@ public class VariantProfile {
 	SPGlobal.log("Print", "===========================================================");
 	SPGlobal.log("Print", "=============      Printing all Profiles     ==============");
 	SPGlobal.log("Print", "===========================================================");
+	SPGlobal.log("Print", "");
 	for (VariantProfile v : profiles) {
 	    v.print();
 	}
@@ -108,20 +109,28 @@ public class VariantProfile {
     }
 
     public void print() {
-	SPGlobal.log(toString(), "   ==============================");
+	SPGlobal.log(toString(), " /========================================");
+	SPGlobal.log(toString(), "| Profile Records and NIF: ");
 	printShort();
+	SPGlobal.log(toString(), " \\========================================");
+	SPGlobal.log(toString(), "    \\===== NIF nodes and Textures Used: ==");
 	for (String n : textures.keySet()) {
+	    SPGlobal.log(toString(), "    |===== " + n + " ====/");
+	    SPGlobal.log(toString(), "    |=========================/");
+	    int i = 0;
 	    for (String s : textures.get(n)) {
-		SPGlobal.log(toString(), "   " + n + ": " + s);
+		SPGlobal.log(toString(), "    | " + i++ + ": " + s);
 	    }
+	    SPGlobal.log(toString(), "    \\=====================================");
 	}
+	SPGlobal.log(toString(), "");
     }
 
     public void printShort() {
-	SPGlobal.log(toString(), "    " + nifPath);
-	SPGlobal.log(toString(), "    Race: " + race);
-	SPGlobal.log(toString(), "    Skin: " + skin);
-	SPGlobal.log(toString(), "   Piece: " + piece);
+	SPGlobal.log(toString(), "|  Race: " + race);
+	SPGlobal.log(toString(), "|  Skin: " + skin);
+	SPGlobal.log(toString(), "| Piece: " + piece);
+	SPGlobal.log(toString(), "|   NIF: " + nifPath);
     }
 
     public boolean is(RACE race, ARMO skin, ARMA piece, String nifPath) {

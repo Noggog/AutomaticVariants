@@ -250,9 +250,6 @@ public class AVFileVars {
 	    try {
 		LShrinkArray nifData = BSA.getUsedFile(profile.nifPath);
 		if (nifData != null) {
-		    if (profile.ID == 93) {
-			int wer = 23;
-		    }
 		    for (LPair<String, ArrayList<String>> pair : loadNif(profile.nifPath, nifData)) {
 			profile.textures.put(pair.a, pair.b);
 			profile.nifNodeNames.add(pair.a);
@@ -364,13 +361,17 @@ public class AVFileVars {
 		    SPGlobal.logError(header, "Skipping " + varSet.src + " because it was empty or missing a spec file.");
 		    continue;
 		} else if (SPGlobal.logging()) {
-		    SPGlobal.log("SortVariantSets", "======================================");
-		    SPGlobal.log("SortVariantSets", "Processing " + varSet.src);
-		    SPGlobal.log("SortVariantSets", "  Files: ");
+		    SPGlobal.log("SortVariantSets", " /====================================");
+		    SPGlobal.log("SortVariantSets", "| Processing: " + varSet.src);
+		    SPGlobal.log("SortVariantSets", "|==============\\");
+		    SPGlobal.log("SortVariantSets", "|== Files: =====|");
+		    SPGlobal.log("SortVariantSets", "|==============/");
 		    for (String s : varSet.getTextures()) {
-			SPGlobal.log("SortVariantSets", "     " + s);
+			SPGlobal.log("SortVariantSets", "|    " + s);
 		    }
-		    SPGlobal.log("SortVariantSets", "  Seeds: ");
+		    SPGlobal.log("SortVariantSets", "|==============\\");
+		    SPGlobal.log("SortVariantSets", "|== Seeds: =====|");
+		    SPGlobal.log("SortVariantSets", "|==============/");
 		}
 
 		ArrayList<SeedProfile> seeds = new ArrayList<>();
@@ -387,8 +388,11 @@ public class AVFileVars {
 		boolean absorbed = false;
 		for (VariantProfile varProfile : VariantProfile.profiles) {
 		    if (varProfile.absorb(varSet, seeds)) {
-			SPGlobal.log("Absorb", varSet.src + " absorbed by:");
+			SPGlobal.log("Absorb", "  /======================================");
+			SPGlobal.log("Absorb", " /=== " + varSet.src + " absorbed by:");
+			SPGlobal.log("Absorb", "|=======================================");
 			varProfile.printShort();
+			SPGlobal.log("Absorb", " \\======================================");
 			absorbed = true;
 		    }
 		}
@@ -607,13 +611,13 @@ public class AVFileVars {
 	SPProgressBarPlug.incrementBar();
     }
 
-    static void standardizeNPC(NPC_ n) {
+    static void standardizeNPCtag(NPC_ n) {
 	float weight = n.getWeight() * 100;
 	int tmp = (int) Math.round(weight);
 	if (tmp != weight) {
-	    if (SPGlobal.logging()) {
-		SPGlobal.log(header, "Standardized " + n);
-	    }
+//	    if (SPGlobal.logging()) {
+//		SPGlobal.log(header, "Standardized " + n);
+//	    }
 	    n.setWeight(tmp / 100);
 	    SPGlobal.getGlobalPatch().addRecord(n);
 	}
@@ -624,19 +628,20 @@ public class AVFileVars {
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Tagging NPCs.txt");
 	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Tagging NPCs that have alt races");
+	    SPGlobal.log(header, "Tagging NPCs that have alt skins");
 	    SPGlobal.log(header, "====================================================================");
 	}
 	RACE foxRace = (RACE) SPDatabase.getMajor(new FormID("109C7CSkyrim.esm"), GRUP_TYPE.RACE);
 	for (NPC_ n : source.getNPCs()) {
 	    FormID skin = getUsedSkin(n);
 	    if (skin != null
-		    && n.getTemplate().isNull() // Not templated
+		    && (!n.isTemplated() || !n.get(NPC_.TemplateFlag.USE_TRAITS)) // Not templated with traits
 		    && !skin.isNull() // If has alt skin
 		    && switcherSpells.containsKey(n.getRace())) {  // If we have variants for it
 		// If fox race but does not have FOX in the name
 		// We skip it as it's most likely a lazy modder
 		// using the default race: FoxRace
+		standardizeNPCtag(n);
 		if (n.getRace().equals(foxRace.getForm())
 			&& !n.getEDID().toUpperCase().contains("FOX")
 			&& !n.getName().toUpperCase().contains("FOX")) {

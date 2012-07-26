@@ -71,12 +71,12 @@ public class SeedProfile {
     }
 
     public void print() {
-	SPGlobal.log(npc.getEDID(), "    Seed: " + npc);
-	SPGlobal.log(npc.getEDID(), "    Orig Seed: " + origNPC);
-	SPGlobal.log(npc.getEDID(), "    Race: " + race);
-	SPGlobal.log(npc.getEDID(), "    Skin: " + skin);
-	SPGlobal.log(npc.getEDID(), "   Piece: " + piece);
-	SPGlobal.log(npc.getEDID(), "   ===================================");
+	SPGlobal.log(npc.getEDID(), "|   Seed: " + npc);
+	SPGlobal.log(npc.getEDID(), "|   Orig Seed: " + origNPC);
+	SPGlobal.log(npc.getEDID(), "|   Race: " + race);
+	SPGlobal.log(npc.getEDID(), "|   Skin: " + skin);
+	SPGlobal.log(npc.getEDID(), "|  Piece: " + piece);
+	SPGlobal.log(npc.getEDID(), " \\====================================");
     }
 
     @Override
