@@ -82,9 +82,7 @@ public class AVFileVars {
 	importVariants();
 	SPProgressBarPlug.incrementBar();
 
-	locateUnused();
-
-	loadProfiles();
+	prepProfiles();
 
 	dropVariantSetsInProfiles();
 
@@ -128,6 +126,11 @@ public class AVFileVars {
 	} else {
 	    SPGlobal.logError("Package Location", "There was no AV Packages folder.");
 	}
+    }
+
+    public static void prepProfiles() {
+	locateUnused();
+	loadProfiles();
     }
 
     public static void locateUnused() {
@@ -211,6 +214,9 @@ public class AVFileVars {
     }
 
     public static void loadProfiles() {
+	if (profiles != null) {
+	    return;
+	}
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Load Variant Profiles.txt");
 	}
