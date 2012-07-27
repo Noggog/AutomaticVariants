@@ -17,7 +17,7 @@ import skyproc.*;
  */
 public class VariantProfile {
 
-    static ArrayList<VariantProfile> profiles = new ArrayList<>();
+    public static ArrayList<VariantProfile> profiles = new ArrayList<>();
     static int nextID = 0;
     RACE race;
     ARMO skin;
@@ -28,7 +28,7 @@ public class VariantProfile {
     Map<String, ArrayList<String>> altTextures = new HashMap<>();
     Set<String> texturesFlat;
     ArrayList<VariantSet> sets = new ArrayList<>();
-    int ID;
+    public int ID;
 
     VariantProfile() {
 	ID = nextID++;
@@ -193,7 +193,7 @@ public class VariantProfile {
 	return false;
     }
 
-    public boolean hasAllTextures(Collection<String> inTextures) {
+    public boolean hasAllTexturePaths(Collection<String> inTextures) {
 	getTexturesFlat();
 	for (String texture : inTextures) {
 	    if (!texturesFlat.contains(texture)) {
@@ -212,6 +212,19 @@ public class VariantProfile {
 	    texturesFlat.remove("");
 	}
 	return texturesFlat;
+    }
+
+    public boolean hasTexture(String texture){
+	for (String tex : getTexturesFlat()) {
+	    if (tex.contains(texture)) {
+		return true;
+	    }
+	}
+	return false;
+    }
+
+    public boolean hasTexture(File texture) {
+	return hasTexture(texture.getName().toUpperCase());
     }
 
     public void generateRecords() {

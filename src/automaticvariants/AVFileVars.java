@@ -31,7 +31,6 @@ import skyproc.gui.SPProgressBarPlug;
 public class AVFileVars {
 
     static String header = "AV_FileVar";
-    static ArrayList<BSA> BSAs;
     final public static String AVPackagesDir = "AV Packages\\";
     public static String inactiveAVPackagesDir = "Inactive AV Packages\\";
     public static String AVPackageListing = SPGlobal.pathToInternalFiles + "Last AV Package Listing.txt";
@@ -71,8 +70,6 @@ public class AVFileVars {
 		f.delete();
 	    }
 	}
-
-	BSAs = BSA.loadInBSAs(BSA.FileType.NIF, BSA.FileType.DDS);
 
 	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Importing AV Packages");
 	if (!AVPackages.isLeaf()) {
@@ -129,6 +126,7 @@ public class AVFileVars {
     }
 
     public static void prepProfiles() {
+	BSA.loadInBSAs(BSA.FileType.NIF, BSA.FileType.DDS);
 	locateUnused();
 	loadProfiles();
     }

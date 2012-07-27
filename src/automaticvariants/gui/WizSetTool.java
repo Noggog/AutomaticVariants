@@ -6,21 +6,19 @@ package automaticvariants.gui;
 
 import automaticvariants.AV;
 import automaticvariants.AVFileVars;
+import automaticvariants.VariantProfile;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.zip.DataFormatException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import lev.LMergeMap;
-import lev.LShrinkArray;
 import lev.Ln;
 import lev.gui.*;
-import skyproc.BSA.FileType;
 import skyproc.*;
-import skyproc.exceptions.BadParameter;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPProgressBarPlug;
 import skyproc.gui.SUMGUI;
@@ -33,14 +31,15 @@ public class WizSetTool extends WizTemplate {
 
     LList<File> textures;
     LButton analyze;
+    LCheckBox partialMatch;
     LLabel progressLabel;
     LProgressBar progress;
     LTextPane exception;
     LList<EDIDdisplay> seeds;
-    LLabel armorPieceTitle;
-    LLabel armorPiece;
-    LComboSearchBox<EDIDdisplay> potential;
-    LMergeMap<FormID, FormID> ARMAtoNPC;
+    Set<VariantProfile> matchingProfiles;
+    Set<VariantProfile> halfMatchingProfiles;
+    LCheckList potential;
+
     static int attempt = 1;
 
     public WizSetTool(SPMainMenuPanel parent_) {
@@ -53,7 +52,7 @@ public class WizSetTool extends WizTemplate {
 
 	spacing = 40;
 
-	setQuestionText("Drop in and analyze your textures to narrow down skin options.");
+	setQuestionText("Drop in and analyze textures to narrow down seed options.");
 
 	textures = new LList<>("Textures to Analyze", AV.AVFont, AV.yellow);
 	textures.setUnique(true);
@@ -96,6 +95,11 @@ public class WizSetTool extends WizTemplate {
 	});
 	Add(analyze);
 
+	partialMatch = new LCheckBox("Display Partially Matching", AV.AVFont, AV.yellow);
+	partialMatch.addShadow();
+	partialMatch.centerOn(analyze, analyze.getBottom() + spacing);
+	Add(partialMatch);
+
 	progressLabel = new LLabel("Loading up mods, please wait...", AV.AVFontSmall, AV.lightGray);
 	progressLabel.centerIn(settingsPanel, question.getBottom() + spacing * 3);
 	Add(progressLabel);
@@ -114,21 +118,6 @@ public class WizSetTool extends WizTemplate {
 	seeds.setSize(settingsPanel.getWidth() - 2 * x, 150);
 	seeds.setLocation(x, backButton.getY() - seeds.getHeight() - 20);
 	Add(seeds);
-
-	armorPieceTitle = new LLabel("Tmp", AV.AVFont, AV.yellow);
-	armorPieceTitle.setLocation(x, 150);
-	armorPieceTitle.addShadow();
-	Add(armorPieceTitle);
-
-	armorPiece = new LLabel("Tmp", AV.AVFont, AV.orange);
-	armorPiece.putUnder(armorPieceTitle, x, 0);
-	armorPiece.addShadow();
-	Add(armorPiece);
-
-	potential = new LComboSearchBox<>("Potential Seeds", AV.AVFont, AV.yellow);
-	potential.setSize(settingsPanel.getWidth() - 2 * x, 65);
-	potential.putUnder(armorPiece, x, 25);
-	Add(potential);
 
 	SUMGUI.startImport();
     }
@@ -161,25 +150,9 @@ public class WizSetTool extends WizTemplate {
 		progressLabel.setVisible(stage == 1);
 		seeds.setVisible(stage == 2);
 		exception.setVisible(stage == 3);
-		armorPieceTitle.setVisible(stage == 2);
-		armorPiece.setVisible(stage == 2);
-		potential.setVisible(stage == 2);
+		partialMatch.setVisible(stage == 2);
 	    }
 	});
-    }
-
-    void armorPiece(int cur) {
-	if (cur < ARMAtoNPC.size()) {
-	    armorPieceTitle.setText("For Armor Piece (" + (cur + 1) + "/" + ARMAtoNPC.size() + "):");
-	    FormID armaForm = (FormID) ARMAtoNPC.keySet().toArray()[cur];
-	    ARMA arma = (ARMA) SPDatabase.getMajor(armaForm, GRUP_TYPE.ARMA);
-	    armorPiece.setText(arma.getEDID());
-	    potential.removeAllItems();
-	    for (FormID npcForm : ARMAtoNPC.get(armaForm)) {
-		NPC_ npc = (NPC_) SPDatabase.getMajor(npcForm, GRUP_TYPE.NPC_);
-		potential.addItem(new EDIDdisplay(npc));
-	    }
-	}
     }
 
     void mainHelp() {
@@ -210,19 +183,37 @@ public class WizSetTool extends WizTemplate {
 		SPGlobal.newLog("Set Tool/Run " + attempt++ + ".txt");
 		printSourceTextures();
 
+		matchingProfiles = new HashSet<>();
+		halfMatchingProfiles = new HashSet<>();
+		ArrayList<String> textureList = new ArrayList<>();
+		for (File f : textures.getAll()) {
+		    textureList.add(f.getName().toUpperCase());
+		}
+
+		for (VariantProfile profile : VariantProfile.profiles) {
+		    matchingProfiles.add(profile);
+		    for (String s : textureList) {
+			if (profile.hasTexture(s)) {
+			    halfMatchingProfiles.add(profile);
+			} else {
+			    matchingProfiles.remove(profile);
+			}
+		    }
+		    halfMatchingProfiles.removeAll(matchingProfiles);
+		}
+
 		displaySwitch(2);
 	    } catch (Exception e) {
 		SPGlobal.logException(e);
 		displaySwitch(3);
 	    }
 	}
-
-	void printSourceTextures() {
-	    SPGlobal.log("Set Tool", "Original files:");
-	    for (File f : textures.getAll()) {
-		SPGlobal.log("Set Tool", "  " + f.getPath());
-	    }
-	}
     }
 
+    void printSourceTextures() {
+	SPGlobal.log("Set Tool", "Original files:");
+	for (File f : textures.getAll()) {
+	    SPGlobal.log("Set Tool", "  " + f.getPath());
+	}
+    }
 }
