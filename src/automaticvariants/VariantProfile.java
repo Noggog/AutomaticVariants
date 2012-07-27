@@ -54,15 +54,20 @@ public class VariantProfile {
     }
 
     public void loadAltTextures(ArrayList<AltTexture> recordAltTextures) {
-	for (AltTexture t : recordAltTextures) {
-	    TXST txst = (TXST) SPDatabase.getMajor(t.getTexture(), GRUP_TYPE.TXST);
-	    ArrayList<String> txstTextures = txst.getTextures();
-	    altTextures.put(t.getName(), new ArrayList<>(textures.get(t.getName())));
-	    ArrayList<String> profileAltTextures = altTextures.get(t.getName());
+	for (AltTexture altTex : recordAltTextures) {
+	    TXST txst = (TXST) SPDatabase.getMajor(altTex.getTexture(), GRUP_TYPE.TXST);
 	    if (txst == null) {
-		SPGlobal.logError(toString(), "Error locating txst with formID: " + t.getTexture());
+		SPGlobal.logError(toString(), "Error locating txst with formID: " + altTex.getTexture());
 		continue;
 	    }
+	    ArrayList<String> txstTextures = txst.getTextures();
+	    if (textures.containsKey(altTex.getName())) {
+		altTextures.put(altTex.getName(), new ArrayList<>(textures.get(altTex.getName())));
+	    } else {
+		SPGlobal.logError(nifPath, "Profile " + toString() + " did not have a nif node name of: " + altTex.getName());
+		altTextures.put(altTex.getName(), new ArrayList<String>());
+	    }
+	    ArrayList<String> profileAltTextures = altTextures.get(altTex.getName());
 	    for (int i = 0; i < txstTextures.size(); i++) {
 		if (txstTextures.get(i) == null) {
 		    profileAltTextures.set(i, "");
@@ -214,7 +219,7 @@ public class VariantProfile {
 	return texturesFlat;
     }
 
-    public boolean hasTexture(String texture){
+    public boolean hasTexture(String texture) {
 	for (String tex : getTexturesFlat()) {
 	    if (tex.contains(texture)) {
 		return true;
