@@ -32,7 +32,6 @@ public class AVFileVars {
 
     static String header = "AV_FileVar";
     final public static String AVPackagesDir = "AV Packages\\";
-    public static String inactiveAVPackagesDir = "Inactive AV Packages\\";
     public static String AVPackageListing = SPGlobal.pathToInternalFiles + "Last AV Package Listing.txt";
     public static String AVTexturesDir = SPGlobal.pathToData + "textures\\AV Packages\\";
     public static String AVMeshesDir = SPGlobal.pathToData + "meshes\\AV Packages\\";
@@ -110,6 +109,7 @@ public class AVFileVars {
 
 	// wipe
 	AVPackages = new PackageNode(AVPackagesDirFile, PackageNode.Type.ROOT);
+	RerouteFile.reroutes.clear();
 	if (AVPackagesDirFile.isDirectory()) {
 	    for (File packageFolder : AVPackagesDirFile.listFiles()) {
 		if (packageFolder.isDirectory()) {

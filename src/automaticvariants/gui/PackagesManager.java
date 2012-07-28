@@ -14,6 +14,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -45,6 +47,7 @@ public class PackagesManager extends SPSettingPanel {
     JPopupMenu optionsMenu;
     LMenuItem enable;
     LMenuItem disable;
+    LMenuItem delete;
     LMenuItem compress;
     LMenuItem editSpec;
 
@@ -129,6 +132,22 @@ public class PackagesManager extends SPSettingPanel {
 	});
 	optionsMenu.add(disable.getItem());
 
+	delete = new LMenuItem("Delete");
+	delete.linkTo(Settings.PACKAGES_DELETE, AV.save, SUMGUI.helpPanel, true);
+	delete.setFollowPosition(false);
+	delete.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		int answer = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete these packages?", "Confirm Delete",
+                                      JOptionPane.YES_NO_OPTION);
+		if (answer == JOptionPane.YES_OPTION) {
+		    deleteSelected();
+		}
+	    }
+	});
+//	optionsMenu.add(delete.getItem());
+
 	compress = new LMenuItem("Compress");
 	compress.linkTo(Settings.PACKAGES_COMPRESS, AV.save, SUMGUI.helpPanel, true);
 	compress.setFollowPosition(false);
@@ -203,13 +222,7 @@ public class PackagesManager extends SPSettingPanel {
 	display.setVisible(true);
 	PackageNode.display = display;
 
-	try {
-	    loadInactivePackageList();
-	} catch (FileNotFoundException ex) {
-	    SPGlobal.logException(ex);
-	} catch (IOException ex) {
-	    SPGlobal.logException(ex);
-	}
+	reloadPackageList();
 
     }
 
@@ -223,38 +236,34 @@ public class PackagesManager extends SPSettingPanel {
 
     public void enableSelection(boolean enable) {
 	SUMGUI.setPatchNeeded(true);
-	TreePath[] paths = tree.getSelectionPaths();
-	for (TreePath p : paths) {
-	    ((PackageNode) p.getLastPathComponent()).enable(enable);
+	for (PackageNode p : getSelected()) {
+	    p.enable(enable);
 	}
+	tree.repaint();
+    }
 
-	// adjust folders to enable/disable based on their contents
-//	for (TreePath p : paths) {
-//	    for (int i = p.getPathCount() - 1; i >= 0; i--) {
-//		PackageNode node = (PackageNode) p.getPathComponent(i);
-//		if (node.src.isDirectory()) {
-//		    if (node.isDisabled()) {
-//			for (PackageNode child : node.getAll()) {
-//			    if (!child.isDisabled()) {
-//				node.enable(true);
-//				break;
-//			    }
-//			}
-//		    } else {
-//			boolean allDisabled = true;
-//			for (PackageNode child : node.getAll()) {
-//			    if (!child.isDisabled()) {
-//				allDisabled = false;
-//				break;
-//			    }
-//			}
-//			if (allDisabled) {
-//			    node.enable(false);
-//			}
-//		    }
-//		}
-//	    }
-//	}
+    public ArrayList<PackageNode> getSelected() {
+	TreePath[] paths = tree.getSelectionPaths();
+	ArrayList<PackageNode> out = new ArrayList<>(paths.length);
+	for (TreePath p : paths) {
+	    out.add((PackageNode) p.getLastPathComponent());
+	}
+	return out;
+    }
+
+    public void deleteSelected() {
+	for (PackageNode p : getSelected()) {
+	    if (p.src.isFile()) {
+		try {
+		    Files.delete(p.src.toPath());
+		} catch (IOException ex) {
+		    SPGlobal.logException(ex);
+		}
+	    } else if (p.src.isDirectory()) {
+		Ln.deleteDirectory(p.src);
+	    }
+	}
+	reloadPackageList();
 	tree.repaint();
     }
 
@@ -278,9 +287,7 @@ public class PackagesManager extends SPSettingPanel {
 	    }
 
 	    p.consolidateCommonFiles();
-	    loadInactivePackageList();
 	    PackageNode.rerouteFiles(p.getDuplicateFiles());
-	    loadInactivePackageList();
 
 	    long after = p.fileSize();
 	    if (SPGlobal.logging()) {
@@ -321,31 +328,11 @@ public class PackagesManager extends SPSettingPanel {
 	}
     }
 
-    public static void loadInactivePackageList() throws IOException {
-
-	boolean logging = SPGlobal.loggingAsync();
-	SPGlobal.loggingAsync(false);
-
-	File inactivePackages = new File(AVFileVars.inactiveAVPackagesDir);
-	if (inactivePackages.isDirectory()) {
-	    for (File packageFolder : inactivePackages.listFiles()) {
-		if (packageFolder.isDirectory()) {
-		    AVPackage avPackage = new AVPackage(packageFolder);
-		    AVFileVars.AVPackages.mergeIn(avPackage);
-		}
-	    }
-	}
-
-	SPGlobal.loggingAsync(logging);
-
-	AVFileVars.AVPackages.sort();
-	tree.setModel(new DefaultTreeModel(AVFileVars.AVPackages));
-    }
-
     public static void reloadPackageList(){
 	try {
 	    AVFileVars.importVariants();
-	    loadInactivePackageList();
+	    AVFileVars.AVPackages.sort();
+	    tree.setModel(new DefaultTreeModel(AVFileVars.AVPackages));
 	} catch (IOException ex) {
 	    SPGlobal.logException(ex);
 	}
