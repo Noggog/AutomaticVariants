@@ -46,7 +46,6 @@ public class Variant extends PackageNode implements Serializable {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(src.getName(), depth + "    Added nif: " + f);
 		}
-//		PackageComponent c = new PackageComponent(f, Type.)
 	    } else if (AVFileVars.isSpec(f)) {
 		try {
 		    spec = AV.gson.fromJson(new FileReader(f), SpecVariant.class);
@@ -93,10 +92,10 @@ public class Variant extends PackageNode implements Serializable {
 	Variant out = new Variant();
 	out.name = name + "_" + rhs.src.getName();
 	for (PackageNode tex : getAll(Type.TEXTURE)) {
-	    add(tex);
+	    out.add(tex);
 	}
 	for (PackageNode p : rhs.getAll(Type.TEXTURE)) {
-	    add(p);
+	    out.add(p);
 	}
 	out.parent = rhs.parent;
 	spec.Probability_Divider *= rhs.spec.Probability_Divider;
