@@ -18,7 +18,7 @@ import skyproc.gui.SUMGUI;
  *
  * @Author Justin Swanson
  */
-public class WizVariantSpec extends PackagesSpecs {
+public class WizSpecVariant extends PackagesSpecs {
 
     LTextField author;
     LNumericSetting probDiv;
@@ -32,7 +32,7 @@ public class WizVariantSpec extends PackagesSpecs {
     LTextField namePrefix;
     LTextField nameAffix;
 
-    public WizVariantSpec(SPMainMenuPanel parent_) {
+    public WizSpecVariant(SPMainMenuPanel parent_) {
 	super(parent_, "Variant Spec");
     }
 

@@ -167,6 +167,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	switch (type) {
 	    case PACKAGE:
 		help.setTitle(src.getName());
+		content += printSpec();
 		displayFirstImage();
 		break;
 	    case GENTEXTURE:
@@ -175,7 +176,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 		return;
 	    case VARSET:
 		help.setTitle(((PackageNode) parent).src.getName());
-//		content += src.getName() + divider;
+		content += src.getName() + divider;
 
 		content += printSpec();
 
@@ -187,7 +188,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 		set = (PackageNode) parent;
 		packageNode = ((PackageNode) set.parent);
 		help.setTitle(packageNode.src.getName());
-//		content += set.src.getName() + " => " + src.getName() + divider;
+		content += set.src.getName() + " > " + src.getName() + divider;
 
 		content += set.printSpec();
 
@@ -200,7 +201,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 		set = ((PackageNode) group.parent);
 		packageNode = ((PackageNode) set.parent);
 		help.setTitle(packageNode.src.getName());
-//		content += set.src.getName() + " => " + group.src.getName() + " => " + src.getName() + divider;
+		content += set.src.getName() + " > " + group.src.getName() + " > " + src.getName() + divider;
 
 		content += set.printSpec();
 

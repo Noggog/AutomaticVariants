@@ -160,6 +160,13 @@ public class AVSaveFile extends LSaveFile {
 	helpInfo.put(Settings.MINIMIZE_PATCH,
 		"This will make AV do more processing in order to minimize the patch size.");
 
+	helpInfo.put(Settings.SPEC_PACKAGE_PACKAGER,
+		"Put your name as the person who compiled this package.  Especially useful if you "
+		+ "are simply packaging other people's work.");
+
+	helpInfo.put(Settings.SPEC_PACKAGE_ORIGAUTHORS,
+		"Put the original authors who created the material contained in the package.");
+
 	helpInfo.put(Settings.SPEC_VAR_AUTHOR,
 		"Put the original author who created the material contained in this variant.");
 
@@ -221,6 +228,8 @@ public class AVSaveFile extends LSaveFile {
 	PACKAGES_ENABLE,
 	PACKAGES_DISABLE,
 	PACKAGES_DELETE,
+	SPEC_PACKAGE_PACKAGER,
+	SPEC_PACKAGE_ORIGAUTHORS,
 	SPEC_VAR_AUTHOR,
 	SPEC_VAR_PROB,
 	SPEC_VAR_REGION,

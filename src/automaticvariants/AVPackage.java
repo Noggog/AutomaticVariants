@@ -18,11 +18,12 @@ import skyproc.SPGlobal;
  */
 public class AVPackage extends PackageNode {
 
-    SpecPackage spec;
+    public SpecPackage spec;
     static String depth = "";
 
     public AVPackage(File packageFolder) throws FileNotFoundException, IOException {
 	super(packageFolder, Type.PACKAGE);
+	spec = new SpecPackage(packageFolder);
 	loadSets();
     }
 
@@ -70,6 +71,19 @@ public class AVPackage extends PackageNode {
 	}
 
 	return duplicates;
+    }
+
+    @Override
+    public String printSpec() {
+	if (spec != null) {
+	    String out = spec.printHelpInfo();
+	    if (!out.equals("")) {
+		out += "\n";
+	    }
+	    return out;
+	} else {
+	    return "BAD SPEC FILE";
+	}
     }
 
     final public void loadSets() throws FileNotFoundException, IOException {

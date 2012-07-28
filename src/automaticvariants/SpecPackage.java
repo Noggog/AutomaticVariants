@@ -6,32 +6,48 @@ package automaticvariants;
 
 import java.io.File;
 import java.util.ArrayList;
+import skyproc.SPGlobal;
 
 /**
  *
  * @author Justin Swanson
  */
-class SpecPackage extends SpecFile {
+public class SpecPackage extends SpecFile {
 
-    String packager;
-    String version;
+    public String Packager = "";
+    public ArrayList<String> OriginalAuthors= new ArrayList<>();
+    String version = "1.0";
 
-    SpecPackage(File f) {
+    public SpecPackage(File f) {
 	super(f);
     }
 
     @Override
     void printToLog(String header) {
-	throw new UnsupportedOperationException("Not supported yet.");
+	SPGlobal.log(header, AVPackage.depth + "    --- Package Specifications loaded: --");
+	for (String s : print()) {
+	    SPGlobal.log(header, AVPackage.depth + "    |   " + s);
+	}
+	SPGlobal.log(header, AVPackage.depth + "    -------------------------------------");
     }
 
     @Override
     public String printHelpInfo() {
-	throw new UnsupportedOperationException("Not supported yet.");
+	String out = "";
+	for (String s : print()) {
+	    out += s + "\n";
+	}
+	return out;
     }
 
     @Override
     ArrayList<String> print() {
-	throw new UnsupportedOperationException("Not supported yet.");
+	ArrayList<String> out = new ArrayList<>();
+	out.add("Original Authors:");
+	for (String s : OriginalAuthors) {
+	    out.add("   > " + s);
+	}
+	out.add("\nPackager: " + Packager + "\n");
+	return out;
     }
 }

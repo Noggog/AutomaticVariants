@@ -140,7 +140,7 @@ public class PackagesManager extends SPSettingPanel {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		int answer = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete these packages?", "Confirm Delete",
-                                      JOptionPane.YES_NO_OPTION);
+			JOptionPane.YES_NO_OPTION);
 		if (answer == JOptionPane.YES_OPTION) {
 		    deleteSelected();
 		}
@@ -193,9 +193,9 @@ public class PackagesManager extends SPSettingPanel {
 			|| sel.type == PackageNode.Type.ROOT);
 
 		editSpec.setVisible(
-			sel.type == PackageNode.Type.VAR //			    || sel.type == PackageComponent.Type.VARSET
-			//			    || sel.type == PackageComponent.Type.PACKAGE
-			);
+			sel.type == PackageNode.Type.VAR
+//			|| sel.type == PackageNode.Type.VARSET
+			|| sel.type == PackageNode.Type.PACKAGE);
 
 		optionsMenu.show(tree, x + 10, y);
 	    }
@@ -323,12 +323,16 @@ public class PackagesManager extends SPSettingPanel {
 		AV.wizVarSetSpecPanel.setBack(null);
 		break;
 	    case PACKAGE:
-
+		AV.wizPackageSpecPanel.open();
+		AVPackage avp = ((AVPackage) p);
+		AV.wizPackageSpecPanel.load(avp);
+		AV.wizPackageSpecPanel.setNext(this);
+		AV.wizPackageSpecPanel.setBack(null);
 		break;
 	}
     }
 
-    public static void reloadPackageList(){
+    public static void reloadPackageList() {
 	try {
 	    AVFileVars.importVariants();
 	    AVFileVars.AVPackages.sort();
