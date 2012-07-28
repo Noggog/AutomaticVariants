@@ -72,11 +72,8 @@ public class AVFileVars {
 	}
 
 	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Importing AV Packages");
-	if (!AVPackages.isLeaf()) {
-	    // Change packages to enabled/disabled based on GUI requests
-	    shufflePackages();
-	}
 	importVariants();
+	AVPackages.prune();
 	SPProgressBarPlug.incrementBar();
 
 	prepProfiles();
@@ -360,7 +357,8 @@ public class AVFileVars {
 	}
 	for (PackageNode avPackageC : AVPackages.getAll(PackageNode.Type.PACKAGE)) {
 	    AVPackage avPackage = (AVPackage) avPackageC;
-	    for (VariantSet varSet : avPackage.sets) {
+	    for (PackageNode varSetP : avPackage.getAll(PackageNode.Type.VARSET)) {
+		VariantSet varSet = (VariantSet) varSetP;
 		if (varSet.spec == null || varSet.isEmpty()) {
 		    SPGlobal.logError(header, "Skipping " + varSet.src + " because it was empty or missing a spec file.");
 		    continue;
@@ -759,30 +757,6 @@ public class AVFileVars {
 	    } else {
 		return null;
 	    }
-	}
-    }
-
-    static public void shufflePackages() {
-	PackageTree tree = PackagesManager.tree;
-	if (tree != null) {
-	    PackageNode root = (PackageNode) tree.getRoot();
-	    boolean fail;
-	    try {
-		fail = !root.moveNode();
-	    } catch (IOException ex) {
-		SPGlobal.logException(ex);
-		fail = true;
-	    }
-
-	    if (fail) {
-		JOptionPane.showMessageDialog(null,
-			"<html>Error moving one of the selected files.  This is probably due to AV being run<br>"
-			+ "inside a 'windows protected' folder where windows is not allowing the moves.  Either<br>"
-			+ "move your Skyrim to an unprotected folder location (outside Program Files), or manually<br>"
-			+ "install/uninstall packages by moving them in/out of the AV Packages folder yourself.</html>");
-	    }
-
-	    root.pruneDisabled();
 	}
     }
 

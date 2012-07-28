@@ -18,7 +18,6 @@ import skyproc.SPGlobal;
  */
 public class AVPackage extends PackageNode {
 
-    ArrayList<VariantSet> sets = new ArrayList<VariantSet>();
     SpecPackage spec;
     static String depth = "";
 
@@ -27,9 +26,18 @@ public class AVPackage extends PackageNode {
 	loadSets();
     }
 
+    ArrayList<VariantSet> getSets() {
+	ArrayList<PackageNode> sets = getAll(Type.VARSET);
+	ArrayList<VariantSet> out = new ArrayList<>(sets.size());
+	for (PackageNode p : sets) {
+	    out.add((VariantSet) p);
+	}
+	return out;
+    }
+
     ArrayList<Variant> flatten() {
-	ArrayList<Variant> out = new ArrayList<Variant>();
-	for (VariantSet s : sets) {
+	ArrayList<Variant> out = new ArrayList<>();
+	for (VariantSet s : getSets()) {
 	    out.addAll(s.multiplyAndFlatten());
 	}
 	return out;
@@ -43,7 +51,7 @@ public class AVPackage extends PackageNode {
 	    SPGlobal.log(src.getName(), "==============================================");
 	    SPGlobal.flush();
 	}
-	for (VariantSet set : sets) {
+	for (VariantSet set : getSets()) {
 	    set.consolidateCommonFiles();
 	}
     }
@@ -56,8 +64,8 @@ public class AVPackage extends PackageNode {
 	    SPGlobal.log(src.getName(), "==============================================");
 	    SPGlobal.flush();
 	}
-	LMergeMap<File, File> duplicates = new LMergeMap<File, File>(false);
-	for (VariantSet set : sets) {
+	LMergeMap<File, File> duplicates = new LMergeMap<>(false);
+	for (VariantSet set : getSets()) {
 	    duplicates.addAll(set.getDuplicateFiles());
 	}
 
@@ -74,7 +82,6 @@ public class AVPackage extends PackageNode {
 	    if (f.isDirectory()) {
 		VariantSet set = new VariantSet(f);
 		if (set.loadVariants()) {
-		    sets.add(set);
 		    add(set);
 		}
 	    } else if (AVFileVars.isSpec(f)) {

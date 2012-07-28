@@ -43,6 +43,16 @@ public class RerouteFile extends PackageNode {
     }
 
     @Override
+    public boolean isDisabled() {
+	return AV.save.getStrings(AVSaveFile.Settings.DISABLED_PACKAGES).contains(routeFile.getPath());
+    }
+
+    @Override
+    public void enable(boolean enable) {
+	enable(enable, routeFile);
+    }
+
+    @Override
     public boolean equals(Object obj) {
 	if (obj == null) {
 	    return false;
@@ -55,11 +65,6 @@ public class RerouteFile extends PackageNode {
 	    return false;
 	}
 	return true;
-    }
-
-    @Override
-    public boolean moveFile(File src) throws IOException {
-	return super.moveFile(routeFile);
     }
 
     public static File createRerouteFile(File from, File to) throws IOException {

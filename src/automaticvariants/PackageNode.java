@@ -29,18 +29,12 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
     static String divider = "\n\n";
     public static LImagePane display;
     public File src;
-    public boolean disabled = false;
-    public boolean disabledOrig = false;
     public Type type;
     static int tmp = 0;
 
     public PackageNode(File source, Type type) {
 	if (source != null) {
 	    src = source;
-	    if (source.getPath().contains(AVFileVars.inactiveAVPackagesDir)) {
-		disabledOrig = true;
-		disabled = true;
-	    }
 	}
 	this.type = type;
     }
@@ -90,6 +84,16 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	return getAll(false);
     }
 
+    public void prune() {
+	if (isDisabled()) {
+	    parent.remove(this);
+	} else {
+	    for (PackageNode p : getAll()) {
+		p.prune();
+	    }
+	}
+    }
+
     ArrayList<PackageNode> getAll(boolean recursive) {
 	ArrayList<PackageNode> out = new ArrayList<PackageNode>();
 	if (children != null) {
@@ -111,99 +115,6 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
     @Override
     public String toString() {
 	return src.getName();
-    }
-
-    public boolean moveNode() throws IOException {
-	ArrayList<PackageNode> nodeList = getAll(true);
-
-	// Move node files
-	Set<File> toMove = new HashSet<>();
-	for (PackageNode p : nodeList) {
-	    if (p.disabled != p.disabledOrig) {
-		if (p.src.isFile()) {
-		    toMove.add(p.src);
-		} else if (p.src.isDirectory()) {
-		    toMove.addAll(Ln.generateFileList(p.src, 0, 0, false));
-		}
-	    }
-	}
-
-	boolean proper = true;
-	for (File f : toMove) {
-	    proper = proper && moveFile(f);
-	}
-
-//	boolean proper = true;
-//	if (disabled != disabledOrig) {
-//	    if (src.isDirectory()) {
-//		for (File f : src.listFiles()) {
-//		    if (f.getPath().toUpperCase().endsWith(".JSON")) {
-////		    if (f.isFile()
-////			    && !Ln.isFileType(f, "DDS")) {
-//			proper = proper && moveFile(f);
-//		    }
-//		}
-//	    }
-//	    else
-////	    else if (src.isFile())
-//	    {
-//		proper = proper && moveFile(src);
-//	    }
-//	}
-//	for (PackageNode p : getAll()) {
-//	    proper = proper && p.moveNode();
-//	}
-//
-	return proper;
-    }
-
-    public boolean moveFile(File src) throws IOException {
-	if (!src.isFile()) {
-	    return false;
-	}
-	String prefix;
-	if (src.getPath().contains(AVFileVars.inactiveAVPackagesDir)) {
-	    prefix = AVFileVars.AVPackagesDir;
-	} else {
-	    prefix = AVFileVars.inactiveAVPackagesDir;
-	}
-	File dest = new File(prefix + src.getPath().substring(src.getPath().indexOf("\\")));
-	// Check to see if any enabled reroute file was referring to this node
-	if (RerouteFile.reroutes.containsKey(src)) {
-	    for (RerouteFile r : RerouteFile.reroutes.get(src)) {
-		// If a single reroute file is left enabled
-		// Swap real texture with reroutes to keep real texture in enabled set
-		if (!r.disabled) {
-		    boolean passed = true;
-		    dest = new File(dest.getPath() + ".reroute");
-		    File newPrototype = new File(r.routeFile.getPath().substring(0, r.routeFile.getPath().indexOf(".reroute")));
-		    for (RerouteFile r2 : RerouteFile.reroutes.get(src)) {
-			r2.changeRouteTo(newPrototype);
-		    }
-		    passed = passed && Ln.moveFile(r.routeFile, dest, true);
-		    return passed && Ln.moveFile(src, newPrototype, true);
-		}
-	    }
-	}
-	// else
-	return Ln.moveFile(src, dest, true);
-    }
-
-    public void pruneDisabled() {
-	if (children != null) {
-	    ArrayList<Object> remove = new ArrayList<Object>();
-	    for (Object o : children) {
-		PackageNode p = (PackageNode) o;
-		if (p.disabled) {
-		    remove.add(o);
-		} else {
-		    p.pruneDisabled();
-		}
-	    }
-	    for (Object o : remove) {
-		children.remove(o);
-	    }
-	}
     }
 
     public void finalizeComponent() {
@@ -229,14 +140,27 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	return false;
     }
 
-    public void updateHelp(LHelpPanel help) {
+    public boolean isDisabled() {
+	ArrayList<PackageNode> all = getAll();
+	if (all.isEmpty()) {
+	    return AV.save.getStrings(AVSaveFile.Settings.DISABLED_PACKAGES).contains(src.getPath());
+	} else {
+	    for (PackageNode p : all) {
+		if (!p.isDisabled()) {
+		    return false;
+		}
+	    }
+	    return true;
+	}
+    }
 
+    public void updateHelp(LHelpPanel help) {
 
 	String content = "";
 	PackageNode packageNode;
 	PackageNode set;
 	PackageNode group;
-	if (disabled) {
+	if (isDisabled()) {
 	    content += "DISABLED - ";
 	}
 	ArrayList<PackageNode> genTextures;
@@ -366,11 +290,23 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	return content;
     }
 
-    public void enable(boolean enable) {
-	disabled = !enable;
-	for (PackageNode n : getAll()) {
-	    n.enable(enable);
+    void enable(boolean enable, File f) {
+	ArrayList<PackageNode> all = getAll();
+	if (all.isEmpty()) {
+	    if (enable) {
+		AV.save.curSettings.get(AVSaveFile.Settings.DISABLED_PACKAGES).getStrings().remove(f.getPath());
+	    } else {
+		AV.save.curSettings.get(AVSaveFile.Settings.DISABLED_PACKAGES).getStrings().add(f.getPath());
+	    }
+	} else {
+	    for (PackageNode n : getAll()) {
+		n.enable(enable);
+	    }
 	}
+    }
+
+    public void enable(boolean enable) {
+	enable(enable, src);
     }
 
     public static ArrayList<File> toFiles(ArrayList<PackageNode> files) throws FileNotFoundException, IOException {

@@ -229,32 +229,32 @@ public class PackagesManager extends SPSettingPanel {
 	}
 
 	// adjust folders to enable/disable based on their contents
-	for (TreePath p : paths) {
-	    for (int i = p.getPathCount() - 1; i >= 0; i--) {
-		PackageNode node = (PackageNode) p.getPathComponent(i);
-		if (node.src.isDirectory()) {
-		    if (node.disabled) {
-			for (PackageNode child : node.getAll()) {
-			    if (!child.disabled) {
-				node.disabled = false;
-				break;
-			    }
-			}
-		    } else {
-			boolean allDisabled = true;
-			for (PackageNode child : node.getAll()) {
-			    if (!child.disabled) {
-				allDisabled = false;
-				break;
-			    }
-			}
-			if (allDisabled) {
-			    node.disabled = true;
-			}
-		    }
-		}
-	    }
-	}
+//	for (TreePath p : paths) {
+//	    for (int i = p.getPathCount() - 1; i >= 0; i--) {
+//		PackageNode node = (PackageNode) p.getPathComponent(i);
+//		if (node.src.isDirectory()) {
+//		    if (node.isDisabled()) {
+//			for (PackageNode child : node.getAll()) {
+//			    if (!child.isDisabled()) {
+//				node.enable(true);
+//				break;
+//			    }
+//			}
+//		    } else {
+//			boolean allDisabled = true;
+//			for (PackageNode child : node.getAll()) {
+//			    if (!child.isDisabled()) {
+//				allDisabled = false;
+//				break;
+//			    }
+//			}
+//			if (allDisabled) {
+//			    node.enable(false);
+//			}
+//		    }
+//		}
+//	    }
+//	}
 	tree.repaint();
     }
 
@@ -267,9 +267,6 @@ public class PackagesManager extends SPSettingPanel {
 	    // Enable selecton and move files
 	    int row = tree.getLeadSelectionRow();
 	    PackageNode p = getSelectedComponent();
-	    enableSelection(true);
-	    p.moveNode();
-	    loadInactivePackageList();
 
 	    // Select the same node
 	    p = (PackageNode) tree.getPathForRow(row).getLastPathComponent();

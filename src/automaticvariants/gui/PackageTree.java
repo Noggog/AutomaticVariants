@@ -49,7 +49,7 @@ public class PackageTree extends LSwingTree {
 	    }
 
 	    Component defaultC = defaultR.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
-	    if (item.disabled) {
+	    if (item.isDisabled()) {
 		defaultC.setForeground(disabledColor);
 	    }
 

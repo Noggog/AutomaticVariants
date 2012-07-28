@@ -4,6 +4,7 @@
  */
 package automaticvariants;
 
+import java.util.HashSet;
 import lev.Ln;
 import lev.gui.LSaveFile;
 
@@ -29,6 +30,7 @@ public class AVSaveFile extends LSaveFile {
 	Add(Settings.MINIMIZE_PATCH,		true,	    true);
 	Add(Settings.MAX_MEM,			750,	    false);
 	Add(Settings.SPEC_VAR_PROB,		15,	    false);
+	Add(Settings.DISABLED_PACKAGES,		new HashSet<String>(), false);
     }
 
     @Override
@@ -240,6 +242,7 @@ public class AVSaveFile extends LSaveFile {
 	IMPORT_AT_START,
 	MINIMIZE_PATCH,
 	MAX_MEM,
+	DISABLED_PACKAGES,
 	AV_SETTINGS;
     }
 }

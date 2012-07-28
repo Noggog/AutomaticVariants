@@ -19,8 +19,6 @@ import skyproc.*;
  */
 public class VariantSet extends PackageNode implements Serializable {
 
-    ArrayList<VariantGroup> groups;
-    ArrayList<PackageNode> commonTextures = new ArrayList<>(2);
     public SpecVariantSet spec;
     static String depth = "* +";
     ArrayList<Variant> flat;
@@ -37,7 +35,6 @@ public class VariantSet extends PackageNode implements Serializable {
 	    SPGlobal.log(src.getName(), depth + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	    SPGlobal.log(src.getName(), depth);
 	}
-	groups = new ArrayList<VariantGroup>();
 
 	for (File f : src.listFiles()) {
 	    if (AVFileVars.isSpec(f)) {
@@ -59,12 +56,10 @@ public class VariantSet extends PackageNode implements Serializable {
 	    } else if (f.isDirectory()) {
 		VariantGroup v = new VariantGroup(f);
 		v.load();
-		groups.add(v);
 		add(v);
 
 	    } else if (AVFileVars.isDDS(f)) {
 		PackageNode c = new PackageNode(f, Type.GENTEXTURE);
-		commonTextures.add(c);
 		add(c);
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(src.getName(), depth + "   Loaded common texture: " + f);
@@ -91,17 +86,28 @@ public class VariantSet extends PackageNode implements Serializable {
 	return true;
     }
 
+    ArrayList<VariantGroup> getGroups() {
+	ArrayList<PackageNode> groups = getAll(Type.VARGROUP);
+	ArrayList<VariantGroup> out = new ArrayList<>(groups.size());
+	for (PackageNode p : groups) {
+	    out.add((VariantGroup) p);
+	}
+	return out;
+    }
+
     ArrayList<Variant> multiplyAndFlatten() {
 	if (flat == null) {
 	    mergeInGlobals();
 	    flat = new ArrayList<>();
+	    ArrayList<VariantGroup> groups = getGroups();
 	    if (!groups.isEmpty()) {
-		flat.addAll(groups.get(0).variants);
+		flat.addAll(groups.get(0).getVariants());
 		if (groups.size() > 1) {
 		    for (int i = 1; i < groups.size(); i++) {
-			ArrayList<Variant> tmp = new ArrayList<>(flat.size() * groups.get(i).variants.size());
+			ArrayList<Variant> groupVars = groups.get(i).getVariants();
+			ArrayList<Variant> tmp = new ArrayList<>(flat.size() * groupVars.size());
 			for (Variant a : flat) {
-			    for (Variant b : groups.get(i).variants) {
+			    for (Variant b : groupVars) {
 				Variant merge = a.merge(b);
 				tmp.add(merge);
 			    }
@@ -132,14 +138,14 @@ public class VariantSet extends PackageNode implements Serializable {
 	// First, check current common textures and see if any groups have them
 	SPGlobal.log(src.getName(), "Consolidating common files");
 	SPGlobal.flush();
-	for (VariantGroup g : groups) {
-	    g.deleteMatches(toFiles(commonTextures));
+	for (VariantGroup g : getGroups()) {
+	    g.deleteMatches(toFiles(getAll(Type.GENTEXTURE)));
 	}
 
 	// Check each Variant against each other and return any files that are common to all.
-	ArrayList<PackageNode> commonFiles = new ArrayList<PackageNode>();
-	ArrayList<File> moved = new ArrayList<File>();
-	for (VariantGroup g : groups) {
+	ArrayList<PackageNode> commonFiles = new ArrayList<>();
+	ArrayList<File> moved = new ArrayList<>();
+	for (VariantGroup g : getGroups()) {
 	    commonFiles.addAll(g.consolidateCommonFilesInternal());
 	}
 	if (SPGlobal.logging()) {
@@ -157,17 +163,17 @@ public class VariantSet extends PackageNode implements Serializable {
 	}
 
 	// See if any new common textures are present in other groups
-	for (VariantGroup g : groups) {
+	for (VariantGroup g : getGroups()) {
 	    g.deleteMatches(moved);
 	}
     }
 
     @Override
     public LMergeMap<File, File> getDuplicateFiles() throws FileNotFoundException, IOException {
-	LMergeMap<File, File> duplicates = new LMergeMap<File, File>(false);
-	for (VariantGroup group : groups) {
-	    for (Variant var : group.variants) {
-		for (PackageNode tex : var.texturesNode) {
+	LMergeMap<File, File> duplicates = new LMergeMap<>(false);
+	for (VariantGroup group : getGroups()) {
+	    for (Variant var : group.getVariants()) {
+		for (PackageNode tex : var.getAll(Type.TEXTURE)) {
 		    if (!tex.getClass().equals(RerouteFile.class)) {
 			boolean found = false;
 			for (File key : duplicates.keySet()) {
@@ -197,11 +203,11 @@ public class VariantSet extends PackageNode implements Serializable {
     }
 
     public boolean isEmpty() {
-	if (groups.isEmpty()) {
+	if (getAll(Type.VARGROUP).isEmpty()) {
 	    return true;
 	}
-	for (VariantGroup g : groups) {
-	    if (!g.variants.isEmpty()) {
+	for (VariantGroup g : getGroups()) {
+	    if (!g.getAll(Type.VAR).isEmpty()) {
 		return false;
 	    }
 	}
@@ -225,12 +231,12 @@ public class VariantSet extends PackageNode implements Serializable {
 
     public Set<String> getTextures() {
 	Set<String> out = new HashSet<>();
-	for (PackageNode p : commonTextures) {
+	for (PackageNode p : getAll(Type.GENTEXTURE)) {
 	    out.add(p.src.getName().toUpperCase());
 	}
-	for (VariantGroup g : groups) {
-	    for (Variant v : g.variants) {
-		for (PackageNode p : v.texturesNode) {
+	for (VariantGroup g : getGroups()) {
+	    for (Variant v : g.getVariants()) {
+		for (PackageNode p : v.getAll(Type.TEXTURE)) {
 		    out.add(p.src.getName().toUpperCase());
 		}
 	    }
@@ -245,8 +251,8 @@ public class VariantSet extends PackageNode implements Serializable {
     }
 
     public void mergeInGlobals() {
-	for (VariantGroup g : groups) {
-	    g.mergeInGlobals(commonTextures);
+	for (VariantGroup g : getGroups()) {
+	    g.mergeInGlobals(getAll(Type.GENTEXTURE));
 	}
     }
 

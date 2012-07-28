@@ -234,6 +234,9 @@ public class VariantProfile {
 
     public void generateRecords() {
 	for (VariantSet varSet : sets) {
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(toString(), " *************> Generating for " + varSet.printName("-"));
+	    }
 	    ArrayList<Variant> vars = varSet.multiplyAndFlatten();
 	    for (Variant var : vars) {
 		if (SPGlobal.logging()) {
@@ -288,7 +291,7 @@ public class VariantProfile {
 		txst.set(TXST.TXSTflag.FACEGEN_TEXTURES, true);
 
 		// For each texture there normally...
-		ArrayList<File> varFiles = var.getTextures();
+		ArrayList<File> varFiles = var.getTextureFiles();
 		for (int i = 0; i < textures.get(nodeName).size(); i++) {
 		    String texture = textures.get(nodeName).get(i);
 		    if (texture.equals("")) {

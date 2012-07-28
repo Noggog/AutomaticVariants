@@ -46,7 +46,6 @@ public class PackagesOther extends SPSettingPanel {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		AVFileVars.shufflePackages();
 		AVFileVars.gatherFiles();
 		AV.gatheringAndExiting = true;
 		if (SPGlobal.logging()) {
