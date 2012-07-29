@@ -18,7 +18,7 @@ import skyproc.gui.SUMGUI;
  *
  * @Author Justin Swanson
  */
-public class WizSpecVariant extends PackagesSpecs {
+public class WizSpecVariant extends WizSpecTemplate {
 
     LTextField author;
     LNumericSetting probDiv;

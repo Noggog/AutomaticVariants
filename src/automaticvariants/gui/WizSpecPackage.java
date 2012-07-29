@@ -15,7 +15,7 @@ import skyproc.gui.SUMGUI;
  *
  * @author Justin Swanson
  */
-public class WizSpecPackage extends PackagesSpecs {
+public class WizSpecPackage extends WizSpecTemplate {
 
     LTextField packager;
     LStringList origAuthors;
@@ -65,6 +65,14 @@ public class WizSpecPackage extends PackagesSpecs {
     public void onOpen(SPMainMenuPanel parent) {
 	if (WizNewPackage.open) {
 	    load(new SpecPackage(WizNewPackage.newPackage.targetPackage.src));
+	}
+    }
+
+    @Override
+    public void onNext() {
+	super.onNext();
+	if (WizNewPackage.open){
+	    AV.wizSetPanel.setBack(AV.wizPackageSpecPanel);
 	}
     }
 

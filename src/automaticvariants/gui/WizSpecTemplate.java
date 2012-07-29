@@ -16,11 +16,11 @@ import skyproc.gui.SUMGUI;
  *
  * @author Justin Swanson
  */
-public class PackagesSpecs extends WizTemplate {
+public class WizSpecTemplate extends WizTemplate {
 
     SpecFile target;
 
-    public PackagesSpecs(SPMainMenuPanel parent_, String title) {
+    public WizSpecTemplate(SPMainMenuPanel parent_, String title) {
 	super(parent_, title, AV.packagesManagerPanel, null);
     }
 
@@ -29,9 +29,6 @@ public class PackagesSpecs extends WizTemplate {
 	super.initialize();
 
 	spacing = 12;
-	nextButton.setText("Save");
-	nextButton.setSize(45, nextButton.getHeight());
-	nextButton.setLocation(settingsPanel.getWidth() - nextButton.getWidth() - 15, nextButton.getY());
 
 	setNext(AV.packagesManagerPanel);
     }

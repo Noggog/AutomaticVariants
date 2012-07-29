@@ -49,6 +49,7 @@ public class WizPackages extends WizTemplate {
 		if (!packages.isEmpty()) {
 		    WizNewPackage.newPackage.targetPackage = (PackageNode) packages.getSelectedItem();
 		    AV.wizSetPanel.open();
+		    AV.wizSetPanel.setBack(AV.wizPackagesPanel);
 		    AV.wizSetPanel.reset();
 		}
 	    }
@@ -74,8 +75,13 @@ public class WizPackages extends WizTemplate {
 		    File f = new File(AVFileVars.AVPackagesDir + trimmed);
 		    PackageNode packageNode = new PackageNode(f, PackageNode.Type.PACKAGE);
 		    WizNewPackage.newPackage.targetPackage = packageNode;
-		    AV.wizSetPanel.open();
-		    AV.wizSetPanel.reset();
+		    AV.wizPackageSpecPanel.open();
+		    AV.wizPackageSpecPanel.setBack(AV.wizPackagesPanel);
+		    AV.wizPackageSpecPanel.setNext(AV.wizSetPanel);
+		    AV.wizPackageSpecPanel.editing.load(WizNewPackage.newPackage.targetPackage
+			    , null
+			    , null
+			    , null);
 		} else {
 		    newPackageField.highlightChanged();
 		}
@@ -112,9 +118,15 @@ public class WizPackages extends WizTemplate {
 		+ "that AV can understand.\n\n"
 		+ "A single package should contain all the variants from a single author.");
 	SUMGUI.helpPanel.hideArrow();
+	if (!WizNewPackage.open) {
+	    reset();
+	}
 	WizNewPackage.open = true;
 	WizNewPackage.newPackage.clear();
 	loadPackages();
+    }
+
+    public void reset() {
 	newPackageField.setText("");
 	newPackageField.clearHighlight();
 	packages.reset();

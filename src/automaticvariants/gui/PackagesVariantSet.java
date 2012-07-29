@@ -14,7 +14,7 @@ import skyproc.gui.SUMGUI;
  *
  * @author Justin Swanson
  */
-public class PackagesVariantSet extends PackagesSpecs {
+public class PackagesVariantSet extends WizSpecTemplate {
 
     LFormIDPicker seeds;
 
