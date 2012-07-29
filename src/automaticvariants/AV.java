@@ -415,7 +415,6 @@ public class AV implements SUM {
     public void onExit(boolean patchWasGenerated) throws IOException {
 	if (!gatheringAndExiting) {
 	    AVFileVars.saveAVPackagesListing();
-	    AVFileVars.moveOut();
 	}
     }
 
@@ -429,7 +428,7 @@ public class AV implements SUM {
 	    AVFont = new Font("Serif", Font.BOLD, 16);
 	}
 	AVFontSmall = AVFont.deriveFont(Font.PLAIN, 14);
-	AVFileVars.gatherFiles();
+	AVFileVars.moveOut();
 	AVFileVars.importVariants();
     }
 

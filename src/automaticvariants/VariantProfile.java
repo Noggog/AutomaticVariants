@@ -243,18 +243,6 @@ public class VariantProfile {
 		    SPGlobal.log(toString(), " *************> Generating for " + var.printName("-"));
 		}
 
-		if (var.printName("-").equals("Bellyaches Animals-Werewolf-Skin-All Iris Blue_Brown")) {
-		    int wer = 23;
-		}
-
-		if (var.printName("-").equals("Bellyaches Animals-Werewolf-Skin-All Iris Cloudy Red_Black")) {
-		    int wer = 23;
-		}
-
-		if (var.printName("-").equals("Bellyaches Animals-Werewolf-Skin-All Iris Cloudy Red_Brown")) {
-		    int wer = 23;
-		}
-
 		Map<String, TXST> txsts = generateTXSTs(var);
 		if (txsts.isEmpty()) {
 		    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated");
@@ -316,6 +304,7 @@ public class VariantProfile {
 			if (texture.contains(varFile.getName().toUpperCase())) {
 			    // And then sub it in the TXST
 			    String varTex = varFile.getPath();
+			    varTex = varTex.substring(varTex.indexOf("AV Packages"));
 			    txst.setNthMap(set, varTex);
 			    if (SPGlobal.logging()) {
 				SPGlobal.log(toString(), " * |    Loading " + i + ": " + varTex);

@@ -103,7 +103,7 @@ public class AVFileVars {
      */
     public static void importVariants() throws IOException {
 	String header = "Import Variants";
-	File AVPackagesDirFile = new File(SPGlobal.SUMpath + AVPackagesDir);
+	File AVPackagesDirFile = new File(AVTexturesDir);
 
 	// wipe
 	AVPackages = new PackageNode(AVPackagesDirFile, PackageNode.Type.ROOT);
@@ -249,9 +249,6 @@ public class AVFileVars {
 	    try {
 		LShrinkArray nifData = BSA.getUsedFile(profile.nifPath);
 		if (nifData != null) {
-		    if (profile.nifPath.equals("MESHES\\BELLYACHES NEW DRAGON SPECIES\\KEENE'S TALON\\DRAGON.NIF")) {
-			int wer = 23;
-		    }
 		    for (LPair<String, ArrayList<String>> pair : loadNif(profile.nifPath, nifData)) {
 			profile.textures.put(pair.a, pair.b);
 			profile.nifNodeNames.add(pair.a);
@@ -324,10 +321,6 @@ public class AVFileVars {
 			    profile.race = r;
 			    profile.skin = armo;
 			    profile.piece = arma;
-
-			    if (profile.ID == 254) {
-				int wer = 23;
-			    }
 
 			    //Load Alt Textures
 			    profile.loadAltTextures(arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON));
@@ -726,8 +719,24 @@ public class AVFileVars {
     }
 
     static public void moveOut() {
-	for (PackageNode p : AVPackages.getAll()) {
-	    p.moveOut();
+	ArrayList<File> files = Ln.generateFileList(new File(AVPackagesDir), false);
+	boolean pass = true;
+	for (File src : files) {
+	    if (isDDS(src) || isReroute(src) || isSpec(src)) {
+		String dest = AVFileVars.AVTexturesDir;
+		File destFile = new File(dest + src.getPath().substring(src.getPath().indexOf("\\") + 1));
+		boolean delSuccess = true;
+		if (destFile.isFile()) {
+		    delSuccess = destFile.delete();
+		    pass = pass && delSuccess;
+		}
+		if (delSuccess) {
+		    pass = pass && Ln.moveFile(src, destFile, true);
+		}
+	    }
+	}
+	if (!pass) {
+	    SPGlobal.logError("Move Out", "Failed to move some files out to their texture locations.");
 	}
     }
 
