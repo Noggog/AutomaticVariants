@@ -7,6 +7,7 @@ package automaticvariants.gui;
 import automaticvariants.AV;
 import automaticvariants.AVFileVars;
 import automaticvariants.AVSaveFile;
+import automaticvariants.AVSaveFile.Settings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import lev.gui.LButton;
@@ -23,8 +24,10 @@ import skyproc.gui.SUMGUI;
 public class PackagesOther extends SPSettingPanel {
 
     LButton gatherAndExit;
+    public LCheckBox forceRepick;
     LCheckBox origAsVar;
     LButton packageManager;
+    boolean onceForce = true;
 
     public PackagesOther(SPMainMenuPanel parent_) {
 	super(parent_, "Texture Variants", AV.orange);
@@ -40,6 +43,20 @@ public class PackagesOther extends SPSettingPanel {
 	origAsVar.addShadow();
 	setPlacement(origAsVar);
 	Add(origAsVar);
+
+	forceRepick = new LCheckBox("Force Texture Repick", AV.AVFont, AV.yellow);
+	forceRepick.setOffset(0);
+	forceRepick.linkTo(AVSaveFile.Settings.PACKAGES_FORCE_REPICK, AV.save, SUMGUI.helpPanel, true);
+	forceRepick.addShadow();
+	forceRepick.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		forceRepick();
+	    }
+	});
+	setPlacement(forceRepick);
+	Add(forceRepick);
 
 	gatherAndExit = new LButton("Gather Files and Exit");
 	gatherAndExit.addActionListener(new ActionListener() {
@@ -64,6 +81,14 @@ public class PackagesOther extends SPSettingPanel {
 
 	alignRight();
 
+    }
+
+    void forceRepick() {
+	if (onceForce) {
+	    onceForce = false;
+	    SUMGUI.setPatchNeeded(true);
+	    AV.save.curSettings.get(Settings.PACKAGES_FORCE_REPICK).setTo(AV.save.getInt(Settings.PACKAGES_FORCE_REPICK) + 1);
+	}
     }
 
     @Override

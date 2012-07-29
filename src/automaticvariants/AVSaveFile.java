@@ -30,6 +30,7 @@ public class AVSaveFile extends LSaveFile {
 	Add(Settings.MINIMIZE_PATCH,		true,	    true);
 	Add(Settings.MAX_MEM,			750,	    false);
 	Add(Settings.SPEC_VAR_PROB,		15,	    false);
+	Add(Settings.PACKAGES_FORCE_REPICK,	1,	    true);
 	Add(Settings.DISABLED_PACKAGES,		new HashSet<String>(), false);
 	Add(Settings.PACKAGE_LISTING,		new HashSet<String>(), false);
     }
@@ -60,6 +61,11 @@ public class AVSaveFile extends LSaveFile {
 
 	helpInfo.put(Settings.PACKAGES_ORIG_AS_VAR, "This will add the non-AV actor setup as a variant, and add it to the list of options. \n\n"
 		+ "If turned off, then only variants explicitly part of an AV Package will spawn.");
+
+	helpInfo.put(Settings.PACKAGES_FORCE_REPICK, "This is a setting that applies once the next time you start your game. "
+		+ "It will force every NPC in your game to choose a new variant.  Turning this on will only make them do it once; It will not make NPCs repeatedly switch.\n\n"
+		+ "This can be very useful if you've added variants and want to make existing NPCs choose between them.\n\nThis can also be used as a resetting "
+		+ "feature to force an NPC to repick if they have bugged out.");
 
 	helpInfo.put(Settings.PACKAGES_GATHER, "This is a utility function that should only be used if you want to modify AV Package contents "
 		+ "manually.\n\n"
@@ -224,6 +230,7 @@ public class AVSaveFile extends LSaveFile {
 	PACKAGES_ON,
 	PACKAGES_GATHER,
 	PACKAGES_ORIG_AS_VAR,
+	PACKAGES_FORCE_REPICK,
 	PACKAGES_COMPRESS,
 	PACKAGES_EDIT,
 	PACKAGES_ENABLE,

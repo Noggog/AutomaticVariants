@@ -60,6 +60,7 @@ public class AV implements SUM {
     GLOB staminaScale;
     GLOB speedScale;
     GLOB tieStats;
+    GLOB forceRepick;
     /*
      * Other
      */
@@ -244,6 +245,7 @@ public class AV implements SUM {
 	questScript.setProperty("StaminaScale", staminaScale.getForm());
 	questScript.setProperty("SpeedScale", speedScale.getForm());
 	questScript.setProperty("TieStats", tieStats.getForm());
+	questScript.setProperty("ForceRepick", forceRepick.getForm());
 
 	// Log Table
 	Float[] logTable = new Float[1000];
@@ -256,6 +258,10 @@ public class AV implements SUM {
     }
 
     public void makeGlobals() {
+	forceRepick = new GLOB(SPGlobal.getGlobalPatch(), "AVForceRepick", GLOBType.Short);
+	forceRepick.setValue((float)AV.save.getInt(Settings.PACKAGES_FORCE_REPICK));
+	forceRepick.setConstant(true);
+
 	texturesOn = new GLOB(SPGlobal.getGlobalPatch(), "AVTexturesOn", GLOBType.Short);
 	texturesOn.setValue(save.getBool(Settings.PACKAGES_ON));
 	texturesOn.setConstant(true);
