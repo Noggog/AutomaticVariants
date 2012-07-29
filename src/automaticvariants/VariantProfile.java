@@ -61,18 +61,18 @@ public class VariantProfile {
 		continue;
 	    }
 	    ArrayList<String> txstTextures = txst.getTextures();
-	    if (textures.containsKey(altTex.getName())) {
-		altTextures.put(altTex.getName(), new ArrayList<>(textures.get(altTex.getName())));
-	    } else {
-		SPGlobal.logError(nifPath, "Profile " + toString() + " did not have a nif node name of: " + altTex.getName());
-		altTextures.put(altTex.getName(), new ArrayList<String>());
+	    if (!textures.containsKey(altTex.getName())) {
+		SPGlobal.logError(nifPath, "Skipping profile " + toString() + ", because it did not have a nif node name of: " + altTex.getName());
+		VariantProfile.profiles.remove(this);
+		return;
 	    }
+	    altTextures.put(altTex.getName(), new ArrayList<String>());
 	    ArrayList<String> profileAltTextures = altTextures.get(altTex.getName());
 	    for (int i = 0; i < txstTextures.size(); i++) {
 		if (txstTextures.get(i) == null) {
-		    profileAltTextures.set(i, "");
+		    profileAltTextures.add("");
 		} else {
-		    profileAltTextures.set(i, "TEXTURES\\" + txstTextures.get(i).toUpperCase());
+		    profileAltTextures.add("TEXTURES\\" + txstTextures.get(i).toUpperCase());
 		}
 	    }
 	}
@@ -241,6 +241,18 @@ public class VariantProfile {
 	    for (Variant var : vars) {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(toString(), " *************> Generating for " + var.printName("-"));
+		}
+
+		if (var.printName("-").equals("Bellyaches Animals-Werewolf-Skin-All Iris Blue_Brown")) {
+		    int wer = 23;
+		}
+
+		if (var.printName("-").equals("Bellyaches Animals-Werewolf-Skin-All Iris Cloudy Red_Black")) {
+		    int wer = 23;
+		}
+
+		if (var.printName("-").equals("Bellyaches Animals-Werewolf-Skin-All Iris Cloudy Red_Brown")) {
+		    int wer = 23;
 		}
 
 		Map<String, TXST> txsts = generateTXSTs(var);

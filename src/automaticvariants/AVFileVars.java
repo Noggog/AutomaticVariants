@@ -5,8 +5,6 @@
 package automaticvariants;
 
 import automaticvariants.AVSaveFile.Settings;
-import automaticvariants.gui.PackageTree;
-import automaticvariants.gui.PackagesManager;
 import java.io.*;
 import java.util.*;
 import java.util.zip.DataFormatException;
@@ -251,6 +249,9 @@ public class AVFileVars {
 	    try {
 		LShrinkArray nifData = BSA.getUsedFile(profile.nifPath);
 		if (nifData != null) {
+		    if (profile.nifPath.equals("MESHES\\BELLYACHES NEW DRAGON SPECIES\\KEENE'S TALON\\DRAGON.NIF")) {
+			int wer = 23;
+		    }
 		    for (LPair<String, ArrayList<String>> pair : loadNif(profile.nifPath, nifData)) {
 			profile.textures.put(pair.a, pair.b);
 			profile.nifNodeNames.add(pair.a);
@@ -260,7 +261,8 @@ public class AVFileVars {
 			SPGlobal.log(profile.toString(), "Removing profile with nif because it had no textures: " + profile.nifPath);
 		    }
 		} else {
-		    SPGlobal.logError(header, "Error locating nif file: " + profile.nifPath);
+		    VariantProfile.profiles.remove(profile);
+		    SPGlobal.logError(header, "Error locating nif file: " + profile.nifPath + ", removing profile.");
 		}
 	    } catch (IOException | DataFormatException ex) {
 		SPGlobal.logException(ex);
@@ -305,25 +307,35 @@ public class AVFileVars {
 
 
 		if (profile != null) {
-		    Set<RACE> races = new HashSet<>();
-		    races.add((RACE) SPDatabase.getMajor(arma.getRace(), GRUP_TYPE.RACE));
-		    for (FormID raceID : arma.getAdditionalRaces()) {
-			races.add((RACE) SPDatabase.getMajor(raceID, GRUP_TYPE.RACE));
-		    }
-
-		    for (RACE r : races) {
-			//If profile is already filled, make duplicate
-			if (profile.race != null) {
-			    SPGlobal.log(header, "Duplicating for " + profile.nifPath + " || " + profile.race);
-			    profile = new VariantProfile(profile);
+		    try {
+			Set<RACE> races = new HashSet<>();
+			races.add((RACE) SPDatabase.getMajor(arma.getRace(), GRUP_TYPE.RACE));
+			for (FormID raceID : arma.getAdditionalRaces()) {
+			    races.add((RACE) SPDatabase.getMajor(raceID, GRUP_TYPE.RACE));
 			}
-			//Load in record setup
-			profile.race = r;
-			profile.skin = armo;
-			profile.piece = arma;
 
-			//Load Alt Textures
-			profile.loadAltTextures(arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON));
+			for (RACE r : races) {
+			    //If profile is already filled, make duplicate
+			    if (profile.race != null) {
+				SPGlobal.log(header, "Duplicating for " + profile.nifPath + " || " + profile.race);
+				profile = new VariantProfile(profile);
+			    }
+			    //Load in record setup
+			    profile.race = r;
+			    profile.skin = armo;
+			    profile.piece = arma;
+
+			    if (profile.ID == 254) {
+				int wer = 23;
+			    }
+
+			    //Load Alt Textures
+			    profile.loadAltTextures(arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON));
+			}
+		    } catch (Exception ex) {
+			SPGlobal.logError(header, "Skipping profile " + profile + " because an exception occured.");
+			SPGlobal.logException(ex);
+			VariantProfile.profiles.remove(profile);
 		    }
 		} else {
 		    SPGlobal.log(header, "Skipped " + arma + ", could not find a profile matching nif: " + nifPath);

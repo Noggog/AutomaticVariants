@@ -92,10 +92,10 @@ public class Variant extends PackageNode implements Serializable {
 	Variant out = new Variant();
 	out.name = name + "_" + rhs.src.getName();
 	for (PackageNode tex : getAll(Type.TEXTURE)) {
-	    out.add(tex);
+	    out.add(new PackageNode(tex.src, Type.TEXTURE));
 	}
 	for (PackageNode p : rhs.getAll(Type.TEXTURE)) {
-	    out.add(p);
+	    out.add(new PackageNode(p.src, Type.TEXTURE));
 	}
 	out.parent = rhs.parent;
 	spec.Probability_Divider *= rhs.spec.Probability_Divider;
