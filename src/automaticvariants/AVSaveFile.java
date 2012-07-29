@@ -31,6 +31,7 @@ public class AVSaveFile extends LSaveFile {
 	Add(Settings.MAX_MEM,			750,	    false);
 	Add(Settings.SPEC_VAR_PROB,		15,	    false);
 	Add(Settings.DISABLED_PACKAGES,		new HashSet<String>(), false);
+	Add(Settings.PACKAGE_LISTING,		new HashSet<String>(), false);
     }
 
     @Override
@@ -253,6 +254,7 @@ public class AVSaveFile extends LSaveFile {
 	MINIMIZE_PATCH,
 	MAX_MEM,
 	DISABLED_PACKAGES,
+	PACKAGE_LISTING,
 	AV_SETTINGS;
     }
 }

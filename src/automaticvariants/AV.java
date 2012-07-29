@@ -32,7 +32,7 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.5.0.1 Alpha";
+    public static String version = "1.5.0.2 Alpha";
 
     /*
      * Static Strings
@@ -153,6 +153,11 @@ public class AV implements SUM {
 	}
 
 	delete = new File("AV Starter.bat");
+	if (delete.isFile()) {
+	    delete.delete();
+	}
+
+	delete = new File("Files/Last AV Package Listing.txt");
 	if (delete.isFile()) {
 	    delete.delete();
 	}
@@ -389,17 +394,16 @@ public class AV implements SUM {
     @Override
     public boolean needsPatching() {
 	//Need to check if packages have changed.
-	ArrayList<File> files = Ln.generateFileList(new File(AVFileVars.AVPackagesDir), false);
+	ArrayList<File> files = Ln.generateFileList(new File(AVFileVars.AVTexturesDir), false);
 	try {
-	    ArrayList<String> last = AVFileVars.getAVPackagesListing();
-	    ArrayList<String> lastTmp = new ArrayList<>(last);
+	    Set<String> last = AVFileVars.getAVPackagesListing();
 	    if (files.size() != last.size()) {
 		return true;
 	    }
 
 	    for (File f : files) {
 		String path = f.getPath();
-		if (!lastTmp.contains(path)) {
+		if (!last.contains(path)) {
 		    return true;
 		}
 	    }
