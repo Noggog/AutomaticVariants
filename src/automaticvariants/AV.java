@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -263,7 +264,7 @@ public class AV implements SUM {
 
     public void makeGlobals() {
 	forceRepick = new GLOB(SPGlobal.getGlobalPatch(), "AVForceRepick", GLOBType.Short);
-	forceRepick.setValue((float)AV.save.getInt(Settings.PACKAGES_FORCE_REPICK));
+	forceRepick.setValue((float) AV.save.getInt(Settings.PACKAGES_FORCE_REPICK));
 	forceRepick.setConstant(true);
 
 	texturesOn = new GLOB(SPGlobal.getGlobalPatch(), "AVTexturesOn", GLOBType.Short);
@@ -483,49 +484,21 @@ public class AV implements SUM {
 	settingsMenu.setBackgroundPicture(SettingsOther.class.getResource("AV background.jpg"));
 	settingsMenu.setMainFont(AVFont, 25, 40, 27);
 	try {
-	    final LImagePane donate = new LImagePane(SettingsOther.class.getResource("ConsiderDonatingDark.png"));
-	    donate.setLocation(120, settingsMenu.getHeight() - 52);
-	    donate.addMouseListener(new MouseListener(){
-
-		@Override
-		public void mouseClicked(MouseEvent e) {
-		    try {
-			java.awt.Desktop.getDesktop().browse(java.net.URI.create("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=38U9Z82KLA3EU&lc=US&item_name=Automatic%20Variants&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest"));
-		    } catch (Exception ex) {
-			SPGlobal.logException(ex);
-		    }
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-		}
-
-		@Override
-		public void mouseEntered(MouseEvent e) {
-		    try {
-			donate.setImage(SettingsOther.class.getResource("ConsiderDonating.png"));
-		    } catch (IOException ex) {
-			SPGlobal.logException(ex);
-		    }
-		}
-
-		@Override
-		public void mouseExited(MouseEvent e) {
-		    try {
-			donate.setImage(SettingsOther.class.getResource("ConsiderDonatingDark.png"));
-		    } catch (IOException ex) {
-			SPGlobal.logException(ex);
-		    }
-		}
-	    });
-	    settingsMenu.add(donate);
+	    LImagePane donate1 = donateButton();
+	    donate1.setLocation(120, settingsMenu.getHeight() - 52);
+	    settingsMenu.add(donate1);
 	} catch (IOException ex) {
 	    SPGlobal.logException(ex);
 	}
+	try {
+	    LImagePane donate2 = donateButton();
+	    donate2.setLocation(SUMGUI.progress.getWidth() / 2 - donate2.getWidth() / 2, 85);
+	    SUMGUI.progress.setSize(SUMGUI.progress.getWidth(), SUMGUI.progress.getHeight() + 30 + donate2.getHeight());
+	    SUMGUI.progress.add(donate2);
+	} catch (IOException ex) {
+	    SPGlobal.logException(ex);
+	}
+
 
 	packagesManagerPanel = new PackagesManager(settingsMenu);
 	packagesOtherPanel = new PackagesOther(settingsMenu);
@@ -551,6 +524,48 @@ public class AV implements SUM {
 	settingsMenu.setWelcomePanel(new WelcomePage(settingsMenu));
 
 	return settingsMenu;
+    }
+
+    public LImagePane donateButton() throws IOException {
+	final LImagePane donate = new LImagePane(SettingsOther.class.getResource("ConsiderDonatingDark.png"));
+	donate.addMouseListener(new MouseListener() {
+
+	    @Override
+	    public void mouseClicked(MouseEvent e) {
+		try {
+		    java.awt.Desktop.getDesktop().browse(java.net.URI.create("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=38U9Z82KLA3EU&lc=US&item_name=Automatic%20Variants&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest"));
+		} catch (Exception ex) {
+		    SPGlobal.logException(ex);
+		}
+	    }
+
+	    @Override
+	    public void mousePressed(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseReleased(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseEntered(MouseEvent e) {
+		try {
+		    donate.setImage(SettingsOther.class.getResource("ConsiderDonating.png"));
+		} catch (IOException ex) {
+		    SPGlobal.logException(ex);
+		}
+	    }
+
+	    @Override
+	    public void mouseExited(MouseEvent e) {
+		try {
+		    donate.setImage(SettingsOther.class.getResource("ConsiderDonatingDark.png"));
+		} catch (IOException ex) {
+		    SPGlobal.logException(ex);
+		}
+	    }
+	});
+	return donate;
     }
 
     @Override
