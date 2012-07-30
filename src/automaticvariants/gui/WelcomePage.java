@@ -5,7 +5,10 @@
 package automaticvariants.gui;
 
 import automaticvariants.AV;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
+import lev.gui.LButton;
 import lev.gui.LImagePane;
 import skyproc.SPGlobal;
 import skyproc.gui.SPMainMenuPanel;
@@ -18,7 +21,7 @@ import skyproc.gui.SPSettingPanel;
 public class WelcomePage extends SPSettingPanel {
 
     LImagePane picture;
-
+    
     public WelcomePage(SPMainMenuPanel parent_) {
 	super(parent_, "", AV.orange);
     }

@@ -7,19 +7,23 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
 import lev.Ln;
 import lev.debug.LDebug;
+import lev.gui.LImagePane;
 import lev.gui.LSaveFile;
-import lev.gui.resources.LFonts;
 import skyproc.*;
 import skyproc.GLOB.GLOBType;
 import skyproc.gui.*;
@@ -478,7 +482,50 @@ public class AV implements SUM {
 	settingsMenu.setVersion(version, new Point(80, 88));
 	settingsMenu.setBackgroundPicture(SettingsOther.class.getResource("AV background.jpg"));
 	settingsMenu.setMainFont(AVFont, 25, 40, 27);
-//	SUMGUI.helpPanel.setHeaderFont(new Font("Serif", Font.PLAIN, 10));
+	try {
+	    final LImagePane donate = new LImagePane(SettingsOther.class.getResource("ConsiderDonatingDark.png"));
+	    donate.setLocation(120, settingsMenu.getHeight() - 52);
+	    donate.addMouseListener(new MouseListener(){
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+		    try {
+			java.awt.Desktop.getDesktop().browse(java.net.URI.create("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=38U9Z82KLA3EU&lc=US&item_name=Automatic%20Variants&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest"));
+		    } catch (Exception ex) {
+			SPGlobal.logException(ex);
+		    }
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+		    try {
+			donate.setImage(SettingsOther.class.getResource("ConsiderDonating.png"));
+		    } catch (IOException ex) {
+			SPGlobal.logException(ex);
+		    }
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+		    try {
+			donate.setImage(SettingsOther.class.getResource("ConsiderDonatingDark.png"));
+		    } catch (IOException ex) {
+			SPGlobal.logException(ex);
+		    }
+		}
+	    });
+	    settingsMenu.add(donate);
+	} catch (IOException ex) {
+	    SPGlobal.logException(ex);
+	}
 
 	packagesManagerPanel = new PackagesManager(settingsMenu);
 	packagesOtherPanel = new PackagesOther(settingsMenu);
