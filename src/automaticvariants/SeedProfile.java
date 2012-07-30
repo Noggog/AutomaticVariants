@@ -4,9 +4,10 @@
  */
 package automaticvariants;
 
+import java.util.ArrayList;
 import java.util.Objects;
-import skyproc.*;
 import skyproc.NPC_.TemplateFlag;
+import skyproc.*;
 
 /**
  *
@@ -20,12 +21,35 @@ public class SeedProfile {
     ARMA piece;
     RACE race;
 
-    SeedProfile(NPC_ npc) {
-	this.npc = npc;
-	this.origNPC = npc;
+    SeedProfile() {
     }
 
-    public boolean load () {
+    public boolean load(ArrayList<FormID> ids) {
+	if (ids.size() == 1) {
+	    npc = (NPC_) SPDatabase.getMajor(ids.get(0), GRUP_TYPE.NPC_);
+	    origNPC = npc;
+	    if (npc == null) {
+		return false;
+	    }
+	    return loadNPC();
+	} else if (ids.size() == 3) {
+	    for (FormID id : ids) {
+		if (race == null) {
+		    race = (RACE) SPDatabase.getMajor(id, GRUP_TYPE.RACE);
+		}
+		if (skin == null) {
+		    skin = (ARMO) SPDatabase.getMajor(id, GRUP_TYPE.ARMO);
+		}
+		if (piece == null) {
+		    piece = (ARMA) SPDatabase.getMajor(id, GRUP_TYPE.ARMA);
+		}
+	    }
+	    return race != null & skin != null && piece != null;
+	}
+	return false;
+    }
+
+    public boolean loadNPC() {
 
 	if (npc.isTemplated() && npc.isTemplatedToLList(TemplateFlag.USE_TRAITS) != null) {
 	    SPGlobal.logError("SeedProfile", "Skipped seed " + npc + " because it was templated to a LList.");
@@ -71,8 +95,10 @@ public class SeedProfile {
     }
 
     public void print() {
-	SPGlobal.log(npc.getEDID(), "|   Seed: " + npc);
-	SPGlobal.log(npc.getEDID(), "|   Orig Seed: " + origNPC);
+	if (npc != null) {
+	    SPGlobal.log(npc.getEDID(), "|   Seed: " + npc);
+	    SPGlobal.log(npc.getEDID(), "|   Orig Seed: " + origNPC);
+	}
 	SPGlobal.log(npc.getEDID(), "|   Race: " + race);
 	SPGlobal.log(npc.getEDID(), "|   Skin: " + skin);
 	SPGlobal.log(npc.getEDID(), "|  Piece: " + piece);
@@ -108,6 +134,4 @@ public class SeedProfile {
 	hash = 97 * hash + Objects.hashCode(this.race);
 	return hash;
     }
-
-
 }

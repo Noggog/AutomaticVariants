@@ -386,16 +386,7 @@ public class AVFileVars {
 		    SPGlobal.log("SortVariantSets", "|==============/");
 		}
 
-		ArrayList<SeedProfile> seeds = new ArrayList<>();
-		for (NPC_ n : varSet.getSeedNPCs()) {
-		    SeedProfile seed = new SeedProfile(n);
-		    if (seed.load()) {
-			seeds.add(seed);
-			if (SPGlobal.logging()) {
-			    seed.print();
-			}
-		    }
-		}
+		ArrayList<SeedProfile> seeds = varSet.getSeeds();
 
 		boolean absorbed = false;
 		for (VariantProfile varProfile : VariantProfile.profiles) {

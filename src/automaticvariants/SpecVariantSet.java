@@ -25,10 +25,10 @@ public class SpecVariantSet extends SpecFile {
     @Override
     ArrayList<String> print() {
 	ArrayList<String> out = new ArrayList<String>();
-	out.add("Type: " + type);
-	out.add("Target FormIDs: ");
+	out.add("   | Type: " + type);
+	out.add("   | Target FormIDs: ");
 	for (String[] s : Target_FormIDs) {
-	    out.add("   " + s[0] + " | " + s[1]);
+	    out.add("   |   " + s[0] + " | " + s[1]);
 	}
 	return out;
     }
