@@ -77,7 +77,7 @@ public class PackagesManager extends SPSettingPanel {
 
 	createNewPackage.setLocation(getSpacing(otherSettings, createNewPackage, false));
 	createNewPackage.addActionListener(AV.wizPackagesPanel.getOpenHandler());
-//	Add(createNewPackage);
+	Add(createNewPackage);
 
 
 	enableButton = new LButton("Enable", size);

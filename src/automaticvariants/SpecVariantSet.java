@@ -4,11 +4,10 @@
  */
 package automaticvariants;
 
+import automaticvariants.gui.ProfileDisplay;
 import java.io.File;
 import java.util.ArrayList;
-import skyproc.ARMO;
-import skyproc.GRUP_TYPE;
-import skyproc.SPGlobal;
+import skyproc.*;
 
 /**
  *
@@ -34,11 +33,19 @@ public class SpecVariantSet extends SpecFile {
 	return out;
     }
 
-    public void loadSkins(ArrayList<ARMO> in) {
-	Target_FormIDs = new String[in.size()][2];
+    public void loadSkins(ArrayList<ProfileDisplay> in) {
+	Target_FormIDs = new String[in.size()][6];
 	for (int i = 0 ; i < in.size() ; i++) {
-	    Target_FormIDs[i][0] = in.get(i).getFormStr().substring(0, 6);
-	    Target_FormIDs[i][1] = in.get(i).getFormStr().substring(6);
+	    VariantProfile profile = in.get(i).profile;
+	    RACE race = profile.race;
+	    ARMO skin = profile.skin;
+	    ARMA piece = profile.piece;
+	    Target_FormIDs[i][0] = race.getFormStr().substring(0, 6);
+	    Target_FormIDs[i][1] = race.getFormStr().substring(6);
+	    Target_FormIDs[i][2] = skin.getFormStr().substring(0, 6);
+	    Target_FormIDs[i][3] = skin.getFormStr().substring(6);
+	    Target_FormIDs[i][4] = piece.getFormStr().substring(0, 6);
+	    Target_FormIDs[i][5] = piece.getFormStr().substring(6);
 	}
     }
 

@@ -123,7 +123,7 @@ public class WizSet extends WizTemplate {
 	    public void actionPerformed(ActionEvent e) {
 		if (checkName()) {
 		    AV.wizSetManualPanel.open();
-		    AV.wizSetManualPanel.reset();
+		    AV.wizSetManualPanel.resetAll();
 		}
 	    }
 	});
@@ -202,15 +202,6 @@ public class WizSet extends WizTemplate {
 		    + " or you can use the supplied AV tool if you don't know which skin is associated with the NPC you are making variants for.");
 	    SUMGUI.helpPanel.hideArrow();
 	}
-    }
-
-    static String multiSkin() {
-	return "Sometimes there are two skins for the same type of Actor.  AV will only give the variants to Actors with skins you have selected, "
-		+ "so it is important to be aware of when an Actor has multiple skins. The supplied "
-		+ "AV tool will notify you when there are multiple skins involved.\n\n"
-		+ "Wolves are an example case of this scenario.  They have two skins in vanilla Skyrim: White and Black. "
-		+ "When making a package for them, you can pick both if you want your variant to apply to ALL wolves, or just one if you want it to "
-		+ "apply ONLY to Black/White wolves.";
     }
 
     public void loadSets() {

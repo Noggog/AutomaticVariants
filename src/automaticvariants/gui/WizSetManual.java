@@ -6,20 +6,16 @@ package automaticvariants.gui;
 
 import automaticvariants.AV;
 import automaticvariants.AVFileVars;
+import automaticvariants.VariantProfile;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.TreeSet;
 import lev.gui.*;
-import skyproc.*;
-import skyproc.NPC_.NPCFlag;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPProgressBarPlug;
-import skyproc.gui.SPQuestionPanel;
 import skyproc.gui.SUMGUI;
 
 /**
@@ -28,24 +24,29 @@ import skyproc.gui.SUMGUI;
  */
 public class WizSetManual extends WizTemplate {
 
-    LComboSearchBox<EDIDdisplay<ARMO>> skinPicker;
-    LComboSearchBox<EDIDdisplay<NPC_>> npcPicker;
-    TreeSet<String> skins;
-    TreeSet<String> npcs;
-    LList<ARMO> newSkins;
+    TreeSet<ProfileDisplay> races = new TreeSet<>();
+    TreeSet<ProfileDisplay> skins = new TreeSet<>();
+    TreeSet<ProfileDisplay> pieces = new TreeSet<>();
+    LComboSearchBox<ProfileDisplay> racePicker;
+    LComboSearchBox<ProfileDisplay> skinPicker;
+    LComboSearchBox<ProfileDisplay> piecePicker;
+    LButton resetPickers;
+    LButton addButton;
+    LCheckBox exclusive;
+    LList<ProfileDisplay> targetProfiles;
     LLabel progressLabel;
     LProgressBar progress;
     ArrayList<String> blockedSkins = new ArrayList<>();
 
     public WizSetManual(SPMainMenuPanel parent_) {
-	super(parent_, "Target Skins", AV.packagesManagerPanel, AV.wizSetPanel);
+	super(parent_, "Target Profiles", AV.packagesManagerPanel, AV.wizSetPanel);
     }
 
     @Override
     protected void initialize() {
 	super.initialize();
 
-	spacing = 40;
+	spacing = 15;
 
 	blockedSkins.add("SkinNaked");
 	blockedSkins.add("SkinNakedBeast");
@@ -53,20 +54,55 @@ public class WizSetManual extends WizTemplate {
 	blockedSkins.add("ArmorAstrid");
 	blockedSkins.add("ArmorManakin");
 
-	setQuestionText("Please select the skins your variant should target.");
+	setQuestionText("Please select the profiles your variant should target.");
 
-	skinPicker = new LComboSearchBox<>("Via Skin", AV.AVFont, AV.yellow);
-	skinPicker.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
-	skinPicker.addEnterButton("Add Skin", new ActionListener() {
+	racePicker = new LComboSearchBox<>("Race", AV.AVFont, AV.yellow);
+	racePicker.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
+	racePicker.putUnder(question, x, spacing);
+//	racePicker.addBoxActionListener(new ActionListener(){
+//
+//	    @Override
+//	    public void actionPerformed(ActionEvent e) {
+//		if (exclusive.isSelected()) {
+//		    skinPicker.removeAllItems();
+//		    piecePicker.removeAllItems();
+//		    loadSkins();
+//		    loadPieces();
+//		}
+//	    }
+//	});
+	racePicker.addMouseListener(new MouseListener() {
 
 	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		if (npcPicker.getSelectedItem() != null) {
-		    newSkins.addElement(skinPicker.getSelectedItem().m);
-		}
+	    public void mouseClicked(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mousePressed(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseReleased(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseEntered(MouseEvent e) {
+		SUMGUI.helpPanel.setDefaultPos();
+		SUMGUI.helpPanel.setTitle("Pick Race");
+		SUMGUI.helpPanel.setContent("Pick the race component of the profile you want to target.");
+		SUMGUI.helpPanel.focusOn(racePicker, 0);
+	    }
+
+	    @Override
+	    public void mouseExited(MouseEvent e) {
+		mainHelp();
 	    }
 	});
-	skinPicker.putUnder(question, x, spacing);
+	Add(racePicker);
+
+	skinPicker = new LComboSearchBox<>("Skin", AV.AVFont, AV.yellow);
+	skinPicker.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
+	skinPicker.putUnder(racePicker, racePicker.getX(), spacing);
 	skinPicker.addMouseListener(new MouseListener() {
 
 	    @Override
@@ -85,7 +121,7 @@ public class WizSetManual extends WizTemplate {
 	    public void mouseEntered(MouseEvent e) {
 		SUMGUI.helpPanel.setDefaultPos();
 		SUMGUI.helpPanel.setTitle("Pick Skin");
-		SUMGUI.helpPanel.setContent("Directly pick the skin to tie to the variant.");
+		SUMGUI.helpPanel.setContent("Pick the Armor component of the profile you want to target.");
 		SUMGUI.helpPanel.focusOn(skinPicker, 0);
 	    }
 
@@ -96,23 +132,11 @@ public class WizSetManual extends WizTemplate {
 	});
 	Add(skinPicker);
 
-	npcPicker = new LComboSearchBox<>("Via NPC's Skin", AV.AVFont, AV.yellow);
-	npcPicker.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
-	npcPicker.putUnder(skinPicker, skinPicker.getX(), spacing);
-	npcPicker.addEnterButton("Add Skin", new ActionListener() {
 
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		if (npcPicker.getSelectedItem() != null) {
-		    NPC_ npc = npcPicker.getSelectedItem().m;
-		    ARMO skin = (ARMO) SPDatabase.getMajor(AVFileVars.getUsedSkin(npc), GRUP_TYPE.ARMO);
-		    if (skin != null) {
-			newSkins.addElement(skin);
-		    }
-		}
-	    }
-	});
-	npcPicker.addMouseListener(new MouseListener() {
+	piecePicker = new LComboSearchBox<>("Armor Piece", AV.AVFont, AV.yellow);
+	piecePicker.setSize(settingsPanel.getWidth() - x * 2, fieldHeight);
+	piecePicker.putUnder(skinPicker, skinPicker.getX(), spacing);
+	piecePicker.addMouseListener(new MouseListener() {
 
 	    @Override
 	    public void mouseClicked(MouseEvent e) {
@@ -129,11 +153,9 @@ public class WizSetManual extends WizTemplate {
 	    @Override
 	    public void mouseEntered(MouseEvent e) {
 		SUMGUI.helpPanel.setDefaultPos();
-		SUMGUI.helpPanel.setTitle("Pick Skin via NPC");
-		SUMGUI.helpPanel.setContent("Pick an NPC and tie to the skin it uses.\n\n"
-			+ "If an NPC is missing it means it doesn't use a skin, or it was "
-			+ "blocked.");
-		SUMGUI.helpPanel.focusOn(npcPicker, 0);
+		SUMGUI.helpPanel.setTitle("Pick Armor Piece");
+		SUMGUI.helpPanel.setContent("Pick the Armor Piece component of the profile you want to target.");
+		SUMGUI.helpPanel.focusOn(piecePicker, 0);
 	    }
 
 	    @Override
@@ -141,13 +163,52 @@ public class WizSetManual extends WizTemplate {
 		mainHelp();
 	    }
 	});
-	Add(npcPicker);
+	Add(piecePicker);
 
-	newSkins = new LList<>("Chosen Target Skins", AV.AVFont, AV.yellow);
-	newSkins.setUnique(true);
-	newSkins.setSize(settingsPanel.getWidth() - 30, 150);
-	newSkins.centerIn(settingsPanel, backButton.getY() - newSkins.getHeight() - 20);
-	Add(newSkins);
+	resetPickers = new LButton("Reset Choosers ^");
+	resetPickers.putUnder(piecePicker, x, 10);
+	resetPickers.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		resetPickers();
+	    }
+	});
+//	Add(resetPickers);
+
+	exclusive = new LCheckBox("Exclusive", AV.AVFont, AV.yellow);
+	exclusive.setLocation(settingsPanel.getWidth() - x - exclusive.getWidth(), resetPickers.getY() + resetPickers.getHeight() / 2 - exclusive.getHeight() / 2);
+	exclusive.addShadow();
+//	Add(exclusive);
+
+	targetProfiles = new LList<>("Target Profiles", AV.AVFont, AV.yellow);
+	targetProfiles.setUnique(true);
+	targetProfiles.setSize(settingsPanel.getWidth() - 30, 150);
+	targetProfiles.centerIn(settingsPanel, backButton.getY() - targetProfiles.getHeight() - 20);
+	Add(targetProfiles);
+
+	addButton = new LButton("Add Profile");
+	addButton.setLocation(resetPickers.getLocation());
+	addButton.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		ProfileDisplay race = racePicker.getSelectedItem();
+		ProfileDisplay skin = skinPicker.getSelectedItem();
+		ProfileDisplay piece = piecePicker.getSelectedItem();
+		if (race == null || skin == null || piece == null) {
+		    return;
+		}
+		VariantProfile profile = new VariantProfile(
+			race.profile.race, skin.profile.skin, piece.profile.piece);
+		ProfileDisplay display = new ProfileDisplay(profile,
+			profile.race.getEDID() + " | "
+			+ profile.skin.getEDID() + " | "
+			+ profile.piece.getEDID());
+		targetProfiles.addElement(display);
+	    }
+	});
+	Add(addButton);
 
 	progressLabel = new LLabel("Loading up mods, please wait...", AV.AVFontSmall, AV.lightGray);
 	progressLabel.centerIn(settingsPanel, question.getBottom() + spacing * 3);
@@ -161,7 +222,7 @@ public class WizSetManual extends WizTemplate {
 	setNext(AV.wizGenPanel);
 
 	displaySwitch(true);
-	SUMGUI.startImport(new SkinLoad());
+	SUMGUI.startImport(new Loader());
     }
 
     @Override
@@ -170,95 +231,112 @@ public class WizSetManual extends WizTemplate {
 	editing.load(WizNewPackage.newPackage.targetPackage, WizNewPackage.newPackage.targetSet, null, null);
     }
 
-    public void reset() {
-	skinPicker.reset();
-	npcPicker.reset();
-	newSkins.clear();
+    public void resetAll() {
+	resetPickers();
+	targetProfiles.clear();
+	exclusive.setSelected(false);
     }
 
-    void loadSkins() {
-	skinPicker.removeAllItems();
-	for (ARMO skin : AV.getMerger().getArmors()) {
-	    if (!AVFileVars.unusedSkins.contains(skin.getForm())
-		    && !blockedSkins.contains(skin.getEDID())) {
-		skinPicker.addItem(new EDIDdisplay(skin));
-	    }
-	}
+    public void resetPickers() {
+	racePicker.reset();
 	skinPicker.reset();
+	piecePicker.reset();
     }
 
     void mainHelp() {
 	SUMGUI.helpPanel.setDefaultPos();
-	SUMGUI.helpPanel.setTitle("Manually Picking Skins");
-	SUMGUI.helpPanel.setContent("Pick all the skins that are used by NPCs that you want your variants to be added to.\n\n"
-		+ WizSet.multiSkin() + "\n\n"
-		+ "If you are not sure if your target NPCs have multiple skins, go back and use the AV tool.");
+	SUMGUI.helpPanel.setTitle("Manually Picking Profiles");
+	SUMGUI.helpPanel.setContent("Pick all the profiles that are used by NPCs that you want your variants to be added to.\n\n"
+		+ "Profiles are a unique combination of: \n      Race\n   + Skin (Armor)\n   + Armor Piece (ArmorAddon)\n that combine to give each NPC their look.\n\n"
+		+ "It's quite easy to manually pick profiles that won't ever actually exist in the game.  If you are not sure what profiles fit your variant, go back and use the AV tool.");
 	SUMGUI.helpPanel.hideArrow();
-    }
-
-    void loadNPCs() {
-	npcPicker.removeAllItems();
-
-	Set<String> block = new HashSet<>();
-	block.add("AUDIO");
-	block.add("DELETEWHENDONE");
-
-	for (NPC_ npc : AV.getMerger().getNPCs()) {
-	    boolean blocked = false;
-	    String upper = npc.getEDID().toUpperCase();
-	    for (String s : block) {
-		if (upper.contains(s)) {
-		    blocked = true;
-		    break;
-		}
-	    }
-	    if (blocked) {
-		continue;
-	    }
-
-	    if (!npc.getTemplate().equals(FormID.NULL) && npc.get(NPC_.TemplateFlag.USE_TRAITS)) {
-		continue;
-	    }
-
-	    ARMO skin = (ARMO) SPDatabase.getMajor(AVFileVars.getUsedSkin(npc), GRUP_TYPE.ARMO);
-	    if (skin == null || blockedSkins.contains(skin.getEDID())) {
-		continue;
-	    }
-
-	    npcPicker.addItem(new EDIDdisplay(npc));
-	}
-	npcPicker.reset();
     }
 
     @Override
     public boolean testNext() {
-	return !newSkins.isEmpty();
+	return !targetProfiles.isEmpty();
     }
 
     @Override
     public void onNext() {
-	WizNewPackage.newPackage.targetSkins = newSkins.getAll();
+	WizNewPackage.newPackage.targetProfiles = targetProfiles.getAll();
 	AV.wizGenPanel.open();
 	AV.wizGenPanel.reset();
 	AV.wizGenPanel.setBack(AV.wizSetManualPanel);
     }
 
     void displaySwitch(Boolean start) {
+	racePicker.setVisible(!start);
 	skinPicker.setVisible(!start);
-	npcPicker.setVisible(!start);
-	newSkins.setVisible(!start);
+	piecePicker.setVisible(!start);
+	resetPickers.setVisible(!start);
+	exclusive.setVisible(!start);
+	targetProfiles.setVisible(!start);
+	addButton.setVisible(!start);
 	progressLabel.setVisible(start);
 	progress.setVisible(start);
     }
 
-    class SkinLoad implements Runnable {
+    class Loader implements Runnable {
 
 	@Override
 	public void run() {
-	    AVFileVars.locateUnused();
+	    AVFileVars.prepProfiles();
+	    for (VariantProfile profile : VariantProfile.profiles) {
+		races.add(new ProfileDisplay(profile, profile.race.getEDID()));
+		skins.add(new ProfileDisplay(profile, profile.skin.getEDID()));
+		pieces.add(new ProfileDisplay(profile, profile.piece.getEDID()));
+	    }
+	    loadRaces();
 	    loadSkins();
-	    loadNPCs();
+	    loadPieces();
 	    displaySwitch(false);
 	}
+    }
+
+    void loadRaces() {
+	ProfileDisplay skin = skinPicker.getSelectedItem();
+	ProfileDisplay piece = piecePicker.getSelectedItem();
+
+	racePicker.removeAllItems();
+	for (ProfileDisplay d : races) {
+	    if (!exclusive.isSelected()
+		    && (skin == null || skin.profile.skin.equals(d.profile.skin))
+		    && (piece == null || piece.profile.piece.equals(d.profile.piece))) {
+		racePicker.addItem(d);
+	    }
+	}
+	racePicker.reset();
+	racePicker.setSelectedIndex(-1);
+    }
+
+    void loadSkins() {
+	ProfileDisplay race = racePicker.getSelectedItem();
+	ProfileDisplay piece = piecePicker.getSelectedItem();
+
+	skinPicker.removeAllItems();
+	for (ProfileDisplay d : skins) {
+	    if (!exclusive.isSelected()
+		    || ((race == null || race.profile.race.equals(d.profile.race)) && (piece == null || piece.profile.piece.equals(d.profile.piece)))) {
+		skinPicker.addItem(d);
+	    }
+	}
+	skinPicker.reset();
+	skinPicker.setSelectedIndex(-1);
+    }
+
+    void loadPieces() {
+	ProfileDisplay race = racePicker.getSelectedItem();
+	ProfileDisplay skin = skinPicker.getSelectedItem();
+
+	piecePicker.removeAllItems();
+	for (ProfileDisplay d : pieces) {
+	    if (!exclusive.isSelected()
+		    || ((race == null || race.profile.race.equals(d.profile.race)) && (skin == null || skin.profile.skin.equals(d.profile.skin)))) {
+		piecePicker.addItem(d);
+	    }
+	}
+	piecePicker.reset();
+	piecePicker.setSelectedIndex(-1);
     }
 }

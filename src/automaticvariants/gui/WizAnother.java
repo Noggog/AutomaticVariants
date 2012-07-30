@@ -29,6 +29,8 @@ public class WizAnother extends WizTemplate {
 
 	spacing = 60;
 
+	editing.setVisible(false);
+
 	question.putUnder(header, question.getX(), 0);
 	setQuestionText("Do you want to make another variant in the same group?");
 

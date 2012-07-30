@@ -32,7 +32,7 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.5.0.2 Alpha";
+    public static String version = "1.5.1 Beta";
 
     /*
      * Static Strings
@@ -438,6 +438,7 @@ public class AV implements SUM {
 	    AVFont = new Font("Serif", Font.BOLD, 16);
 	}
 	AVFontSmall = AVFont.deriveFont(Font.PLAIN, 14);
+	readInExceptions();
 	AVFileVars.moveOut();
 	AVFileVars.importVariants();
     }
@@ -527,8 +528,6 @@ public class AV implements SUM {
 
     @Override
     public void runChangesToPatch() throws Exception {
-
-	readInExceptions();
 
 	SPGlobal.loggingSync(true);
 	SPGlobal.logging(true);

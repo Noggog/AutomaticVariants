@@ -4,15 +4,10 @@
  */
 package automaticvariants.gui;
 
-import automaticvariants.AV;
-import automaticvariants.PackageNode;
-import automaticvariants.SpecVariant;
-import automaticvariants.SpecVariantSet;
+import automaticvariants.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lev.Ln;
 import skyproc.ARMO;
 import skyproc.SPGlobal;
@@ -27,11 +22,10 @@ public class WizNewPackage {
     public static WizNewPackage newPackage = new WizNewPackage();
     PackageNode targetPackage;
     PackageNode targetSet;
-    ArrayList<ARMO> targetSkins;
+    ArrayList<ProfileDisplay> targetProfiles;
     ArrayList<File> genTextures;
     PackageNode targetGroup;
     PackageNode targetVariant;
-    SpecVariant varSpec;
     ArrayList<File> varTextures;
 
     public void save() {
@@ -58,9 +52,9 @@ public class WizNewPackage {
 	}
 
 	// Save Var Set Spec File
-	if (targetSkins != null) {
+	if (targetProfiles != null) {
 	    SpecVariantSet setSpec = new SpecVariantSet(targetSet.src);
-	    setSpec.loadSkins(targetSkins);
+	    setSpec.loadSkins(targetProfiles);
 	    try {
 		setSpec.export();
 	    } catch (IOException ex) {
@@ -68,15 +62,17 @@ public class WizNewPackage {
 	    }
 	}
 
-
 	// Save Var Spec file
 	AV.wizVarSpecPanel.save();
+
+	// Save Var Spec file
+	AV.wizPackageSpecPanel.save();
     }
 
     public void clear() {
 	targetPackage = null;
 	targetSet = null;
-	targetSkins = null;
+	targetProfiles = null;
 	genTextures = null;
 	targetGroup = null;
 	targetVariant = null;

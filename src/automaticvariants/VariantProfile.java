@@ -19,9 +19,9 @@ public class VariantProfile {
 
     public static ArrayList<VariantProfile> profiles = new ArrayList<>();
     static int nextID = 0;
-    RACE race;
-    ARMO skin;
-    ARMA piece;
+    public RACE race;
+    public ARMO skin;
+    public ARMA piece;
     String nifPath;
     ArrayList<String> nifNodeNames = new ArrayList<>();
     Map<String, ArrayList<String>> textures = new HashMap<>();
@@ -29,6 +29,12 @@ public class VariantProfile {
     Set<String> texturesFlat;
     ArrayList<VariantSet> sets = new ArrayList<>();
     public int ID;
+
+    public VariantProfile(RACE race, ARMO skin, ARMA piece) {
+	this.race = race;
+	this.skin = skin;
+	this.piece = piece;
+    }
 
     VariantProfile() {
 	ID = nextID++;
@@ -87,6 +93,10 @@ public class VariantProfile {
 	    }
 	}
 	altTextures.clear();
+    }
+
+    public boolean isValid() {
+	return race != null && skin != null && piece != null;
     }
 
     public static VariantProfile find(RACE race, ARMO skin, ARMA piece, String nifPath) {

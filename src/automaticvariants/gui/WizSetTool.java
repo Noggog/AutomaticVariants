@@ -160,7 +160,6 @@ public class WizSetTool extends WizTemplate {
 	    SUMGUI.helpPanel.setDefaultPos();
 	    SUMGUI.helpPanel.setTitle("Skin Locator Tool");
 	    SUMGUI.helpPanel.setContent("Pick all the skins that are used by NPCs that you want your variants to be added to.\n\n"
-		    + WizSet.multiSkin() + "\n\n"
 		    + "If you are not sure if your target NPCs have multiple skins, go back and use the AV tool.");
 	    SUMGUI.helpPanel.hideArrow();
 

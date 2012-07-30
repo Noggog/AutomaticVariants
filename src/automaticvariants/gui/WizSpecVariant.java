@@ -134,6 +134,7 @@ public class WizSpecVariant extends WizSpecTemplate {
     @Override
     public void onOpen(SPMainMenuPanel parent) {
 	if (WizNewPackage.open) {
+	    WizNewPackage pack = WizNewPackage.newPackage;
 	    load(new SpecVariant(WizNewPackage.newPackage.targetVariant.src));
 	}
     }

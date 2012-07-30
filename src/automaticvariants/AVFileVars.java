@@ -224,7 +224,7 @@ public class AVFileVars {
 	SPGlobal.log(header, "===================      Loading NIFs     =================");
 	SPGlobal.log(header, "===========================================================");
 	for (ARMO armo : AV.getMerger().getArmors()) {
-	    if (!AVFileVars.unusedSkins.contains(armo.getForm())) {
+	    if (!AVFileVars.unusedSkins.contains(armo.getForm()) && !AV.block.contains(armo.getForm())) {
 		for (FormID piece : armo.getArmatures()) {
 		    if (!AVFileVars.unusedPieces.get(armo.getForm()).contains(piece)) {
 			ARMA arma = (ARMA) SPDatabase.getMajor(piece, GRUP_TYPE.ARMA);
@@ -285,10 +285,16 @@ public class AVFileVars {
     }
 
     public static void loadProfileSkin(ARMO armo) {
+	Set<FormID> block = AV.block;
 	for (FormID armaForm : armo.getArmatures()) {
 	    // If a used piece
-	    if (!unusedPieces.containsKey(armo.getForm())
-		    || !unusedPieces.get(armo.getForm()).contains(armaForm)) {
+	    if ((!unusedPieces.containsKey(armo.getForm())
+		    || !unusedPieces.get(armo.getForm()).contains(armaForm))
+		    && !AV.block.contains(armo.getForm())) {
+		if (armo.getEDID().equals("SkinNakedBeast")) {
+		    int wer = 23;
+		}
+
 		ARMA arma = (ARMA) SPDatabase.getMajor(armaForm, GRUP_TYPE.ARMA);
 
 		// Make sure it has a race
