@@ -85,7 +85,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
     }
 
     public void prune() {
-	if (isDisabled()) {
+	if (isDisabled() && type != Type.ROOT) {
 	    parent.remove(this);
 	} else {
 	    for (PackageNode p : getAll()) {
