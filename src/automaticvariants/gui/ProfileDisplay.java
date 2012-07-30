@@ -16,6 +16,13 @@ public class ProfileDisplay implements Comparable {
     public VariantProfile profile;
     String edid;
 
+    ProfileDisplay(VariantProfile profile) {
+	this.profile = profile;
+	edid = profile.race.getEDID() + " | "
+		+ profile.skin.getEDID() + " | "
+		+ profile.piece.getEDID();
+    }
+
     ProfileDisplay(VariantProfile profile, String edid) {
 	this.profile = profile;
 	this.edid = edid;
@@ -47,7 +54,6 @@ public class ProfileDisplay implements Comparable {
 	hash = 67 * hash + Objects.hashCode(this.edid);
 	return hash;
     }
-
 
     @Override
     public int compareTo(Object o) {

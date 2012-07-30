@@ -223,6 +223,10 @@ public class AVSaveFile extends LSaveFile {
 	helpInfo.put(Settings.SPEC_VAR_REGION_EXCLUDE,
 		"This will make the regions you specified for this variant to spawn in exclusive.  This means that no other variants besides this one will spawn there.  The one exception to this rule is that other variants that name these exclusive regions specifically will still spawn there.\n\n"
 		+ "NOTE: This setting only applies if regions have been specified for this variant.");
+
+	helpInfo.put(Settings.WIZ_PARTIAL_MATCH,
+		"This will display all profiles that contain at least one texture that you are using.  "
+		+ "Turning this setting off will only display profiles that use all the textures.");
     }
 
     public enum Settings {
@@ -256,6 +260,7 @@ public class AVSaveFile extends LSaveFile {
 	STATS_STAMINA_MAX,
 	STATS_SPEED_MAX,
 	STATS_TIE,
+	WIZ_PARTIAL_MATCH,
 	DEBUG_LEVEL,
 	IMPORT_AT_START,
 	MINIMIZE_PATCH,

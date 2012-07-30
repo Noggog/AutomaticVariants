@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.TreeSet;
+import javax.swing.SwingUtilities;
 import lev.gui.*;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPProgressBarPlug;
@@ -184,6 +185,32 @@ public class WizSetManual extends WizTemplate {
 	targetProfiles = new LList<>("Target Profiles", AV.AVFont, AV.yellow);
 	targetProfiles.setUnique(true);
 	targetProfiles.setSize(settingsPanel.getWidth() - 30, 150);
+	targetProfiles.addMouseListener(new MouseListener() {
+
+	    @Override
+	    public void mouseClicked(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mousePressed(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseReleased(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseEntered(MouseEvent e) {
+		SUMGUI.helpPanel.setTitle("Chosen Profiles");
+		SUMGUI.helpPanel.setContent(chosenProfiles());
+		SUMGUI.helpPanel.focusOn(targetProfiles, 0);
+	    }
+
+	    @Override
+	    public void mouseExited(MouseEvent e) {
+		mainHelp();
+	    }
+	});
 	targetProfiles.centerIn(settingsPanel, backButton.getY() - targetProfiles.getHeight() - 20);
 	Add(targetProfiles);
 
@@ -247,7 +274,7 @@ public class WizSetManual extends WizTemplate {
 	SUMGUI.helpPanel.setDefaultPos();
 	SUMGUI.helpPanel.setTitle("Manually Picking Profiles");
 	SUMGUI.helpPanel.setContent("Pick all the profiles that are used by NPCs that you want your variants to be added to.\n\n"
-		+ "Profiles are a unique combination of: \n      Race\n   + Skin (Armor)\n   + Armor Piece (ArmorAddon)\n that combine to give each NPC their look.\n\n"
+		+ WizSet.profileDesc() + "\n\n"
 		+ "It's quite easy to manually pick profiles that won't ever actually exist in the game.  If you are not sure what profiles fit your variant, go back and use the AV tool.");
 	SUMGUI.helpPanel.hideArrow();
     }
@@ -287,9 +314,27 @@ public class WizSetManual extends WizTemplate {
 		skins.add(new ProfileDisplay(profile, profile.skin.getEDID()));
 		pieces.add(new ProfileDisplay(profile, profile.piece.getEDID()));
 	    }
-	    loadRaces();
-	    loadSkins();
-	    loadPieces();
+	    SwingUtilities.invokeLater(new Runnable() {
+
+		@Override
+		public void run() {
+		    loadRaces();
+		}
+	    });
+	    SwingUtilities.invokeLater(new Runnable() {
+
+		@Override
+		public void run() {
+		    loadSkins();
+		}
+	    });
+	    SwingUtilities.invokeLater(new Runnable() {
+
+		@Override
+		public void run() {
+		    loadPieces();
+		}
+	    });
 	    displaySwitch(false);
 	}
     }

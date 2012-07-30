@@ -81,7 +81,8 @@ public class WizGenTexture extends WizTemplate {
 	    SUMGUI.helpPanel.setContent("Sometimes you have common textures that each variant will use.  A good example "
 		    + "of this might be a custom normals texture that you only made one of, but you want each variant to have."
 		    + "  Rather than adding it to each variant manually, you can add it here.\n\n"
-		    + "Just press next if you don't have any common files.");
+		    + "Just press next if you don't have any common files.\n\n"
+		    + textureNameWarning());
 	    SUMGUI.helpPanel.hideArrow();
 	}
     }

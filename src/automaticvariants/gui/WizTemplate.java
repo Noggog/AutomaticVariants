@@ -48,4 +48,18 @@ public class WizTemplate extends SPQuestionPanel {
 	WizNewPackage.open = false;
     }
 
+    public static String textureNameWarning() {
+	return "NOTE:\n"
+		+ "The texture file names MUST match the file names of the original texture they are replacing.  \n"
+		    + "For example, if the original texture is \"wolf.dds\" and you rename it \"wolf_black.dds\", it will not process correctly.";
+    }
+
+    public static String profileDesc() {
+	return "Profiles are a unique combination of: \n      Race\n   + Skin (Armor)\n   + Armor Piece (ArmorAddon)\n that combine to give each NPC their look.";
+    }
+
+    public static String chosenProfiles() {
+	return "This is the list of profiles that this Variant Set will be applied to.";
+    }
+
 }

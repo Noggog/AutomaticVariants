@@ -8,6 +8,7 @@ import automaticvariants.AVFileVars.ARMO_spec;
 import java.io.File;
 import java.util.*;
 import lev.LMergeMap;
+import lev.gui.LFileTree;
 import skyproc.ARMA.AltTexture;
 import skyproc.*;
 
@@ -26,7 +27,9 @@ public class VariantProfile {
     ArrayList<String> nifNodeNames = new ArrayList<>();
     Map<String, ArrayList<String>> textures = new HashMap<>();
     Map<String, ArrayList<String>> altTextures = new HashMap<>();
+    String texturesPrintout;
     Set<String> texturesFlat;
+    Set<String> textureNames;
     ArrayList<VariantSet> sets = new ArrayList<>();
     public int ID;
 
@@ -196,13 +199,10 @@ public class VariantProfile {
     }
 
     public boolean hasCommonTexture(VariantSet varSet) {
-	Set<String> profileTexFlat = getTexturesFlat();
 	Set<String> varTexFlat = varSet.getTextures();
 	for (String s : varTexFlat) {
-	    for (String s2 : profileTexFlat) {
-		if (s2.contains(s)) {
-		    return true;
-		}
+	    if (hasTexture(s)) {
+		return true;
 	    }
 	}
 	return false;
@@ -229,9 +229,34 @@ public class VariantProfile {
 	return texturesFlat;
     }
 
+    public Set<String> getTextureNames() {
+	if (textureNames == null) {
+	    Set<String> tex = getTexturesFlat();
+	    textureNames = new HashSet<>(tex.size());
+	    for (String s : tex) {
+		int index = s.lastIndexOf("\\") + 1;
+		if (index < s.length()) {
+		    textureNames.add(s.substring(s.lastIndexOf("\\") + 1));
+		}
+	    }
+	}
+	return textureNames;
+    }
+
+    public String printAllTextures() {
+	if (texturesPrintout == null) {
+	    LFileTree fileTree = new LFileTree();
+	    for (String s : getTexturesFlat()) {
+		fileTree.addFile(s);
+	    }
+	    texturesPrintout = fileTree.print("  ").toLowerCase();
+	}
+	return texturesPrintout;
+    }
+
     public boolean hasTexture(String texture) {
-	for (String tex : getTexturesFlat()) {
-	    if (tex.contains(texture)) {
+	for (String tex : getTextureNames()) {
+	    if (tex.equalsIgnoreCase(texture)) {
 		return true;
 	    }
 	}

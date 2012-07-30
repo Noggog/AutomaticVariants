@@ -79,6 +79,7 @@ public class WizSet extends WizTemplate {
 	    public void actionPerformed(ActionEvent e) {
 		if (checkName()) {
 		    AV.wizSetToolPanel.open();
+		    AV.wizSetToolPanel.setNext(AV.wizGenPanel);
 		    AV.wizSetToolPanel.reset();
 		}
 	    }
@@ -198,8 +199,9 @@ public class WizSet extends WizTemplate {
 	    SUMGUI.helpPanel.setTitle("Variant Set");
 	    SUMGUI.helpPanel.setContent("A Variant Set contains variants that all target the same NPC skin(s).\n\n"
 		    + "Name your set after the Actor you are making variants for. (Wolf, Giant, Rabbit, etc)\n\n"
-		    + "To complete a Variant Set, you must select the NPC skin(s) that it should target.  You can do this manually,"
-		    + " or you can use the supplied AV tool if you don't know which skin is associated with the NPC you are making variants for.");
+		    + "To complete a Variant Set, you must select the Variant Profiles that it should target.  \n"
+		    + profileDesc() + "\n\nYou can do this manually,"
+		    + " or you can use the supplied AV tool if you don't know the profiles that apply to your textures.");
 	    SUMGUI.helpPanel.hideArrow();
 	}
     }

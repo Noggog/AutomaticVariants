@@ -72,7 +72,8 @@ public class WizVariant extends WizTemplate {
 	if (AV.wizVarPanel.isVisible()) {
 	    SUMGUI.helpPanel.setDefaultPos();
 	    SUMGUI.helpPanel.setTitle("Create Variant");
-	    SUMGUI.helpPanel.setContent("Add the textures that make this variant unique from the others.");
+	    SUMGUI.helpPanel.setContent("Add the textures that make this variant unique from the others.\n\n"
+		    + textureNameWarning());
 	    SUMGUI.helpPanel.hideArrow();
 	    editing.load(WizNewPackage.newPackage.targetPackage, WizNewPackage.newPackage.targetSet, WizNewPackage.newPackage.targetGroup, null);
 	    nameField.clearHighlight();

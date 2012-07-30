@@ -6,16 +6,19 @@ package automaticvariants.gui;
 
 import automaticvariants.AV;
 import automaticvariants.AVFileVars;
+import automaticvariants.AVSaveFile.Settings;
 import automaticvariants.VariantProfile;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
-import lev.LMergeMap;
 import lev.Ln;
 import lev.gui.*;
 import skyproc.*;
@@ -35,15 +38,14 @@ public class WizSetTool extends WizTemplate {
     LLabel progressLabel;
     LProgressBar progress;
     LTextPane exception;
-    LList<EDIDdisplay> seeds;
-    Set<VariantProfile> matchingProfiles;
-    Set<VariantProfile> halfMatchingProfiles;
-    LCheckList potential;
-
+    LList<ProfileDisplay> potentialProfiles;
+    LList<ProfileDisplay> targetProfiles;
+    Set<ProfileDisplay> matchingProfiles;
+    Set<ProfileDisplay> halfMatchingProfiles;
     static int attempt = 1;
 
     public WizSetTool(SPMainMenuPanel parent_) {
-	super(parent_, "Seed NPCs", AV.packagesManagerPanel, AV.wizSetPanel);
+	super(parent_, "Target Profiles", AV.packagesManagerPanel, AV.wizSetPanel);
     }
 
     @Override
@@ -52,7 +54,7 @@ public class WizSetTool extends WizTemplate {
 
 	spacing = 40;
 
-	setQuestionText("Drop in and analyze textures to narrow down seed options.");
+	setQuestionText("Analyze textures to narrow down profile options.");
 
 	textures = new LList<>("Textures to Analyze", AV.AVFont, AV.yellow);
 	textures.setUnique(true);
@@ -94,12 +96,6 @@ public class WizSetTool extends WizTemplate {
 	    }
 	});
 	Add(analyze);
-
-	partialMatch = new LCheckBox("Display Partially Matching", AV.AVFont, AV.yellow);
-	partialMatch.addShadow();
-	partialMatch.centerOn(analyze, analyze.getBottom() + spacing);
-	Add(partialMatch);
-
 	progressLabel = new LLabel("Loading up mods, please wait...", AV.AVFontSmall, AV.lightGray);
 	progressLabel.centerIn(settingsPanel, question.getBottom() + spacing * 3);
 	Add(progressLabel);
@@ -114,10 +110,87 @@ public class WizSetTool extends WizTemplate {
 	exception.putUnder(question, 15, 50);
 	Add(exception);
 
-	seeds = new LList<>("Chosen Seed NPCs", AV.AVFont, AV.yellow);
-	seeds.setSize(settingsPanel.getWidth() - 2 * x, 150);
-	seeds.setLocation(x, backButton.getY() - seeds.getHeight() - 20);
-	Add(seeds);
+	potentialProfiles = new LList<>("Matching Profiles", AV.AVFont, AV.yellow);
+	potentialProfiles.putUnder(question, x, 15);
+	potentialProfiles.setSize(settingsPanel.getWidth() - x * 2, 220);
+	potentialProfiles.setRemoveButton("Add Profiles", new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		targetProfiles.addElements(potentialProfiles.getSelectedElements());
+	    }
+	});
+	potentialProfiles.addMouseListener(new MouseListener() {
+
+	    @Override
+	    public void mouseClicked(MouseEvent e) {
+		profileDisplayHelp();
+	    }
+
+	    @Override
+	    public void mousePressed(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseReleased(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseEntered(MouseEvent e) {
+		profileDisplayHelp();
+	    }
+
+	    @Override
+	    public void mouseExited(MouseEvent e) {
+		mainHelp();
+	    }
+	});
+	Add(potentialProfiles);
+
+	partialMatch = new LCheckBox("Display Partially Matching", AV.AVFont, AV.yellow);
+	partialMatch.addShadow();
+	partialMatch.putUnder(potentialProfiles, x, 15);
+	partialMatch.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		fillMatching();
+	    }
+	});
+	partialMatch.linkTo(Settings.WIZ_PARTIAL_MATCH, AV.save, SUMGUI.helpPanel, true);
+	Add(partialMatch);
+
+	targetProfiles = new LList<>("Chosen Profiles", AV.AVFont, AV.yellow);
+	targetProfiles.setSize(settingsPanel.getWidth() - 2 * x, 150);
+	targetProfiles.setUnique(true);
+	targetProfiles.setLocation(x, backButton.getY() - targetProfiles.getHeight() - 20);
+	targetProfiles.addMouseListener(new MouseListener() {
+
+	    @Override
+	    public void mouseClicked(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mousePressed(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseReleased(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseEntered(MouseEvent e) {
+		SUMGUI.helpPanel.setTitle("Chosen Profiles");
+		SUMGUI.helpPanel.setContent(chosenProfiles());
+		SUMGUI.helpPanel.focusOn(targetProfiles, 0);
+	    }
+
+	    @Override
+	    public void mouseExited(MouseEvent e) {
+		mainHelp();
+	    }
+	});
+	Add(targetProfiles);
 
 	SUMGUI.startImport();
     }
@@ -125,13 +198,47 @@ public class WizSetTool extends WizTemplate {
     @Override
     public void onOpen(SPMainMenuPanel parent) {
 	mainHelp();
+	targetProfiles.clearHighlight();
 	editing.load(WizNewPackage.newPackage.targetPackage, WizNewPackage.newPackage.targetSet, null, null);
+    }
+
+    @Override
+    public boolean testNext() {
+	boolean pass = !targetProfiles.isEmpty();
+	if (!pass) {
+	    targetProfiles.highlightChanged();
+	}
+	return pass;
+    }
+
+    @Override
+    public void onNext() {
+	WizNewPackage.newPackage.targetProfiles = targetProfiles.getAll();
+	AV.wizGenPanel.open();
+	AV.wizGenPanel.reset();
+	AV.wizGenPanel.setBack(AV.wizSetToolPanel);
     }
 
     void reset() {
 	textures.clearHighlight();
 	textures.clear();
+	partialMatch.setSelected(false);
+	potentialProfiles.clear();
+	targetProfiles.clear();
 	displaySwitch(0);
+    }
+
+    void updateHelp(VariantProfile profile) {
+	SUMGUI.helpPanel.setDefaultPos();
+	SUMGUI.helpPanel.setTitle("Profile Contents:");
+	String contents =
+		"Race:  " + profile.race.getEDID() + "\n"
+		+ "Skin:  " + profile.skin.getEDID() + "\n"
+		+ "Piece: " + profile.piece.getEDID() + "\n\n"
+		+ "Textures Used: \n"
+		+ profile.printAllTextures();
+	SUMGUI.helpPanel.setContent(contents);
+	SUMGUI.helpPanel.hideArrow();
     }
 
     void displaySwitch(final int stage) {
@@ -139,31 +246,51 @@ public class WizSetTool extends WizTemplate {
 
 	    public void run() {
 		if (stage == 0) {
-		    setQuestionText("Drop in and analyze your textures to narrow down skin options.");
+		    setQuestionText("Analyze textures to narrow down profile options.");
 		}
 		if (stage == 2) {
-		    setQuestionText("Pick a single seed from each armor piece that makes sense.");
+		    setQuestionText("Pick profiles that makes sense for your variant.");
 		}
 		textures.setVisible(stage == 0);
 		analyze.setVisible(stage == 0);
 		progress.setVisible(stage == 1);
 		progressLabel.setVisible(stage == 1);
-		seeds.setVisible(stage == 2);
+		targetProfiles.setVisible(stage == 2);
+		potentialProfiles.setVisible(stage == 2);
 		exception.setVisible(stage == 3);
 		partialMatch.setVisible(stage == 2);
 	    }
 	});
     }
 
+    void fillMatching() {
+	potentialProfiles.clear();
+	TreeSet<ProfileDisplay> tree = new TreeSet<>();
+	tree.addAll(matchingProfiles);
+	if (partialMatch.isSelected()) {
+	    tree.addAll(halfMatchingProfiles);
+	}
+	potentialProfiles.addElements(tree);
+    }
+
+    void profileDisplayHelp() {
+	ProfileDisplay display = potentialProfiles.getSelectedElement();
+	if (display != null) {
+	    updateHelp(display.profile);
+	}
+    }
+
     void mainHelp() {
 	if (AV.wizSetToolPanel.isVisible()) {
 	    SUMGUI.helpPanel.setDefaultPos();
-	    SUMGUI.helpPanel.setTitle("Skin Locator Tool");
-	    SUMGUI.helpPanel.setContent("Pick all the skins that are used by NPCs that you want your variants to be added to.\n\n"
-		    + "If you are not sure if your target NPCs have multiple skins, go back and use the AV tool.");
+	    SUMGUI.helpPanel.setTitle("Profile Locator Tool");
+	    SUMGUI.helpPanel.setContent("This tool will analyze the textures you are using in this set and show you the profiles that would use those textures.\n\n"
+		    + profileDesc() + "\n\n"
+		    + "Most of the time you will want to pick all the profiles that match, unless one doesn't make logical sense (ex: Werewolf skin for a wolf variant), "
+		    + "or you have some artistic reason for not wanting to include some.\n\n"
+		    + "You can optionally show profiles that contain at least one of the textures you are using.  You can add those if they make sense as well.\n\n"
+		    + textureNameWarning());
 	    SUMGUI.helpPanel.hideArrow();
-
-
 	}
     }
 
@@ -190,16 +317,19 @@ public class WizSetTool extends WizTemplate {
 		}
 
 		for (VariantProfile profile : VariantProfile.profiles) {
-		    matchingProfiles.add(profile);
+		    ProfileDisplay display = new ProfileDisplay(profile);
+		    matchingProfiles.add(display);
 		    for (String s : textureList) {
 			if (profile.hasTexture(s)) {
-			    halfMatchingProfiles.add(profile);
+			    halfMatchingProfiles.add(display);
 			} else {
-			    matchingProfiles.remove(profile);
+			    matchingProfiles.remove(display);
 			}
 		    }
 		    halfMatchingProfiles.removeAll(matchingProfiles);
 		}
+
+		fillMatching();
 
 		displaySwitch(2);
 	    } catch (Exception e) {
