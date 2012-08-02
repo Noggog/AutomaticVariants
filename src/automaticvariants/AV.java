@@ -14,10 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
@@ -25,8 +22,8 @@ import lev.Ln;
 import lev.debug.LDebug;
 import lev.gui.LImagePane;
 import lev.gui.LSaveFile;
-import skyproc.*;
 import skyproc.GLOB.GLOBType;
+import skyproc.*;
 import skyproc.gui.*;
 
 /**
@@ -52,6 +49,7 @@ public class AV implements SUM {
      */
     static Set<FormID> block = new HashSet<>();
     static Set<String> edidExclude = new HashSet<>();
+    static Set<String> modExclude = new HashSet<>();
     /*
      * Script/Property names
      */
@@ -340,6 +338,8 @@ public class AV implements SUM {
 		    target = block;
 		} else if (read.contains("EDID BLOCKS")) {
 		    target = edidExclude;
+		} else if (read.contains("MOD BLOCKS")) {
+		    target = modExclude;
 		} else if (target != null && !read.equals("")) {
 		    if (target == block) {
 			target.add(new FormID(read));
@@ -347,6 +347,17 @@ public class AV implements SUM {
 			target.add(read);
 		    }
 		}
+	    }
+
+	    Set<String> tmp = new HashSet<>(modExclude);
+	    for (String s : tmp) {
+		if (s.contains(".ESP") || s.contains(".ESM")) {
+		    SPGlobal.addModToSkip(new ModListing(s));
+		    modExclude.remove(s);
+		}
+	    }
+	    for (String s : modExclude) {
+		SPGlobal.addModToSkip(s);
 	    }
 	} catch (FileNotFoundException ex) {
 	    SPGlobal.logError("ReadInExceptions", "Failed to locate 'BlockList.txt'");
