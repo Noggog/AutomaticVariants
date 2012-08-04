@@ -228,6 +228,9 @@ public class AVFileVars {
 		for (FormID piece : armo.getArmatures()) {
 		    if (!AVFileVars.unusedPieces.get(armo.getForm()).contains(piece)) {
 			ARMA arma = (ARMA) SPDatabase.getMajor(piece, GRUP_TYPE.ARMA);
+			if (SPGlobal.logging()) {
+			    SPGlobal.log(header, "Loading " + arma);
+			}
 			String nifPath = "MESHES\\" + arma.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
 			if (nifPath.equals("MESHES\\")) {
 			    SPGlobal.log(header, "Skipping " + arma + " because it had no nif.");
@@ -285,15 +288,11 @@ public class AVFileVars {
     }
 
     public static void loadProfileSkin(ARMO armo) {
-	Set<FormID> block = AV.block;
 	for (FormID armaForm : armo.getArmatures()) {
 	    // If a used piece
 	    if ((!unusedPieces.containsKey(armo.getForm())
 		    || !unusedPieces.get(armo.getForm()).contains(armaForm))
 		    && !AV.block.contains(armo.getForm())) {
-		if (armo.getEDID().equals("SkinNakedBeast")) {
-		    int wer = 23;
-		}
 
 		ARMA arma = (ARMA) SPDatabase.getMajor(armaForm, GRUP_TYPE.ARMA);
 
@@ -387,6 +386,12 @@ public class AVFileVars {
 		}
 
 		ArrayList<SeedProfile> seeds = varSet.getSeeds();
+
+		if (SPGlobal.logging()) {
+		    for (SeedProfile s : seeds) {
+			s.print();
+		    }
+		}
 
 		boolean absorbed = false;
 		for (VariantProfile varProfile : VariantProfile.profiles) {
