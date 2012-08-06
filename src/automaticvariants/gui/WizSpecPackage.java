@@ -72,6 +72,7 @@ public class WizSpecPackage extends WizSpecTemplate {
     public void onNext() {
 	super.onNext();
 	if (WizNewPackage.open){
+	    AV.wizSetPanel.open();
 	    AV.wizSetPanel.setBack(AV.wizPackageSpecPanel);
 	}
     }
