@@ -31,6 +31,7 @@ public class AVSaveFile extends LSaveFile {
 	Add(Settings.MAX_MEM,			750,	    false);
 	Add(Settings.SPEC_VAR_PROB,		15,	    false);
 	Add(Settings.PACKAGES_FORCE_REPICK,	1,	    true);
+	Add(Settings.PREV_VERSION,		0,	    false);
 	Add(Settings.DISABLED_PACKAGES,		new HashSet<String>(), false);
 	Add(Settings.PACKAGE_LISTING,		new HashSet<String>(), false);
     }
@@ -231,6 +232,7 @@ public class AVSaveFile extends LSaveFile {
 
     public enum Settings {
 
+	PREV_VERSION,
 	PACKAGES_ON,
 	PACKAGES_GATHER,
 	PACKAGES_ORIG_AS_VAR,

@@ -96,13 +96,13 @@ public class SeedProfile {
 
     public void print() {
 	if (npc != null) {
-	    SPGlobal.log(npc.getEDID(), "|   Seed: " + npc);
-	    SPGlobal.log(npc.getEDID(), "|   Orig Seed: " + origNPC);
+	    SPGlobal.log("SeedProfile", "|   Seed: " + npc);
+	    SPGlobal.log("SeedProfile", "|   Orig Seed: " + origNPC);
 	}
-	SPGlobal.log(npc.getEDID(), "|   Race: " + race);
-	SPGlobal.log(npc.getEDID(), "|   Skin: " + skin);
-	SPGlobal.log(npc.getEDID(), "|  Piece: " + piece);
-	SPGlobal.log(npc.getEDID(), " \\====================================");
+	SPGlobal.log("SeedProfile", "|   Race: " + race);
+	SPGlobal.log("SeedProfile", "|   Skin: " + skin);
+	SPGlobal.log("SeedProfile", "|  Piece: " + piece);
+	SPGlobal.log("SeedProfile", " \\====================================");
     }
 
     @Override

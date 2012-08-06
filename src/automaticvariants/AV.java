@@ -34,7 +34,8 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.5.1.2 Beta";
+    public static String version = "1.5.2 Beta";
+    public static String lastMajorVersion = "1.5.2";
 
     /*
      * Static Strings
@@ -415,6 +416,14 @@ public class AV implements SUM {
 
     @Override
     public boolean needsPatching() {
+	//Check versions
+	if (AV.save.getInt(Settings.PREV_VERSION) < NiftyFunc.versionToNum(lastMajorVersion)) {
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(header, "Needs update because of AV versioning: " + AV.save.getInt(Settings.PREV_VERSION) + " to " + version);
+	    }
+	    return true;
+	}
+
 	//Need to check if packages have changed.
 	ArrayList<File> files = Ln.generateFileList(new File(AVFileVars.AVTexturesDir), false);
 	try {
@@ -441,6 +450,9 @@ public class AV implements SUM {
     public void onExit(boolean patchWasGenerated) throws IOException {
 	if (!gatheringAndExiting) {
 	    AVFileVars.saveAVPackagesListing();
+	}
+	if (patchWasGenerated) {
+	    AV.save.curSettings.get(Settings.PREV_VERSION).setTo(NiftyFunc.versionToNum(AV.version));
 	}
     }
 
