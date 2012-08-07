@@ -11,9 +11,10 @@ import lev.gui.LCheckBox;
 import lev.gui.LComboBox;
 import lev.gui.LLabel;
 import lev.gui.LNumericSetting;
-import skyproc.gui.SUMGUI;
+import skyproc.SPGlobal;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPSettingDefaultsPanel;
+import skyproc.gui.SUMGUI;
 
 /**
  *
@@ -26,6 +27,8 @@ public class SettingsOther extends SPSettingDefaultsPanel {
     LCheckBox importOnStartup;
     LCheckBox minimize;
     LNumericSetting maxMem;
+    LLabel langLabel;
+    LComboBox language;
 
     public SettingsOther(SPMainMenuPanel parent_) {
 	super(parent_, "Other Settings", AV.orange, AV.save);
@@ -62,13 +65,28 @@ public class SettingsOther extends SPSettingDefaultsPanel {
 
 	debugLabel.setLocation(debugLevel.getX() - debugLabel.getWidth() - 15, debugLevel.getY());
 	debugLabel.addShadow();
-	Add(debugLabel);
+	settingsPanel.add(debugLabel);
 
 	maxMem = new LNumericSetting("Max Allocated Memory",
 		AV.AVFont, AV.yellow, 250, 2000, 250);
 	maxMem.tie(Settings.MAX_MEM, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(maxMem);
 	AddSetting(maxMem);
+
+	langLabel = new LLabel("Language", AV.AVFont, AV.yellow);
+
+	language = new LComboBox("Language");
+	language.setSize(150,25);
+	for (Enum e : SPGlobal.Language.values()) {
+	    language.addItem(e);
+	}
+	language.tie(Settings.LANGUAGE, AV.save, SUMGUI.helpPanel, true);
+	setPlacement(language, last.x + langLabel.getWidth() + 15, last.y);
+	AddSetting(language);
+
+	langLabel.setLocation(language.getX() - langLabel.getWidth() - 15, language.getY());
+	langLabel.addShadow();
+	settingsPanel.add(langLabel);
 
 	alignRight();
 

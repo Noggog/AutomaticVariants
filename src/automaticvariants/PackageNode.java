@@ -217,10 +217,13 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 		}
 
 
-		content += "Exclusive files:\n";
-		for (PackageNode child : getAll(Type.TEXTURE)) {
-		    content += "    " + child.src.getName() + "\n";
-		}
+//		content += "Exclusive files:\n";
+//		TreeSet<PackageNode> varFiles = new TreeSet<>();
+//		varFiles.addAll(getAll(Type.TEXTURE));
+//		varFiles.addAll(getAll(Type.REROUTE));
+//		for (PackageNode child : varFiles) {
+//		    content += "    " + child.src.getName() + "\n";
+//		}
 
 		displayFirstImage();
 		break;
@@ -261,15 +264,12 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	    @Override
 	    public void run() {
 		if (!src.equals(lastDisplayed)) {
-		    SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, "TEST", "Displaying " + src.getPath());
 		    try {
 			BufferedImage image = DDSUtil.read(src);
-			SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, "TEST", "Image is " + image);
 			display.setImage(image);
 			display.setLocation(SUMGUI.helpPanel.getBottomSize().width / 2 - display.getWidth() / 2, display.getY());
 			lastDisplayed = src;
 		    } catch (Exception ex) {
-			SPGlobal.logSpecial(AV.SpecialLogs.WARNINGS, "TEST", "FAILED");
 			SPGlobal.logException(ex);
 			SPGlobal.logError("PackageComponent", "Could not display " + src);
 		    }

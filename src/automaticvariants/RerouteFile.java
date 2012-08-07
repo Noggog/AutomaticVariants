@@ -15,7 +15,7 @@ import skyproc.SPGlobal;
 public class RerouteFile extends PackageNode {
 
     File routeFile;
-    static LMergeMap<File, RerouteFile> reroutes = new LMergeMap<File, RerouteFile>(false, false);
+    static LMergeMap<File, RerouteFile> reroutes = new LMergeMap<>(false, false);
 
     public RerouteFile (File src) throws FileNotFoundException, IOException {
 	super(src, Type.REROUTE);

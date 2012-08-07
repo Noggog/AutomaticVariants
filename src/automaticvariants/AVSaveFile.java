@@ -7,6 +7,7 @@ package automaticvariants;
 import java.util.HashSet;
 import lev.Ln;
 import lev.gui.LSaveFile;
+import skyproc.SPGlobal.Language;
 
 /**
  *
@@ -29,6 +30,7 @@ public class AVSaveFile extends LSaveFile {
 	Add(Settings.STATS_TIE,			true,	    true);
 	Add(Settings.MINIMIZE_PATCH,		true,	    true);
 	Add(Settings.MAX_MEM,			750,	    false);
+	Add(Settings.LANGUAGE,			0,	    true);
 	Add(Settings.SPEC_VAR_PROB,		15,	    false);
 	Add(Settings.PACKAGES_FORCE_REPICK,	1,	    true);
 	Add(Settings.PREV_VERSION,		0,	    false);
@@ -159,10 +161,13 @@ public class AVSaveFile extends LSaveFile {
 
 	helpInfo.put(Settings.MAX_MEM,
 		"This will determine the max amount of megabytes of memory AV will be allowed to use.\n\n"
-		+ "Current max memory: " + Ln.toMB(Runtime.getRuntime().maxMemory()) + "MB\n\n"
+		+ "Current max memory: " + Ln.toMB(Runtime.getRuntime().maxMemory()) + "MB\n"
+		+ "The allocated memory might be slightly less than requested.  This is normal\n\n"
 		+ "If AV runs out of memory the program will essentially halt as it "
 		+ "tries to scrap by with too little memory. "
-		+ "If you experience this, then try allocating more memory.\n\n"
+		+ "If you experience this, then try allocating more memory.\n"
+		+ "Windows has the final say in how much memory it will allow AV.  If your request"
+		+ " is denied you'll see an error.  Just lower your memory request and try again.\n\n"
 		+ "NOTE:  This setting will not take effect until you restart AV.");
 
 	helpInfo.put(Settings.MINIMIZE_PATCH,
@@ -221,6 +226,10 @@ public class AVSaveFile extends LSaveFile {
 		+ "variant WILL NOT spawn anywhere else but the regions you specify.\n\n"
 		+ "If you don't specify any regions, the variant will spawn anywhere.");
 
+	helpInfo.put(Settings.LANGUAGE,
+		"You can set your language here.  This will make SkyProc import strings files of that language.\n\n"
+		+ "NOTE:  You must restart AV for this to take effect.");
+
 	helpInfo.put(Settings.SPEC_VAR_REGION_EXCLUDE,
 		"This will make the regions you specified for this variant to spawn in exclusive.  This means that no other variants besides this one will spawn there.  The one exception to this rule is that other variants that name these exclusive regions specifically will still spawn there.\n\n"
 		+ "NOTE: This setting only applies if regions have been specified for this variant.");
@@ -255,6 +264,7 @@ public class AVSaveFile extends LSaveFile {
 	SPEC_VAR_HEIGHT,
 	SPEC_VAR_NAME_AFFIX,
 	SPEC_VAR_NAME_PREFIX,
+	LANGUAGE,
 	STATS_ON,
 	STATS_HEIGHT_MAX,
 	STATS_HEALTH_MAX,

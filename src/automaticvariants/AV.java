@@ -24,6 +24,7 @@ import lev.gui.LImagePane;
 import lev.gui.LSaveFile;
 import skyproc.GLOB.GLOBType;
 import skyproc.*;
+import skyproc.SPGlobal.Language;
 import skyproc.gui.*;
 
 /**
@@ -466,6 +467,8 @@ public class AV implements SUM {
 	    AVFont = new Font("Serif", Font.BOLD, 16);
 	}
 	AVFontSmall = AVFont.deriveFont(Font.PLAIN, 14);
+	SPGlobal.language = Language.values()[AV.save.getInt(Settings.LANGUAGE)];
+	SPGlobal.logMain(header, "Language: " + SPGlobal.language);
 	readInExceptions();
 	AVFileVars.moveOut();
 	AVFileVars.importVariants();
