@@ -22,20 +22,29 @@ public class SpecVariantSet extends SpecFile {
 	super(src);
     }
 
+    public boolean isValid() {
+	return type != null && Target_FormIDs != null;
+    }
+
     @Override
     ArrayList<String> print() {
-	ArrayList<String> out = new ArrayList<String>();
-	out.add("   | Type: " + type);
-	out.add("   | Target FormIDs: ");
-	for (String[] s : Target_FormIDs) {
-	    out.add("   |   " + s[0] + " | " + s[1]);
+	ArrayList<String> out = new ArrayList<>();
+	if (isValid()) {
+	    out.add("   | Type: " + type);
+	    out.add("   | Target FormIDs: ");
+	    for (String[] s : Target_FormIDs) {
+		out.add("   |   " + s[0] + " | " + s[1]);
+	    }
+	} else {
+	    SPGlobal.logError("SPEC", "Error loading spec files.  It's possible AV doesn't have read permissions");
+	    out.add("Error loading spec files.  It's possible AV doesn't have read permissions");
 	}
 	return out;
     }
 
     public void loadSkins(ArrayList<ProfileDisplay> in) {
 	Target_FormIDs = new String[in.size()][6];
-	for (int i = 0 ; i < in.size() ; i++) {
+	for (int i = 0; i < in.size(); i++) {
 	    VariantProfile profile = in.get(i).profile;
 	    RACE race = profile.race;
 	    ARMO skin = profile.skin;

@@ -45,12 +45,12 @@ public class SettingsOther extends SPSettingDefaultsPanel {
 	setPlacement(importOnStartup);
 	AddSetting(importOnStartup);
 
-	minimize = new LCheckBox("Minimize Patch", AV.AVFont, AV.yellow);
-	minimize.tie(AVSaveFile.Settings.MINIMIZE_PATCH, AV.save, SUMGUI.helpPanel, true);
-	minimize.setOffset(2);
-	minimize.addShadow();
-	setPlacement(minimize);
-	AddSetting(minimize);
+//	minimize = new LCheckBox("Minimize Patch", AV.AVFont, AV.yellow);
+//	minimize.tie(AVSaveFile.Settings.MINIMIZE_PATCH, AV.save, SUMGUI.helpPanel, true);
+//	minimize.setOffset(2);
+//	minimize.addShadow();
+//	setPlacement(minimize);
+//	AddSetting(minimize);
 
 	debugLabel = new LLabel("Debug Level", AV.AVFont, AV.yellow);
 
