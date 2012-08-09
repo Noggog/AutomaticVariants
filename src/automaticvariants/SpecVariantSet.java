@@ -36,7 +36,6 @@ public class SpecVariantSet extends SpecFile {
 		out.add("   |   " + s[0] + " | " + s[1]);
 	    }
 	} else {
-	    SPGlobal.logError("SPEC", "Error loading spec files.  It's possible AV doesn't have read permissions");
 	    out.add("Error loading spec files.  It's possible AV doesn't have read permissions");
 	}
 	return out;
