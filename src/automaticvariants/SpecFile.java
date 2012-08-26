@@ -43,7 +43,7 @@ public abstract class SpecFile implements Serializable {
 	out.close();
     }
 
-    public String printFormID(String[] formID, GRUP_TYPE type) {
+    public String printFormID(String[] formID, GRUP_TYPE ... type) {
 	FormID id = new FormID(formID[0], formID[1]);
 	MajorRecord r = SPDatabase.getMajor(id, type);
 	String content = "";

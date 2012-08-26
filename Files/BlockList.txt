@@ -5,4 +5,5 @@
 ==MOD BLOCKS==
 Extended Colors - Selection.esp		//Overloads the patcher, but isn't needed by AV in the first place.  
 Extended Colors.esm					//Overloads the patcher, but isn't needed by AV in the first place.  
+Extended Slider Colors
 Headbomb							//Really old Pre-CK mod that doesn't conform to "CK Standards" and fails to import.  Not needed anyway.

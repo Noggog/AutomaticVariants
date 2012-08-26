@@ -71,7 +71,7 @@ public class SpecVariantSet extends SpecFile {
 	String content = "Seeds:";
 	for (String[] formID : Target_FormIDs) {
 	    content += "\n    ";
-	    content += printFormID(formID, GRUP_TYPE.NPC_);
+	    content += printFormID(formID, GRUP_TYPE.NPC_, GRUP_TYPE.RACE, GRUP_TYPE.ARMA, GRUP_TYPE.ARMO);
 	}
 	return content;
     }

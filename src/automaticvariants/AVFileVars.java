@@ -5,7 +5,8 @@
 package automaticvariants;
 
 import automaticvariants.AVSaveFile.Settings;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
@@ -51,7 +52,7 @@ public class AVFileVars {
     // RaceSrc of piece is key for outer, armo is inner key
     //////////////////
     static Map<FormID, Map<FormID, FLST>> formLists = new HashMap<>();
-    static LMergeMap<FormID, ARMO_spec> compiledVariants = new LMergeMap<FormID, ARMO_spec>(false);
+    static LMergeMap<FormID, ARMO_spec> compiledVariants = new LMergeMap<>(false);
     //////////////////
     // RaceSrc is key
     //////////////////
@@ -228,7 +229,12 @@ public class AVFileVars {
 		for (FormID piece : armo.getArmatures()) {
 		    if (!AVFileVars.unusedPieces.get(armo.getForm()).contains(piece)) {
 			ARMA arma = (ARMA) SPDatabase.getMajor(piece, GRUP_TYPE.ARMA);
-			if (SPGlobal.logging()) {
+			if (arma == null) {
+			    if (SPGlobal.logging()) {
+				SPGlobal.log(header, "Skipping " + piece + " because it didn't exist.");
+			    }
+			    continue;
+			} else if (SPGlobal.logging()) {
 			    SPGlobal.log(header, "Loading " + arma);
 			}
 			String nifPath = "MESHES\\" + arma.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
@@ -544,15 +550,15 @@ public class AVFileVars {
 
 		// Loop through all variants for this race
 		// and load up non-standard spec file info
-		ArrayList<Integer> heights = new ArrayList<Integer>();
-		ArrayList<Integer> healths = new ArrayList<Integer>();
-		ArrayList<Integer> magickas = new ArrayList<Integer>();
-		ArrayList<Integer> staminas = new ArrayList<Integer>();
-		ArrayList<Integer> speeds = new ArrayList<Integer>();
-		ArrayList<Integer> prefixKey = new ArrayList<Integer>();
-		ArrayList<String> prefix = new ArrayList<String>();
-		ArrayList<Integer> affixKey = new ArrayList<Integer>();
-		ArrayList<String> affix = new ArrayList<String>();
+		ArrayList<Integer> heights = new ArrayList<>();
+		ArrayList<Integer> healths = new ArrayList<>();
+		ArrayList<Integer> magickas = new ArrayList<>();
+		ArrayList<Integer> staminas = new ArrayList<>();
+		ArrayList<Integer> speeds = new ArrayList<>();
+		ArrayList<Integer> prefixKey = new ArrayList<>();
+		ArrayList<String> prefix = new ArrayList<>();
+		ArrayList<Integer> affixKey = new ArrayList<>();
+		ArrayList<String> affix = new ArrayList<>();
 		int index = 0;
 		for (ARMO_spec variant : compiledVariants.get(raceSrc.getForm())) {
 		    if (variant.spec.Height_Mult != SpecVariant.prototype.Height_Mult) {

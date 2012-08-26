@@ -23,8 +23,8 @@ import lev.debug.LDebug;
 import lev.gui.LImagePane;
 import lev.gui.LSaveFile;
 import skyproc.GLOB.GLOBType;
-import skyproc.*;
 import skyproc.SPGlobal.Language;
+import skyproc.*;
 import skyproc.gui.*;
 
 /**
@@ -35,8 +35,8 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.5.2 Beta";
-    public static String lastMajorVersion = "1.5.2";
+    public static String version = "1.5.2.2 Beta";
+    public static String lastMajorVersion = "1.5.2.2";
 
     /*
      * Static Strings
@@ -506,7 +506,7 @@ public class AV implements SUM {
     public SPMainMenuPanel getStandardMenu() {
 	settingsMenu = new SPMainMenuPanel(green);
 	settingsMenu.addLogo(this.getLogo());
-	settingsMenu.setVersion(version, new Point(80, 88));
+	settingsMenu.setVersion(version, new Point(80, 100));
 	settingsMenu.setBackgroundPicture(SettingsOther.class.getResource("AV background.jpg"));
 	settingsMenu.setMainFont(AVFont, 25, 40, 27);
 	try {
@@ -673,6 +673,6 @@ public class AV implements SUM {
 
     @Override
     public ModListing getListing() {
-	return new ModListing("Automatic Variants", false);
+	return new ModListing(getName(), false);
     }
 }
