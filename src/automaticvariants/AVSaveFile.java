@@ -180,6 +180,12 @@ public class AVSaveFile extends LSaveFile {
 	helpInfo.put(Settings.SPEC_PACKAGE_ORIGAUTHORS,
 		"Put the original authors who created the material contained in the package.");
 
+	helpInfo.put(Settings.SPEC_PACKAGE_RELEASE,
+		"Put the date that you first uploaded this package.");
+
+	helpInfo.put(Settings.SPEC_PACKAGE_UPDATE,
+		"Put the date that you last changed this package.");
+
 	helpInfo.put(Settings.SPEC_VAR_AUTHOR,
 		"Put the original author who created the material contained in this variant.");
 
@@ -252,6 +258,8 @@ public class AVSaveFile extends LSaveFile {
 	PACKAGES_DISABLE,
 	PACKAGES_DELETE,
 	SPEC_PACKAGE_PACKAGER,
+	SPEC_PACKAGE_RELEASE,
+	SPEC_PACKAGE_UPDATE,
 	SPEC_PACKAGE_ORIGAUTHORS,
 	SPEC_VAR_AUTHOR,
 	SPEC_VAR_PROB,

@@ -15,8 +15,11 @@ import skyproc.SPGlobal;
 public class SpecPackage extends SpecFile {
 
     public String Packager = "";
-    public ArrayList<String> OriginalAuthors= new ArrayList<>();
+    public ArrayList<String> OriginalAuthors = new ArrayList<>();
     String version = "1.0";
+    public String Release_Date = "";
+    public String Last_Updated = "";
+    public String comments = "";
 
     public SpecPackage(File f) {
 	super(f);
@@ -47,7 +50,16 @@ public class SpecPackage extends SpecFile {
 	for (String s : OriginalAuthors) {
 	    out.add("   > " + s);
 	}
-	out.add("\nPackager: " + Packager + "\n");
+	out.add("\nPackager: " + Packager);
+	if (Release_Date != null) {
+	    out.add("Release Date: " + Release_Date);
+	}
+	if (Last_Updated != null) {
+	    out.add("Last Updated: " + Last_Updated);
+	}
+	if (comments != null) {
+	    out.add("Comments: " + comments);
+	}
 	return out;
     }
 }

@@ -19,6 +19,8 @@ public class WizSpecPackage extends WizSpecTemplate {
 
     LTextField packager;
     LStringList origAuthors;
+    LTextField release;
+    LTextField update;
 
     public WizSpecPackage(SPMainMenuPanel parent_) {
 	super(parent_, "Package Spec");
@@ -40,6 +42,18 @@ public class WizSpecPackage extends WizSpecTemplate {
 	setPlacement(origAuthors);
 	Add(origAuthors);
 
+	release = new LTextField("Release Date", AV.AVFont, AV.yellow);
+	release.linkTo(Settings.SPEC_PACKAGE_RELEASE, AV.save, SUMGUI.helpPanel, true);
+	release.setSize(settingsPanel.getWidth() - 2 * x, release.getHeight());
+	setPlacement(release);
+	Add(release);
+
+	update = new LTextField("Last Updated", AV.AVFont, AV.yellow);
+	update.linkTo(Settings.SPEC_PACKAGE_UPDATE, AV.save, SUMGUI.helpPanel, true);
+	update.setSize(settingsPanel.getWidth() - 2 * x, update.getHeight());
+	setPlacement(update);
+	Add(update);
+
 	alignRight();
 
     }
@@ -57,6 +71,8 @@ public class WizSpecPackage extends WizSpecTemplate {
 	for (String author : s.OriginalAuthors) {
 	    origAuthors.addElement(author);
 	}
+	release.setText(s.Release_Date);
+	update.setText(s.Last_Updated);
 
 	target = s;
     }
@@ -92,6 +108,8 @@ public class WizSpecPackage extends WizSpecTemplate {
 
 	v.Packager = packager.getText();
 	v.OriginalAuthors = origAuthors.getAll();
+	v.Release_Date = release.getText();
+	v.Last_Updated = update.getText();
 
 	super.save();
     }
