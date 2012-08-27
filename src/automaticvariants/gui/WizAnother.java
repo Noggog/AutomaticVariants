@@ -5,6 +5,7 @@
 package automaticvariants.gui;
 
 import automaticvariants.AV;
+import automaticvariants.AVFileVars;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import lev.gui.LButton;
@@ -63,6 +64,7 @@ public class WizAnother extends WizTemplate {
     @Override
     public void onOpen(SPMainMenuPanel parent) {
 	WizNewPackage.newPackage.save();
+	AVFileVars.moveOut();
 	PackagesManager.reloadPackageList();
     }
 }
