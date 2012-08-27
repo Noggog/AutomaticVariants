@@ -24,7 +24,7 @@ public class VariantProfile {
     public ARMO skin;
     public ARMA piece;
     String nifPath;
-    ArrayList<String> nifNodeNames = new ArrayList<>();
+    Map<Integer, String> nifNodeNames = new HashMap<>();
     Map<String, ArrayList<String>> textures = new HashMap<>();
     Map<String, ArrayList<String>> altTextures = new HashMap<>();
     String texturesPrintout;
@@ -51,7 +51,7 @@ public class VariantProfile {
 	piece = rhs.piece;
 	nifPath = rhs.nifPath;
 	textures = new HashMap<>();
-	nifNodeNames = new ArrayList<>(rhs.nifNodeNames);
+	nifNodeNames = new HashMap<>(rhs.nifNodeNames);
 	for (String key : rhs.textures.keySet()) {
 	    ArrayList<String> list = new ArrayList<>();
 	    for (String value : rhs.textures.get(key)) {
@@ -314,7 +314,8 @@ public class VariantProfile {
 	    SPGlobal.log(toString(), " * ==> Generating TXSTs");
 	}
 	Map<String, TXST> out = new HashMap<>();
-	for (String nodeName : nifNodeNames) {
+	for (Integer index : nifNodeNames.keySet()) {
+	    String nodeName = nifNodeNames.get(index);
 	    if (shouldGenerate(var, nodeName)) {
 		String edid = NiftyFunc.EDIDtrimmer(generateEDID(var) + "_" + nodeName + "_txst");
 		if (SPGlobal.logging()) {
@@ -378,15 +379,14 @@ public class VariantProfile {
 	ArrayList<ARMA.AltTexture> alts = arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
 	alts.clear();
 
-	int i = 0;
-	for (String nifNodeName : nifNodeNames) {
+	for (Integer index : nifNodeNames.keySet()) {
+	    String nifNodeName = nifNodeNames.get(index);
 	    if (txsts.containsKey(nifNodeName)) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(toString(), " * | Loading TXST for " + nifNodeName + " index " + i);
+		    SPGlobal.log(toString(), " * | Loading TXST for " + nifNodeName + " index " + index);
 		}
-		alts.add(new ARMA.AltTexture(nifNodeName, txsts.get(nifNodeName).getForm(), i));
+		alts.add(new ARMA.AltTexture(nifNodeName, txsts.get(nifNodeName).getForm(), index));
 	    }
-	    i++;
 	}
 
 	if (SPGlobal.logging()) {

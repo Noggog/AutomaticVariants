@@ -256,10 +256,15 @@ public class AVFileVars {
 	for (VariantProfile profile : new ArrayList<>(VariantProfile.profiles)) {
 	    try {
 		LShrinkArray nifData = BSA.getUsedFile(profile.nifPath);
+		if (profile.nifPath.contains("SPRIGGAN")) {
+		    int wer = 23;
+		}
 		if (nifData != null) {
-		    for (LPair<String, ArrayList<String>> pair : loadNif(profile.nifPath, nifData)) {
+		    Map<Integer, LPair<String, ArrayList<String>>> nifTextures = loadNif(profile.nifPath, nifData);
+		    for (Integer index : nifTextures.keySet()) {
+			LPair<String, ArrayList<String>> pair = nifTextures.get(index);
 			profile.textures.put(pair.a, pair.b);
-			profile.nifNodeNames.add(pair.a);
+			profile.nifNodeNames.put(index, pair.a);
 		    }
 		    if (profile.textures.isEmpty()) {
 			VariantProfile.profiles.remove(profile);
@@ -347,14 +352,15 @@ public class AVFileVars {
 	}
     }
 
-    public static ArrayList<LPair<String, ArrayList<String>>> loadNif(String nifPath, LShrinkArray in) {
-	ArrayList<LPair<String, ArrayList<String>>> nifTextures = new ArrayList<>();
+    public static Map<Integer, LPair<String, ArrayList<String>>> loadNif(String nifPath, LShrinkArray in) {
+	Map<Integer, LPair<String, ArrayList<String>>>nifTextures = new HashMap<>();
 	try {
 	    NIF nif = new NIF(nifPath, in);
 	    nifTextures = nif.extractTextures();
 
 	    // To uppercase
-	    for (LPair<String, ArrayList<String>> pair : nifTextures) {
+	    for (Integer index : nifTextures.keySet()) {
+		LPair<String, ArrayList<String>> pair = nifTextures.get(index);
 		for (int i = 0; i < pair.b.size(); i++) {
 		    pair.b.set(i, pair.b.get(i).toUpperCase());
 		}
