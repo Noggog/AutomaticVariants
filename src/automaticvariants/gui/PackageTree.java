@@ -45,7 +45,7 @@ public class PackageTree extends LSwingTree {
 	    PackageNode item = (PackageNode) value;
 
 	    if (hasFocus) {
-		item.updateHelp(help);
+		item.updateHelp(help, true);
 	    }
 
 	    Component defaultC = defaultR.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);

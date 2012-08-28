@@ -7,17 +7,14 @@ package automaticvariants.gui;
 import automaticvariants.AVSaveFile.Settings;
 import automaticvariants.*;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
@@ -26,6 +23,7 @@ import javax.swing.tree.TreePath;
 import lev.Ln;
 import lev.gui.LButton;
 import lev.gui.LImagePane;
+import lev.gui.LLabel;
 import lev.gui.LMenuItem;
 import skyproc.SPGlobal;
 import skyproc.gui.SPMainMenuPanel;
@@ -50,6 +48,7 @@ public class PackagesManager extends SPSettingPanel {
     LMenuItem delete;
     LMenuItem compress;
     LMenuItem editSpec;
+    public LLabel dimensions;
 
     public PackagesManager(SPMainMenuPanel parent_) {
 	super(parent_, "Texture Variants", AV.orange);
@@ -216,10 +215,14 @@ public class PackagesManager extends SPSettingPanel {
 	};
 	tree.addMouseListener(ma);
 
+	dimensions = new LLabel("zzz X zzz", new Font("Serif", Font.PLAIN, 12), AV.lightGray);
+	dimensions.setLocation(SUMGUI.rightDimensions.width /2 - dimensions.getWidth()/2, 0);
+
 	display = new LImagePane();
 	display.setMaxSize(SUMGUI.rightDimensions.width, 0);
 	display.allowAlpha(false);
 	display.setVisible(true);
+	display.setLocation(0,dimensions.getHeight() + 2);
 	PackageNode.display = display;
 
 	reloadPackageList();
@@ -231,7 +234,8 @@ public class PackagesManager extends SPSettingPanel {
 	SUMGUI.helpPanel.setDefaultPos();
 	SUMGUI.helpPanel.clearBottomArea();
 	SUMGUI.helpPanel.addToBottomArea(display);
-	SUMGUI.helpPanel.setBottomAreaHeight(SUMGUI.rightDimensions.width);
+	SUMGUI.helpPanel.addToBottomArea(dimensions);
+	SUMGUI.helpPanel.setBottomAreaHeight(SUMGUI.rightDimensions.width + 2 + dimensions.getHeight());
     }
 
     public void enableSelection(boolean enable) {

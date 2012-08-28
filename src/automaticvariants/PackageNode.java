@@ -154,7 +154,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	}
     }
 
-    public void updateHelp(LHelpPanel help) {
+    public void updateHelp(LHelpPanel help, boolean first) {
 
 	String content = "";
 	PackageNode packageNode;
@@ -171,8 +171,10 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 		displayFirstImage();
 		break;
 	    case GENTEXTURE:
-		((PackageNode) parent).updateHelp(help);
-		displayImage(src);
+		((PackageNode) parent).updateHelp(help, false);
+		if (first) {
+		    displayImage(src);
+		}
 		return;
 	    case VARSET:
 		help.setTitle(((PackageNode) parent).src.getName());
@@ -216,7 +218,6 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 		    content += divider;
 		}
 
-
 //		content += "Exclusive files:\n";
 //		TreeSet<PackageNode> varFiles = new TreeSet<>();
 //		varFiles.addAll(getAll(Type.TEXTURE));
@@ -225,10 +226,12 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 //		    content += "    " + child.src.getName() + "\n";
 //		}
 
-		displayFirstImage();
+		if (first) {
+		    displayFirstImage();
+		}
 		break;
 	    case TEXTURE:
-		((PackageNode) parent).updateHelp(help);
+		((PackageNode) parent).updateHelp(help, false);
 		displayImage(src);
 		return;
 	    default:
@@ -260,23 +263,34 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 
     void displayImage(final File src) {
 	SwingUtilities.invokeLater(new Runnable() {
-
 	    @Override
 	    public void run() {
 		if (!src.equals(lastDisplayed)) {
 		    try {
 			BufferedImage image = DDSUtil.read(src);
 			display.setImage(image);
-			display.setLocation(SUMGUI.helpPanel.getBottomSize().width / 2 - display.getWidth() / 2, display.getY());
-			lastDisplayed = src;
+			if (image != null) {
+			    display.setLocation(SUMGUI.helpPanel.getBottomSize().width / 2 - display.getWidth() / 2, display.getY());
+			    lastDisplayed = src;
+			    AV.packagesManagerPanel.dimensions.setText(image.getWidth() + " x " + image.getHeight());
+			} else {
+			    clearDisplay();
+			}
 		    } catch (Exception ex) {
 			SPGlobal.logException(ex);
 			SPGlobal.logError("PackageComponent", "Could not display " + src);
+			clearDisplay();
 		    }
 		}
+		AV.packagesManagerPanel.dimensions.setLocation(SUMGUI.rightDimensions.width / 2 - AV.packagesManagerPanel.dimensions.getWidth() / 2, 0);
 		SUMGUI.helpPanel.setBottomAreaVisible(true);
 	    }
 	});
+    }
+
+    void clearDisplay() {
+	lastDisplayed = null;
+	AV.packagesManagerPanel.dimensions.setText("Could not display texture.");
     }
 
     public String printGenTextures() {
@@ -396,7 +410,6 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	    return;
 	}
 	Collections.sort(this.children, new Comparator() {
-
 	    @Override
 	    public int compare(Object arg0, Object arg1) {
 		PackageNode node = (PackageNode) arg0;
