@@ -338,7 +338,7 @@ public class PackagesManager extends SPSettingPanel {
 
     public static void reloadPackageList() {
 	try {
-	    AVFileVars.importVariants();
+	    AVFileVars.importVariants(false);
 	    AVFileVars.AVPackages.sort();
 	    tree.setModel(new DefaultTreeModel(AVFileVars.AVPackages));
 	} catch (IOException ex) {

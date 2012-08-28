@@ -68,22 +68,26 @@ public class AVFileVars {
 	    }
 	}
 
-	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Importing AV Packages");
-	importVariants();
+	importVariants(true);
 	AVPackages.prune();
-	SPProgressBarPlug.incrementBar();
 
 	prepProfiles();
 
 	dropVariantSetsInProfiles();
+	SPProgressBarPlug.incrementBar();
 
 	clearUnusedProfiles();
+	SPProgressBarPlug.incrementBar();
 
 	generateRecords();
 
+	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Finishing Up");
+	SPProgressBarPlug.reset();
+	SPProgressBarPlug.setMax(1);
 	implementOrigAsVar();
 
 	skinSwitchMethod(source);
+	SPProgressBarPlug.done();
     }
 
     static void skinSwitchMethod(Mod source) {
@@ -101,19 +105,30 @@ public class AVFileVars {
     /*
      * Shared methods
      */
-    public static void importVariants() throws IOException {
+    public static void importVariants(boolean progressBar) throws IOException {
 	String header = "Import Variants";
 	File AVPackagesDirFile = new File(AVTexturesDir);
-
 	// wipe
 	AVPackages = new PackageNode(AVPackagesDirFile, PackageNode.Type.ROOT);
 	RerouteFile.reroutes.clear();
 	if (AVPackagesDirFile.isDirectory()) {
-	    for (File packageFolder : AVPackagesDirFile.listFiles()) {
+	    File[] files = AVPackagesDirFile.listFiles();
+	    if (progressBar) {
+		SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Importing AV Packages");
+		SPProgressBarPlug.reset();
+		SPProgressBarPlug.setMax(files.length);
+	    }
+	    for (File packageFolder : files) {
 		if (packageFolder.isDirectory()) {
 		    AVPackage avPackage = new AVPackage(packageFolder);
 		    AVPackages.add(avPackage);
+		    if (progressBar) {
+			SPProgressBarPlug.incrementBar();
+		    }
 		}
+	    }
+	    if (progressBar) {
+		SPProgressBarPlug.done();
 	    }
 	} else {
 	    SPGlobal.logError("Package Location", "There was no AV Packages folder.");
@@ -121,9 +136,16 @@ public class AVFileVars {
     }
 
     public static void prepProfiles() {
+	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Loading AV Profiles");
+	SPProgressBarPlug.reset();
+	SPProgressBarPlug.setMax(8);
+
 	BSA.loadInBSAs(BSA.FileType.NIF, BSA.FileType.DDS);
+	SPProgressBarPlug.incrementBar();
 	locateUnused();
+	SPProgressBarPlug.incrementBar();
 	loadProfiles();
+	SPProgressBarPlug.incrementBar();
     }
 
     public static void locateUnused() {
@@ -135,14 +157,14 @@ public class AVFileVars {
 	Mod source = AV.getMerger();
 
 	// Load all races, skins, pieces into containers
-	unusedRaces = new HashSet<FormID>(source.getRaces().numRecords());
+	unusedRaces = new HashSet<>(source.getRaces().numRecords());
 	for (RACE race : source.getRaces()) {
 	    unusedRaces.add(race.getForm());
 	}
-	unusedSkins = new HashSet<FormID>(source.getArmors().numRecords());
-	unusedPieces = new LMergeMap<FormID, FormID>(false);
-	armoRaces = new LMergeMap<FormID, FormID>(false);
-	LMergeMap<FormID, ARMA> unusedPiecesTmp = new LMergeMap<FormID, ARMA>(false);
+	unusedSkins = new HashSet<>(source.getArmors().numRecords());
+	unusedPieces = new LMergeMap<>(false);
+	armoRaces = new LMergeMap<>(false);
+	LMergeMap<FormID, ARMA> unusedPiecesTmp = new LMergeMap<>(false);
 	for (ARMO armor : source.getArmors()) {
 	    if (!unusedSkins.contains(armor.getForm())) {
 		unusedSkins.add(armor.getForm());
@@ -166,7 +188,7 @@ public class AVFileVars {
 	    unusedRaces.remove(n.getRace());
 	    unusedSkins.remove(skin);
 	    if (unusedPiecesTmp.containsKey(skin)) {
-		ArrayList<ARMA> tmpPieces = new ArrayList<ARMA>(unusedPiecesTmp.get(skin));
+		ArrayList<ARMA> tmpPieces = new ArrayList<>(unusedPiecesTmp.get(skin));
 		for (ARMA piece : tmpPieces) {
 		    if (piece.getRace().equals(n.getRace())) {
 			unusedPiecesTmp.get(skin).remove(piece);
@@ -215,8 +237,11 @@ public class AVFileVars {
 	}
 	profiles = VariantProfile.profiles;
 	locateUsedNIFs();
+	SPProgressBarPlug.incrementBar();
 	loadUsedNIFs();
+	SPProgressBarPlug.incrementBar();
 	loadProfileRecords();
+	SPProgressBarPlug.incrementBar();
 	VariantProfile.printProfiles();
     }
 
@@ -256,9 +281,6 @@ public class AVFileVars {
 	for (VariantProfile profile : new ArrayList<>(VariantProfile.profiles)) {
 	    try {
 		LShrinkArray nifData = BSA.getUsedFile(profile.nifPath);
-		if (profile.nifPath.contains("SPRIGGAN")) {
-		    int wer = 23;
-		}
 		if (nifData != null) {
 		    Map<Integer, LPair<String, ArrayList<String>>> nifTextures = loadNif(profile.nifPath, nifData);
 		    for (Integer index : nifTextures.keySet()) {
@@ -353,7 +375,7 @@ public class AVFileVars {
     }
 
     public static Map<Integer, LPair<String, ArrayList<String>>> loadNif(String nifPath, LShrinkArray in) {
-	Map<Integer, LPair<String, ArrayList<String>>>nifTextures = new HashMap<>();
+	Map<Integer, LPair<String, ArrayList<String>>> nifTextures = new HashMap<>();
 	try {
 	    NIF nif = new NIF(nifPath, in);
 	    nifTextures = nif.extractTextures();
@@ -449,11 +471,15 @@ public class AVFileVars {
 
     static void generateRecords() {
 	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating variant records.");
+	SPProgressBarPlug.reset();
+	SPProgressBarPlug.setMax(VariantProfile.profiles.size());
+	
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Generate Variants.txt");
 	}
 	for (VariantProfile profile : VariantProfile.profiles) {
 	    profile.generateRecords();
+	    SPProgressBarPlug.incrementBar();
 	}
     }
 
@@ -469,7 +495,6 @@ public class AVFileVars {
     }
 
     static void generateFormLists(Mod source) {
-	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating Form Lists.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Generate Form Lists.txt");
 	    SPGlobal.log(header, "====================================================================");
@@ -510,11 +535,9 @@ public class AVFileVars {
 	    }
 
 	}
-	SPProgressBarPlug.incrementBar();
     }
 
     static void generateSPELvariants(Mod source) {
-	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating script attachment races.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Generate Switcher Spells.txt");
 	    SPGlobal.log(header, "====================================================================");
@@ -529,7 +552,7 @@ public class AVFileVars {
 		}
 		ScriptRef script = AV.generateAttachScript();
 		FLST flstArray = new FLST(SPGlobal.getGlobalPatch(), "AV_" + raceSrc.getEDID() + "_flst_Array");
-		ArrayList<FormID> skinKey = new ArrayList<FormID>();
+		ArrayList<FormID> skinKey = new ArrayList<>();
 
 		// Add normal worn armor to last on the array
 		if (formLists.get(raceSrc.getForm()).containsKey(raceSrc.getWornArmor())) {
@@ -644,7 +667,6 @@ public class AVFileVars {
     }
 
     static void tagNPCs(Mod source) {
-	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Tagging NPCs.");
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Tagging NPCs.txt");
 	    SPGlobal.log(header, "====================================================================");

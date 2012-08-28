@@ -74,8 +74,8 @@ public class AV implements SUM {
     public static Thread parser;
     public static Gson gson = new Gson();
     static boolean heightOnF = false;
-    static int numSteps = 8;
     static int step = 0;
+    static int numSteps = 4;
     static int initDebugLevel = -1;
     static boolean secondF = false;
     //GUI
@@ -471,7 +471,7 @@ public class AV implements SUM {
 	SPGlobal.logMain(header, "Language: " + SPGlobal.language);
 	readInExceptions();
 	AVFileVars.moveOut();
-	AVFileVars.importVariants();
+	AVFileVars.importVariants(false);
     }
 
     public enum SpecialLogs {
@@ -623,8 +623,7 @@ public class AV implements SUM {
 	makeGlobals();
 	makeAVQuest();
 
-	SPProgressBarPlug.setMax(numSteps);
-	SPProgressBarPlug.setStatus(step++, numSteps, "Initializing AV");
+	SPProgressBarPlug.setStatus(0, 1, "Initializing AV");
 
 	// For all race SWITCHING variants
 	// (such as texture variants)
