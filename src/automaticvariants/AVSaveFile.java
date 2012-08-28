@@ -228,9 +228,13 @@ public class AVSaveFile extends LSaveFile {
 		+ "You can also use it to make your variants rare compared to other author's variants.");
 
 	helpInfo.put(Settings.SPEC_VAR_REGION,
-		"This is a list of regions that this variant will be allowed to spawn in.  This means the "
-		+ "variant WILL NOT spawn anywhere else but the regions you specify.\n\n"
-		+ "If you don't specify any regions, the variant will spawn anywhere.");
+		"This is a list of Cell FormIDs that this variant will be allowed to spawn in.  This means the "
+		+ "variant WILL NOT spawn anywhere else but the Cells you specify.\n\n"
+		+ "If you don't specify any Cells, the variant will spawn anywhere.\n\n"
+		+ "NOTE: It is up to you to locate the desired Cell FormIDs and type them in correctly.\n\n"
+		+ "AV expects FormIDs in this format:  Last 6 digits followed by the Mod they originated from.\n\n"
+		+ "Example: 00123456 from Skyrim.esm would be typed in as \"123456Skyrim.esm\".\n\n"
+		+ "You can have comments by using semicolons (;)");
 
 	helpInfo.put(Settings.LANGUAGE,
 		"You can set your language here.  This will make SkyProc import strings files of that language.\n\n"

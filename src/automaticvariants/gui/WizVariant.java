@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import lev.Ln;
+import lev.gui.LCheckBox;
 import lev.gui.LList;
 import lev.gui.LTextField;
 import skyproc.gui.SPMainMenuPanel;

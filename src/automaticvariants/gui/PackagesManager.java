@@ -215,7 +215,7 @@ public class PackagesManager extends SPSettingPanel {
 	};
 	tree.addMouseListener(ma);
 
-	dimensions = new LLabel("zzz X zzz", new Font("Serif", Font.PLAIN, 12), AV.lightGray);
+	dimensions = new LLabel("", new Font("Serif", Font.PLAIN, 12), AV.lightGray);
 	dimensions.setLocation(SUMGUI.rightDimensions.width /2 - dimensions.getWidth()/2, 0);
 
 	display = new LImagePane();

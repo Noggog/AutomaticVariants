@@ -6,11 +6,9 @@ package automaticvariants.gui;
 
 import automaticvariants.*;
 import automaticvariants.AVSaveFile.Settings;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
 import lev.gui.*;
-import skyproc.SPGlobal;
+import skyproc.FormID;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SUMGUI;
 
@@ -22,7 +20,7 @@ public class WizSpecVariant extends WizSpecTemplate {
 
     LTextField author;
     LNumericSetting probDiv;
-    LFormIDPicker region;
+    LStringList region;
     LCheckBox exclusiveRegion;
     LNumericSetting height;
     LNumericSetting health;
@@ -50,17 +48,18 @@ public class WizSpecVariant extends WizSpecTemplate {
 	setPlacement(probDiv);
 	Add(probDiv);
 
-//	    region = new LFormIDPicker("Regions To Spawn In", AV.settingsFont, AV.yellow);
-//	    region.linkTo(Settings.SPEC_VAR_REGION, saveFile, SUMGUI.helpPanel, true);
-//	    last = setPlacement(region, last.x, last.y - 5);
-//	    Add(region);
-//
-//	    exclusiveRegion = new LCheckBox("Exclusive Region", AV.settingsFont, AV.yellow);
-//	    exclusiveRegion.linkTo(Settings.SPEC_VAR_REGION_EXCLUDE, saveFile, SUMGUI.helpPanel, true);
-//	    exclusiveRegion.addShadow();
-//	    exclusiveRegion.setOffset(2);
-//	    last = setPlacement(exclusiveRegion, last.x, last.y - 5);
-//	    Add(exclusiveRegion);
+	region = new LStringList("Regions To Spawn In", AV.AVFont, AV.yellow);
+	region.setSize(settingsPanel.getWidth() - 2 * x, 200);
+	region.linkTo(Settings.SPEC_VAR_REGION, AV.save, SUMGUI.helpPanel, true);
+	setPlacement(region);
+	Add(region);
+
+	exclusiveRegion = new LCheckBox("Exclusive Region", AV.AVFont, AV.yellow);
+	exclusiveRegion.linkTo(Settings.SPEC_VAR_REGION_EXCLUDE, AV.save, SUMGUI.helpPanel, true);
+	exclusiveRegion.addShadow();
+	exclusiveRegion.setOffset(2);
+	setPlacement(exclusiveRegion);
+	Add(exclusiveRegion);
 
 //	height = new LNumericSetting("Relative Height", AV.AVFont, AV.yellow, 1, 1000, 1);
 //	height.linkTo(Settings.SPEC_VAR_HEIGHT, AV.save, SUMGUI.helpPanel, true);
@@ -114,9 +113,14 @@ public class WizSpecVariant extends WizSpecTemplate {
 
 	probDiv.setValue(s.Probability_Divider);
 
-//	region.load(v.spec.Region_Include);
-//
-//	exclusiveRegion.setSelected(v.spec.Exclusive_Region);
+	region.clear();
+	for (String[] a : s.Region_Include) {
+	    if (a.length == 2) {
+		region.addElement(a[0] + a[1]);
+	    }
+	}
+
+	exclusiveRegion.setSelected(s.Exclusive_Region);
 
 //	health.setValue(s.Health_Mult);
 //	magicka.setValue(s.Magicka_Mult);
@@ -149,15 +153,17 @@ public class WizSpecVariant extends WizSpecTemplate {
 
 	v.Author = author.getText();
 	v.Probability_Divider = probDiv.getValue();
-//	ArrayList<FormID> regionsList = region.getPickedIDs();
-//	String[][] regions = new String[regionsList.size()][];
-//	for (int i = 0 ; i < regionsList.size() ; i++) {
-//	    String id = regionsList.get(i).getFormStr();
-//	    regions[i][0] = id.substring(0, 6);
-//	    regions[i][1] = id.substring(6);
-//	}
-//	target.spec.Region_Include = regions;
-//	target.spec.Exclusive_Region = this.exclusiveRegion.isSelected();
+	ArrayList<String> regionsList = region.getAll();
+	ArrayList<String[]> out = new ArrayList<>(regionsList.size());
+	for (int i = 0; i < regionsList.size(); i++) {
+	    String id = regionsList.get(i);
+	    if (id.length() > 6) {
+		out.add(FormID.parseString(id));
+	    }
+	}
+	String[][] stringarray = new String[0][];
+	v.Region_Include = out.toArray(stringarray);
+	v.Exclusive_Region = this.exclusiveRegion.isSelected();
 //	v.Health_Mult = health.getValue();
 //	v.Magicka_Mult = magicka.getValue();
 //	v.Stamina_Mult = stamina.getValue();

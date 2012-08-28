@@ -17,7 +17,7 @@ public class SpecVariant extends SpecFile {
 
     public int Probability_Divider = 1;
     public String Author = "";
-    public String[][] Region_Include = new String[0][0];
+    public String[][] Region_Include = new String[0][];
     public boolean Exclusive_Region = false;
     public int Health_Mult = 100;
     public int Height_Mult = 100;
