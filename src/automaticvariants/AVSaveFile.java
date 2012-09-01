@@ -19,6 +19,7 @@ public class AVSaveFile extends LSaveFile {
     protected void initSettings() {
 	Add(Settings.PACKAGES_ON,		true,	    true);
 	Add(Settings.PACKAGES_ORIG_AS_VAR,	true,	    true);
+	Add(Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION,true,	    true);
 	Add(Settings.DEBUG_LEVEL,		1,	    false);
 	Add(Settings.IMPORT_AT_START,		false,	    false);
 	Add(Settings.STATS_ON,			false,	    true);
@@ -64,6 +65,10 @@ public class AVSaveFile extends LSaveFile {
 
 	helpInfo.put(Settings.PACKAGES_ORIG_AS_VAR, "This will add the non-AV actor setup as a variant, and add it to the list of options. \n\n"
 		+ "If turned off, then only variants explicitly part of an AV Package will spawn.");
+
+	helpInfo.put(Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION, "AV supports a feature where AV Packages can specify regions that they want their variants to spawn.\n\n"
+		+ "In addition, they are able to make regions exclusive, meaning only their variants and others that specify that area specifically will spawn there.\n\n"
+		+ "If you do not want to allow exclusivity of regions, then uncheck this.  This will disregard all Packager's requests to make an area exclusive to their variant.");
 
 	helpInfo.put(Settings.PACKAGES_FORCE_REPICK, "This is a setting that applies once the next time you start your game. "
 		+ "It will force every NPC in your game to choose a new variant.  Turning this on will only make them do it once; It will not make NPCs repeatedly switch.\n\n"
@@ -255,6 +260,7 @@ public class AVSaveFile extends LSaveFile {
 	PACKAGES_ON,
 	PACKAGES_GATHER,
 	PACKAGES_ORIG_AS_VAR,
+	PACKAGES_ALLOW_EXCLUSIVE_REGION,
 	PACKAGES_FORCE_REPICK,
 	PACKAGES_COMPRESS,
 	PACKAGES_EDIT,

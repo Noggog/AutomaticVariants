@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import lev.gui.LButton;
 import lev.gui.LCheckBox;
+import lev.gui.LComboBox;
 import skyproc.SPGlobal;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPSettingPanel;
@@ -26,6 +27,7 @@ public class PackagesOther extends SPSettingPanel {
     LButton gatherAndExit;
     public LCheckBox forceRepick;
     LCheckBox origAsVar;
+    LCheckBox allowRegions;
     LButton packageManager;
     boolean onceForce = true;
 
@@ -43,6 +45,11 @@ public class PackagesOther extends SPSettingPanel {
 	origAsVar.addShadow();
 	setPlacement(origAsVar);
 	Add(origAsVar);
+
+	allowRegions = new LCheckBox("Allow Regional Variants", AV.AVFont, AV.yellow);
+	allowRegions.tie(AVSaveFile.Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION, AV.save, SUMGUI.helpPanel, true);
+	setPlacement(allowRegions);
+	Add(allowRegions);
 
 	forceRepick = new LCheckBox("Force Texture Repick", AV.AVFont, AV.yellow);
 	forceRepick.setOffset(0);

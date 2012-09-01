@@ -86,11 +86,7 @@ public class AVFileVars {
 	SPProgressBarPlug.setMax(1);
 	implementOrigAsVar();
 
-	skinSwitchMethod(source);
-	SPProgressBarPlug.done();
-    }
-
-    static void skinSwitchMethod(Mod source) {
+	implementRegionalVariants();
 
 	// Generate FormLists of RACE variants
 	generateFormLists(source);
@@ -100,6 +96,7 @@ public class AVFileVars {
 
 	// Add AV keywords to NPCs that have alt skins
 	tagNPCs(source);
+	SPProgressBarPlug.done();
     }
 
     /*
@@ -473,7 +470,7 @@ public class AVFileVars {
 	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating variant records.");
 	SPProgressBarPlug.reset();
 	SPProgressBarPlug.setMax(VariantProfile.profiles.size());
-	
+
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Generate Variants.txt");
 	}
@@ -492,6 +489,10 @@ public class AVFileVars {
 		}
 	    }
 	}
+    }
+
+    static void implementRegionalVariants() {
+	
     }
 
     static void generateFormLists(Mod source) {
