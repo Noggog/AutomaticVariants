@@ -19,7 +19,7 @@ public class AVSaveFile extends LSaveFile {
     protected void initSettings() {
 	Add(Settings.PACKAGES_ON,		true,	    true);
 	Add(Settings.PACKAGES_ORIG_AS_VAR,	true,	    true);
-	Add(Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION,true,	    true);
+	Add(Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION,2,	    true);
 	Add(Settings.DEBUG_LEVEL,		1,	    false);
 	Add(Settings.IMPORT_AT_START,		false,	    false);
 	Add(Settings.STATS_ON,			false,	    true);
@@ -66,9 +66,11 @@ public class AVSaveFile extends LSaveFile {
 	helpInfo.put(Settings.PACKAGES_ORIG_AS_VAR, "This will add the non-AV actor setup as a variant, and add it to the list of options. \n\n"
 		+ "If turned off, then only variants explicitly part of an AV Package will spawn.");
 
-	helpInfo.put(Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION, "AV supports a feature where AV Packages can specify regions that they want their variants to spawn.\n\n"
-		+ "In addition, they are able to make regions exclusive, meaning only their variants and others that specify that area specifically will spawn there.\n\n"
-		+ "If you do not want to allow exclusivity of regions, then uncheck this.  This will disregard all Packager's requests to make an area exclusive to their variant.");
+	helpInfo.put(Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION, "AV supports a feature where AV Packages can specify regions that they want their variants to spawn.  In addition, they can claim those regions as exclusive so only their variants spawn there.  You can block some of these features with the following options:\n\n"
+		+ "Block Regions:  This will force all variants spawn anywhere, no matter what.\n\n"
+		+ "Allow Regions:  This will allow variants to be able to spawn only in some areas if they want to.\n\n"
+		+ "Allow Exclusive Regions:  In addition to allowing regions, this will also allow variants to claim their "
+		+ "zones as exclusive, blocking other variants from spawning there unless they have that zone marked too.");
 
 	helpInfo.put(Settings.PACKAGES_FORCE_REPICK, "This is a setting that applies once the next time you start your game. "
 		+ "It will force every NPC in your game to choose a new variant.  Turning this on will only make them do it once; It will not make NPCs repeatedly switch.\n\n"

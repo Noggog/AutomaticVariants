@@ -252,6 +252,20 @@ public class AV implements SUM {
 	questScript.setProperty("TieStats", tieStats.getForm());
 	questScript.setProperty("ForceRepick", forceRepick.getForm());
 
+	//Compile Race List + Height Offsets
+	FLST raceList = new FLST(SPGlobal.getGlobalPatch(), "AVRaceList_flst");
+	Float[] raceHeightOffsets = new Float[AV.getMerger().getRaces().size()];
+	int k = 0;
+	for (RACE raceSrc : AV.getMerger().getRaces()) {
+	    raceList.addFormEntry(raceSrc.getForm());
+	    raceHeightOffsets[k] = raceSrc.getHeight(Gender.MALE);
+	    k++;
+	}
+
+	questScript.setProperty("RaceList", raceList.getForm());
+	questScript.setProperty("RaceHeightOffsets", raceHeightOffsets);
+
+
 	// Log Table
 	Float[] logTable = new Float[1000];
 	for (int i = 0; i < logTable.length; i++) {
@@ -555,7 +569,6 @@ public class AV implements SUM {
     public LImagePane donateButton() throws IOException {
 	final LImagePane donate = new LImagePane(SettingsOther.class.getResource("ConsiderDonatingDark.png"));
 	donate.addMouseListener(new MouseListener() {
-
 	    @Override
 	    public void mouseClicked(MouseEvent e) {
 		try {

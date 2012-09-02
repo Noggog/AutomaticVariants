@@ -27,7 +27,7 @@ public class PackagesOther extends SPSettingPanel {
     LButton gatherAndExit;
     public LCheckBox forceRepick;
     LCheckBox origAsVar;
-    LCheckBox allowRegions;
+    LComboBox allowRegions;
     LButton packageManager;
     boolean onceForce = true;
 
@@ -46,7 +46,11 @@ public class PackagesOther extends SPSettingPanel {
 	setPlacement(origAsVar);
 	Add(origAsVar);
 
-	allowRegions = new LCheckBox("Allow Regional Variants", AV.AVFont, AV.yellow);
+	allowRegions = new LComboBox("Allow Regional Variants", AV.AVFont, AV.yellow);
+	allowRegions.setSize(220, 60);
+	allowRegions.addItem("Block Regions");
+	allowRegions.addItem("Allow Regions");
+	allowRegions.addItem("Allow Exclusive Regions");
 	allowRegions.tie(AVSaveFile.Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(allowRegions);
 	Add(allowRegions);

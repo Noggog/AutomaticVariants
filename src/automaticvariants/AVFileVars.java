@@ -492,7 +492,7 @@ public class AVFileVars {
     }
 
     static void implementRegionalVariants() {
-	
+
     }
 
     static void generateFormLists(Mod source) {
@@ -576,8 +576,7 @@ public class AVFileVars {
 		}
 
 		script.setProperty("AltOptions", flstArray.getForm());
-		script.setProperty("RaceHeightOffset", raceSrc.getHeight(Gender.MALE));
-
+		
 		// Loop through all variants for this race
 		// and load up non-standard spec file info
 		ArrayList<Integer> heights = new ArrayList<>();
