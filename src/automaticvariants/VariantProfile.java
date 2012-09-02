@@ -267,7 +267,7 @@ public class VariantProfile {
 	return hasTexture(texture.getName().toUpperCase());
     }
 
-    public void generateRecords() {
+    public void generateARMOs() {
 	for (VariantSet varSet : sets) {
 	    if (SPGlobal.logging()) {
 		SPGlobal.log(toString(), " *************> Generating for " + varSet.printName("-"));

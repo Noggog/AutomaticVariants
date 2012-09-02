@@ -6,6 +6,9 @@ package automaticvariants;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import skyproc.FormID;
 import skyproc.GRUP_TYPE;
 import skyproc.SPGlobal;
 
@@ -125,6 +128,17 @@ public class SpecVariant extends SpecFile {
 	    out += "Relative Speed: " + Speed_Mult + "%\n";
 	}
 
+	return out;
+    }
+
+    public Set<FormID> getRegions() {
+	Set<FormID> out = new HashSet<>();
+	for (String[] formID : Region_Include) {
+	    FormID id = FormID.parseString(formID);
+	    if (!id.isNull()) {
+		out.add(id);
+	    }
+	}
 	return out;
     }
 }

@@ -37,26 +37,16 @@ public class AVFileVars {
     static int debugNumber = 1;
     static int numSupportedTextures = 8;
     public static PackageNode AVPackages = new PackageNode(new File(AVPackagesDir), PackageNode.Type.ROOT);
-    /*
-     * Variant storage lists/maps
-     */
-    // List of unused things to skip
+    // List of unused records
     static public HashSet<FormID> unusedRaces;
     static public HashSet<FormID> unusedSkins;
     static public LMergeMap<FormID, FormID> unusedPieces;
-    // List of what races the armor "supports"
-    static LMergeMap<FormID, FormID> armoRaces;
+    /*
+     * Variant storage lists/maps
+     */
     static Set<FormID> taggedNPCs = new HashSet<>();
     static Map<FormID, LMergeMap<FormID, ARMO_spec>> armors = new HashMap<>();
-    //////////////////
-    // RaceSrc of piece is key for outer, armo is inner key
-    //////////////////
-    static Map<FormID, Map<FormID, FLST>> formLists = new HashMap<>();
-    static LMergeMap<FormID, ARMO_spec> compiledVariants = new LMergeMap<>(false);
-    //////////////////
-    // RaceSrc is key
-    //////////////////
-    static Map<FormID, AV_SPEL> switcherSpells = new HashMap<>();
+    static Map<FormID, AV_Race> AVraces = new HashMap<>();
     static public ArrayList<VariantProfile> profiles;
 
     static void setUpFileVariants(Mod source) throws IOException, Uninitialized, BadParameter {
@@ -79,14 +69,16 @@ public class AVFileVars {
 	clearUnusedProfiles();
 	SPProgressBarPlug.incrementBar();
 
-	generateRecords();
+	generateArmorRecords();
 
 	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Finishing Up");
 	SPProgressBarPlug.reset();
 	SPProgressBarPlug.setMax(1);
 	implementOrigAsVar();
 
-	implementRegionalVariants();
+	createAVRaceObjects();
+
+	setUpExclusiveCellList();
 
 	// Generate FormLists of RACE variants
 	generateFormLists(source);
@@ -160,7 +152,6 @@ public class AVFileVars {
 	}
 	unusedSkins = new HashSet<>(source.getArmors().numRecords());
 	unusedPieces = new LMergeMap<>(false);
-	armoRaces = new LMergeMap<>(false);
 	LMergeMap<FormID, ARMA> unusedPiecesTmp = new LMergeMap<>(false);
 	for (ARMO armor : source.getArmors()) {
 	    if (!unusedSkins.contains(armor.getForm())) {
@@ -168,7 +159,6 @@ public class AVFileVars {
 		for (FormID piece : armor.getArmatures()) {
 		    ARMA arma = (ARMA) SPDatabase.getMajor(piece, GRUP_TYPE.ARMA);
 		    if (arma != null) {
-			armoRaces.put(armor.getForm(), arma.getRace());
 			unusedPiecesTmp.put(armor.getForm(), arma);
 		    }
 		}
@@ -466,7 +456,7 @@ public class AVFileVars {
 	}
     }
 
-    static void generateRecords() {
+    static void generateArmorRecords() {
 	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating variant records.");
 	SPProgressBarPlug.reset();
 	SPProgressBarPlug.setMax(VariantProfile.profiles.size());
@@ -475,7 +465,7 @@ public class AVFileVars {
 	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Generate Variants.txt");
 	}
 	for (VariantProfile profile : VariantProfile.profiles) {
-	    profile.generateRecords();
+	    profile.generateARMOs();
 	    SPProgressBarPlug.incrementBar();
 	}
     }
@@ -491,8 +481,44 @@ public class AVFileVars {
 	}
     }
 
-    static void implementRegionalVariants() {
+    static void createAVRaceObjects() {
+	for (FormID armoSrcForm : armors.keySet()) {
+	    for (FormID race : armors.get(armoSrcForm).keySet()) {
+		AVraces.put(race, new AV_Race(race));
+	    }
+	}
+	for (FormID armoSrcForm : armors.keySet()) {
+	    for (FormID race : armors.get(armoSrcForm).keySet()) {
+		ArrayList<ARMO_spec> armoVars = armors.get(armoSrcForm).get(race);
+		LMergeMap<FormID, ARMO_spec> cellToARMO = new LMergeMap<>(false);
+		for (ARMO_spec armorSpec : armoVars) {
+		    Set<FormID> cells = armorSpec.spec.getRegions();
+		    if (cells.isEmpty()) {
+			cellToARMO.put(FormID.NULL, armorSpec);
+		    } else {
+			for (FormID cell : armorSpec.spec.getRegions()) {
+			    cellToARMO.put(cell, armorSpec);
+			}
+		    }
+		}
 
+		AVraces.get(race).variantMap.put(armoSrcForm, cellToARMO);
+	    }
+	}
+    }
+
+    static void setUpExclusiveCellList() {
+	ArrayList<Variant> vars = AVPackages.getVariants();
+	Set<FormID> exclusiveCells = new HashSet<>();
+	for (Variant var : vars) {
+	    if (var.spec.Exclusive_Region) {
+		for (String[] formID : var.spec.Region_Include) {
+		    exclusiveCells.add(FormID.parseString(formID));
+		}
+	    }
+	}
+
+	AV.getQuestScript().setProperty("ExclusiveCellList", exclusiveCells.toArray(new Float[0]));
     }
 
     static void generateFormLists(Mod source) {
@@ -502,154 +528,146 @@ public class AVFileVars {
 	    SPGlobal.log(header, "Generating FormLists for each ARMO variant");
 	    SPGlobal.log(header, "====================================================================");
 	}
-	for (FormID armoSrcForm : armors.keySet()) {
-	    ARMO armoSrc = (ARMO) SPDatabase.getMajor(armoSrcForm, GRUP_TYPE.ARMO);
+	// For each race with variants
+	for (FormID raceID : AVraces.keySet()) {
+	    AV_Race avr = AVraces.get(raceID);
+	    RACE raceSrc = avr.race;
 	    if (SPGlobal.logging()) {
-		SPGlobal.log(header, "  Generating FLSTs for " + armoSrc);
+		SPGlobal.log(header, "  Generating for race " + raceSrc);
 	    }
-	    for (FormID race : armors.get(armoSrcForm).keySet()) {
-		RACE raceSrc = (RACE) SPDatabase.getMajor(race, GRUP_TYPE.RACE);
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "    Generating FLST for race " + raceSrc);
+
+	    // For each skin with variants applied to that race
+	    for (FormID skinID : avr.variantMap.keySet()) {
+		ARMO skinSrc = (ARMO) SPDatabase.getMajor(skinID, GRUP_TYPE.ARMO);
+		FLST flstSkin = new FLST(SPGlobal.getGlobalPatch(), "AV_" + skinSrc.getEDID() + "_" + raceSrc.getEDID() + "_flst");
+		if (raceSrc.getWornArmor().equals(skinID)) {
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "    Generating for normal skin " + skinSrc);
+		    }
+		    avr.AltOptions.addFormEntryAtIndex(flstSkin.getForm(), 0);
+		    avr.skinKey.add(0, skinID);
+		} else {
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "    Generating for alt skin " + skinSrc);
+		    }
+		    avr.AltOptions.addFormEntry(flstSkin.getForm());
+		    avr.skinKey.add(skinID);
 		}
-		FLST flst = new FLST(SPGlobal.getGlobalPatch(), "AV_" + armoSrc.getEDID() + "_" + raceSrc.getEDID() + "_flst");
-		ArrayList<ARMO_spec> armoVars = armors.get(armoSrcForm).get(race);
+
+		// Calculate the lowest common mult between variant probablity dividers
+		ArrayList<ARMO_spec> armoVars = avr.variantMap.get(skinID).valuesFlat();
 		int[] divs = new int[armoVars.size()];
 		for (int i = 0; i < divs.length; i++) {
 		    divs[i] = armoVars.get(i).spec.Probability_Divider;
 		}
 		int lowestCommMult = Ln.lcmm(divs);
 
-		for (ARMO_spec armorSpec : armors.get(armoSrcForm).get(race)) {
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "      Generating " + (lowestCommMult / armorSpec.spec.Probability_Divider) + " entries for " + armorSpec.armo);
-		    }
-		    for (int i = 0; i < lowestCommMult / armorSpec.spec.Probability_Divider; i++) {
-			flst.addFormEntry(armorSpec.armo.getForm());
-		    }
-		    compiledVariants.put(race, armorSpec);
-		}
-		if (!formLists.containsKey(race)) {
-		    formLists.put(race, new HashMap<FormID, FLST>());
-		}
-		formLists.get(race).put(armoSrcForm, flst);
-	    }
+		// For each cell
+		for (FormID cell : avr.getCells()) {
+		    if (avr.variantMap.get(skinID).containsKey(cell)) {
+			if (SPGlobal.logging()) {
+			    SPGlobal.log(header, "      Generating for cell " + cell);
+			}
+			FLST flstCell = new FLST(SPGlobal.getGlobalPatch(), "AV_" + skinSrc.getEDID() + "_" + raceSrc.getEDID() + "_cell_ " + cell.getFormStr() + "_flst");
+			flstSkin.addFormEntry(flstCell.getForm());
 
+
+			// For each variant
+			for (ARMO_spec armorSpec : avr.variantMap.get(skinID).get(cell)) {
+			    if (SPGlobal.logging()) {
+				SPGlobal.log(header, "      Generating " + (lowestCommMult / armorSpec.spec.Probability_Divider) + " entries for " + armorSpec.armo);
+			    }
+			    // Generate correct number of entries to get probability
+			    for (int i = 0; i < lowestCommMult / armorSpec.spec.Probability_Divider; i++) {
+				flstCell.addFormEntry(armorSpec.armo.getForm());
+			    }
+			}
+		    } else {
+			// Skin has no variants for this cell
+			flstSkin.addFormEntry(FormID.NULL);
+		    }
+		}
+	    }
 	}
     }
 
     static void generateSPELvariants(Mod source) {
-	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Generate Switcher Spells.txt");
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Generating Spells which attach specialized scripts");
-	    SPGlobal.log(header, "====================================================================");
-	}
+	for (AV_Race avr : AVraces.values()) {
+	    ScriptRef script = AV.generateAttachScript();
 
-	for (RACE raceSrc : source.getRaces()) {
-	    if (formLists.containsKey(raceSrc.getForm())) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(header, "Has variants: " + raceSrc);
-		}
-		ScriptRef script = AV.generateAttachScript();
-		FLST flstArray = new FLST(SPGlobal.getGlobalPatch(), "AV_" + raceSrc.getEDID() + "_flst_Array");
-		ArrayList<FormID> skinKey = new ArrayList<>();
+	    script.setProperty("AltOptions", avr.AltOptions.getForm());
 
-		// Add normal worn armor to last on the array
-		if (formLists.get(raceSrc.getForm()).containsKey(raceSrc.getWornArmor())) {
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(header, "  Added normal skin " + SPDatabase.getMajor(raceSrc.getWornArmor(), GRUP_TYPE.ARMO));
-		    }
-		    flstArray.addFormEntry(formLists.get(raceSrc.getForm()).get(raceSrc.getWornArmor()).getForm());
-		    skinKey.add(raceSrc.getWornArmor());
+	    // Loop through all variants for this race
+	    // and load up non-standard spec file info
+	    ArrayList<Integer> heights = new ArrayList<>();
+	    ArrayList<Integer> healths = new ArrayList<>();
+	    ArrayList<Integer> magickas = new ArrayList<>();
+	    ArrayList<Integer> staminas = new ArrayList<>();
+	    ArrayList<Integer> speeds = new ArrayList<>();
+	    ArrayList<Integer> prefixKey = new ArrayList<>();
+	    ArrayList<String> prefix = new ArrayList<>();
+	    ArrayList<Integer> affixKey = new ArrayList<>();
+	    ArrayList<String> affix = new ArrayList<>();
+	    int index = 0;
+	    for (ARMO_spec variant : avr.getVariants()) {
+		if (variant.spec.Height_Mult != SpecVariant.prototype.Height_Mult) {
+		    heights.add(index);
+		    heights.add(variant.spec.Height_Mult);
 		}
-
-		// Add Alt Skins to array setup
-		for (FormID skinF : formLists.get(raceSrc.getForm()).keySet()) {
-		    if (!skinF.equals(raceSrc.getWornArmor())) {
-			if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "  Has alt skin " + SPDatabase.getMajor(skinF, GRUP_TYPE.ARMO));
-			}
-			flstArray.addFormEntry(formLists.get(raceSrc.getForm()).get(skinF).getForm());
-			skinKey.add(skinF);
-		    }
+		if (variant.spec.Health_Mult != SpecVariant.prototype.Health_Mult) {
+		    healths.add(index);
+		    healths.add(variant.spec.Health_Mult);
 		}
-
-		script.setProperty("AltOptions", flstArray.getForm());
-		
-		// Loop through all variants for this race
-		// and load up non-standard spec file info
-		ArrayList<Integer> heights = new ArrayList<>();
-		ArrayList<Integer> healths = new ArrayList<>();
-		ArrayList<Integer> magickas = new ArrayList<>();
-		ArrayList<Integer> staminas = new ArrayList<>();
-		ArrayList<Integer> speeds = new ArrayList<>();
-		ArrayList<Integer> prefixKey = new ArrayList<>();
-		ArrayList<String> prefix = new ArrayList<>();
-		ArrayList<Integer> affixKey = new ArrayList<>();
-		ArrayList<String> affix = new ArrayList<>();
-		int index = 0;
-		for (ARMO_spec variant : compiledVariants.get(raceSrc.getForm())) {
-		    if (variant.spec.Height_Mult != SpecVariant.prototype.Height_Mult) {
-			heights.add(index);
-			heights.add(variant.spec.Height_Mult);
-		    }
-		    if (variant.spec.Health_Mult != SpecVariant.prototype.Health_Mult) {
-			healths.add(index);
-			healths.add(variant.spec.Health_Mult);
-		    }
-		    if (variant.spec.Magicka_Mult != SpecVariant.prototype.Magicka_Mult) {
-			magickas.add(index);
-			magickas.add(variant.spec.Magicka_Mult);
-		    }
-		    if (variant.spec.Stamina_Mult != SpecVariant.prototype.Stamina_Mult) {
-			staminas.add(index);
-			staminas.add(variant.spec.Stamina_Mult);
-		    }
-		    if (variant.spec.Speed_Mult != SpecVariant.prototype.Speed_Mult) {
-			speeds.add(index);
-			speeds.add(variant.spec.Speed_Mult);
-		    }
-		    if (!variant.spec.Name_Prefix.equals("")) {
-			prefixKey.add(index);
-			prefix.add(variant.spec.Name_Prefix);
-		    }
-		    if (!variant.spec.Name_Affix.equals("")) {
-			affixKey.add(index);
-			affix.add(variant.spec.Name_Affix);
-		    }
-		    index++;
+		if (variant.spec.Magicka_Mult != SpecVariant.prototype.Magicka_Mult) {
+		    magickas.add(index);
+		    magickas.add(variant.spec.Magicka_Mult);
 		}
-		if (!heights.isEmpty()) {
-		    script.setProperty("HeightVariants", heights.toArray(new Integer[0]));
+		if (variant.spec.Stamina_Mult != SpecVariant.prototype.Stamina_Mult) {
+		    staminas.add(index);
+		    staminas.add(variant.spec.Stamina_Mult);
 		}
-		if (!healths.isEmpty()) {
-		    script.setProperty("HealthVariants", healths.toArray(new Integer[0]));
+		if (variant.spec.Speed_Mult != SpecVariant.prototype.Speed_Mult) {
+		    speeds.add(index);
+		    speeds.add(variant.spec.Speed_Mult);
 		}
-		if (!magickas.isEmpty()) {
-		    script.setProperty("MagickaVariants", magickas.toArray(new Integer[0]));
+		if (!variant.spec.Name_Prefix.equals("")) {
+		    prefixKey.add(index);
+		    prefix.add(variant.spec.Name_Prefix);
 		}
-		if (!staminas.isEmpty()) {
-		    script.setProperty("StaminaVariants", staminas.toArray(new Integer[0]));
+		if (!variant.spec.Name_Affix.equals("")) {
+		    affixKey.add(index);
+		    affix.add(variant.spec.Name_Affix);
 		}
-		if (!speeds.isEmpty()) {
-		    script.setProperty("SpeedVariants", speeds.toArray(new Integer[0]));
-		}
-		if (!prefixKey.isEmpty()) {
-		    script.setProperty("PrefixKey", prefixKey.toArray(new Integer[0]));
-		    script.setProperty("Prefix", prefix.toArray(new String[0]));
-		}
-		if (!affixKey.isEmpty()) {
-		    script.setProperty("AffixKey", affixKey.toArray(new Integer[0]));
-		    script.setProperty("Affix", affix.toArray(new String[0]));
-		}
-
-		// Generate the spell
-		SPEL spell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), script, raceSrc.getEDID());
-		switcherSpells.put(raceSrc.getForm(), new AV_SPEL(spell, flstArray, skinKey));
-		raceSrc.addSpell(spell.getForm());
-		SPGlobal.getGlobalPatch().addRecord(raceSrc);
+		index++;
 	    }
+	    if (!heights.isEmpty()) {
+		script.setProperty("HeightVariants", heights.toArray(new Integer[0]));
+	    }
+	    if (!healths.isEmpty()) {
+		script.setProperty("HealthVariants", healths.toArray(new Integer[0]));
+	    }
+	    if (!magickas.isEmpty()) {
+		script.setProperty("MagickaVariants", magickas.toArray(new Integer[0]));
+	    }
+	    if (!staminas.isEmpty()) {
+		script.setProperty("StaminaVariants", staminas.toArray(new Integer[0]));
+	    }
+	    if (!speeds.isEmpty()) {
+		script.setProperty("SpeedVariants", speeds.toArray(new Integer[0]));
+	    }
+	    if (!prefixKey.isEmpty()) {
+		script.setProperty("PrefixKey", prefixKey.toArray(new Integer[0]));
+		script.setProperty("Prefix", prefix.toArray(new String[0]));
+	    }
+	    if (!affixKey.isEmpty()) {
+		script.setProperty("AffixKey", affixKey.toArray(new Integer[0]));
+		script.setProperty("Affix", affix.toArray(new String[0]));
+	    }
+
+	    // Generate the spell
+	    SPEL spell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), script, avr.race.getEDID());
+	    avr.race.addSpell(spell.getForm());
+	    SPGlobal.getGlobalPatch().addRecord(avr.race);
 	}
 	SPProgressBarPlug.incrementBar();
     }
@@ -658,9 +676,6 @@ public class AVFileVars {
 	float weight = n.getWeight() * 100;
 	int tmp = (int) Math.round(weight);
 	if (tmp != weight) {
-//	    if (SPGlobal.logging()) {
-//		SPGlobal.log(header, "Standardized " + n);
-//	    }
 	    n.setWeight(tmp / 100);
 	    SPGlobal.getGlobalPatch().addRecord(n);
 	}
@@ -679,7 +694,7 @@ public class AVFileVars {
 	    if (skin != null
 		    && (!n.isTemplated() || !n.get(NPC_.TemplateFlag.USE_TRAITS)) // Not templated with traits
 		    && !skin.isNull() // If has alt skin
-		    && switcherSpells.containsKey(n.getRace())) {  // If we have variants for it
+		    && AVraces.containsKey(n.getRace())) {  // If we have variants for it
 		// If fox race but does not have FOX in the name
 		// We skip it as it's most likely a lazy modder
 		// using the default race: FoxRace
@@ -689,19 +704,14 @@ public class AVFileVars {
 			&& !n.getName().toUpperCase().contains("FOX")) {
 		    tagNPC(n, 99);
 		}
-		ArrayList<FormID> skins = switcherSpells.get(n.getRace()).key;
-		boolean tagged = false;
-		for (int i = 0; i < skins.size(); i++) {
-		    if (skins.get(i).equals(skin)) {
-			if (SPGlobal.logging()) {
-			    SPGlobal.log(header, "Tagged " + n + " for skin " + SPDatabase.getMajor(skins.get(i), GRUP_TYPE.ARMO));
-			}
-			tagNPC(n, i);
-			tagged = true;
-			break;
+		ArrayList<FormID> skins = AVraces.get(n.getRace()).skinKey;
+		int index = skins.indexOf(skin);
+		if (index != -1) {
+		    tagNPC(n, index);
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "Tagged " + n + " for skin " + SPDatabase.getMajor(skins.get(index), GRUP_TYPE.ARMO));
 		    }
-		}
-		if (!tagged) {
+		} else {
 		    SPGlobal.log(header, "EXCLUDE BECAUSE NO VARIANTS " + n);
 		    tagNPC(n, 99);
 		}
@@ -850,23 +860,13 @@ public class AVFileVars {
 
     static boolean isReroute(File f) {
 	return Ln.isFileType(f, "reroute");
+
+
     }
 
     /*
      * Internal Classes
      */
-    static class AV_SPEL {
-
-	SPEL spell;
-	FLST skins;
-	ArrayList<FormID> key;
-
-	AV_SPEL(SPEL spell, FLST skins, ArrayList<FormID> key) {
-	    this.spell = spell;
-	    this.skins = skins;
-	    this.key = key;
-	}
-    }
 
     static class ARMO_spec {
 
@@ -881,6 +881,40 @@ public class AVFileVars {
 	ARMO_spec(ARMO armo, SpecVariant spec) {
 	    this.armo = armo;
 	    this.spec = spec;
+	}
+    }
+
+    static class AV_Race {
+
+	RACE race;
+	Map<FormID, LMergeMap<FormID, ARMO_spec>> variantMap = new HashMap<>();
+	FLST AltOptions;
+	FLST Cells;
+	ArrayList<FormID> skinKey = new ArrayList<>();
+
+	public AV_Race(FormID id) {
+	    race = (RACE) SPDatabase.getMajor(id, GRUP_TYPE.RACE);
+	    AltOptions  = new FLST(SPGlobal.getGlobalPatch(), "AV_" + race.getEDID() + "_flst");
+	    Cells = new FLST(SPGlobal.getGlobalPatch(), "AV_" + race.getEDID() + "_cells_flst");
+	    for (FormID cell : getCells()) {
+		Cells.addFormEntry(cell);
+	    }
+	}
+
+	final public Set<FormID> getCells() {
+	    HashSet<FormID> out = new HashSet<>();
+	    for (LMergeMap<FormID, ARMO_spec> skin : variantMap.values()) {
+		out.addAll(skin.keySet());
+	    }
+	    return out;
+	}
+
+	public ArrayList<ARMO_spec> getVariants() {
+	    ArrayList<ARMO_spec> out = new ArrayList<>();
+	    for (LMergeMap<FormID, ARMO_spec> skin : variantMap.values()) {
+		out.addAll(skin.valuesFlat());
+	    }
+	    return out;
 	}
     }
 

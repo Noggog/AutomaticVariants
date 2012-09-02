@@ -39,7 +39,7 @@ public class VariantGroup extends PackageNode {
 	}
     }
 
-    ArrayList<Variant> getVariants() {
+    public ArrayList<Variant> getVariants() {
 	ArrayList<PackageNode> vars = getAll(Type.VAR);
 	ArrayList<Variant> out = new ArrayList<>(vars.size());
 	for (PackageNode p : vars) {

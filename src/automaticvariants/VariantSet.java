@@ -290,4 +290,9 @@ public class VariantSet extends PackageNode implements Serializable {
 	PackageNode p = (PackageNode) this.getParent();
 	return p.printName(spacer) + spacer + src.getName();
     }
+
+    @Override
+    public ArrayList<Variant> getVariants() {
+	return multiplyAndFlatten();
+    }
 }

@@ -172,7 +172,7 @@ public class AV implements SUM {
     static void setUpInGameScriptBasedVariants(Mod source) {
 	SPEL addScriptSpell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), generateAttachScript(), "AVGenericScriptAttach");
 	for (RACE race : source.getRaces()) {
-	    if (!AVFileVars.switcherSpells.containsKey(race.getForm())) {
+	    if (!AVFileVars.AVraces.containsKey(race.getForm())) {
 		race.addSpell(addScriptSpell.getForm());
 		SPGlobal.getGlobalPatch().addRecord(race);
 	    }
@@ -274,6 +274,10 @@ public class AV implements SUM {
 	questScript.setProperty("LogTable", logTable);
 
 	quest = NiftyFunc.makeScriptQuest(SPGlobal.getGlobalPatch(), questScript);
+    }
+
+    public static ScriptRef getQuestScript() {
+	return AV.quest.scripts.getScript("AVQuestScript");
     }
 
     public void makeGlobals() {

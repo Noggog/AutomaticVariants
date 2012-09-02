@@ -442,4 +442,12 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	GENTEXTURE,
 	REROUTE;
     }
+
+    public ArrayList<Variant> getVariants() {
+	ArrayList<Variant> out = new ArrayList<>();
+	for (PackageNode n : getAll()) {
+	    out.addAll(n.getVariants());
+	}
+	return out;
+    }
 }
