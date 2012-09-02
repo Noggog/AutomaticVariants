@@ -55,19 +55,19 @@ public class PackagesOther extends SPSettingPanel {
 	setPlacement(allowRegions);
 	Add(allowRegions);
 
-	forceRepick = new LCheckBox("Force Texture Repick", AV.AVFont, AV.yellow);
-	forceRepick.setOffset(0);
-	forceRepick.linkTo(AVSaveFile.Settings.PACKAGES_FORCE_REPICK, AV.save, SUMGUI.helpPanel, true);
-	forceRepick.addShadow();
-	forceRepick.addActionListener(new ActionListener() {
-
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		forceRepick();
-	    }
-	});
-	setPlacement(forceRepick);
-	Add(forceRepick);
+//	forceRepick = new LCheckBox("Force Texture Repick", AV.AVFont, AV.yellow);
+//	forceRepick.setOffset(0);
+//	forceRepick.linkTo(AVSaveFile.Settings.PACKAGES_FORCE_REPICK, AV.save, SUMGUI.helpPanel, true);
+//	forceRepick.addShadow();
+//	forceRepick.addActionListener(new ActionListener() {
+//
+//	    @Override
+//	    public void actionPerformed(ActionEvent e) {
+//		forceRepick();
+//	    }
+//	});
+//	setPlacement(forceRepick);
+//	Add(forceRepick);
 
 	gatherAndExit = new LButton("Gather Files and Exit");
 	gatherAndExit.addActionListener(new ActionListener() {
