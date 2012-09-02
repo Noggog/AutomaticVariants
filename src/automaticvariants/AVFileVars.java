@@ -41,9 +41,8 @@ public class AVFileVars {
     static public HashSet<FormID> unusedRaces;
     static public HashSet<FormID> unusedSkins;
     static public LMergeMap<FormID, FormID> unusedPieces;
-    /*
-     * Variant storage lists/maps
-     */
+    static FLST exclusiveCellsFLST;
+    // Variant storage lists/maps
     static Set<FormID> taggedNPCs = new HashSet<>();
     static Map<FormID, LMergeMap<FormID, ARMO_spec>> armors = new HashMap<>();
     static Map<FormID, AV_Race> AVraces = new HashMap<>();
@@ -517,8 +516,7 @@ public class AVFileVars {
 		}
 	    }
 	}
-
-	AV.getQuestScript().setProperty("ExclusiveCellList", exclusiveCells.toArray(new Float[0]));
+	exclusiveCellsFLST = new FLST(SPGlobal.getGlobalPatch(), "AV_ExclusiveCells");
     }
 
     static void generateFormLists(Mod source) {
@@ -596,6 +594,9 @@ public class AVFileVars {
 	    ScriptRef script = AV.generateAttachScript();
 
 	    script.setProperty("AltOptions", avr.AltOptions.getForm());
+	    script.setProperty("CellIndexing", avr.Cells.getForm());
+	    script.setProperty("RaceHeightOffset", avr.race.getHeight(Gender.MALE));
+	    script.setProperty("ExclusiveCellsList", exclusiveCellsFLST.getForm());
 
 	    // Loop through all variants for this race
 	    // and load up non-standard spec file info
@@ -867,7 +868,6 @@ public class AVFileVars {
     /*
      * Internal Classes
      */
-
     static class ARMO_spec {
 
 	ARMO armo;
@@ -894,7 +894,7 @@ public class AVFileVars {
 
 	public AV_Race(FormID id) {
 	    race = (RACE) SPDatabase.getMajor(id, GRUP_TYPE.RACE);
-	    AltOptions  = new FLST(SPGlobal.getGlobalPatch(), "AV_" + race.getEDID() + "_flst");
+	    AltOptions = new FLST(SPGlobal.getGlobalPatch(), "AV_" + race.getEDID() + "_flst");
 	    Cells = new FLST(SPGlobal.getGlobalPatch(), "AV_" + race.getEDID() + "_cells_flst");
 	    for (FormID cell : getCells()) {
 		Cells.addFormEntry(cell);
