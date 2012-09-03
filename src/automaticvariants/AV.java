@@ -496,9 +496,7 @@ public class AV implements SUM {
     @Override
     public GRUP_TYPE[] importRequests() {
 	return new GRUP_TYPE[]{GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
-		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
-		    GRUP_TYPE.LVLN, GRUP_TYPE.TXST,
-		    GRUP_TYPE.SPEL};
+		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA};
     }
 
     @Override
