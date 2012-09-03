@@ -492,7 +492,7 @@ public class AVFileVars {
 		LMergeMap<FormID, ARMO_spec> cellToARMO = new LMergeMap<>(false);
 		for (ARMO_spec armorSpec : armoVars) {
 		    Set<FormID> cells = armorSpec.spec.getRegions();
-		    if (cells.isEmpty()) {
+		    if (cells.isEmpty() || AV.save.getInt(Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION) < 1) {
 			cellToARMO.put(FormID.NULL, armorSpec);
 		    } else {
 			for (FormID cell : armorSpec.spec.getRegions()) {
@@ -507,16 +507,22 @@ public class AVFileVars {
     }
 
     static void setUpExclusiveCellList() {
+	exclusiveCellsFLST = new FLST(SPGlobal.getGlobalPatch(), "AV_ExclusiveCells");
+	// If not allowed, leave it empty and return
+	if (AV.save.getInt(Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION) < 2) {
+	    return;
+	}
 	ArrayList<Variant> vars = AVPackages.getVariants();
-	Set<FormID> exclusiveCells = new HashSet<>();
 	for (Variant var : vars) {
 	    if (var.spec.Exclusive_Region) {
 		for (String[] formID : var.spec.Region_Include) {
-		    exclusiveCells.add(FormID.parseString(formID));
+		    FormID id = FormID.parseString(formID);
+		    if (!id.isNull()) {
+			exclusiveCellsFLST.addFormEntry(id);
+		    }
 		}
 	    }
 	}
-	exclusiveCellsFLST = new FLST(SPGlobal.getGlobalPatch(), "AV_ExclusiveCells");
     }
 
     static void generateFormLists(Mod source) {
@@ -532,6 +538,14 @@ public class AVFileVars {
 	    RACE raceSrc = avr.race;
 	    if (SPGlobal.logging()) {
 		SPGlobal.log(header, "  Generating for race " + raceSrc);
+	    }
+
+	    // Generate Cell Index FLST
+	    avr.Cells = new FLST(SPGlobal.getGlobalPatch(), "AV_" + avr.race.getEDID() + "_cells_flst");
+	    for (FormID cell : avr.getCells()) {
+		if (!cell.isNull()) {
+		    avr.Cells.addFormEntryAtIndex(cell, 0);
+		}
 	    }
 
 	    // For each skin with variants applied to that race
@@ -562,27 +576,28 @@ public class AVFileVars {
 
 		// For each cell
 		for (FormID cell : avr.getCells()) {
+		    FLST flstCell = new FLST(SPGlobal.getGlobalPatch(), "AV_" + skinSrc.getEDID() + "_" + raceSrc.getEDID() + "_cell_ " + cell.getFormStr() + "_flst");
+		    if (!cell.isNull()) {
+			flstSkin.addFormEntryAtIndex(flstCell.getForm(), 0);
+		    } else {
+			flstSkin.addFormEntry(flstCell.getForm());
+		    }
+
 		    if (avr.variantMap.get(skinID).containsKey(cell)) {
 			if (SPGlobal.logging()) {
 			    SPGlobal.log(header, "      Generating for cell " + cell);
 			}
-			FLST flstCell = new FLST(SPGlobal.getGlobalPatch(), "AV_" + skinSrc.getEDID() + "_" + raceSrc.getEDID() + "_cell_ " + cell.getFormStr() + "_flst");
-			flstSkin.addFormEntry(flstCell.getForm());
-
 
 			// For each variant
 			for (ARMO_spec armorSpec : avr.variantMap.get(skinID).get(cell)) {
 			    if (SPGlobal.logging()) {
-				SPGlobal.log(header, "      Generating " + (lowestCommMult / armorSpec.spec.Probability_Divider) + " entries for " + armorSpec.armo);
+				SPGlobal.log(header, "        Generating " + (lowestCommMult / armorSpec.spec.Probability_Divider) + " entries for " + armorSpec.armo);
 			    }
 			    // Generate correct number of entries to get probability
 			    for (int i = 0; i < lowestCommMult / armorSpec.spec.Probability_Divider; i++) {
 				flstCell.addFormEntry(armorSpec.armo.getForm());
 			    }
 			}
-		    } else {
-			// Skin has no variants for this cell
-			flstSkin.addFormEntry(FormID.NULL);
 		    }
 		}
 	    }
@@ -596,7 +611,7 @@ public class AVFileVars {
 	    script.setProperty("AltOptions", avr.AltOptions.getForm());
 	    script.setProperty("CellIndexing", avr.Cells.getForm());
 	    script.setProperty("RaceHeightOffset", avr.race.getHeight(Gender.MALE));
-	    script.setProperty("ExclusiveCellsList", exclusiveCellsFLST.getForm());
+	    script.setProperty("ExclusiveCellList", exclusiveCellsFLST.getForm());
 
 	    // Loop through all variants for this race
 	    // and load up non-standard spec file info
@@ -895,10 +910,6 @@ public class AVFileVars {
 	public AV_Race(FormID id) {
 	    race = (RACE) SPDatabase.getMajor(id, GRUP_TYPE.RACE);
 	    AltOptions = new FLST(SPGlobal.getGlobalPatch(), "AV_" + race.getEDID() + "_flst");
-	    Cells = new FLST(SPGlobal.getGlobalPatch(), "AV_" + race.getEDID() + "_cells_flst");
-	    for (FormID cell : getCells()) {
-		Cells.addFormEntry(cell);
-	    }
 	}
 
 	final public Set<FormID> getCells() {
