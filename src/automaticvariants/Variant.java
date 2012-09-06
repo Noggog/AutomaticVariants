@@ -46,6 +46,8 @@ public class Variant extends PackageNode implements Serializable {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(src.getName(), depth + "    Added nif: " + f);
 		}
+		PackageNode c = new PackageNode(f, Type.MESH);
+		add(c);
 	    } else if (AVFileVars.isSpec(f)) {
 		try {
 		    spec = AV.gson.fromJson(new FileReader(f), SpecVariant.class);

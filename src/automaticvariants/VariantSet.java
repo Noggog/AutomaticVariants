@@ -65,6 +65,12 @@ public class VariantSet extends PackageNode implements Serializable {
 		    SPGlobal.log(src.getName(), depth + "   Loaded common texture: " + f);
 		}
 
+	    } else if (AVFileVars.isNIF(f)) {
+		PackageNode c = new PackageNode(f, Type.GENMESH);
+		add(c);
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(src.getName(), depth + "   Loaded common mesh: " + f);
+		}
 	    } else if (AVFileVars.isReroute(f)) {
 		RerouteFile c = new RerouteFile(f);
 		if (AVFileVars.isDDS(c.src)) {

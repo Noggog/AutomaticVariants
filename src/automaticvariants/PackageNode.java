@@ -438,8 +438,10 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	VARGROUP,
 	VAR,
 	TEXTURE,
+	MESH,
 	NIF,
 	GENTEXTURE,
+	GENMESH,
 	REROUTE;
     }
 
