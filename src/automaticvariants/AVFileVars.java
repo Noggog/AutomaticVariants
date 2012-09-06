@@ -41,7 +41,6 @@ public class AVFileVars {
     static public HashSet<FormID> unusedRaces;
     static public HashSet<FormID> unusedSkins;
     static public LMergeMap<FormID, FormID> unusedPieces;
-    static FLST exclusiveCellsFLST;
     // Variant storage lists/maps
     static Set<FormID> taggedNPCs = new HashSet<>();
     static Map<FormID, LMergeMap<FormID, ARMO_spec>> armors = new HashMap<>();
@@ -507,22 +506,24 @@ public class AVFileVars {
     }
 
     static void setUpExclusiveCellList() {
-	exclusiveCellsFLST = new FLST(SPGlobal.getGlobalPatch(), "AV_ExclusiveCells");
 	// If not allowed, leave it empty and return
 	if (AV.save.getInt(Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION) < 2) {
 	    return;
 	}
 	ArrayList<Variant> vars = AVPackages.getVariants();
+	Set<FormID> eCells = new HashSet<>();
 	for (Variant var : vars) {
 	    if (var.spec.Exclusive_Region) {
 		for (String[] formID : var.spec.Region_Include) {
 		    FormID id = FormID.parseString(formID);
 		    if (!id.isNull()) {
-			exclusiveCellsFLST.addFormEntry(id);
+			eCells.add(id);
 		    }
 		}
 	    }
 	}
+
+	AV.quest.scripts.getScript("AVQuestScript").setProperty("ExclusiveCellList", eCells.toArray(new FormID[0]));
     }
 
     static void generateFormLists(Mod source) {
@@ -609,9 +610,8 @@ public class AVFileVars {
 	    ScriptRef script = AV.generateAttachScript();
 
 	    script.setProperty("AltOptions", avr.AltOptions.getForm());
-	    script.setProperty("CellIndexing", avr.Cells.getForm());
+	    script.setProperty("CellIndexing", avr.Cells.getFormIDEntries().toArray(new FormID[0]));
 	    script.setProperty("RaceHeightOffset", avr.race.getHeight(Gender.MALE));
-	    script.setProperty("ExclusiveCellList", exclusiveCellsFLST.getForm());
 
 	    // Loop through all variants for this race
 	    // and load up non-standard spec file info
