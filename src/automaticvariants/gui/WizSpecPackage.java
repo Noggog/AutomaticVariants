@@ -6,9 +6,9 @@ package automaticvariants.gui;
 
 import automaticvariants.*;
 import automaticvariants.AVSaveFile.Settings;
-import lev.gui.LStringList;
 import lev.gui.LTextField;
 import skyproc.gui.SPMainMenuPanel;
+import skyproc.gui.SPStringList;
 import skyproc.gui.SUMGUI;
 
 /**
@@ -18,7 +18,7 @@ import skyproc.gui.SUMGUI;
 public class WizSpecPackage extends WizSpecTemplate {
 
     LTextField packager;
-    LStringList origAuthors;
+    SPStringList origAuthors;
     LTextField release;
     LTextField update;
 
@@ -36,7 +36,7 @@ public class WizSpecPackage extends WizSpecTemplate {
 	setPlacement(packager);
 	Add(packager);
 
-	origAuthors = new LStringList("Original Content Authors", AV.AVFont, AV.yellow);
+	origAuthors = new SPStringList("Original Content Authors", AV.AVFont, AV.yellow);
 	origAuthors.setSize(settingsPanel.getWidth() - 2 * x, 250);
 	origAuthors.linkTo(Settings.SPEC_PACKAGE_ORIGAUTHORS, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(origAuthors);

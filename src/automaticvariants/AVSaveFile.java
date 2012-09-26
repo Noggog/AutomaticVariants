@@ -6,14 +6,13 @@ package automaticvariants;
 
 import java.util.HashSet;
 import lev.Ln;
-import lev.gui.LSaveFile;
-import skyproc.SPGlobal.Language;
+import skyproc.SkyProcSave;
 
 /**
  *
  * @author Justin Swanson
  */
-public class AVSaveFile extends LSaveFile {
+public class AVSaveFile extends SkyProcSave {
 
     @Override
     protected void initSettings() {

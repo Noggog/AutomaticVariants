@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.TreeSet;
 import javax.swing.SwingUtilities;
 import lev.gui.*;
+import skyproc.gui.SPList;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPProgressBarPlug;
 import skyproc.gui.SUMGUI;
@@ -34,7 +35,7 @@ public class WizSetManual extends WizTemplate {
     LButton resetPickers;
     LButton addButton;
     LCheckBox exclusive;
-    LList<ProfileDisplay> targetProfiles;
+    SPList<ProfileDisplay> targetProfiles;
     LLabel progressLabel;
     LProgressBar progress;
     ArrayList<String> blockedSkins = new ArrayList<>();
@@ -182,7 +183,7 @@ public class WizSetManual extends WizTemplate {
 	exclusive.addShadow();
 //	Add(exclusive);
 
-	targetProfiles = new LList<>("Target Profiles", AV.AVFont, AV.yellow);
+	targetProfiles = new SPList<>("Target Profiles", AV.AVFont, AV.yellow);
 	targetProfiles.setUnique(true);
 	targetProfiles.setSize(settingsPanel.getWidth() - 30, 150);
 	targetProfiles.addMouseListener(new MouseListener() {

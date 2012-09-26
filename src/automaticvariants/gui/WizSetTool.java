@@ -22,6 +22,7 @@ import javax.swing.SwingUtilities;
 import lev.Ln;
 import lev.gui.*;
 import skyproc.*;
+import skyproc.gui.SPList;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPProgressBarPlug;
 import skyproc.gui.SUMGUI;
@@ -32,14 +33,14 @@ import skyproc.gui.SUMGUI;
  */
 public class WizSetTool extends WizTemplate {
 
-    LList<File> textures;
+    SPList<File> textures;
     LButton analyze;
     LCheckBox partialMatch;
     LLabel progressLabel;
     LProgressBar progress;
     LTextPane exception;
-    LList<ProfileDisplay> potentialProfiles;
-    LList<ProfileDisplay> targetProfiles;
+    SPList<ProfileDisplay> potentialProfiles;
+    SPList<ProfileDisplay> targetProfiles;
     Set<ProfileDisplay> matchingProfiles;
     Set<ProfileDisplay> halfMatchingProfiles;
     static int attempt = 1;
@@ -56,7 +57,7 @@ public class WizSetTool extends WizTemplate {
 
 	setQuestionText("Analyze textures to narrow down profile options.");
 
-	textures = new LList<>("Textures to Analyze", AV.AVFont, AV.yellow);
+	textures = new SPList<>("Textures to Analyze", AV.AVFont, AV.yellow);
 	textures.setUnique(true);
 	textures.addEnterButton("Add Texture", new ActionListener() {
 
@@ -110,7 +111,7 @@ public class WizSetTool extends WizTemplate {
 	exception.putUnder(question, 15, 50);
 	Add(exception);
 
-	potentialProfiles = new LList<>("Matching Profiles", AV.AVFont, AV.yellow);
+	potentialProfiles = new SPList<>("Matching Profiles", AV.AVFont, AV.yellow);
 	potentialProfiles.putUnder(question, x, 15);
 	potentialProfiles.setSize(settingsPanel.getWidth() - x * 2, 220);
 	potentialProfiles.setRemoveButton("Add Profiles", new ActionListener() {
@@ -160,7 +161,7 @@ public class WizSetTool extends WizTemplate {
 	partialMatch.linkTo(Settings.WIZ_PARTIAL_MATCH, AV.save, SUMGUI.helpPanel, true);
 	Add(partialMatch);
 
-	targetProfiles = new LList<>("Chosen Profiles", AV.AVFont, AV.yellow);
+	targetProfiles = new SPList<>("Chosen Profiles", AV.AVFont, AV.yellow);
 	targetProfiles.setSize(settingsPanel.getWidth() - 2 * x, 150);
 	targetProfiles.setUnique(true);
 	targetProfiles.setLocation(x, backButton.getY() - targetProfiles.getHeight() - 20);

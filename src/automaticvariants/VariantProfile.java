@@ -9,8 +9,8 @@ import java.io.File;
 import java.util.*;
 import lev.LMergeMap;
 import lev.gui.LFileTree;
-import skyproc.ARMA.AltTexture;
 import skyproc.*;
+import skyproc.AltTextures.AltTexture;
 
 /**
  *
@@ -376,7 +376,7 @@ public class VariantProfile {
 	arma.setRace(race.getForm());
 	arma.clearAdditionalRaces();
 
-	ArrayList<ARMA.AltTexture> alts = arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
+	ArrayList<AltTexture> alts = arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
 	alts.clear();
 
 	for (Integer index : nifNodeNames.keySet()) {
@@ -385,7 +385,7 @@ public class VariantProfile {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(toString(), " * | Loading TXST for " + nifNodeName + " index " + index);
 		}
-		alts.add(new ARMA.AltTexture(nifNodeName, txsts.get(nifNodeName).getForm(), index));
+		alts.add(new AltTexture(nifNodeName, txsts.get(nifNodeName).getForm(), index));
 	    }
 	}
 

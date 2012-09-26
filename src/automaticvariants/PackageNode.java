@@ -67,8 +67,21 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	return pass;
     }
 
+    public ArrayList<PackageNode> getAll() {
+	return getAll(false);
+    }
+
+    public ArrayList<PackageNode> getAll(boolean recursive) {
+	ArrayList<LSwingTreeNode> tmp = getAllObjects(recursive);
+	ArrayList<PackageNode> out = new ArrayList<>(tmp.size());
+	for (Object o : tmp) {
+	    out.add((PackageNode)o);
+	}
+	return out;
+    }
+
     public ArrayList<PackageNode> getAll(Type type) {
-	ArrayList<PackageNode> out = new ArrayList<PackageNode>();
+	ArrayList<PackageNode> out = new ArrayList<>();
 	if (children != null) {
 	    for (Object o : children) {
 		PackageNode child = (PackageNode) o;
@@ -80,10 +93,6 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	return out;
     }
 
-    public ArrayList<PackageNode> getAll() {
-	return getAll(false);
-    }
-
     public void prune() {
 	if (isDisabled() && type != Type.ROOT) {
 	    parent.remove(this);
@@ -92,20 +101,6 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 		p.prune();
 	    }
 	}
-    }
-
-    ArrayList<PackageNode> getAll(boolean recursive) {
-	ArrayList<PackageNode> out = new ArrayList<PackageNode>();
-	if (children != null) {
-	    for (Object o : children) {
-		PackageNode child = (PackageNode) o;
-		out.add(child);
-		if (recursive) {
-		    out.addAll(child.getAll(recursive));
-		}
-	    }
-	}
-	return out;
     }
 
     public ArrayList<PackageNode> flattenChildren() {

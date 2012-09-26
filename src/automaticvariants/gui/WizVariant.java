@@ -11,9 +11,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import lev.Ln;
-import lev.gui.LCheckBox;
 import lev.gui.LList;
 import lev.gui.LTextField;
+import skyproc.gui.SPList;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SUMGUI;
 
@@ -24,7 +24,7 @@ import skyproc.gui.SUMGUI;
 public class WizVariant extends WizTemplate {
 
     LTextField nameField;
-    LList<File> varTextures;
+    SPList<File> varTextures;
 
     public WizVariant(SPMainMenuPanel parent_) {
 	super(parent_, "Create Variant", AV.packagesManagerPanel, AV.wizGroupPanel);
@@ -41,7 +41,7 @@ public class WizVariant extends WizTemplate {
 	nameField.setSize(settingsPanel.getWidth() - 2 * x, 50);
 	Add(nameField);
 
-	varTextures = new LList<>("Variant Textures", AV.AVFont, AV.yellow);
+	varTextures = new SPList<>("Variant Textures", AV.AVFont, AV.yellow);
 	varTextures.setUnique(true);
 	varTextures.addEnterButton("Add Texture", new ActionListener() {
 

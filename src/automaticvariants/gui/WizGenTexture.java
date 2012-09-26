@@ -10,9 +10,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import lev.Ln;
-import lev.gui.LList;
+import skyproc.gui.SPList;
 import skyproc.gui.SPMainMenuPanel;
-import skyproc.gui.SPQuestionPanel;
 import skyproc.gui.SUMGUI;
 
 /**
@@ -21,7 +20,7 @@ import skyproc.gui.SUMGUI;
  */
 public class WizGenTexture extends WizTemplate {
 
-    LList<File> genTextures;
+    SPList<File> genTextures;
 
     public WizGenTexture(SPMainMenuPanel parent_) {
 	super(parent_, "Common Textures", AV.packagesManagerPanel, AV.wizSetPanel);
@@ -35,7 +34,7 @@ public class WizGenTexture extends WizTemplate {
 
 	setQuestionText("Add any textures that are shared between ALL variants in your set.");
 
-	genTextures = new LList<>("Common Textures", AV.AVFont, AV.yellow);
+	genTextures = new SPList<File>("Common Textures", AV.AVFont, AV.yellow);
 	genTextures.setUnique(true);
 	genTextures.addEnterButton("Add Texture", new ActionListener() {
 

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import lev.gui.*;
 import skyproc.FormID;
 import skyproc.gui.SPMainMenuPanel;
+import skyproc.gui.SPStringList;
 import skyproc.gui.SUMGUI;
 
 /**
@@ -20,7 +21,7 @@ public class WizSpecVariant extends WizSpecTemplate {
 
     LTextField author;
     LNumericSetting probDiv;
-    LStringList region;
+    SPStringList region;
     LCheckBox exclusiveRegion;
     LNumericSetting height;
     LNumericSetting health;
@@ -48,7 +49,7 @@ public class WizSpecVariant extends WizSpecTemplate {
 	setPlacement(probDiv);
 	Add(probDiv);
 
-	region = new LStringList("Regions To Spawn In", AV.AVFont, AV.yellow);
+	region = new SPStringList("Regions To Spawn In", AV.AVFont, AV.yellow);
 	region.setSize(settingsPanel.getWidth() - 2 * x, 200);
 	region.linkTo(Settings.SPEC_VAR_REGION, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(region);
