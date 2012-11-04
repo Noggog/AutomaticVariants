@@ -330,12 +330,16 @@ public class VariantProfile {
 		ArrayList<File> varFiles = var.getTextureFiles();
 		for (int i = 0; i < textures.get(nodeName).size(); i++) {
 		    String texture = textures.get(nodeName).get(i);
+		    if (texture.length() < 9) {
+			continue;
+		    }
+		    texture = texture.substring(9);
 		    if (texture.equals("")) {
 			continue;
 		    }
 		    // Then check if there is a variant file that matches
 		    int set = readjustTXSTindices(i);
-		    txst.setNthMap(set, texture.substring(9));
+		    txst.setNthMap(set, texture);
 		    for (File varFile : varFiles) {
 			if (texture.contains(varFile.getName().toUpperCase())) {
 			    // And then sub it in the TXST

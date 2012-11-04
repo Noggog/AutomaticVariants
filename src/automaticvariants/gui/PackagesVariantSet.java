@@ -6,7 +6,7 @@ package automaticvariants.gui;
 
 import automaticvariants.AV;
 import automaticvariants.AVSaveFile;
-import lev.gui.LFormIDPicker;
+import skyproc.gui.LFormIDPicker;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SUMGUI;
 

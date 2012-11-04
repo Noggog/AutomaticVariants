@@ -13,20 +13,20 @@ import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.TreeCellRenderer;
 import lev.gui.LHelpPanel;
-import lev.gui.LSwingTree;
+import lev.gui.LTree;
 
 /**
  *
  * @author Justin Swanson
  */
-public class PackageTree extends LSwingTree {
+public class PackageTree extends LTree {
 
     static Color disabledColor = new Color(150,150,150);
     LHelpPanel help;
 
-    public PackageTree(int width, int height, LHelpPanel help) {
-	super(width, height);
-	tree.setCellRenderer(new CellRenderer(tree.getCellRenderer()));
+    public PackageTree(LHelpPanel help) {
+	super();
+	setCellRenderer(new CellRenderer(getCellRenderer()));
 	this.help = help;
     }
 

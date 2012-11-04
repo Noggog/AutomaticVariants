@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import lev.LMergeMap;
 import lev.Ln;
 import lev.debug.LDebug;
@@ -263,7 +264,7 @@ public class AV implements SUM {
     }
 
     public static ScriptRef getQuestScript() {
-	return AV.quest.scripts.getScript("AVQuestScript");
+	return AV.quest.getScriptPackage().getScript("AVQuestScript");
     }
 
     public void makeGlobals() {
@@ -496,7 +497,7 @@ public class AV implements SUM {
     @Override
     public GRUP_TYPE[] importRequests() {
 	return new GRUP_TYPE[]{GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
-		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA};
+		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA, GRUP_TYPE.TXST};
     }
 
     @Override

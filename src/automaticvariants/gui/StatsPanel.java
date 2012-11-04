@@ -93,7 +93,7 @@ public class StatsPanel extends SPSettingPanel {
     }
 
     void updateChart() {
-	AV.save.update();
+	AV.save.updateCurToGUI();
 	chart.clear();
 	double std = (AV.save.getInt(Settings.STATS_HEIGHT_MAX) + minStd) / 3.0;
 	if (std == 0) {

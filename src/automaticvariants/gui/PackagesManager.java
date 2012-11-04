@@ -21,10 +21,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import lev.Ln;
-import lev.gui.LButton;
-import lev.gui.LImagePane;
-import lev.gui.LLabel;
-import lev.gui.LMenuItem;
+import lev.gui.*;
 import skyproc.SPGlobal;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SPSettingPanel;
@@ -37,6 +34,7 @@ import skyproc.gui.SUMGUI;
 public class PackagesManager extends SPSettingPanel {
 
     public static PackageTree tree;
+    LScrollPane treeScroll;
     LImagePane display;
     LButton enableButton;
     LButton disableButton;
@@ -58,12 +56,13 @@ public class PackagesManager extends SPSettingPanel {
     protected void initialize() {
 	super.initialize();
 
-	tree = new PackageTree(SUMGUI.middleDimensions.width - 30,
-		SUMGUI.middleDimensions.height - 165, SUMGUI.helpPanel);
-	tree.setLocation(SUMGUI.middleDimensions.width / 2 - tree.getWidth() / 2, last.y + 10);
-	tree.setMargin(10, 5);
-	tree.removeBorder();
-	Add(tree);
+	tree = new PackageTree(SUMGUI.helpPanel);
+	
+	treeScroll = new LScrollPane(tree);
+	treeScroll.setSize(SUMGUI.middleDimensions.width - 30,
+		SUMGUI.middleDimensions.height - 165);
+	treeScroll.setLocation(SUMGUI.middleDimensions.width / 2 - treeScroll.getWidth() / 2, last.y + 10);
+	Add(treeScroll);
 
 	Dimension size = new Dimension(125, 25);
 

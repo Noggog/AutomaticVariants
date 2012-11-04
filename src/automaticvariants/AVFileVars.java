@@ -523,7 +523,7 @@ public class AVFileVars {
 	    }
 	}
 
-	AV.quest.scripts.getScript("AVQuestScript").setProperty("ExclusiveCellList", eCells.toArray(new FormID[0]));
+	AV.quest.getScriptPackage().getScript("AVQuestScript").setProperty("ExclusiveCellList", eCells.toArray(new FormID[0]));
     }
 
     static void generateFormLists(Mod source) {
@@ -849,16 +849,20 @@ public class AVFileVars {
 
     public static void gatherFolder(String folder) {
 	ArrayList<File> files = Ln.generateFileList(new File(folder), 2, 4, false);
+	boolean fail = false;
 	for (File file : files) {
 	    File dest = new File(AVPackagesDir + file.getPath().substring(folder.length()));
 	    if (dest.exists()) {
 		file.delete();
 	    } else {
 		if (!Ln.moveFile(file, dest, false)) {
-		    JOptionPane.showMessageDialog(null,
-			    "<html>Error gathering files back to AV Package folder.</html>");
+		    fail = true;
 		}
 	    }
+	}
+	if (fail) {
+	    JOptionPane.showMessageDialog(null,
+		    "<html>Error gathering files back to AV Package folder.</html>");
 	}
     }
 
