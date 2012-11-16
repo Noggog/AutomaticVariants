@@ -36,8 +36,8 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.6.0.2";
-    public static String lastMajorVersion = "1.6.0.2";
+    public static String version = "1.6.0.4";
+    public static String lastMajorVersion = "1.6.0.4";
 
     /*
      * Static Strings
@@ -497,7 +497,7 @@ public class AV implements SUM {
     @Override
     public GRUP_TYPE[] importRequests() {
 	return new GRUP_TYPE[]{GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
-		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA, GRUP_TYPE.TXST};
+		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA, GRUP_TYPE.TXST, GRUP_TYPE.LVLN};
     }
 
     @Override

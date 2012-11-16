@@ -58,7 +58,12 @@ public class SeedProfile {
 
 	int counter = 0;
 	while (npc != null && npc.isTemplated() && npc.get(TemplateFlag.USE_TRAITS) && counter < 25) {
-	    npc = (NPC_) SPDatabase.getMajor(npc.getTemplate(), GRUP_TYPE.NPC_);
+	    NPC_ tmpNPC = (NPC_) SPDatabase.getMajor(npc.getTemplate(), GRUP_TYPE.NPC_);
+	    if (npc == null) {
+		return false;
+	    } else {
+		npc = tmpNPC;
+	    }
 	    counter++;
 	}
 

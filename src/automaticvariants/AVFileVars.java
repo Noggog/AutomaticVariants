@@ -522,8 +522,11 @@ public class AVFileVars {
 		}
 	    }
 	}
-
-	AV.quest.getScriptPackage().getScript("AVQuestScript").setProperty("ExclusiveCellList", eCells.toArray(new FormID[0]));
+	FLST exclusiveList = new FLST(SPGlobal.getGlobalPatch(), "ExclusiveCellList");
+	for (FormID id : eCells) {
+	    exclusiveList.addFormEntry(id);
+	}
+	AV.quest.getScriptPackage().getScript("AVQuestScript").setProperty("ExclusiveCellList", exclusiveList.getForm());
     }
 
     static void generateFormLists(Mod source) {
