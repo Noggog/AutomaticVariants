@@ -29,6 +29,9 @@ public class SettingsOther extends SPSettingDefaultsPanel {
     LNumericSetting maxMem;
     LLabel langLabel;
     LComboBox language;
+    LLabel papyrusDebug;
+    LCheckBox debugOn;
+    LCheckBox debugRegional;
 
     public SettingsOther(SPMainMenuPanel parent_) {
 	super(parent_, "Other Settings", AV.orange, AV.save);
@@ -52,21 +55,6 @@ public class SettingsOther extends SPSettingDefaultsPanel {
 //	setPlacement(minimize);
 //	AddSetting(minimize);
 
-	debugLabel = new LLabel("Debug Level", AV.AVFont, AV.yellow);
-
-	debugLevel = new LComboBox("Debug Level");
-	debugLevel.setSize(150, 25);
-	debugLevel.addItem("Off");
-	debugLevel.addItem("AV Debug");
-	debugLevel.addItem("AV + SkyProc Debug");
-	debugLevel.tie(Settings.DEBUG_LEVEL, AV.save, SUMGUI.helpPanel, true);
-	setPlacement(debugLevel, last.x + debugLabel.getWidth() + 15, last.y);
-	AddSetting(debugLevel);
-
-	debugLabel.setLocation(debugLevel.getX() - debugLabel.getWidth() - 15, debugLevel.getY());
-	debugLabel.addShadow();
-	settingsPanel.add(debugLabel);
-
 	maxMem = new LNumericSetting("Max Allocated Memory",
 		AV.AVFont, AV.yellow, 250, 2000, 250);
 	maxMem.tie(Settings.MAX_MEM, AV.save, SUMGUI.helpPanel, true);
@@ -87,6 +75,42 @@ public class SettingsOther extends SPSettingDefaultsPanel {
 	langLabel.setLocation(language.getX() - langLabel.getWidth() - 15, language.getY());
 	langLabel.addShadow();
 	settingsPanel.add(langLabel);
+
+	last.y += 20;
+
+	debugLabel = new LLabel("Patcher Debug Level", AV.AVFont, AV.yellow);
+	debugLabel.addShadow();
+	setPlacement(debugLabel);
+	Add(debugLabel);
+
+	debugLevel = new LComboBox("Patcher Debug Level");
+	debugLevel.setSize(150, 25);
+	debugLevel.addItem("Off");
+	debugLevel.addItem("AV Debug");
+	debugLevel.addItem("AV + SkyProc Debug");
+	debugLevel.tie(Settings.DEBUG_LEVEL, AV.save, SUMGUI.helpPanel, true);
+	setPlacement(debugLevel);
+	AddSetting(debugLevel);
+
+	last.y += 20;
+	papyrusDebug = new LLabel("Papyrus Debug Options", AV.AVFont, AV.yellow);
+	papyrusDebug.addShadow();
+	setPlacement(papyrusDebug);
+	Add(papyrusDebug);
+
+	debugOn = new LCheckBox("Master Debug Switch", AV.AVFont, AV.yellow);
+	debugOn.tie(AVSaveFile.Settings.DEBUG_ON, AV.save, SUMGUI.helpPanel, true);
+	debugOn.setOffset(2);
+	debugOn.addShadow();
+	setPlacement(debugOn);
+	AddSetting(debugOn);
+
+	debugRegional = new LCheckBox("Regional Debug", AV.AVFont, AV.yellow);
+	debugRegional.tie(AVSaveFile.Settings.DEBUG_REGIONAL, AV.save, SUMGUI.helpPanel, true);
+	debugRegional.setOffset(2);
+	debugRegional.addShadow();
+	setPlacement(debugRegional);
+	AddSetting(debugRegional);
 
 	alignRight();
 

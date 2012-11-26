@@ -36,6 +36,8 @@ public class AVSaveFile extends SkyProcSave {
 	Add(Settings.PREV_VERSION,		0,	    false);
 	Add(Settings.DISABLED_PACKAGES,		new HashSet<String>(), false);
 	Add(Settings.PACKAGE_LISTING,		new HashSet<String>(), false);
+	Add(Settings.DEBUG_ON,			false,	    true);
+	Add(Settings.DEBUG_REGIONAL,		false,	    true);
     }
 
     @Override
@@ -253,6 +255,14 @@ public class AVSaveFile extends SkyProcSave {
 	helpInfo.put(Settings.WIZ_PARTIAL_MATCH,
 		"This will display all profiles that contain at least one texture that you are using.  "
 		+ "Turning this setting off will only display profiles that use all the textures.");
+
+	helpInfo.put(Settings.DEBUG_ON,
+		"This only has an effect on in-game papyrus logs.\n\n"
+		+ "This will allow AV to print debug papyrus messages.  Turn off to block all debug messages.");
+
+	helpInfo.put(Settings.DEBUG_REGIONAL,
+		"This only has an effect on in-game papyrus logs.\n\n"
+		+ "This will allow debug messages about regional variants.");
     }
 
     public enum Settings {
@@ -298,6 +308,8 @@ public class AVSaveFile extends SkyProcSave {
 	MAX_MEM,
 	DISABLED_PACKAGES,
 	PACKAGE_LISTING,
+	DEBUG_ON,
+	DEBUG_REGIONAL,
 	AV_SETTINGS;
     }
 }

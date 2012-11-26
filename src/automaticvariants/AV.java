@@ -36,7 +36,7 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.6.0.4";
+    public static String version = "1.6.0.5";
     public static String lastMajorVersion = "1.6.0.4";
 
     /*
@@ -67,6 +67,8 @@ public class AV implements SUM {
     GLOB speedScale;
     GLOB tieStats;
     GLOB forceRepick;
+    GLOB debugOn;
+    GLOB debugRegional;
     /*
      * Other
      */
@@ -252,6 +254,8 @@ public class AV implements SUM {
 	questScript.setProperty("SpeedScale", speedScale.getForm());
 	questScript.setProperty("TieStats", tieStats.getForm());
 	questScript.setProperty("ForceRepick", forceRepick.getForm());
+	questScript.setProperty("DebugOn", debugOn.getForm());
+	questScript.setProperty("DebugRegional", debugRegional.getForm());
 
 	// Log Table
 	Float[] logTable = new Float[1000];
@@ -306,6 +310,14 @@ public class AV implements SUM {
 	tieStats = new GLOB(SPGlobal.getGlobalPatch(), "AVTieStats", GLOBType.Short);
 	tieStats.setValue(save.getBool(Settings.STATS_TIE));
 	tieStats.setConstant(true);
+
+	debugOn = new GLOB(SPGlobal.getGlobalPatch(), "DebugOn", GLOBType.Short);
+	debugOn.setValue(save.getBool(Settings.DEBUG_ON));
+	debugOn.setConstant(true);
+
+	debugRegional = new GLOB(SPGlobal.getGlobalPatch(), "DebugRegional", GLOBType.Short);
+	debugRegional.setValue(save.getBool(Settings.DEBUG_REGIONAL));
+	debugRegional.setConstant(true);
     }
 
     private static void setSkyProcGlobals() {
