@@ -6,6 +6,7 @@ package automaticvariants;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JOptionPane;
@@ -36,7 +37,10 @@ public class VariantSet extends PackageNode implements Serializable {
 	    SPGlobal.log(src.getName(), depth);
 	}
 
-	for (File f : src.listFiles()) {
+	ArrayList<File> files = new ArrayList<>(Arrays.asList(src.listFiles()));
+	
+
+	for (File f : files) {
 	    if (AVFileVars.isSpec(f)) {
 		try {
 		    spec = AV.gson.fromJson(new FileReader(f), SpecVariantSet.class);

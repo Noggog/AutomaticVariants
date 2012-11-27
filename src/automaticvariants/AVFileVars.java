@@ -609,7 +609,10 @@ public class AVFileVars {
 	    ScriptRef script = AV.generateAttachScript();
 
 	    script.setProperty("AltOptions", avr.AltOptions.getForm());
-	    script.setProperty("CellIndexing", avr.Cells.getFormIDEntries().toArray(new FormID[0]));
+	    ArrayList<FormID> cells = avr.Cells.getFormIDEntries();
+	    if (!cells.isEmpty()) {
+		script.setProperty("CellIndexing", cells.toArray(new FormID[0]));
+	    }
 	    script.setProperty("RaceHeightOffset", avr.race.getHeight(Gender.MALE));
 
 	    // Loop through all variants for this race
@@ -783,21 +786,26 @@ public class AVFileVars {
 	boolean pass = true;
 	for (File src : files) {
 	    if (isDDS(src) || isReroute(src) || isSpec(src)) {
-		String dest = AVFileVars.AVTexturesDir;
-		File destFile = new File(dest + src.getPath().substring(src.getPath().indexOf("\\") + 1));
-		boolean delSuccess = true;
-		if (destFile.isFile()) {
-		    delSuccess = destFile.delete();
-		    pass = pass && delSuccess;
-		}
-		if (delSuccess) {
-		    pass = pass && Ln.moveFile(src, destFile, true);
-		}
+		pass = move(src, AVFileVars.AVTexturesDir);
+	    } else if (isNIF(src)) {
+		pass = move(src, AVFileVars.AVMeshesDir);
 	    }
 	}
 	if (!pass) {
 	    SPGlobal.logError("Move Out", "Failed to move some files out to their texture locations.");
 	}
+    }
+
+    public static boolean move(File src, String dest) {
+	File destFile = new File(dest + src.getPath().substring(src.getPath().indexOf("\\") + 1));
+	boolean pass = true;
+	if (destFile.isFile()) {
+	    pass = pass && destFile.delete();
+	}
+	if (pass) {
+	    pass = pass && Ln.moveFile(src, destFile, true);
+	}
+	return pass;
     }
 
     public static void saveAVPackagesListing() throws IOException {
@@ -820,7 +828,7 @@ public class AVFileVars {
 	if (!npcSrc.getSkin().equals(FormID.NULL)) {
 	    return npcSrc.getSkin();
 	} else {
-	    RACE race = (RACE) SPDatabase.getMajor(npcSrc.getRace());
+	    RACE race = (RACE) SPDatabase.getMajor(npcSrc.getRace(), GRUP_TYPE.RACE);
 	    if (race == null) {
 		return null;
 	    }

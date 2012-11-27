@@ -30,7 +30,6 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
     public static LImagePane display;
     public File src;
     public Type type;
-    static int tmp = 0;
 
     public PackageNode(File source, Type type) {
 	if (source != null) {
@@ -237,6 +236,12 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	help.hideArrow();
     }
 
+    File meshPath () {
+	String path = src.getPath();
+	path = path.replaceAll(AVFileVars.AVTexturesDir, AVFileVars.AVMeshesDir);
+	return new File(path);
+    }
+
     void displayFirstImage() {
 	ArrayList<PackageNode> flat = flattenChildren();
 	for (PackageNode p : flat) {
@@ -434,7 +439,6 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	VAR,
 	TEXTURE,
 	MESH,
-	NIF,
 	GENTEXTURE,
 	GENMESH,
 	REROUTE;
