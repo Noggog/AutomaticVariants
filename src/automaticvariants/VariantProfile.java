@@ -411,6 +411,9 @@ public class VariantProfile {
 	armo.removeArmature(piece.getForm());
 	armo.addArmature(arma.getForm());
 
+	//Ensure it won't show up as wearable
+	armo.set(BodyTemplate.GeneralFlags.NonPlayable, true);
+
 	if (!AVFileVars.armors.containsKey(skin.getForm())) {
 	    AVFileVars.armors.put(skin.getForm(), new LMergeMap<FormID, ARMO_spec>(false));
 	}

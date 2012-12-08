@@ -23,7 +23,10 @@ public class SpecVariantSet extends SpecFile {
     }
 
     public boolean isValid() {
-	return type != null && Target_FormIDs != null;
+	if (type == null) {
+	    type = AVFileVars.VariantType.NPC_;
+	}
+	return true;
     }
 
     @Override
@@ -36,7 +39,7 @@ public class SpecVariantSet extends SpecFile {
 		out.add("   |   " + s[0] + " | " + s[1]);
 	    }
 	} else {
-	    out.add("Error loading spec files.  It's possible AV doesn't have read permissions");
+	    out.add(" Error loading spec files.  It's possible AV doesn't have read permissions.");
 	}
 	return out;
     }

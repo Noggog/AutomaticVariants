@@ -315,6 +315,10 @@ public class AVFileVars {
 		ARMA arma = (ARMA) SPDatabase.getMajor(armaForm, GRUP_TYPE.ARMA);
 
 		// Make sure it has a race
+		if (arma == null) {
+		    SPGlobal.logError(header, "FormID " + armaForm + " skipped because it couldn't be found in mods.");
+		    continue;
+		}
 		if (arma.getRace().isNull()) {
 		    SPGlobal.logError(header, arma + " skipped because it had no race.");
 		    continue;
@@ -517,6 +521,9 @@ public class AVFileVars {
 		for (String[] formID : var.spec.Region_Include) {
 		    FormID id = FormID.parseString(formID);
 		    if (!id.isNull()) {
+			if (SPGlobal.logging() && !eCells.contains(id)) {
+			    SPGlobal.log("Exclusive Cells", "Adding exclusive cell " + id + " from var " + var + " with source " + var.src);
+			}
 			eCells.add(id);
 		    }
 		}

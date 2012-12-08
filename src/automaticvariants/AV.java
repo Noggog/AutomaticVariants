@@ -36,8 +36,8 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.6.0.6";
-    public static String lastMajorVersion = "1.6.0.6";
+    public static String version = "1.6.0.8";
+    public static String lastMajorVersion = "1.6.0.8";
 
     /*
      * Static Strings
@@ -491,8 +491,12 @@ public class AV implements SUM {
 	AVFileVars.importVariants(false);
     }
 
-    public enum SpecialLogs {
+    @Override
+    public ArrayList<ModListing> requiredMods() {
+	return new ArrayList<>(0);
+    }
 
+    public enum SpecialLogs {
 	WARNINGS;
     }
 
