@@ -11,13 +11,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 import lev.LMergeMap;
 import lev.Ln;
 import lev.debug.LDebug;
@@ -36,8 +39,8 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.6.0.8";
-    public static String lastMajorVersion = "1.6.0.8";
+    public static String version = "1.6.0.9";
+    public static String lastMajorVersion = "1.6.0.9";
 
     /*
      * Static Strings
@@ -469,6 +472,7 @@ public class AV implements SUM {
 	if (!gatheringAndExiting) {
 	    AVFileVars.saveAVPackagesListing();
 	}
+	AVFileVars.moveOut();
 	if (patchWasGenerated) {
 	    AV.save.curSettings.get(Settings.PREV_VERSION).setTo(NiftyFunc.versionToNum(AV.version));
 	}
@@ -476,6 +480,7 @@ public class AV implements SUM {
 
     @Override
     public void onStart() throws Exception {
+	// Font init
 	try {
 	    AVFont = Font.createFont(Font.TRUETYPE_FONT, SettingsOther.class.getResource("Sony_Sketch_EF.ttf").openStream());
 	    AVFont = AVFont.deriveFont(Font.BOLD, 19);
@@ -483,11 +488,15 @@ public class AV implements SUM {
 	    SPGlobal.logException(ex);
 	    AVFont = new Font("Serif", Font.BOLD, 16);
 	}
+
+	// Language init
 	AVFontSmall = AVFont.deriveFont(Font.PLAIN, 14);
 	SPGlobal.language = Language.values()[AV.save.getInt(Settings.LANGUAGE)];
 	SPGlobal.logMain(header, "Language: " + SPGlobal.language);
+
+	// Prep AV
 	readInExceptions();
-	AVFileVars.moveOut();
+	AVFileVars.gatherFiles();
 	AVFileVars.importVariants(false);
     }
 

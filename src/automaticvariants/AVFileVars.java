@@ -7,7 +7,11 @@ package automaticvariants;
 import automaticvariants.AVSaveFile.Settings;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
@@ -94,7 +98,7 @@ public class AVFileVars {
      */
     public static void importVariants(boolean progressBar) throws IOException {
 	String header = "Import Variants";
-	File AVPackagesDirFile = new File(AVTexturesDir);
+	File AVPackagesDirFile = new File(AVPackagesDir);
 	// wipe
 	AVPackages = new PackageNode(AVPackagesDirFile, PackageNode.Type.ROOT);
 	RerouteFile.reroutes.clear();
@@ -761,7 +765,7 @@ public class AVFileVars {
     }
 
     static boolean hasVariant(LVLN llist) {
-	for (LVLO entry : llist.getEntries()) {
+	for (LeveledEntry entry : llist.getEntries()) {
 	    if (taggedNPCs.contains(entry.getForm())) {
 		return true;
 	    }
@@ -792,7 +796,7 @@ public class AVFileVars {
 	ArrayList<File> files = Ln.generateFileList(new File(AVPackagesDir), false);
 	boolean pass = true;
 	for (File src : files) {
-	    if (isDDS(src) || isReroute(src) || isSpec(src)) {
+	    if (isDDS(src)) {
 		pass = move(src, AVFileVars.AVTexturesDir);
 	    } else if (isNIF(src)) {
 		pass = move(src, AVFileVars.AVMeshesDir);
@@ -810,7 +814,18 @@ public class AVFileVars {
 	    pass = pass && destFile.delete();
 	}
 	if (pass) {
-	    pass = pass && Ln.moveFile(src, destFile, true);
+	    try {
+		Ln.makeDirs(destFile);
+		Files.createLink(destFile.toPath(), src.toPath());
+	    } catch (IOException | UnsupportedOperationException ex) {
+		SPGlobal.logException(ex);
+		try {
+		    Files.copy(destFile.toPath(), src.toPath());
+		} catch (IOException ex1) {
+		    SPGlobal.logException(ex1);
+		    pass = false;
+		}
+	    }
 	}
 	return pass;
     }
@@ -862,14 +877,14 @@ public class AVFileVars {
     }
 
     public static void gatherFolder(String folder) {
-	ArrayList<File> files = Ln.generateFileList(new File(folder), 2, 4, false);
+	ArrayList<File> files = Ln.generateFileList(new File(folder), 0, 4, false);
 	boolean fail = false;
 	for (File file : files) {
 	    File dest = new File(AVPackagesDir + file.getPath().substring(folder.length()));
 	    if (dest.exists()) {
 		file.delete();
 	    } else {
-		if (!Ln.moveFile(file, dest, false)) {
+		if (!Ln.moveFile(file, dest, true)) {
 		    fail = true;
 		}
 	    }

@@ -20,7 +20,7 @@ public class AVSaveFile extends SkyProcSave {
 	Add(Settings.PACKAGES_ORIG_AS_VAR,	true,	    true);
 	Add(Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION,2,	    true);
 	Add(Settings.DEBUG_LEVEL,		1,	    false);
-	Add(Settings.IMPORT_AT_START,		false,	    false);
+	Add(Settings.IMPORT_AT_START,		true,	    false);
 	Add(Settings.STATS_ON,			false,	    true);
 	Add(Settings.STATS_HEIGHT_MAX,		15,	    true);
 	Add(Settings.STATS_HEALTH_MAX,		25,	    true);
