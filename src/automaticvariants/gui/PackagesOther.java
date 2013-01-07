@@ -79,7 +79,7 @@ public class PackagesOther extends SPSettingPanel {
 		if (SPGlobal.logging()) {
 		    SPGlobal.logMain("AV", "Closing program early because of gather and exit command.");
 		}
-		SUMGUI.exitProgram(false);
+		SUMGUI.exitProgram(false, true);
 	    }
 	});
 	gatherAndExit.linkTo(AVSaveFile.Settings.PACKAGES_GATHER, AV.save, SUMGUI.helpPanel, true);

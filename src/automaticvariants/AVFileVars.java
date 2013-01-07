@@ -833,7 +833,7 @@ public class AVFileVars {
     public static void saveAVPackagesListing() throws IOException {
 	Set<String> packageListing = AV.save.getStrings(Settings.PACKAGE_LISTING);
 	packageListing.clear();
-	ArrayList<File> files = Ln.generateFileList(new File(AVTexturesDir), false);
+	ArrayList<File> files = Ln.generateFileList(new File(AVPackagesDir), false);
 	for (File f : files) {
 	    packageListing.add(f.getPath());
 	}

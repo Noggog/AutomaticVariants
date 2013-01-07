@@ -61,21 +61,6 @@ public class SettingsOther extends SPSettingDefaultsPanel {
 	setPlacement(maxMem);
 	AddSetting(maxMem);
 
-	langLabel = new LLabel("Language", AV.AVFont, AV.yellow);
-
-	language = new LComboBox("Language");
-	language.setSize(150,25);
-	for (Enum e : SPGlobal.Language.values()) {
-	    language.addItem(e);
-	}
-	language.tie(Settings.LANGUAGE, AV.save, SUMGUI.helpPanel, true);
-	setPlacement(language, last.x + langLabel.getWidth() + 15, last.y);
-	AddSetting(language);
-
-	langLabel.setLocation(language.getX() - langLabel.getWidth() - 15, language.getY());
-	langLabel.addShadow();
-	settingsPanel.add(langLabel);
-
 	last.y += 20;
 
 	debugLabel = new LLabel("Patcher Debug Level", AV.AVFont, AV.yellow);

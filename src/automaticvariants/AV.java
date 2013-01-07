@@ -11,14 +11,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.*;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
@@ -26,9 +22,9 @@ import lev.Ln;
 import lev.debug.LDebug;
 import lev.gui.LImagePane;
 import lev.gui.LSaveFile;
+import skyproc.*;
 import skyproc.GLOB.GLOBType;
 import skyproc.SPGlobal.Language;
-import skyproc.*;
 import skyproc.gui.*;
 
 /**
@@ -39,8 +35,8 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.6.0.9";
-    public static String lastMajorVersion = "1.6.0.9";
+    public static String version = "1.6.1";
+    public static String lastMajorVersion = "1.6.1";
 
     /*
      * Static Strings
@@ -55,7 +51,6 @@ public class AV implements SUM {
      */
     static Set<FormID> block = new HashSet<>();
     static Set<String> edidExclude = new HashSet<>();
-    static Set<String> modExclude = new HashSet<>();
     /*
      * Script/Property names
      */
@@ -116,17 +111,18 @@ public class AV implements SUM {
     public static void main(String[] args) {
 	ArrayList<String> arguments = new ArrayList<>(Arrays.asList(args));
 	try {
+	    // Need to load memory settings
 	    save.init();
+	    cleanUp();
+	    setSkyProcGlobals();
+	    setDebugLevel();
 
 	    if (handleArgs(arguments)) {
 		SPGlobal.closeDebug();
 		return;
 	    }
-	    cleanUp();
-	    setSkyProcGlobals();
-	    setDebugLevel();
 
-	    SUMGUI.open(new AV());
+	    SUMGUI.open(new AV(), args);
 
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.
@@ -148,6 +144,7 @@ public class AV implements SUM {
 	} else if (save.getInt(Settings.DEBUG_LEVEL) < 1) {
 	    SPGlobal.logging(false);
 	}
+	SPGlobal.debugConsistencyImport = true;
     }
 
     static void cleanUp() {
@@ -345,7 +342,7 @@ public class AV implements SUM {
 
     }
 
-    static void readInExceptions() throws IOException {
+    static void readInExceptions() {
 	try {
 	    BufferedReader in = new BufferedReader(new FileReader("Files/BlockList.txt"));
 	    Set target = null;
@@ -361,7 +358,7 @@ public class AV implements SUM {
 		} else if (read.contains("EDID BLOCKS")) {
 		    target = edidExclude;
 		} else if (read.contains("MOD BLOCKS")) {
-		    target = modExclude;
+		    target = null;
 		} else if (target != null && !read.equals("")) {
 		    if (target == block) {
 			target.add(new FormID(read));
@@ -370,19 +367,8 @@ public class AV implements SUM {
 		    }
 		}
 	    }
-
-	    Set<String> tmp = new HashSet<>(modExclude);
-	    for (String s : tmp) {
-		if (s.contains(".ESP") || s.contains(".ESM")) {
-		    SPGlobal.addModToSkip(new ModListing(s));
-		    modExclude.remove(s);
-		}
-	    }
-	    for (String s : modExclude) {
-		SPGlobal.addModToSkip(s);
-	    }
-	} catch (FileNotFoundException ex) {
-	    SPGlobal.logError("ReadInExceptions", "Failed to locate 'BlockList.txt'");
+	} catch (IOException ex) {
+	    SPGlobal.logError("ReadInExceptions", "Failed to locate or read 'BlockList.txt'");
 	}
     }
 
@@ -440,22 +426,28 @@ public class AV implements SUM {
 	//Check versions
 	if (AV.save.getInt(Settings.PREV_VERSION) < NiftyFunc.versionToNum(lastMajorVersion)) {
 	    if (SPGlobal.logging()) {
-		SPGlobal.log(header, "Needs update because of AV versioning: " + AV.save.getInt(Settings.PREV_VERSION) + " to " + version);
+		SPGlobal.logMain(header, "Needs update because of AV versioning: " + AV.save.getInt(Settings.PREV_VERSION) + " to " + version);
 	    }
 	    return true;
 	}
 
 	//Need to check if packages have changed.
-	ArrayList<File> files = Ln.generateFileList(new File(AVFileVars.AVTexturesDir), false);
+	ArrayList<File> files = Ln.generateFileList(new File(AVFileVars.AVPackagesDir), false);
 	try {
 	    Set<String> last = AVFileVars.getAVPackagesListing();
 	    if (files.size() != last.size()) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.logMain(header, "Needs update because number of package files changed.");
+		}
 		return true;
 	    }
 
 	    for (File f : files) {
 		String path = f.getPath();
 		if (!last.contains(path)) {
+		    if (SPGlobal.logging()) {
+			SPGlobal.logMain(header, "Needs update because last package list didn't contain: " + path);
+		    }
 		    return true;
 		}
 	    }
@@ -489,11 +481,6 @@ public class AV implements SUM {
 	    AVFont = new Font("Serif", Font.BOLD, 16);
 	}
 
-	// Language init
-	AVFontSmall = AVFont.deriveFont(Font.PLAIN, 14);
-	SPGlobal.language = Language.values()[AV.save.getInt(Settings.LANGUAGE)];
-	SPGlobal.logMain(header, "Language: " + SPGlobal.language);
-
 	// Prep AV
 	readInExceptions();
 	AVFileVars.gatherFiles();
@@ -505,7 +492,14 @@ public class AV implements SUM {
 	return new ArrayList<>(0);
     }
 
+    @Override
+    public String description() {
+	return "AV Provides an easy place to drag-and-drop alternate monster textures and have them automatically integrated into the game.\n\n"
+		+ "Never again will you have to choose only one texture or model from an entire selection.";
+    }
+
     public enum SpecialLogs {
+
 	WARNINGS;
     }
 

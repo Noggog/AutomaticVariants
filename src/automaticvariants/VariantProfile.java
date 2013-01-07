@@ -98,7 +98,7 @@ public class VariantProfile {
 	altTextures.clear();
     }
 
-    public boolean isValid() {
+    public Boolean isValid() {
 	return race != null && skin != null && piece != null;
     }
 

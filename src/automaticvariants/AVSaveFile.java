@@ -30,7 +30,6 @@ public class AVSaveFile extends SkyProcSave {
 	Add(Settings.STATS_TIE,			true,	    true);
 	Add(Settings.MINIMIZE_PATCH,		true,	    true);
 	Add(Settings.MAX_MEM,			750,	    false);
-	Add(Settings.LANGUAGE,			0,	    true);
 	Add(Settings.SPEC_VAR_PROB,		15,	    false);
 	Add(Settings.PACKAGES_FORCE_REPICK,	1,	    true);
 	Add(Settings.PREV_VERSION,		0,	    false);
@@ -244,10 +243,6 @@ public class AVSaveFile extends SkyProcSave {
 		+ "Example: 00123456 from Skyrim.esm would be typed in as \"123456Skyrim.esm\".\n\n"
 		+ "You can have comments by using semicolons (;)");
 
-	helpInfo.put(Settings.LANGUAGE,
-		"You can set your language here.  This will make SkyProc import strings files of that language.\n\n"
-		+ "NOTE:  You must restart AV for this to take effect.");
-
 	helpInfo.put(Settings.SPEC_VAR_REGION_EXCLUDE,
 		"This will make the regions you specified for this variant to spawn in exclusive.  This means that no other variants besides this one will spawn there.  The one exception to this rule is that other variants that name these exclusive regions specifically will still spawn there.\n\n"
 		+ "NOTE: This setting only applies if regions have been specified for this variant.");
@@ -293,7 +288,6 @@ public class AVSaveFile extends SkyProcSave {
 	SPEC_VAR_HEIGHT,
 	SPEC_VAR_NAME_AFFIX,
 	SPEC_VAR_NAME_PREFIX,
-	LANGUAGE,
 	STATS_ON,
 	STATS_HEIGHT_MAX,
 	STATS_HEALTH_MAX,

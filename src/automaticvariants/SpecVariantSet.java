@@ -22,7 +22,7 @@ public class SpecVariantSet extends SpecFile {
 	super(src);
     }
 
-    public boolean isValid() {
+    public Boolean isValid() {
 	if (type == null) {
 	    type = AVFileVars.VariantType.NPC_;
 	}
