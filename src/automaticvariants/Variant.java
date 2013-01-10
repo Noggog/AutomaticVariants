@@ -17,18 +17,18 @@ public class Variant extends PackageNode implements Serializable {
 
     String name = "";
     ArrayList<String> textureNames;
-    public SpecVariant spec;
+    public SpecVariantNPC spec;
     static String depth = "* +   # ";
 
     public Variant(File variantDir) {
 	super(variantDir, Type.VAR);
 	this.name = variantDir.getName();
-	spec = new SpecVariant(variantDir);
+	spec = new SpecVariantNPC(variantDir);
     }
 
     Variant() {
 	super(null, Type.VAR);
-	spec = new SpecVariant();
+	spec = new SpecVariantNPC();
     }
 
     public void load() throws FileNotFoundException, IOException {
@@ -50,7 +50,7 @@ public class Variant extends PackageNode implements Serializable {
 		add(c);
 	    } else if (AVFileVars.isSpec(f)) {
 		try {
-		    spec = AV.gson.fromJson(new FileReader(f), SpecVariant.class);
+		    spec = AV.gson.fromJson(new FileReader(f), SpecVariantNPC.class);
 		    if (spec != null) {
 			spec.src = f;
 			if (SPGlobal.logging()) {

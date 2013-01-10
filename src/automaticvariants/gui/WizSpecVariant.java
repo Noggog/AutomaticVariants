@@ -108,7 +108,7 @@ public class WizSpecVariant extends WizSpecTemplate {
 	load(v.spec);
     }
 
-    public void load(SpecVariant s) {
+    public void load(SpecVariantNPC s) {
 
 	author.setText(s.Author);
 
@@ -140,7 +140,7 @@ public class WizSpecVariant extends WizSpecTemplate {
     public void onOpen(SPMainMenuPanel parent) {
 	if (WizNewPackage.open) {
 	    WizNewPackage pack = WizNewPackage.newPackage;
-	    load(new SpecVariant(WizNewPackage.newPackage.targetVariant.src));
+	    load(new SpecVariantNPC(WizNewPackage.newPackage.targetVariant.src));
 	}
     }
 
@@ -150,7 +150,7 @@ public class WizSpecVariant extends WizSpecTemplate {
 	    return;
 	}
 
-	SpecVariant v = (SpecVariant) target;
+	SpecVariantNPC v = (SpecVariantNPC) target;
 
 	v.Author = author.getText();
 	v.Probability_Divider = probDiv.getValue();

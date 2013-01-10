@@ -38,7 +38,7 @@ public class VariantSet extends PackageNode implements Serializable {
 	}
 
 	ArrayList<File> files = new ArrayList<>(Arrays.asList(src.listFiles()));
-	
+	ArrayList<File> variantDirs = new ArrayList<>();
 
 	for (File f : files) {
 	    if (AVFileVars.isSpec(f)) {
@@ -58,10 +58,7 @@ public class VariantSet extends PackageNode implements Serializable {
 		}
 
 	    } else if (f.isDirectory()) {
-		VariantGroup v = new VariantGroup(f);
-		v.load();
-		add(v);
-
+		variantDirs.add(f);
 	    } else if (AVFileVars.isDDS(f)) {
 		PackageNode c = new PackageNode(f, Type.GENTEXTURE);
 		add(c);
@@ -87,6 +84,13 @@ public class VariantSet extends PackageNode implements Serializable {
 	    } else if (SPGlobal.logging()) {
 		SPGlobal.log(src.getName(), depth + "   Skipped file: " + f);
 	    }
+	}
+
+	// Process variant groups last
+	for (File f : variantDirs) {
+	    VariantGroup v = new VariantGroup(f);
+	    v.load();
+	    add(v);
 	}
 
 	if (SPGlobal.logging()) {

@@ -639,23 +639,23 @@ public class AVFileVars {
 	    ArrayList<String> affix = new ArrayList<>();
 	    int index = 0;
 	    for (ARMO_spec variant : avr.getVariants()) {
-		if (variant.spec.Height_Mult != SpecVariant.prototype.Height_Mult) {
+		if (variant.spec.Height_Mult != SpecVariantNPC.prototype.Height_Mult) {
 		    heights.add(index);
 		    heights.add(variant.spec.Height_Mult);
 		}
-		if (variant.spec.Health_Mult != SpecVariant.prototype.Health_Mult) {
+		if (variant.spec.Health_Mult != SpecVariantNPC.prototype.Health_Mult) {
 		    healths.add(index);
 		    healths.add(variant.spec.Health_Mult);
 		}
-		if (variant.spec.Magicka_Mult != SpecVariant.prototype.Magicka_Mult) {
+		if (variant.spec.Magicka_Mult != SpecVariantNPC.prototype.Magicka_Mult) {
 		    magickas.add(index);
 		    magickas.add(variant.spec.Magicka_Mult);
 		}
-		if (variant.spec.Stamina_Mult != SpecVariant.prototype.Stamina_Mult) {
+		if (variant.spec.Stamina_Mult != SpecVariantNPC.prototype.Stamina_Mult) {
 		    staminas.add(index);
 		    staminas.add(variant.spec.Stamina_Mult);
 		}
-		if (variant.spec.Speed_Mult != SpecVariant.prototype.Speed_Mult) {
+		if (variant.spec.Speed_Mult != SpecVariantNPC.prototype.Speed_Mult) {
 		    speeds.add(index);
 		    speeds.add(variant.spec.Speed_Mult);
 		}
@@ -917,14 +917,14 @@ public class AVFileVars {
     static class ARMO_spec {
 
 	ARMO armo;
-	SpecVariant spec;
+	SpecVariantNPC spec;
 
 	ARMO_spec(ARMO armoSrc) {
 	    this.armo = armoSrc;
-	    spec = new SpecVariant();
+	    spec = new SpecVariantNPC();
 	}
 
-	ARMO_spec(ARMO armo, SpecVariant spec) {
+	ARMO_spec(ARMO armo, SpecVariantNPC spec) {
 	    this.armo = armo;
 	    this.spec = spec;
 	}
