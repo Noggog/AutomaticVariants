@@ -9,7 +9,10 @@ import java.awt.FontFormatException;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,9 +25,8 @@ import lev.Ln;
 import lev.debug.LDebug;
 import lev.gui.LImagePane;
 import lev.gui.LSaveFile;
-import skyproc.*;
 import skyproc.GLOB.GLOBType;
-import skyproc.SPGlobal.Language;
+import skyproc.*;
 import skyproc.gui.*;
 
 /**
