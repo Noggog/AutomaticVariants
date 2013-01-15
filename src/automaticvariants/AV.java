@@ -17,15 +17,14 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 import lev.LMergeMap;
 import lev.Ln;
 import lev.debug.LDebug;
 import lev.gui.LImagePane;
 import lev.gui.LSaveFile;
+import skyproc.*;
 import skyproc.GLOB.GLOBType;
 import skyproc.SPGlobal.Language;
-import skyproc.*;
 import skyproc.gui.*;
 
 /**
@@ -36,8 +35,8 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.6.0.8";
-    public static String lastMajorVersion = "1.6.0.8";
+    public static String version = "1.6.1.1";
+    public static String lastMajorVersion = "1.6.1.1";
 
     /*
      * Static Strings
@@ -123,7 +122,7 @@ public class AV implements SUM {
 	    setSkyProcGlobals();
 	    setDebugLevel();
 
-	    SUMGUI.open(new AV());
+	    SUMGUI.open(new AV(), args);
 
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.
@@ -136,15 +135,6 @@ public class AV implements SUM {
     }
 
     static void setDebugLevel() {
-	if (initDebugLevel != -1) {
-	    save.saveSettings.get(Settings.DEBUG_LEVEL).setTo(initDebugLevel);
-	    save.curSettings.get(Settings.DEBUG_LEVEL).setTo(initDebugLevel);
-	}
-	if (save.getInt(Settings.DEBUG_LEVEL) < 2) {
-	    SPGlobal.loggingSync(false);
-	} else if (save.getInt(Settings.DEBUG_LEVEL) < 1) {
-	    SPGlobal.logging(false);
-	}
     }
 
     static void cleanUp() {
@@ -386,8 +376,6 @@ public class AV implements SUM {
     static boolean handleArgs(ArrayList<String> arguments) throws IOException, InterruptedException {
 	Ln.toUpper(arguments);
 	String debug = "-DEBUG";
-	String nonew = "-NONEW";
-	String second = "-SECONDPROCESS";
 	String gather = "-GATHER";
 
 	for (String s : arguments) {
@@ -397,19 +385,6 @@ public class AV implements SUM {
 		    initDebugLevel = Integer.valueOf(s);
 		} catch (NumberFormatException e) {
 		}
-	    }
-	}
-
-	if (arguments.contains(second)) {
-	    secondF = true;
-	    AV.save.helpInfo.put(Settings.MAX_MEM, AV.save.helpInfo.get(Settings.MAX_MEM)
-		    + "\n\n(This AV process is currently a second one that was allocated more memory.)");
-	}
-
-	if (!arguments.contains(nonew)) {
-	    // Less than .85 * max memory desired
-	    if (Runtime.getRuntime().maxMemory() < AV.save.getInt(Settings.MAX_MEM) * 0.85 * 1024 * 1024) {
-		NiftyFunc.allocateMoreMemory("100m", AV.save.getInt(Settings.MAX_MEM) + "m", "Automatic Variants.jar", nonew, second);
 	    }
 	}
 
@@ -445,7 +420,7 @@ public class AV implements SUM {
 	//Need to check if packages have changed.
 	ArrayList<File> files = Ln.generateFileList(new File(AVFileVars.AVTexturesDir), false);
 	try {
-	    Set<String> last = AVFileVars.getAVPackagesListing();
+	    ArrayList<String> last = AVFileVars.getAVPackagesListing();
 	    if (files.size() != last.size()) {
 		return true;
 	    }
@@ -484,8 +459,6 @@ public class AV implements SUM {
 	    AVFont = new Font("Serif", Font.BOLD, 16);
 	}
 	AVFontSmall = AVFont.deriveFont(Font.PLAIN, 14);
-	SPGlobal.language = Language.values()[AV.save.getInt(Settings.LANGUAGE)];
-	SPGlobal.logMain(header, "Language: " + SPGlobal.language);
 	readInExceptions();
 	AVFileVars.moveOut();
 	AVFileVars.importVariants(false);
@@ -494,6 +467,11 @@ public class AV implements SUM {
     @Override
     public ArrayList<ModListing> requiredMods() {
 	return new ArrayList<>(0);
+    }
+
+    @Override
+    public String description() {
+	return "";
     }
 
     public enum SpecialLogs {

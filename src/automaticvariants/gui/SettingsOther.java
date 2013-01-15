@@ -22,13 +22,7 @@ import skyproc.gui.SUMGUI;
  */
 public class SettingsOther extends SPSettingDefaultsPanel {
 
-    LLabel debugLabel;
-    LComboBox debugLevel;
     LCheckBox importOnStartup;
-    LCheckBox minimize;
-    LNumericSetting maxMem;
-    LLabel langLabel;
-    LComboBox language;
     LLabel papyrusDebug;
     LCheckBox debugOn;
     LCheckBox debugRegional;
@@ -47,50 +41,6 @@ public class SettingsOther extends SPSettingDefaultsPanel {
 	importOnStartup.addShadow();
 	setPlacement(importOnStartup);
 	AddSetting(importOnStartup);
-
-//	minimize = new LCheckBox("Minimize Patch", AV.AVFont, AV.yellow);
-//	minimize.tie(AVSaveFile.Settings.MINIMIZE_PATCH, AV.save, SUMGUI.helpPanel, true);
-//	minimize.setOffset(2);
-//	minimize.addShadow();
-//	setPlacement(minimize);
-//	AddSetting(minimize);
-
-	maxMem = new LNumericSetting("Max Allocated Memory",
-		AV.AVFont, AV.yellow, 250, 2000, 250);
-	maxMem.tie(Settings.MAX_MEM, AV.save, SUMGUI.helpPanel, true);
-	setPlacement(maxMem);
-	AddSetting(maxMem);
-
-	langLabel = new LLabel("Language", AV.AVFont, AV.yellow);
-
-	language = new LComboBox("Language");
-	language.setSize(150,25);
-	for (Enum e : SPGlobal.Language.values()) {
-	    language.addItem(e);
-	}
-	language.tie(Settings.LANGUAGE, AV.save, SUMGUI.helpPanel, true);
-	setPlacement(language, last.x + langLabel.getWidth() + 15, last.y);
-	AddSetting(language);
-
-	langLabel.setLocation(language.getX() - langLabel.getWidth() - 15, language.getY());
-	langLabel.addShadow();
-	settingsPanel.add(langLabel);
-
-	last.y += 20;
-
-	debugLabel = new LLabel("Patcher Debug Level", AV.AVFont, AV.yellow);
-	debugLabel.addShadow();
-	setPlacement(debugLabel);
-	Add(debugLabel);
-
-	debugLevel = new LComboBox("Patcher Debug Level");
-	debugLevel.setSize(150, 25);
-	debugLevel.addItem("Off");
-	debugLevel.addItem("AV Debug");
-	debugLevel.addItem("AV + SkyProc Debug");
-	debugLevel.tie(Settings.DEBUG_LEVEL, AV.save, SUMGUI.helpPanel, true);
-	setPlacement(debugLevel);
-	AddSetting(debugLevel);
 
 	last.y += 20;
 	papyrusDebug = new LLabel("Papyrus Debug Options", AV.AVFont, AV.yellow);

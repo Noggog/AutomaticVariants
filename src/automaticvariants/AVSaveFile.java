@@ -4,7 +4,7 @@
  */
 package automaticvariants;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import lev.Ln;
 import skyproc.SkyProcSave;
 
@@ -19,7 +19,6 @@ public class AVSaveFile extends SkyProcSave {
 	Add(Settings.PACKAGES_ON,		true,	    true);
 	Add(Settings.PACKAGES_ORIG_AS_VAR,	true,	    true);
 	Add(Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION,2,	    true);
-	Add(Settings.DEBUG_LEVEL,		1,	    false);
 	Add(Settings.IMPORT_AT_START,		false,	    false);
 	Add(Settings.STATS_ON,			false,	    true);
 	Add(Settings.STATS_HEIGHT_MAX,		15,	    true);
@@ -28,14 +27,11 @@ public class AVSaveFile extends SkyProcSave {
 	Add(Settings.STATS_STAMINA_MAX,		25,	    true);
 	Add(Settings.STATS_SPEED_MAX,		10,	    true);
 	Add(Settings.STATS_TIE,			true,	    true);
-	Add(Settings.MINIMIZE_PATCH,		true,	    true);
-	Add(Settings.MAX_MEM,			750,	    false);
-	Add(Settings.LANGUAGE,			0,	    true);
 	Add(Settings.SPEC_VAR_PROB,		15,	    false);
 	Add(Settings.PACKAGES_FORCE_REPICK,	1,	    true);
 	Add(Settings.PREV_VERSION,		0,	    false);
-	Add(Settings.DISABLED_PACKAGES,		new HashSet<String>(), false);
-	Add(Settings.PACKAGE_LISTING,		new HashSet<String>(), false);
+	Add(Settings.DISABLED_PACKAGES,		new ArrayList<String>(), false);
+	Add(Settings.PACKAGE_LISTING,		new ArrayList<String>(), false);
 	Add(Settings.DEBUG_ON,			false,	    true);
 	Add(Settings.DEBUG_REGIONAL,		false,	    true);
     }
@@ -144,17 +140,6 @@ public class AVSaveFile extends SkyProcSave {
 	helpInfo.put(Settings.AV_SETTINGS,
 		"These are AV settings related to this patcher program.");
 
-	helpInfo.put(Settings.DEBUG_LEVEL,
-		"This affects which debug messages will be logged. "
-		+ "The less debug messages printed, the quicker it will process.\n\n"
-		+ "NOTE: This setting will not take effect until the next time the program is run.\n\n"
-		+ "AV Debug \n"
-		+ "Print information regarding reading in the AV"
-		+ " Packages, and duplicating and processing records.\n\n"
-		+ "SkyProc Debug \n"
-		+ "Print information regarding the importing of "
-		+ "mods on your load order.");
-
 	helpInfo.put(Settings.IMPORT_AT_START,
 		"If enabled, AV will begin importing your mods when the program starts.\n\n"
 		+ "If turned off, the program will wait until it is necessary before importing.\n\n"
@@ -166,20 +151,6 @@ public class AVSaveFile extends SkyProcSave {
 		+ "Downsides:\n"
 		+ "- Having this on might make the GUI respond sluggishly while it processes in the "
 		+ "background.");
-
-	helpInfo.put(Settings.MAX_MEM,
-		"This will determine the max amount of megabytes of memory AV will be allowed to use.\n\n"
-		+ "Current max memory: " + Ln.toMB(Runtime.getRuntime().maxMemory()) + "MB\n"
-		+ "The allocated memory might be slightly less than requested.  This is normal\n\n"
-		+ "If AV runs out of memory the program will essentially halt as it "
-		+ "tries to scrap by with too little memory. "
-		+ "If you experience this, then try allocating more memory.\n"
-		+ "Windows has the final say in how much memory it will allow AV.  If your request"
-		+ " is denied you'll see an error.  Just lower your memory request and try again.\n\n"
-		+ "NOTE:  This setting will not take effect until you restart AV.");
-
-	helpInfo.put(Settings.MINIMIZE_PATCH,
-		"This will make AV do more processing in order to minimize the patch size.");
 
 	helpInfo.put(Settings.SPEC_PACKAGE_PACKAGER,
 		"Put your name as the person who compiled this package.  Especially useful if you "
@@ -244,10 +215,6 @@ public class AVSaveFile extends SkyProcSave {
 		+ "Example: 00123456 from Skyrim.esm would be typed in as \"123456Skyrim.esm\".\n\n"
 		+ "You can have comments by using semicolons (;)");
 
-	helpInfo.put(Settings.LANGUAGE,
-		"You can set your language here.  This will make SkyProc import strings files of that language.\n\n"
-		+ "NOTE:  You must restart AV for this to take effect.");
-
 	helpInfo.put(Settings.SPEC_VAR_REGION_EXCLUDE,
 		"This will make the regions you specified for this variant to spawn in exclusive.  This means that no other variants besides this one will spawn there.  The one exception to this rule is that other variants that name these exclusive regions specifically will still spawn there.\n\n"
 		+ "NOTE: This setting only applies if regions have been specified for this variant.");
@@ -293,7 +260,6 @@ public class AVSaveFile extends SkyProcSave {
 	SPEC_VAR_HEIGHT,
 	SPEC_VAR_NAME_AFFIX,
 	SPEC_VAR_NAME_PREFIX,
-	LANGUAGE,
 	STATS_ON,
 	STATS_HEIGHT_MAX,
 	STATS_HEALTH_MAX,
@@ -302,10 +268,7 @@ public class AVSaveFile extends SkyProcSave {
 	STATS_SPEED_MAX,
 	STATS_TIE,
 	WIZ_PARTIAL_MATCH,
-	DEBUG_LEVEL,
 	IMPORT_AT_START,
-	MINIMIZE_PATCH,
-	MAX_MEM,
 	DISABLED_PACKAGES,
 	PACKAGE_LISTING,
 	DEBUG_ON,

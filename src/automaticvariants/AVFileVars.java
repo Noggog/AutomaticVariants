@@ -761,7 +761,7 @@ public class AVFileVars {
     }
 
     static boolean hasVariant(LVLN llist) {
-	for (LVLO entry : llist.getEntries()) {
+	for (LeveledEntry entry : llist.getEntries()) {
 	    if (taggedNPCs.contains(entry.getForm())) {
 		return true;
 	    }
@@ -816,7 +816,7 @@ public class AVFileVars {
     }
 
     public static void saveAVPackagesListing() throws IOException {
-	Set<String> packageListing = AV.save.getStrings(Settings.PACKAGE_LISTING);
+	ArrayList<String> packageListing = AV.save.getStrings(Settings.PACKAGE_LISTING);
 	packageListing.clear();
 	ArrayList<File> files = Ln.generateFileList(new File(AVTexturesDir), false);
 	for (File f : files) {
@@ -824,7 +824,7 @@ public class AVFileVars {
 	}
     }
 
-    public static Set<String> getAVPackagesListing() throws IOException {
+    public static ArrayList<String> getAVPackagesListing() throws IOException {
 	return AV.save.getStrings(Settings.PACKAGE_LISTING);
     }
 
