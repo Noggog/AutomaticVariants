@@ -816,12 +816,12 @@ public class AVFileVars {
     }
 
     public static void saveAVPackagesListing() throws IOException {
-	ArrayList<String> packageListing = AV.save.getStrings(Settings.PACKAGE_LISTING);
-	packageListing.clear();
+	ArrayList<String> packageListing = new ArrayList<>();
 	ArrayList<File> files = Ln.generateFileList(new File(AVTexturesDir), false);
 	for (File f : files) {
 	    packageListing.add(f.getPath());
 	}
+	AV.save.setStrings(Settings.PACKAGE_LISTING, packageListing);
     }
 
     public static ArrayList<String> getAVPackagesListing() throws IOException {
