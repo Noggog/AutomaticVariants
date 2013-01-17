@@ -69,7 +69,7 @@ public class AVFileVars {
 
 	generateArmorRecords();
 
-	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Finishing Up");
+	SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Finishing Up");
 	SPProgressBarPlug.reset();
 	SPProgressBarPlug.setMax(1);
 	implementOrigAsVar();
@@ -101,7 +101,7 @@ public class AVFileVars {
 	if (AVPackagesDirFile.isDirectory()) {
 	    File[] files = AVPackagesDirFile.listFiles();
 	    if (progressBar) {
-		SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Importing AV Packages");
+		SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Importing AV Packages");
 		SPProgressBarPlug.reset();
 		SPProgressBarPlug.setMax(files.length);
 	    }
@@ -123,7 +123,7 @@ public class AVFileVars {
     }
 
     public static void prepProfiles() {
-	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Loading AV Profiles");
+	SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Loading AV Profiles");
 	SPProgressBarPlug.reset();
 	SPProgressBarPlug.setMax(8);
 
@@ -459,7 +459,7 @@ public class AVFileVars {
     }
 
     static void generateArmorRecords() {
-	SPProgressBarPlug.setStatus(AV.step++, AV.numSteps, "Generating variant records.");
+	SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Generating variant records.");
 	SPProgressBarPlug.reset();
 	SPProgressBarPlug.setMax(VariantProfile.profiles.size());
 

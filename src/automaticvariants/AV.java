@@ -22,9 +22,8 @@ import lev.Ln;
 import lev.debug.LDebug;
 import lev.gui.LImagePane;
 import lev.gui.LSaveFile;
-import skyproc.*;
 import skyproc.GLOB.GLOBType;
-import skyproc.SPGlobal.Language;
+import skyproc.*;
 import skyproc.gui.*;
 
 /**
@@ -35,8 +34,7 @@ import skyproc.gui.*;
 public class AV implements SUM {
 
     // Version
-    public static String version = "1.6.1.1";
-    public static String lastMajorVersion = "1.6.1.1";
+    public static String version = "1.6.2";
 
     /*
      * Static Strings
@@ -78,7 +76,6 @@ public class AV implements SUM {
     static boolean heightOnF = false;
     static int step = 0;
     static int numSteps = 4;
-    static int initDebugLevel = -1;
     static boolean secondF = false;
     //GUI
     static public SPMainMenuPanel settingsMenu;
@@ -375,18 +372,7 @@ public class AV implements SUM {
 
     static boolean handleArgs(ArrayList<String> arguments) throws IOException, InterruptedException {
 	Ln.toUpper(arguments);
-	String debug = "-DEBUG";
 	String gather = "-GATHER";
-
-	for (String s : arguments) {
-	    if (s.contains(debug)) {
-		s = s.substring(s.indexOf(debug) + debug.length()).trim();
-		try {
-		    initDebugLevel = Integer.valueOf(s);
-		} catch (NumberFormatException e) {
-		}
-	    }
-	}
 
 	if (arguments.contains(gather)) {
 	    AVFileVars.gatherFiles();
@@ -409,13 +395,6 @@ public class AV implements SUM {
 
     @Override
     public boolean needsPatching() {
-	//Check versions
-	if (AV.save.getInt(Settings.PREV_VERSION) < NiftyFunc.versionToNum(lastMajorVersion)) {
-	    if (SPGlobal.logging()) {
-		SPGlobal.log(header, "Needs update because of AV versioning: " + AV.save.getInt(Settings.PREV_VERSION) + " to " + version);
-	    }
-	    return true;
-	}
 
 	//Need to check if packages have changed.
 	ArrayList<File> files = Ln.generateFileList(new File(AVFileVars.AVTexturesDir), false);
@@ -619,7 +598,7 @@ public class AV implements SUM {
 	makeGlobals();
 	makeAVQuest();
 
-	SPProgressBarPlug.setStatus(0, 1, "Initializing AV");
+	SPProgressBarPlug.setStatusNumbered(0, 1, "Initializing AV");
 
 	// For all race SWITCHING variants
 	// (such as texture variants)
