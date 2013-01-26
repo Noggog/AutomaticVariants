@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import lev.LMergeMap;
 import lev.Ln;
 import lev.debug.LDebug;
 import lev.gui.LImagePane;
@@ -33,17 +32,8 @@ import skyproc.gui.*;
  */
 public class AV implements SUM {
 
-    // Version
     public static String version = "1.6.2";
-
-    /*
-     * Static Strings
-     */
     static private String header = "AV";
-    /*
-     * Storage Maps
-     */
-    static LMergeMap<FormID, NPC_> modifiedNPCs = new LMergeMap<>(false);
     /*
      * Exception lists
      */
@@ -71,12 +61,10 @@ public class AV implements SUM {
      */
     public static LSaveFile save = new AVSaveFile();
     public static QUST quest;
-    public static Thread parser;
     public static Gson gson = new Gson();
     static boolean heightOnF = false;
-    static int step = 0;
+    static int step = 1;
     static int numSteps = 4;
-    static boolean secondF = false;
     //GUI
     static public SPMainMenuPanel settingsMenu;
     static public SPMainMenuConfig packageManagerConfig;
@@ -316,17 +304,8 @@ public class AV implements SUM {
 	SPGlobal.debugExportSummary = false;
 	SPGlobal.debugBSAimport = false;
 	SPGlobal.debugNIFimport = false;
-	SPGlobal.newSpecialLog(SpecialLogs.WARNINGS, "Warnings.txt");
 	LDebug.timeElapsed = true;
 	LDebug.timeStamp = true;
-
-	SPGlobal.logMain(header, "AV version: " + version);
-	if (secondF) {
-	    SPGlobal.logMain(header, "This is a second process started by a previous AV.");
-	}
-	SPGlobal.logMain(header, "Available Memory: " + Ln.toMB(Runtime.getRuntime().totalMemory()) + "MB");
-	SPGlobal.logMain(header, "Max Memory: " + Ln.toMB(Runtime.getRuntime().maxMemory()) + "MB");
-
     }
 
     static void readInExceptions() throws IOException {
@@ -604,8 +583,6 @@ public class AV implements SUM {
 
 	makeGlobals();
 	makeAVQuest();
-
-	SPProgressBarPlug.setStatusNumbered(0, 1, "Initializing AV");
 
 	// For all race SWITCHING variants
 	// (such as texture variants)

@@ -773,21 +773,6 @@ public class AVFileVars {
 	return false;
     }
 
-    static void printModifiedNPCs() {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(header, "====================================================================");
-	    SPGlobal.log(header, "Printing Modified NPCs: ");
-	    SPGlobal.log(header, "====================================================================");
-	    for (FormID armoSrc : AV.modifiedNPCs.keySet()) {
-		SPGlobal.log(header, "For " + SPDatabase.getMajor(armoSrc, GRUP_TYPE.ARMO));
-		for (NPC_ n : AV.modifiedNPCs.get(armoSrc)) {
-		    SPGlobal.log(header, "    " + n);
-		}
-		SPGlobal.log(header, "--------------------------------------");
-	    }
-	}
-    }
-
     static public void moveOut() {
 	ArrayList<File> files = Ln.generateFileList(new File(AVPackagesDir), false);
 	boolean pass = true;
