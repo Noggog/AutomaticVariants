@@ -7,6 +7,7 @@ package automaticvariants;
 import automaticvariants.AVSaveFile.Settings;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.zip.DataFormatException;
 import javax.swing.JOptionPane;
@@ -94,7 +95,7 @@ public class AVFileVars {
      */
     public static void importVariants(boolean progressBar) throws IOException {
 	String header = "Import Variants";
-	File AVPackagesDirFile = new File(AVTexturesDir);
+	File AVPackagesDirFile = new File(AVPackagesDir);
 	// wipe
 	AVPackages = new PackageNode(AVPackagesDirFile, PackageNode.Type.ROOT);
 	RerouteFile.reroutes.clear();
@@ -777,13 +778,16 @@ public class AVFileVars {
 	ArrayList<File> files = Ln.generateFileList(new File(AVPackagesDir), false);
 	boolean pass = true;
 	for (File src : files) {
-	    if (isDDS(src) || isReroute(src) || isSpec(src)) {
+	    if (isDDS(src)) {
 		pass = move(src, AVFileVars.AVTexturesDir);
 	    } else if (isNIF(src)) {
 		pass = move(src, AVFileVars.AVMeshesDir);
 	    }
 	}
 	if (!pass) {
+	    JOptionPane.showMessageDialog(null,
+		    "<html>Error creating hard link redirects of AV Packages.<br>"
+		    + "Please report to Leviathan1753.</html>");
 	    SPGlobal.logError("Move Out", "Failed to move some files out to their texture locations.");
 	}
     }
@@ -795,7 +799,19 @@ public class AVFileVars {
 	    pass = pass && destFile.delete();
 	}
 	if (pass) {
-	    pass = pass && Ln.moveFile(src, destFile, true);
+	    try {
+		Ln.makeDirs(destFile);
+		Files.createLink(destFile.toPath(), src.toPath());
+		pass = pass && destFile.exists();
+	    } catch (IOException | UnsupportedOperationException ex) {
+		SPGlobal.logException(ex);
+		try {
+		    Files.copy(destFile.toPath(), src.toPath());
+		} catch (IOException ex1) {
+		    SPGlobal.logException(ex1);
+		    pass = false;
+		}
+	    }
 	}
 	return pass;
     }

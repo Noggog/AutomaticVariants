@@ -32,7 +32,7 @@ import skyproc.gui.*;
  */
 public class AV implements SUM {
 
-    public static String version = "1.6.2";
+    public static String version = "1.6.3";
     static private String header = "AV";
     /*
      * Exception lists
@@ -409,6 +409,7 @@ public class AV implements SUM {
 	if (!gatheringAndExiting) {
 	    AVFileVars.saveAVPackagesListing();
 	}
+	AVFileVars.moveOut();
 	if (patchWasGenerated) {
 	    AV.save.curSettings.get(Settings.PREV_VERSION).setTo(NiftyFunc.versionToNum(AV.version));
 	}
@@ -416,6 +417,7 @@ public class AV implements SUM {
 
     @Override
     public void onStart() throws Exception {
+	// Font init
 	try {
 	    AVFont = Font.createFont(Font.TRUETYPE_FONT, SettingsOther.class.getResource("Sony_Sketch_EF.ttf").openStream());
 	    AVFont = AVFont.deriveFont(Font.BOLD, 19);
@@ -423,9 +425,10 @@ public class AV implements SUM {
 	    SPGlobal.logException(ex);
 	    AVFont = new Font("Serif", Font.BOLD, 16);
 	}
-	AVFontSmall = AVFont.deriveFont(Font.PLAIN, 14);
+
+	// Prep AV
 	readInExceptions();
-	AVFileVars.moveOut();
+	AVFileVars.gatherFiles();
 	AVFileVars.importVariants(false);
     }
 
