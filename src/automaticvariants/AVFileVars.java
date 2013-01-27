@@ -125,7 +125,7 @@ public class AVFileVars {
 		if (progressBar) {
 		    SPProgressBarPlug.done();
 		}
-	    } 
+	    }
 	}
     }
 
@@ -272,13 +272,15 @@ public class AVFileVars {
     public static void loadUsedNIFs() {
 	for (VariantProfile profile : new ArrayList<>(VariantProfile.profiles)) {
 	    try {
-		LShrinkArray nifData = BSA.getUsedFile(profile.nifPath);
-		if (nifData != null) {
-		    Map<Integer, LPair<String, ArrayList<String>>> nifTextures = loadNif(profile.nifPath, nifData);
+		LShrinkArray nifRawData = BSA.getUsedFile(profile.nifPath);
+		if (nifRawData != null) {
+		    Map<Integer, LPair<String, ArrayList<String>>> nifTextures = loadNif(profile.nifPath, nifRawData);
+		    Map<Integer, String> nifData = new HashMap<>();
+		    profile.nifInfoDatabase.put(profile.nifPath, nifData);
 		    for (Integer index : nifTextures.keySet()) {
 			LPair<String, ArrayList<String>> pair = nifTextures.get(index);
 			profile.textures.put(pair.a, pair.b);
-			profile.nifNodeNames.put(index, pair.a);
+			nifData.put(index, pair.a);
 		    }
 		    if (profile.textures.isEmpty()) {
 			VariantProfile.profiles.remove(profile);
@@ -911,11 +913,11 @@ public class AVFileVars {
 
 
     }
-    
+
     static String standardizePath(File f) {
 	return standardizePath(f.getPath());
     }
-    
+
     static String standardizePath(String path) {
 	int index = path.indexOf("AV Packages");
 	if (index != -1) {

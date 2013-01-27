@@ -24,7 +24,7 @@ public class VariantProfile {
     public ARMO skin;
     public ARMA piece;
     String nifPath;
-    Map<Integer, String> nifNodeNames = new HashMap<>();
+    Map<String, Map<Integer, String>> nifInfoDatabase = new HashMap<>();
     Map<String, ArrayList<String>> textures = new HashMap<>();
     Map<String, ArrayList<String>> altTextures = new HashMap<>();
     String texturesPrintout;
@@ -51,7 +51,7 @@ public class VariantProfile {
 	piece = rhs.piece;
 	nifPath = rhs.nifPath;
 	textures = new HashMap<>();
-	nifNodeNames = new HashMap<>(rhs.nifNodeNames);
+	nifInfoDatabase = new HashMap<>(rhs.nifInfoDatabase);
 	for (String key : rhs.textures.keySet()) {
 	    ArrayList<String> list = new ArrayList<>();
 	    for (String value : rhs.textures.get(key)) {
@@ -278,12 +278,12 @@ public class VariantProfile {
 		    SPGlobal.log(toString(), " *************> Generating for " + var.printName("-"));
 		}
 
-		Map<String, TXST> txsts = generateTXSTs(var);
+		Map<String, TXST> txsts = generateTXSTs(var, nifPath);
 		if (txsts.isEmpty()) {
 		    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated");
 		    continue;
 		}
-		ARMA arma = generateARMA(var, txsts);
+		ARMA arma = generateARMA(var, txsts, nifPath);
 		ARMO armo = generateARMO(var, arma);
 
 		if (SPGlobal.logging()) {
@@ -306,13 +306,15 @@ public class VariantProfile {
 	return false;
     }
 
-    public Map<String, TXST> generateTXSTs(Variant var) {
+    public Map<String, TXST> generateTXSTs(Variant var, String nifPath) {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(toString(), " * ==> Generating TXSTs");
 	}
 	Map<String, TXST> out = new HashMap<>();
-	for (Integer index : nifNodeNames.keySet()) {
-	    String nodeName = nifNodeNames.get(index);
+	
+	Map<Integer, String> nifInfo = nifInfoDatabase.get(nifPath);
+	for (Integer index : nifInfo.keySet()) {
+	    String nodeName = nifInfo.get(index);
 	    if (shouldGenerate(var, nodeName)) {
 		String edid = NiftyFunc.EDIDtrimmer(generateEDID(var) + "_" + nodeName + "_txst");
 		if (SPGlobal.logging()) {
@@ -368,7 +370,7 @@ public class VariantProfile {
 	return j;
     }
 
-    public ARMA generateARMA(Variant var, Map<String, TXST> txsts) {
+    public ARMA generateARMA(Variant var, Map<String, TXST> txsts, String nifPath) {
 	String edid = NiftyFunc.EDIDtrimmer(generateEDID(var) + "_arma");
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(toString(), " * ==> Generating ARMA: " + edid);
@@ -380,8 +382,9 @@ public class VariantProfile {
 	ArrayList<AltTexture> alts = arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
 	alts.clear();
 
-	for (Integer index : nifNodeNames.keySet()) {
-	    String nifNodeName = nifNodeNames.get(index);
+	Map<Integer, String> nifInfo = nifInfoDatabase.get(nifPath);
+	for (Integer index : nifInfo.keySet()) {
+	    String nifNodeName = nifInfo.get(index);
 	    if (txsts.containsKey(nifNodeName)) {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(toString(), " * | Loading TXST for " + nifNodeName + " index " + index);
