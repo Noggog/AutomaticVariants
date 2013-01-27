@@ -47,7 +47,7 @@ public class RerouteFile extends PackageNode {
 
     @Override
     public boolean isDisabled() {
-	return AV.save.getStrings(AVSaveFile.Settings.DISABLED_PACKAGES).contains(routeFile.getPath());
+	return isDisabled(routeFile);
     }
 
     @Override
