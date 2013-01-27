@@ -63,11 +63,8 @@ public class Variant extends PackageNode implements Serializable {
 		}
 	    } else if (AVFileVars.isReroute(f)) {
 		RerouteFile c = new RerouteFile(f);
-		if (AVFileVars.isDDS(c.src)) {
-		    c.type = PackageNode.Type.TEXTURE;
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(src.getName(), depth + "    Added ROUTED texture: " + c.routeFile);
-		    }
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(src.getName(), depth + "    Added ROUTED file: " + c.routeFile);
 		}
 		add(c);
 	    }
@@ -110,7 +107,7 @@ public class Variant extends PackageNode implements Serializable {
 
     public ArrayList<File> getTextureFiles() {
 	ArrayList<File> out = new ArrayList<>();
-	for (PackageNode p : getAll(Type.TEXTURE)){
+	for (PackageNode p : getAll(Type.TEXTURE)) {
 	    out.add(p.src);
 	}
 	return out;
