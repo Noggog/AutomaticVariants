@@ -911,6 +911,18 @@ public class AVFileVars {
 
 
     }
+    
+    static String standardizePath(File f) {
+	return standardizePath(f.getPath());
+    }
+    
+    static String standardizePath(String path) {
+	int index = path.indexOf("AV Packages");
+	if (index != -1) {
+	    path = path.substring(index);
+	}
+	return path;
+    }
 
     /*
      * Internal Classes

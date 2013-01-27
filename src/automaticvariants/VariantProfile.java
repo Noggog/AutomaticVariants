@@ -286,9 +286,6 @@ public class VariantProfile {
 		ARMA arma = generateARMA(var, txsts);
 		ARMO armo = generateARMO(var, arma);
 
-		if (AV.save.getBool(AVSaveFile.Settings.PACKAGES_ORIG_AS_VAR)) {
-		}
-
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(toString(), " ******************************>");
 		    SPGlobal.log(toString(), "");

@@ -151,11 +151,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
     }
 
     boolean isDisabled(File source) {
-	String path = source.getPath();
-	int index = path.indexOf("AV Packages");
-	if (index != -1) {
-	    path = path.substring(index);
-	}
+	String path = AVFileVars.standardizePath(source);
 	boolean out = Ln.contains(AV.save.getStrings(AVSaveFile.Settings.DISABLED_PACKAGES), path);
 	return out;
     }
@@ -321,8 +317,14 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
     void enable(boolean enable, File f) {
 	ArrayList<PackageNode> all = getAll();
 	if (all.isEmpty()) {
+	    String path = AVFileVars.standardizePath(f);
 	    if (enable) {
-		AV.save.curSettings.get(AVSaveFile.Settings.DISABLED_PACKAGES).getStrings().remove(f.getPath());
+		int index = Ln.indexOfContains(AV.save.curSettings.get(AVSaveFile.Settings.DISABLED_PACKAGES).getStrings(), path);
+		if (index != -1) {
+		    ArrayList<String> disabled = AV.save.curSettings.get(AVSaveFile.Settings.DISABLED_PACKAGES).getStrings();
+		    disabled.remove(index);
+		    AV.save.curSettings.get(AVSaveFile.Settings.DISABLED_PACKAGES).setTo(disabled);
+		}
 	    } else {
 		AV.save.curSettings.get(AVSaveFile.Settings.DISABLED_PACKAGES).getStrings().add(f.getPath());
 	    }

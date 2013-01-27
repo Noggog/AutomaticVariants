@@ -25,7 +25,6 @@ import skyproc.gui.SUMGUI;
 public class PackagesOther extends SPSettingPanel {
 
     LButton gatherAndExit;
-    public LCheckBox forceRepick;
     LCheckBox origAsVar;
     LCheckBox movePackageFiles;
     LComboBox allowRegions;
@@ -62,20 +61,6 @@ public class PackagesOther extends SPSettingPanel {
 	allowRegions.tie(AVSaveFile.Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(allowRegions);
 	Add(allowRegions);
-
-//	forceRepick = new LCheckBox("Force Texture Repick", AV.AVFont, AV.yellow);
-//	forceRepick.setOffset(0);
-//	forceRepick.linkTo(AVSaveFile.Settings.PACKAGES_FORCE_REPICK, AV.save, SUMGUI.helpPanel, true);
-//	forceRepick.addShadow();
-//	forceRepick.addActionListener(new ActionListener() {
-//
-//	    @Override
-//	    public void actionPerformed(ActionEvent e) {
-//		forceRepick();
-//	    }
-//	});
-//	setPlacement(forceRepick);
-//	Add(forceRepick);
 
 	gatherAndExit = new LButton("Gather Files and Exit");
 	gatherAndExit.addActionListener(new ActionListener() {
