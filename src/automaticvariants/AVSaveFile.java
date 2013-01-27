@@ -231,6 +231,17 @@ public class AVSaveFile extends SkyProcSave {
 	helpInfo.put(AVSaveFile.Settings.DEBUG_REGIONAL,
 		"This only has an effect on in-game papyrus logs.\n\n"
 		+ "This will allow debug messages about regional variants.");
+
+	helpInfo.put(AVSaveFile.Settings.MOVE_PACKAGE_FILES,
+		"After patching, AV needs to move out the package files into locations Skyrim can "
+		+ "see and use.\n\n"
+		
+		+ "ON:  AV will physically move the files to the directories Skyrim expects.  This causes"
+		+ " issues with mod manager programs that like to keep track of installed files.\n\n"
+		
+		+ "OFF:  AV will use a Windows feature called Hard Links, and make redirect links in the "
+		+ "directories Skyrim expects, instead of actually moving the files.  This may cause issues "
+		+ "for some users if their operating systems for some reason do not like Hard Links.");
     }
 
     public enum Settings {
