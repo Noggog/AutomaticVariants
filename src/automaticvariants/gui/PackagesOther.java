@@ -27,6 +27,7 @@ public class PackagesOther extends SPSettingPanel {
     LButton gatherAndExit;
     public LCheckBox forceRepick;
     LCheckBox origAsVar;
+    LCheckBox movePackageFiles;
     LComboBox allowRegions;
     LButton packageManager;
     boolean onceForce = true;
@@ -45,6 +46,13 @@ public class PackagesOther extends SPSettingPanel {
 	origAsVar.addShadow();
 	setPlacement(origAsVar);
 	Add(origAsVar);
+	
+	movePackageFiles = new LCheckBox("Move Package Files", AV.AVFont, AV.yellow);
+	movePackageFiles.setOffset(0);
+	movePackageFiles.tie(AVSaveFile.Settings.MOVE_PACKAGE_FILES, AV.save, SUMGUI.helpPanel, true);
+	movePackageFiles.addShadow();
+	setPlacement(movePackageFiles);
+	Add(movePackageFiles);
 
 	allowRegions = new LComboBox("Allow Regional Variants", AV.AVFont, AV.yellow);
 	allowRegions.setSize(220, 60);

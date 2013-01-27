@@ -31,8 +31,8 @@ import skyproc.gui.*;
  * @author Leviathan1753
  */
 public class AV implements SUM {
-
-    public static String version = "1.6.3";
+    
+    public static String version = "1.6.2";
     static private String header = "AV";
     /*
      * Exception lists
@@ -93,12 +93,12 @@ public class AV implements SUM {
     static public Color lightGray = new Color(190, 190, 190);
     static public Color darkGray = new Color(110, 110, 110);
     static public boolean gatheringAndExiting = false;
-
+    
     public static void main(String[] args) {
 	ArrayList<String> arguments = new ArrayList<>(Arrays.asList(args));
 	try {
 	    save.init();
-
+	    
 	    if (handleArgs(arguments)) {
 		SPGlobal.closeDebug();
 		return;
@@ -106,9 +106,9 @@ public class AV implements SUM {
 	    cleanUp();
 	    setSkyProcGlobals();
 	    setDebugLevel();
-
+	    
 	    SUMGUI.open(new AV(), args);
-
+	    
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.
 	    System.err.println(e.toString());
@@ -116,12 +116,12 @@ public class AV implements SUM {
 	    JOptionPane.showMessageDialog(null, "There was an exception thrown during program execution: '" + e + "'  Check the debug logs.");
 	    SPGlobal.closeDebug();
 	}
-
+	
     }
-
+    
     static void setDebugLevel() {
     }
-
+    
     static void cleanUp() {
 	File delete = new File(SPGlobal.pathToInternalFiles + "Automatic Variants More Memory.bat");
 	if (delete.isFile()) {
@@ -135,18 +135,18 @@ public class AV implements SUM {
 	if (delete.isFile()) {
 	    delete.delete();
 	}
-
+	
 	delete = new File("AV Starter.bat");
 	if (delete.isFile()) {
 	    delete.delete();
 	}
-
+	
 	delete = new File("Files/Last AV Package Listing.txt");
 	if (delete.isFile()) {
 	    delete.delete();
 	}
     }
-
+    
     static void setUpInGameScriptBasedVariants(Mod source) {
 	SPEL addScriptSpell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), generateAttachScript(), "AVGenericScriptAttach");
 	for (RACE race : source.getRaces()) {
@@ -156,7 +156,7 @@ public class AV implements SUM {
 	    }
 	}
     }
-
+    
     static boolean checkNPCskip(NPC_ npcSrc, boolean print, boolean last) {
 	if (npcSrc.get(NPC_.NPCFlag.Unique)) {
 	    if (print && SPGlobal.logging()) {
@@ -211,13 +211,13 @@ public class AV implements SUM {
 	}
 	return false;
     }
-
+    
     static ScriptRef generateAttachScript() {
 	ScriptRef script = new ScriptRef(raceAttachScript);
 	script.setProperty("AVQuest", quest.getForm());
 	return script;
     }
-
+    
     public void makeAVQuest() {
 	ScriptRef questScript = new ScriptRef("AVQuestScript");
 	questScript.setProperty("TexturesOn", texturesOn.getForm());
@@ -238,63 +238,63 @@ public class AV implements SUM {
 	    logTable[i] = (float) Math.log((i + 1) / 1000.0);
 	}
 	questScript.setProperty("LogTable", logTable);
-
+	
 	quest = NiftyFunc.makeScriptQuest(SPGlobal.getGlobalPatch(), questScript);
     }
-
+    
     public static ScriptRef getQuestScript() {
 	return AV.quest.getScriptPackage().getScript("AVQuestScript");
     }
-
+    
     public void makeGlobals() {
 	forceRepick = new GLOB(SPGlobal.getGlobalPatch(), "AVForceRepick", GLOBType.Short);
 	forceRepick.setValue((float) AV.save.getInt(Settings.PACKAGES_FORCE_REPICK));
 	forceRepick.setConstant(true);
-
+	
 	texturesOn = new GLOB(SPGlobal.getGlobalPatch(), "AVTexturesOn", GLOBType.Short);
 	texturesOn.setValue(save.getBool(Settings.PACKAGES_ON));
 	texturesOn.setConstant(true);
-
+	
 	statsOn = new GLOB(SPGlobal.getGlobalPatch(), "AVStatsOn", GLOBType.Short);
 	statsOn.setValue(save.getBool(Settings.STATS_ON));
 	statsOn.setConstant(true);
-
+	
 	double scale = 100.0 // To percent (.01) instead of ints (1)
 		* 3.0; // Scaled to 3 standard deviations
 
 	heightScale = new GLOB(SPGlobal.getGlobalPatch(), "AVHeightScale", GLOBType.Float);
 	heightScale.setValue((float) (save.getInt(Settings.STATS_HEIGHT_MAX) / scale));
 	heightScale.setConstant(true);
-
+	
 	healthScale = new GLOB(SPGlobal.getGlobalPatch(), "AVHealthScale", GLOBType.Float);
 	healthScale.setValue((float) (save.getInt(Settings.STATS_HEALTH_MAX) / scale));
 	healthScale.setConstant(true);
-
+	
 	magickaScale = new GLOB(SPGlobal.getGlobalPatch(), "AVMagickaScale", GLOBType.Float);
 	magickaScale.setValue((float) (save.getInt(Settings.STATS_MAGIC_MAX) / scale));
 	magickaScale.setConstant(true);
-
+	
 	staminaScale = new GLOB(SPGlobal.getGlobalPatch(), "AVStaminaScale", GLOBType.Float);
 	staminaScale.setValue((float) (save.getInt(Settings.STATS_STAMINA_MAX) / scale));
 	staminaScale.setConstant(true);
-
+	
 	speedScale = new GLOB(SPGlobal.getGlobalPatch(), "AVSpeedScale", GLOBType.Float);
 	speedScale.setValue((float) (save.getInt(Settings.STATS_SPEED_MAX) / scale));
 	speedScale.setConstant(true);
-
+	
 	tieStats = new GLOB(SPGlobal.getGlobalPatch(), "AVTieStats", GLOBType.Short);
 	tieStats.setValue(save.getBool(Settings.STATS_TIE));
 	tieStats.setConstant(true);
-
+	
 	debugOn = new GLOB(SPGlobal.getGlobalPatch(), "DebugOn", GLOBType.Short);
 	debugOn.setValue(save.getBool(Settings.DEBUG_ON));
 	debugOn.setConstant(true);
-
+	
 	debugRegional = new GLOB(SPGlobal.getGlobalPatch(), "DebugRegional", GLOBType.Short);
 	debugRegional.setValue(save.getBool(Settings.DEBUG_REGIONAL));
 	debugRegional.setConstant(true);
     }
-
+    
     private static void setSkyProcGlobals() {
 	/*
 	 * Initializing Debug Log and Globals
@@ -307,7 +307,7 @@ public class AV implements SUM {
 	LDebug.timeElapsed = true;
 	LDebug.timeStamp = true;
     }
-
+    
     static void readInExceptions() throws IOException {
 	try {
 	    BufferedReader in = new BufferedReader(new FileReader("Files/BlockList.txt"));
@@ -333,7 +333,7 @@ public class AV implements SUM {
 		    }
 		}
 	    }
-
+	    
 	    Set<String> tmp = new HashSet<>(modExclude);
 	    for (String s : tmp) {
 		if (s.contains(".ESP") || s.contains(".ESM")) {
@@ -348,30 +348,30 @@ public class AV implements SUM {
 	    SPGlobal.logError("ReadInExceptions", "Failed to locate 'BlockList.txt'");
 	}
     }
-
+    
     static boolean handleArgs(ArrayList<String> arguments) throws IOException, InterruptedException {
 	Ln.toUpper(arguments);
 	String gather = "-GATHER";
-
+	
 	if (arguments.contains(gather)) {
 	    AVFileVars.gatherFiles();
 	    return true;
 	}
-
+	
 	return false;
     }
-
+    
     public static void exitProgram() {
 	SPGlobal.log(header, "Exit requested.");
 	save.saveToFile();
 	LDebug.wrapUpAndExit();
     }
-
+    
     @Override
     public JFrame openCustomMenu() {
 	throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     @Override
     public boolean needsPatching() {
 
@@ -386,7 +386,7 @@ public class AV implements SUM {
 		}
 		return true;
 	    }
-
+	    
 	    for (File f : files) {
 		String path = f.getPath();
 		if (!last.contains(path)) {
@@ -396,14 +396,14 @@ public class AV implements SUM {
 		    return true;
 		}
 	    }
-
+	    
 	} catch (IOException ex) {
 	    SPGlobal.logException(ex);
 	    return true;
 	}
 	return false;
     }
-
+    
     @Override
     public void onExit(boolean patchWasGenerated) throws IOException {
 	if (!gatheringAndExiting) {
@@ -414,7 +414,7 @@ public class AV implements SUM {
 	    AV.save.curSettings.get(Settings.PREV_VERSION).setTo(NiftyFunc.versionToNum(AV.version));
 	}
     }
-
+    
     @Override
     public void onStart() throws Exception {
 	// Font init
@@ -428,45 +428,45 @@ public class AV implements SUM {
 
 	// Prep AV
 	readInExceptions();
-	AVFileVars.gatherFiles();
+	if (save.getBool(Settings.MOVE_PACKAGE_FILES)) {
+	    AVFileVars.moveOut();
+	} else {
+	    AVFileVars.gatherFiles();
+	}
 	AVFileVars.importVariants(false);
     }
-
+    
     @Override
     public ArrayList<ModListing> requiredMods() {
 	return new ArrayList<>(0);
     }
-
+    
     @Override
     public String description() {
 	return "";
     }
-
-    public enum SpecialLogs {
-	WARNINGS;
-    }
-
+    
     @Override
     public String getName() {
 	return "Automatic Variants";
     }
-
+    
     @Override
     public GRUP_TYPE[] dangerousRecordReport() {
 	throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     @Override
     public GRUP_TYPE[] importRequests() {
 	return new GRUP_TYPE[]{GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
 		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA, GRUP_TYPE.TXST, GRUP_TYPE.LVLN};
     }
-
+    
     @Override
     public boolean hasStandardMenu() {
 	return true;
     }
-
+    
     @Override
     public SPMainMenuPanel getStandardMenu() {
 	settingsMenu = new SPMainMenuPanel(green);
@@ -489,8 +489,8 @@ public class AV implements SUM {
 	} catch (IOException ex) {
 	    SPGlobal.logException(ex);
 	}
-
-
+	
+	
 	packagesManagerPanel = new PackagesManager(settingsMenu);
 	packagesOtherPanel = new PackagesOther(settingsMenu);
 	wizVarSpecPanel = new WizSpecVariant(settingsMenu);
@@ -511,15 +511,16 @@ public class AV implements SUM {
 
 	otherPanel = new SettingsOther(settingsMenu);
 	settingsMenu.addMenu(otherPanel, false, save, Settings.AV_SETTINGS);
-
+	
 	settingsMenu.setWelcomePanel(new WelcomePage(settingsMenu));
-
+	
 	return settingsMenu;
     }
-
+    
     public LImagePane donateButton() throws IOException {
 	final LImagePane donate = new LImagePane(SettingsOther.class.getResource("ConsiderDonatingDark.png"));
 	donate.addMouseListener(new MouseListener() {
+
 	    @Override
 	    public void mouseClicked(MouseEvent e) {
 		try {
@@ -528,15 +529,15 @@ public class AV implements SUM {
 		    SPGlobal.logException(ex);
 		}
 	    }
-
+	    
 	    @Override
 	    public void mousePressed(MouseEvent e) {
 	    }
-
+	    
 	    @Override
 	    public void mouseReleased(MouseEvent e) {
 	    }
-
+	    
 	    @Override
 	    public void mouseEntered(MouseEvent e) {
 		try {
@@ -545,7 +546,7 @@ public class AV implements SUM {
 		    SPGlobal.logException(ex);
 		}
 	    }
-
+	    
 	    @Override
 	    public void mouseExited(MouseEvent e) {
 		try {
@@ -557,33 +558,39 @@ public class AV implements SUM {
 	});
 	return donate;
     }
-
+    
     @Override
     public boolean hasLogo() {
 	return true;
     }
-
+    
     @Override
     public URL getLogo() {
 	return SettingsOther.class.getResource("AutoVarGUITitle.png");
     }
-
+    
     @Override
     public boolean hasSave() {
 	return true;
     }
-
+    
     @Override
     public LSaveFile getSave() {
 	return save;
     }
-
+    
     @Override
     public void runChangesToPatch() throws Exception {
-
+	
 	SPGlobal.loggingSync(true);
 	SPGlobal.logging(true);
-
+	
+	if (save.getBool(Settings.MOVE_PACKAGE_FILES)) {
+	    AVFileVars.moveOut();
+	} else {
+	    AVFileVars.gatherFiles();
+	}
+	
 	makeGlobals();
 	makeAVQuest();
 
@@ -595,7 +602,7 @@ public class AV implements SUM {
 //	// (such as height variant scripting)
 //	setUpInGameScriptBasedVariants(source);
     }
-
+    
     static public Mod getMerger() {
 	if (merger == null) {
 	    merger = new Mod("AVTemporary", false);
@@ -603,22 +610,22 @@ public class AV implements SUM {
 	}
 	return merger;
     }
-
+    
     @Override
     public boolean hasCustomMenu() {
 	return false;
     }
-
+    
     @Override
     public boolean importAtStart() {
 	return getSave().getBool(Settings.IMPORT_AT_START);
     }
-
+    
     @Override
     public String getVersion() {
 	return version;
     }
-
+    
     @Override
     public Mod getExportPatch() {
 	Mod patch = new Mod(getListing());
@@ -626,12 +633,12 @@ public class AV implements SUM {
 	patch.setAuthor("Leviathan1753");
 	return patch;
     }
-
+    
     @Override
     public Color getHeaderColor() {
 	return green;
     }
-
+    
     @Override
     public ModListing getListing() {
 	return new ModListing(getName(), false);

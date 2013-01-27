@@ -95,31 +95,37 @@ public class AVFileVars {
      */
     public static void importVariants(boolean progressBar) throws IOException {
 	String header = "Import Variants";
-	File AVPackagesDirFile = new File(AVPackagesDir);
+	ArrayList<File> srcDirs = new ArrayList<>();
+	if (AV.save.getBool(Settings.MOVE_PACKAGE_FILES)) {
+	    srcDirs.add(new File(AVTexturesDir));
+	    srcDirs.add(new File(AVMeshesDir));
+	} else {
+	    srcDirs.add(new File(AVPackagesDir));
+	}
 	// wipe
-	AVPackages = new PackageNode(AVPackagesDirFile, PackageNode.Type.ROOT);
+	AVPackages = new PackageNode(new File(AVPackagesDir), PackageNode.Type.ROOT);
 	RerouteFile.reroutes.clear();
-	if (AVPackagesDirFile.isDirectory()) {
-	    File[] files = AVPackagesDirFile.listFiles();
-	    if (progressBar) {
-		SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Importing AV Packages");
-		SPProgressBarPlug.reset();
-		SPProgressBarPlug.setMax(files.length);
-	    }
-	    for (File packageFolder : files) {
-		if (packageFolder.isDirectory()) {
-		    AVPackage avPackage = new AVPackage(packageFolder);
-		    AVPackages.add(avPackage);
-		    if (progressBar) {
-			SPProgressBarPlug.incrementBar();
+	for (File srcDir : srcDirs) {
+	    if (srcDir.isDirectory()) {
+		File[] files = srcDir.listFiles();
+		if (progressBar) {
+		    SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Importing AV Packages");
+		    SPProgressBarPlug.reset();
+		    SPProgressBarPlug.setMax(files.length);
+		}
+		for (File packageFolder : files) {
+		    if (packageFolder.isDirectory()) {
+			AVPackage avPackage = new AVPackage(packageFolder);
+			AVPackages.mergeIn(avPackage);
+			if (progressBar) {
+			    SPProgressBarPlug.incrementBar();
+			}
 		    }
 		}
-	    }
-	    if (progressBar) {
-		SPProgressBarPlug.done();
-	    }
-	} else {
-	    SPGlobal.logError("Package Location", "There was no AV Packages folder.");
+		if (progressBar) {
+		    SPProgressBarPlug.done();
+		}
+	    } 
 	}
     }
 
@@ -777,8 +783,11 @@ public class AVFileVars {
     static public void moveOut() {
 	ArrayList<File> files = Ln.generateFileList(new File(AVPackagesDir), false);
 	boolean pass = true;
+	boolean hardLinked = !AV.save.getBool(Settings.MOVE_PACKAGE_FILES);
 	for (File src : files) {
-	    if (isDDS(src)) {
+	    if (hardLinked && isDDS(src)) {
+		pass = move(src, AVFileVars.AVTexturesDir);
+	    } else if (!hardLinked && (isDDS(src) || isReroute(src) || isSpec(src))) {
 		pass = move(src, AVFileVars.AVTexturesDir);
 	    } else if (isNIF(src)) {
 		pass = move(src, AVFileVars.AVMeshesDir);
@@ -799,17 +808,21 @@ public class AVFileVars {
 	    pass = pass && destFile.delete();
 	}
 	if (pass) {
-	    try {
-		Ln.makeDirs(destFile);
-		Files.createLink(destFile.toPath(), src.toPath());
-		pass = pass && destFile.exists();
-	    } catch (IOException | UnsupportedOperationException ex) {
-		SPGlobal.logException(ex);
+	    if (AV.save.getBool(Settings.MOVE_PACKAGE_FILES)) {
+		pass = pass && Ln.moveFile(src, destFile, true);
+	    } else {
 		try {
-		    Files.copy(destFile.toPath(), src.toPath());
-		} catch (IOException ex1) {
-		    SPGlobal.logException(ex1);
-		    pass = false;
+		    Ln.makeDirs(destFile);
+		    Files.createLink(destFile.toPath(), src.toPath());
+		    pass = pass && destFile.exists();
+		} catch (IOException | UnsupportedOperationException ex) {
+		    SPGlobal.logException(ex);
+		    try {
+			Files.copy(destFile.toPath(), src.toPath());
+		    } catch (IOException ex1) {
+			SPGlobal.logException(ex1);
+			pass = false;
+		    }
 		}
 	    }
 	}
