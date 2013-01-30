@@ -23,7 +23,10 @@ import lev.gui.LImagePane;
 import lev.gui.LSaveFile;
 import skyproc.GLOB.GLOBType;
 import skyproc.*;
-import skyproc.gui.*;
+import skyproc.gui.SPMainMenuConfig;
+import skyproc.gui.SPMainMenuPanel;
+import skyproc.gui.SUM;
+import skyproc.gui.SUMGUI;
 
 /**
  * ToDo: - Make compress work for disabled files
@@ -429,9 +432,9 @@ public class AV implements SUM {
 	// Prep AV
 	readInExceptions();
 	if (save.getBool(Settings.MOVE_PACKAGE_FILES)) {
-	    AVFileVars.moveOut();
-	} else {
 	    AVFileVars.gatherFiles();
+	} else {
+	    AVFileVars.moveOut();
 	}
 	AVFileVars.importVariants(false);
     }
@@ -586,9 +589,9 @@ public class AV implements SUM {
 	SPGlobal.logging(true);
 	
 	if (save.getBool(Settings.MOVE_PACKAGE_FILES)) {
-	    AVFileVars.moveOut();
-	} else {
 	    AVFileVars.gatherFiles();
+	} else {
+	    AVFileVars.moveOut();
 	}
 	
 	makeGlobals();

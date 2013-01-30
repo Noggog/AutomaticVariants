@@ -96,12 +96,7 @@ public class AVFileVars {
     public static void importVariants(boolean progressBar) throws IOException {
 	String header = "Import Variants";
 	ArrayList<File> srcDirs = new ArrayList<>();
-	if (AV.save.getBool(Settings.MOVE_PACKAGE_FILES)) {
-	    srcDirs.add(new File(AVTexturesDir));
-	    srcDirs.add(new File(AVMeshesDir));
-	} else {
-	    srcDirs.add(new File(AVPackagesDir));
-	}
+	srcDirs.add(new File(AVPackagesDir));
 	// wipe
 	AVPackages = new PackageNode(new File(AVPackagesDir), PackageNode.Type.ROOT);
 	RerouteFile.reroutes.clear();
@@ -785,11 +780,8 @@ public class AVFileVars {
     static public void moveOut() {
 	ArrayList<File> files = Ln.generateFileList(new File(AVPackagesDir), false);
 	boolean pass = true;
-	boolean hardLinked = !AV.save.getBool(Settings.MOVE_PACKAGE_FILES);
 	for (File src : files) {
-	    if (hardLinked && isDDS(src)) {
-		pass = move(src, AVFileVars.AVTexturesDir);
-	    } else if (!hardLinked && (isDDS(src) || isReroute(src) || isSpec(src))) {
+	    if (isDDS(src)) {
 		pass = move(src, AVFileVars.AVTexturesDir);
 	    } else if (isNIF(src)) {
 		pass = move(src, AVFileVars.AVMeshesDir);
@@ -811,7 +803,7 @@ public class AVFileVars {
 	}
 	if (pass) {
 	    if (AV.save.getBool(Settings.MOVE_PACKAGE_FILES)) {
-		pass = pass && Ln.moveFile(src, destFile, true);
+		pass = pass && Ln.moveFile(src, destFile, false);
 	    } else {
 		try {
 		    Ln.makeDirs(destFile);
