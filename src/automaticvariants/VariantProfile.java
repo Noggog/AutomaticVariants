@@ -5,12 +5,17 @@
 package automaticvariants;
 
 import automaticvariants.AVFileVars.ARMO_spec;
+import automaticvariants.PackageNode.Type;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.zip.DataFormatException;
 import lev.LMergeMap;
+import lev.LPair;
+import lev.LShrinkArray;
 import lev.gui.LFileTree;
-import skyproc.*;
 import skyproc.AltTextures.AltTexture;
+import skyproc.*;
 
 /**
  *
@@ -119,6 +124,36 @@ public class VariantProfile {
 	for (VariantProfile v : profiles) {
 	    v.print();
 	}
+    }
+
+    public boolean catalogNif(String nifPath) {
+	if (!nifInfoDatabase.containsKey(nifPath)) {
+	    try {
+		LShrinkArray nifRawData = null;
+		File f = new File(nifPath);
+		if (f.exists()) {
+		    nifRawData = new LShrinkArray(f);
+		} else {
+		    nifRawData = BSA.getUsedFile(nifPath);
+		}
+		if (nifRawData != null) {
+		    Map<Integer, LPair<String, ArrayList<String>>> nifTextures = AVFileVars.loadNif(nifPath, nifRawData);
+		    Map<Integer, String> nifData = new HashMap<>();
+		    nifInfoDatabase.put(nifPath, nifData);
+		    for (Integer index : nifTextures.keySet()) {
+			LPair<String, ArrayList<String>> pair = nifTextures.get(index);
+			textures.put(pair.a, pair.b);
+			nifData.put(index, pair.a);
+		    }
+		    return true;
+		} else {
+		    SPGlobal.log(toString(), " * Could not catalog nif because it could not find file: " + nifPath);
+		}
+	    } catch (IOException | DataFormatException ex) {
+		SPGlobal.logException(ex);
+	    }
+	}
+	return false;
     }
 
     @Override
@@ -278,12 +313,23 @@ public class VariantProfile {
 		    SPGlobal.log(toString(), " *************> Generating for " + var.printName("-"));
 		}
 
-		Map<String, TXST> txsts = generateTXSTs(var, nifPath);
+		String targetNifPath;
+		ArrayList<PackageNode> varNifs = var.getAll(Type.MESH);
+		if (varNifs.size() > 0) {
+		    targetNifPath = varNifs.get(0).src.getPath();
+		    catalogNif(targetNifPath);
+		    SPGlobal.log(toString(), " * Using variant nif file: " + targetNifPath);
+		} else {
+		    targetNifPath = nifPath;
+		    SPGlobal.log(toString(), " * Using default nif file: " + targetNifPath);
+		}
+
+		Map<String, TXST> txsts = generateTXSTs(var, targetNifPath);
 		if (txsts.isEmpty()) {
 		    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated");
 		    continue;
 		}
-		ARMA arma = generateARMA(var, txsts, nifPath);
+		ARMA arma = generateARMA(var, txsts, targetNifPath);
 		ARMO armo = generateARMO(var, arma);
 
 		if (SPGlobal.logging()) {
@@ -311,7 +357,7 @@ public class VariantProfile {
 	    SPGlobal.log(toString(), " * ==> Generating TXSTs");
 	}
 	Map<String, TXST> out = new HashMap<>();
-	
+
 	Map<Integer, String> nifInfo = nifInfoDatabase.get(nifPath);
 	for (Integer index : nifInfo.keySet()) {
 	    String nodeName = nifInfo.get(index);
@@ -378,6 +424,8 @@ public class VariantProfile {
 	ARMA arma = (ARMA) SPGlobal.getGlobalPatch().makeCopy(piece, edid);
 	arma.setRace(race.getForm());
 	arma.clearAdditionalRaces();
+	
+	arma.setModelPath(nifPath, Gender.MALE, Perspective.THIRD_PERSON);
 
 	ArrayList<AltTexture> alts = arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
 	alts.clear();
