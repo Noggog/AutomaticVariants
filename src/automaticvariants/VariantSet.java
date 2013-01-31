@@ -4,6 +4,7 @@
  */
 package automaticvariants;
 
+import automaticvariants.AVSaveFile.Settings;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +39,7 @@ public class VariantSet extends PackageNode implements Serializable {
 	}
 
 	ArrayList<File> files = new ArrayList<>(Arrays.asList(src.listFiles()));
-	
+
 
 	for (File f : files) {
 	    if (AVFileVars.isSpec(f)) {
@@ -138,6 +139,20 @@ public class VariantSet extends PackageNode implements Serializable {
 		    }
 
 		}
+	    }
+	}
+	// Warn about large multiplies
+	if ( //		flat.size() > 10000 && 
+		!AV.save.getStrings(Settings.LARGE_MULTIPLY_WARNING).contains(src.getPath())) {
+	    int response = JOptionPane.showConfirmDialog(null, "Variant set had an abnormally large number of resulting variants: " + flat.size() + "\n"
+		    + src.getPath() + "\n\n"
+		    + "This can cause the patcher to take a long time to patch,\n"
+		    + "and/or cause stability problems for Skyrim.\n\nStop the patcher by clicking the big red X on the\n"
+		    + "progress bar if you want to cancel.\n\n"
+		    + "Do you want AV to stop warning you of this particular set's size?",
+		    "Large Variant Set Warning", JOptionPane.YES_NO_OPTION);
+	    if (response == JOptionPane.YES_OPTION) {
+		AV.save.addString(Settings.LARGE_MULTIPLY_WARNING, src.getPath());
 	    }
 	}
 	return flat;

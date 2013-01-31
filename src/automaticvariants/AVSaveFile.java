@@ -35,6 +35,7 @@ public class AVSaveFile extends SkyProcSave {
 	Add(AVSaveFile.Settings.DEBUG_ON,			false,	    true);
 	Add(AVSaveFile.Settings.DEBUG_REGIONAL,		false,	    true);
 	Add(AVSaveFile.Settings.MOVE_PACKAGE_FILES,		true,	    true);
+	Add(AVSaveFile.Settings.LARGE_MULTIPLY_WARNING,		new ArrayList<String>(),	    false);
     }
 
     @Override
@@ -286,6 +287,7 @@ public class AVSaveFile extends SkyProcSave {
 	DEBUG_ON,
 	DEBUG_REGIONAL,
 	AV_SETTINGS,
-	MOVE_PACKAGE_FILES;
+	MOVE_PACKAGE_FILES,
+	LARGE_MULTIPLY_WARNING;
     }
 }

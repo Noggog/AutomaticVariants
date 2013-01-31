@@ -35,7 +35,7 @@ public class VariantProfile {
     String texturesPrintout;
     Set<String> texturesFlat;
     Set<String> textureNames;
-    ArrayList<VariantSet> sets = new ArrayList<>();
+    ArrayList<VariantSet> matchedVariantSets = new ArrayList<>();
     public int ID;
 
     public VariantProfile(RACE race, ARMO skin, ARMA piece) {
@@ -64,7 +64,7 @@ public class VariantProfile {
 	    }
 	    textures.put(key, list);
 	}
-	sets = new ArrayList<>(rhs.sets);
+	matchedVariantSets = new ArrayList<>(rhs.matchedVariantSets);
     }
 
     public void loadAltTextures(ArrayList<AltTexture> recordAltTextures) {
@@ -226,7 +226,7 @@ public class VariantProfile {
 		if (!hasCommonTexture(varSet)) {
 		    return false;
 		}
-		sets.add(varSet);
+		matchedVariantSets.add(varSet);
 		return true;
 	    }
 	}
@@ -303,7 +303,7 @@ public class VariantProfile {
     }
 
     public void generateARMOs() {
-	for (VariantSet varSet : sets) {
+	for (VariantSet varSet : matchedVariantSets) {
 	    if (SPGlobal.logging()) {
 		SPGlobal.log(toString(), " *************> Generating for " + varSet.printName("-"));
 	    }

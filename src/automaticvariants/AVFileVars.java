@@ -452,7 +452,7 @@ public class AVFileVars {
 	}
 	ArrayList<VariantProfile> tmp = new ArrayList<>(VariantProfile.profiles);
 	for (VariantProfile profile : tmp) {
-	    if (profile.sets.isEmpty()) {
+	    if (profile.matchedVariantSets.isEmpty()) {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "Removing profile " + profile + " because it was empty.");
 		    profile.print();
