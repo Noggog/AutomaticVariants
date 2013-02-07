@@ -59,7 +59,7 @@ public class Variant extends PackageNode implements Serializable {
 		    }
 		} catch (com.google.gson.JsonSyntaxException ex) {
 		    SPGlobal.logException(ex);
-		    JOptionPane.showMessageDialog(null, "Variant set " + f.getPath() + " had a bad specifications file.  Skipped.");
+		    JOptionPane.showMessageDialog(null, "Variant " + f.getPath() + " had a bad specifications file.  Skipped.");
 		}
 	    } else if (AVFileVars.isReroute(f)) {
 		RerouteFile c = new RerouteFile(f);

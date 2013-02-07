@@ -22,6 +22,7 @@ import skyproc.*;
 public class VariantSet extends PackageNode implements Serializable {
 
     public SpecVariantSet spec;
+    static String setMeshName = "[Set Meshes]";
     static String depth = "* +";
     ArrayList<Variant> flat;
 
@@ -39,7 +40,6 @@ public class VariantSet extends PackageNode implements Serializable {
 	}
 
 	ArrayList<File> files = new ArrayList<>(Arrays.asList(src.listFiles()));
-
 
 	for (File f : files) {
 	    if (AVFileVars.isSpec(f)) {
@@ -59,9 +59,17 @@ public class VariantSet extends PackageNode implements Serializable {
 		}
 
 	    } else if (f.isDirectory()) {
-		VariantGroup v = new VariantGroup(f);
-		v.load();
-		add(v);
+		if (f.getName().equalsIgnoreCase(setMeshName)) {
+		    VariantMeshSet ms = new VariantMeshSet(f);
+		    ms.load();
+		    if (ms.spec != null) {
+			add(ms);
+		    }
+		} else {
+		    VariantGroup v = new VariantGroup(f);
+		    v.load();
+		    add(v);
+		}
 
 	    } else if (AVFileVars.isDDS(f)) {
 		PackageNode c = new PackageNode(f, Type.GENTEXTURE);
@@ -70,12 +78,12 @@ public class VariantSet extends PackageNode implements Serializable {
 		    SPGlobal.log(src.getName(), depth + "   Loaded common texture: " + f);
 		}
 
-	    } else if (AVFileVars.isNIF(f)) {
-		PackageNode c = new PackageNode(f, Type.GENMESH);
-		add(c);
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(src.getName(), depth + "   Loaded common mesh: " + f);
-		}
+//	    } else if (AVFileVars.isNIF(f)) {
+//		PackageNode c = new PackageNode(f, Type.GENMESH);
+//		add(c);
+//		if (SPGlobal.logging()) {
+//		    SPGlobal.log(src.getName(), depth + "   Loaded common mesh: " + f);
+//		}
 	    } else if (AVFileVars.isReroute(f)) {
 		RerouteFile c = new RerouteFile(f);
 		if (AVFileVars.isDDS(c.src)) {
@@ -108,6 +116,7 @@ public class VariantSet extends PackageNode implements Serializable {
 
     ArrayList<Variant> multiplyAndFlatten() {
 	if (flat == null) {
+	    // Flatten Groups
 	    mergeInGlobals();
 	    flat = new ArrayList<>();
 	    ArrayList<VariantGroup> groups = getGroups();
@@ -140,10 +149,13 @@ public class VariantSet extends PackageNode implements Serializable {
 
 		}
 	    }
+
+	    //Multiply with Set Mesh files
+
 	}
 	// Warn about large multiplies
-	if ( //		flat.size() > 10000 && 
-		!AV.save.getStrings(Settings.LARGE_MULTIPLY_WARNING).contains(src.getPath())) {
+	if (flat.size() > 10000
+		&& !AV.save.getStrings(Settings.LARGE_MULTIPLY_WARNING).contains(src.getPath())) {
 	    int response = JOptionPane.showConfirmDialog(null, "Variant set had an abnormally large number of resulting variants: " + flat.size() + "\n"
 		    + src.getPath() + "\n\n"
 		    + "This can cause the patcher to take a long time to patch,\n"
@@ -292,8 +304,9 @@ public class VariantSet extends PackageNode implements Serializable {
     }
 
     public void mergeInGlobals() {
+	ArrayList<PackageNode> globals = getAll(Type.GENTEXTURE);
 	for (VariantGroup g : getGroups()) {
-	    g.mergeInGlobals(getAll(Type.GENTEXTURE));
+	    g.mergeInGlobals(globals);
 	}
     }
 

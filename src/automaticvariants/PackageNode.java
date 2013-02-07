@@ -456,6 +456,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	TEXTURE,
 	MESH,
 	GENTEXTURE,
+	MESHSET,
 	GENMESH,
 	REROUTE;
     }
