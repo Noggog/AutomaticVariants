@@ -21,9 +21,9 @@ import skyproc.*;
  *
  * @author Justin Swanson
  */
-public class VariantProfile {
+public class VariantNPCProfile {
 
-    public static ArrayList<VariantProfile> profiles = new ArrayList<>();
+    public static ArrayList<VariantNPCProfile> profiles = new ArrayList<>();
     static int nextID = 0;
     public RACE race;
     public ARMO skin;
@@ -38,18 +38,18 @@ public class VariantProfile {
     ArrayList<VariantSet> matchedVariantSets = new ArrayList<>();
     public int ID;
 
-    public VariantProfile(RACE race, ARMO skin, ARMA piece) {
+    public VariantNPCProfile(RACE race, ARMO skin, ARMA piece) {
 	this.race = race;
 	this.skin = skin;
 	this.piece = piece;
     }
 
-    VariantProfile() {
+    VariantNPCProfile() {
 	ID = nextID++;
 	profiles.add(this);
     }
 
-    VariantProfile(VariantProfile rhs) {
+    VariantNPCProfile(VariantNPCProfile rhs) {
 	this();
 	race = rhs.race;
 	skin = rhs.skin;
@@ -77,7 +77,7 @@ public class VariantProfile {
 	    ArrayList<String> txstTextures = txst.getTextures();
 	    if (!textures.containsKey(altTex.getName())) {
 		SPGlobal.logError(nifPath, "Skipping profile " + toString() + ", because it did not have a nif node name of: " + altTex.getName());
-		VariantProfile.profiles.remove(this);
+		VariantNPCProfile.profiles.remove(this);
 		return;
 	    }
 	    altTextures.put(altTex.getName(), new ArrayList<String>());
@@ -107,7 +107,7 @@ public class VariantProfile {
 	return race != null && skin != null && piece != null;
     }
 
-    public static VariantProfile find(RACE race, ARMO skin, ARMA piece, String nifPath) {
+    public static VariantNPCProfile find(RACE race, ARMO skin, ARMA piece, String nifPath) {
 	for (int i = 0; i < profiles.size(); i++) {
 	    if (profiles.get(i).is(race, skin, piece, nifPath)) {
 		return profiles.get(i);
@@ -121,7 +121,7 @@ public class VariantProfile {
 	SPGlobal.log("Print", "=============      Printing all Profiles     ==============");
 	SPGlobal.log("Print", "===========================================================");
 	SPGlobal.log("Print", "");
-	for (VariantProfile v : profiles) {
+	for (VariantNPCProfile v : profiles) {
 	    v.print();
 	}
     }
@@ -210,7 +210,7 @@ public class VariantProfile {
 	if (getClass() != obj.getClass()) {
 	    return false;
 	}
-	final VariantProfile other = (VariantProfile) obj;
+	final VariantNPCProfile other = (VariantNPCProfile) obj;
 	if (this.ID != other.ID) {
 	    return false;
 	}

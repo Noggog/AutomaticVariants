@@ -46,7 +46,7 @@ public class AVFileVars {
     static Set<FormID> taggedNPCs = new HashSet<>();
     static Map<FormID, LMergeMap<FormID, ARMO_spec>> armors = new HashMap<>();
     static Map<FormID, AV_Race> AVraces = new HashMap<>();
-    static public ArrayList<VariantProfile> profiles;
+    static public ArrayList<VariantNPCProfile> profiles;
 
     static void setUpFileVariants(Mod source) throws IOException, Uninitialized, BadParameter {
 	if (SPGlobal.logging()) {
@@ -222,14 +222,14 @@ public class AVFileVars {
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Load Variant Profiles.txt");
 	}
-	profiles = VariantProfile.profiles;
+	profiles = VariantNPCProfile.profiles;
 	locateUsedNIFs();
 	SPProgressBarPlug.incrementBar();
 	loadUsedNIFs();
 	SPProgressBarPlug.incrementBar();
 	loadProfileRecords();
 	SPProgressBarPlug.incrementBar();
-	VariantProfile.printProfiles();
+	VariantNPCProfile.printProfiles();
     }
 
     public static void locateUsedNIFs() {
@@ -254,8 +254,8 @@ public class AVFileVars {
 			    SPGlobal.log(header, "Skipping " + arma + " because it had no nif.");
 			    continue;
 			}
-			if (VariantProfile.find(null, null, null, nifPath) == null) {
-			    VariantProfile profile = new VariantProfile();
+			if (VariantNPCProfile.find(null, null, null, nifPath) == null) {
+			    VariantNPCProfile profile = new VariantNPCProfile();
 			    profile.nifPath = nifPath;
 			}
 		    }
@@ -265,7 +265,7 @@ public class AVFileVars {
     }
 
     public static void loadUsedNIFs() {
-	for (VariantProfile profile : new ArrayList<>(VariantProfile.profiles)) {
+	for (VariantNPCProfile profile : new ArrayList<>(VariantNPCProfile.profiles)) {
 	    try {
 		LShrinkArray nifRawData = BSA.getUsedFile(profile.nifPath);
 		if (nifRawData != null) {
@@ -278,11 +278,11 @@ public class AVFileVars {
 			nifData.put(index, pair.a);
 		    }
 		    if (profile.textures.isEmpty()) {
-			VariantProfile.profiles.remove(profile);
+			VariantNPCProfile.profiles.remove(profile);
 			SPGlobal.log(profile.toString(), "Removing profile with nif because it had no textures: " + profile.nifPath);
 		    }
 		} else {
-		    VariantProfile.profiles.remove(profile);
+		    VariantNPCProfile.profiles.remove(profile);
 		    SPGlobal.logError(header, "Error locating nif file: " + profile.nifPath + ", removing profile.");
 		}
 	    } catch (IOException | DataFormatException ex) {
@@ -304,7 +304,7 @@ public class AVFileVars {
 		}
 	    }
 	}
-	for (VariantProfile p : VariantProfile.profiles) {
+	for (VariantNPCProfile p : VariantNPCProfile.profiles) {
 	    p.finalizeProfile();
 	}
     }
@@ -330,7 +330,7 @@ public class AVFileVars {
 
 		// Find profile with that nif
 		String nifPath = "MESHES\\" + arma.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
-		VariantProfile profile = VariantProfile.find(null, null, null, nifPath);
+		VariantNPCProfile profile = VariantNPCProfile.find(null, null, null, nifPath);
 
 
 		if (profile != null) {
@@ -345,7 +345,7 @@ public class AVFileVars {
 			    //If profile is already filled, make duplicate
 			    if (profile.race != null) {
 				SPGlobal.log(header, "Duplicating for " + profile.nifPath + " || " + profile.race);
-				profile = new VariantProfile(profile);
+				profile = new VariantNPCProfile(profile);
 			    }
 			    //Load in record setup
 			    profile.race = r;
@@ -358,7 +358,7 @@ public class AVFileVars {
 		    } catch (Exception ex) {
 			SPGlobal.logError(header, "Skipping profile " + profile + " because an exception occured.");
 			SPGlobal.logException(ex);
-			VariantProfile.profiles.remove(profile);
+			VariantNPCProfile.profiles.remove(profile);
 		    }
 		} else {
 		    SPGlobal.log(header, "Skipped " + arma + ", could not find a profile matching nif: " + nifPath);
@@ -421,7 +421,7 @@ public class AVFileVars {
 		}
 
 		boolean absorbed = false;
-		for (VariantProfile varProfile : VariantProfile.profiles) {
+		for (VariantNPCProfile varProfile : VariantNPCProfile.profiles) {
 		    if (varProfile.absorb(varSet, seeds)) {
 			SPGlobal.log("Absorb", "  /======================================");
 			SPGlobal.log("Absorb", " /=== " + varSet.src + " absorbed by:");
@@ -450,14 +450,14 @@ public class AVFileVars {
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Clear Unused Profiles.txt");
 	}
-	ArrayList<VariantProfile> tmp = new ArrayList<>(VariantProfile.profiles);
-	for (VariantProfile profile : tmp) {
+	ArrayList<VariantNPCProfile> tmp = new ArrayList<>(VariantNPCProfile.profiles);
+	for (VariantNPCProfile profile : tmp) {
 	    if (profile.matchedVariantSets.isEmpty()) {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "Removing profile " + profile + " because it was empty.");
 		    profile.print();
 		}
-		VariantProfile.profiles.remove(profile);
+		VariantNPCProfile.profiles.remove(profile);
 	    }
 	}
     }
@@ -465,12 +465,12 @@ public class AVFileVars {
     static void generateArmorRecords() {
 	SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Generating variant records.");
 	SPProgressBarPlug.reset();
-	SPProgressBarPlug.setMax(VariantProfile.profiles.size());
+	SPProgressBarPlug.setMax(VariantNPCProfile.profiles.size());
 
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Generate Variants.txt");
 	}
-	for (VariantProfile profile : VariantProfile.profiles) {
+	for (VariantNPCProfile profile : VariantNPCProfile.profiles) {
 	    profile.generateARMOs();
 	    SPProgressBarPlug.incrementBar();
 	}

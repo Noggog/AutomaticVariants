@@ -4,7 +4,7 @@
  */
 package automaticvariants.gui;
 
-import automaticvariants.VariantProfile;
+import automaticvariants.VariantNPCProfile;
 import java.util.Objects;
 
 /**
@@ -13,17 +13,17 @@ import java.util.Objects;
  */
 public class ProfileDisplay implements Comparable {
 
-    public VariantProfile profile;
+    public VariantNPCProfile profile;
     String edid;
 
-    ProfileDisplay(VariantProfile profile) {
+    ProfileDisplay(VariantNPCProfile profile) {
 	this.profile = profile;
 	edid = profile.race.getEDID() + " | "
 		+ profile.skin.getEDID() + " | "
 		+ profile.piece.getEDID();
     }
 
-    ProfileDisplay(VariantProfile profile, String edid) {
+    ProfileDisplay(VariantNPCProfile profile, String edid) {
 	this.profile = profile;
 	this.edid = edid;
     }
