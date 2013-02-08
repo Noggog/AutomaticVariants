@@ -30,6 +30,18 @@ public class Variant extends PackageNode implements Serializable {
 	super(null, Type.VAR);
 	spec = new SpecVariant();
     }
+    
+    Variant (Variant rhs) {
+	this();
+	name = rhs.name;
+	for (PackageNode p : rhs.getAll(Type.TEXTURE)) {
+	    add(new PackageNode(p.src, Type.TEXTURE));
+	}
+	for (PackageNode p : rhs.getAll(Type.MESH)) {
+	    add(new PackageNode(p.src, Type.MESH));
+	}
+	parent = rhs.parent;
+    }
 
     public void load() throws FileNotFoundException, IOException {
 	if (SPGlobal.logging()) {
@@ -88,15 +100,11 @@ public class Variant extends PackageNode implements Serializable {
     }
 
     public Variant merge(Variant rhs) {
-	Variant out = new Variant();
+	Variant out = new Variant(this);
 	out.name = name + "_" + rhs.src.getName();
-	for (PackageNode tex : getAll(Type.TEXTURE)) {
-	    out.add(new PackageNode(tex.src, Type.TEXTURE));
-	}
 	for (PackageNode p : rhs.getAll(Type.TEXTURE)) {
 	    out.add(new PackageNode(p.src, Type.TEXTURE));
 	}
-	out.parent = rhs.parent;
 	spec.Probability_Divider *= rhs.spec.Probability_Divider;
 	return out;
     }
@@ -111,6 +119,14 @@ public class Variant extends PackageNode implements Serializable {
 	    out.add(p.src);
 	}
 	return out;
+    }
+    
+    public void absorbGlobalMesh(VariantGlobalMesh globalMesh) {
+	name += "_" + globalMesh.src.getName();
+	removeAll(Type.MESH);
+	PackageNode mesh = globalMesh.getAll(Type.MESH).get(0);
+	add(new PackageNode(mesh));
+	spec = spec.merge(globalMesh.spec);
     }
 
     public ArrayList<String> getTextureNames() {

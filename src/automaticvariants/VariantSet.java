@@ -60,10 +60,18 @@ public class VariantSet extends PackageNode implements Serializable {
 
 	    } else if (f.isDirectory()) {
 		if (f.getName().equalsIgnoreCase(setMeshName)) {
-		    VariantMeshSet ms = new VariantMeshSet(f);
-		    ms.load();
-		    if (ms.spec != null) {
-			add(ms);
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(src.getName(), depth + "   ********* Loading Global Meshes");
+		    }
+		    PackageNode globalMeshDirN = new PackageNode(f, Type.GLOBALMESHSET);
+		    add(globalMeshDirN);
+		    for (File globalMeshDir : f.listFiles()) {
+			VariantGlobalMesh ms = new VariantGlobalMesh(globalMeshDir);
+			ms.load();
+			globalMeshDirN.add(ms);
+		    }
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(src.getName(), depth + "   ******************");
 		    }
 		} else {
 		    VariantGroup v = new VariantGroup(f);
@@ -107,7 +115,25 @@ public class VariantSet extends PackageNode implements Serializable {
 	return out;
     }
 
+    ArrayList<VariantGlobalMesh> getGlobalMeshes() {
+	ArrayList<VariantGlobalMesh> out = new ArrayList<>();
+	for (PackageNode globalMeshSet : getAll(Type.GLOBALMESHSET)) {
+	    ArrayList<PackageNode> globalMeshes = globalMeshSet.getAll(Type.GLOBALMESH);
+	    for (PackageNode p : globalMeshes) {
+		out.add((VariantGlobalMesh) p);
+	    }
+	}
+	return out;
+    }
+
     ArrayList<Variant> multiplyAndFlatten() {
+	if (flat != null) {
+	    return flat;
+	}
+	return multiplyAndFlatten(getGlobalMeshes());
+    }
+
+    ArrayList<Variant> multiplyAndFlatten(ArrayList<VariantGlobalMesh> globalMeshes) {
 	if (flat == null) {
 	    // Flatten Groups
 	    mergeInGlobals();
@@ -139,12 +165,18 @@ public class VariantSet extends PackageNode implements Serializable {
 		    for (Variant v : flat) {
 			v.spec.Probability_Divider *= (avg * (groups.size() - 1));
 		    }
-
 		}
 	    }
 
-	    //Multiply with Set Mesh files
-
+	    //Multiply in Global Meshes
+	    ArrayList<Variant> tmp = new ArrayList<>(flat);
+	    for (VariantGlobalMesh globalMesh : globalMeshes) {
+		for (Variant v : tmp) {
+		    Variant copy = new Variant(v);
+		    copy.absorbGlobalMesh(globalMesh);
+		    flat.add(copy);
+		}
+	    }
 	}
 	// Warn about large multiplies
 	if (flat.size() > 10000
@@ -320,10 +352,5 @@ public class VariantSet extends PackageNode implements Serializable {
     public String printName(String spacer) {
 	PackageNode p = (PackageNode) this.getParent();
 	return p.printName(spacer) + spacer + src.getName();
-    }
-
-    @Override
-    public ArrayList<Variant> getVariants() {
-	return multiplyAndFlatten();
     }
 }

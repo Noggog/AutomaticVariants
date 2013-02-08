@@ -6,6 +6,7 @@ package automaticvariants;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import skyproc.FormID;
@@ -38,6 +39,28 @@ public class SpecVariant extends SpecFile {
 
     public SpecVariant(File src) {
 	super(src);
+    }
+    
+    public SpecVariant merge(SpecVariant rhs) {
+	SpecVariant out = new SpecVariant();
+	out.Probability_Divider = Probability_Divider * rhs.Probability_Divider;
+	
+	ArrayList<String[]> regionInclude = new ArrayList<>(Arrays.asList(Region_Include));
+	regionInclude.addAll(Arrays.asList(rhs.Region_Include));
+	out.Region_Include = regionInclude.toArray(new String[0][]);
+	
+	out.Exclusive_Region = this.Exclusive_Region || rhs.Exclusive_Region;
+	
+	out.Health_Mult = (this.Health_Mult + out.Health_Mult) / 2;
+	out.Height_Mult = (this.Height_Mult + out.Height_Mult) / 2;
+	out.Magicka_Mult = (this.Magicka_Mult + out.Magicka_Mult) / 2;
+	out.Stamina_Mult = (this.Stamina_Mult + out.Stamina_Mult) / 2;
+	out.Speed_Mult = (this.Speed_Mult + out.Speed_Mult) / 2;
+	
+	out.Name_Affix = this.Name_Affix;
+	out.Name_Prefix = this.Name_Prefix;
+	
+	return out;
     }
 
     @Override

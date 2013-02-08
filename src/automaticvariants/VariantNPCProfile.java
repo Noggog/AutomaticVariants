@@ -223,9 +223,9 @@ public class VariantNPCProfile {
 	    if (seed.race.equals(race)
 		    && seed.skin.equals(skin)
 		    && seed.piece.equals(piece)) {
-		if (!hasCommonTexture(varSet)) {
-		    return false;
-		}
+//		if (!hasCommonTexture(varSet)) {
+//		    return false;
+//		}
 		matchedVariantSets.add(varSet);
 		return true;
 	    }
@@ -302,15 +302,26 @@ public class VariantNPCProfile {
 	return hasTexture(texture.getName().toUpperCase());
     }
 
+    public ArrayList<VariantGlobalMesh> getGlobalMeshes() {
+	ArrayList<VariantGlobalMesh> globalMeshes = new ArrayList<>();
+	for (VariantSet varSet : matchedVariantSets) {
+	    globalMeshes.addAll(varSet.getGlobalMeshes());
+	}
+	return globalMeshes;
+    }
+
     public void generateARMOs() {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(toString(), " ***********> Generating profile " + ID);
+	}
 	for (VariantSet varSet : matchedVariantSets) {
 	    if (SPGlobal.logging()) {
-		SPGlobal.log(toString(), " *************> Generating for " + varSet.printName("-"));
+		SPGlobal.log(toString(), " *************> Generating set " + varSet.printName("-"));
 	    }
-	    ArrayList<Variant> vars = varSet.multiplyAndFlatten();
+	    ArrayList<Variant> vars = varSet.multiplyAndFlatten(getGlobalMeshes());
 	    for (Variant var : vars) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(toString(), " *************> Generating for " + var.printName("-"));
+		    SPGlobal.log(toString(), " ***************> Generating var " + var.printName("-"));
 		}
 
 		String targetNifPath;
@@ -424,7 +435,7 @@ public class VariantNPCProfile {
 	ARMA arma = (ARMA) SPGlobal.getGlobalPatch().makeCopy(piece, edid);
 	arma.setRace(race.getForm());
 	arma.clearAdditionalRaces();
-	
+
 	arma.setModelPath(nifPath, Gender.MALE, Perspective.THIRD_PERSON);
 
 	ArrayList<AltTexture> alts = arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);

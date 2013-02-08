@@ -39,10 +39,22 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	}
 	this.type = type;
     }
+    
+    public PackageNode(PackageNode p) {
+	this.src = p.src;
+	this.type = p.type;
+    }
 
     @Override
     public PackageNode get(LSwingTreeNode node) {
 	return (PackageNode) super.get(node);
+    }
+    
+    public void removeAll(Type t) {
+	ArrayList<PackageNode> get = getAll(t);
+	for (PackageNode p : get) {
+	    this.remove(p);
+	}
     }
 
     boolean moveOut() {
@@ -456,8 +468,8 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	TEXTURE,
 	MESH,
 	GENTEXTURE,
-	MESHSET,
-	GENMESH,
+	GLOBALMESH,
+	GLOBALMESHSET,
 	REROUTE;
     }
 
