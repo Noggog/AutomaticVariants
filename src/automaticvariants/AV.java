@@ -35,7 +35,7 @@ import skyproc.gui.SUMGUI;
  */
 public class AV implements SUM {
 
-    public static String version = "1.6.2";
+    public static String version = "2.0";
     static private String header = "AV";
     /*
      * Exception lists
@@ -461,8 +461,11 @@ public class AV implements SUM {
 
     @Override
     public GRUP_TYPE[] importRequests() {
-	return new GRUP_TYPE[]{GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
-		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA, GRUP_TYPE.TXST, GRUP_TYPE.LVLN};
+	return new GRUP_TYPE[]{
+		    GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
+		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
+		    GRUP_TYPE.TXST, GRUP_TYPE.LVLN,
+		    GRUP_TYPE.WEAP, GRUP_TYPE.LVLI};
     }
 
     @Override
