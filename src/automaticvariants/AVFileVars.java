@@ -875,11 +875,10 @@ public class AVFileVars {
 	for (File file : files) {
 	    File dest = new File(AVPackagesDir + file.getPath().substring(folder.length()));
 	    if (dest.exists()) {
-		file.delete();
-	    } else {
-		if (!Ln.moveFile(file, dest, false)) {
-		    fail = true;
-		}
+		dest.delete();
+	    }
+	    if (!Ln.moveFile(file, dest, false)) {
+		fail = true;
 	    }
 	}
 	if (fail) {

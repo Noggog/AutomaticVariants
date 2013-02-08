@@ -30,8 +30,8 @@ public class Variant extends PackageNode implements Serializable {
 	super(null, Type.VAR);
 	spec = new SpecVariant();
     }
-    
-    Variant (Variant rhs) {
+
+    Variant(Variant rhs) {
 	this();
 	name = rhs.name;
 	for (PackageNode p : rhs.getAll(Type.TEXTURE)) {
@@ -86,15 +86,27 @@ public class Variant extends PackageNode implements Serializable {
     public void mergeInGlobals(ArrayList<PackageNode> globalFiles) {
 	ArrayList<PackageNode> texs = getAll(Type.TEXTURE);
 	for (PackageNode global : globalFiles) {
-	    boolean exists = false;
-	    for (PackageNode tex : texs) {
-		if (global.src.getName().equalsIgnoreCase(tex.src.getName())) {
-		    exists = true;
-		    break;
+	    if (global.type == Type.GENTEXTURE) {
+		boolean exists = false;
+		for (PackageNode tex : texs) {
+		    if (global.src.getName().equalsIgnoreCase(tex.src.getName())) {
+			exists = true;
+			break;
+		    }
+		}
+		if (!exists) {
+		    add(new PackageNode(global.src, Type.TEXTURE));
 		}
 	    }
-	    if (!exists) {
-		add(new PackageNode(global.src, Type.TEXTURE));
+	}
+
+	ArrayList<PackageNode> mesh = getAll(Type.MESH);
+	if (mesh.isEmpty()) {
+	    for (PackageNode global : globalFiles) {
+		if (global.type == Type.GENMESH) {
+		    add(new PackageNode(global.src, Type.MESH));
+		    break;
+		}
 	    }
 	}
     }
@@ -120,7 +132,7 @@ public class Variant extends PackageNode implements Serializable {
 	}
 	return out;
     }
-    
+
     public void absorbGlobalMesh(VariantGlobalMesh globalMesh) {
 	name += "_" + globalMesh.src.getName();
 	removeAll(Type.MESH);

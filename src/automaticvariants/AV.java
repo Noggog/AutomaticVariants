@@ -411,8 +411,8 @@ public class AV implements SUM {
     public void onExit(boolean patchWasGenerated) throws IOException {
 	if (!gatheringAndExiting) {
 	    AVFileVars.saveAVPackagesListing();
+	    AVFileVars.moveOut();
 	}
-	AVFileVars.moveOut();
 	if (patchWasGenerated) {
 	    AV.save.curSettings.get(Settings.PREV_VERSION).setTo(NiftyFunc.versionToNum(AV.version));
 	}

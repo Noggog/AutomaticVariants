@@ -62,12 +62,6 @@ public class VariantGlobalMesh extends PackageNode {
 	return new ArrayList<>(0);
     }
 
-    public void mergeInGlobals(ArrayList<PackageNode> globalFiles) {
-	for (Variant v : getVariants()) {
-	    v.mergeInGlobals(globalFiles);
-	}
-    }
-
     public VariantSet getSet() {
 	return (VariantSet) getParent();
     }
