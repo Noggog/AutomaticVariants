@@ -78,7 +78,7 @@ public class SeedProfile {
 	    return false;
 	}
 
-	skin = (ARMO) SPDatabase.getMajor(AVFileVars.getUsedSkin(npc), GRUP_TYPE.ARMO);
+	skin = (ARMO) SPDatabase.getMajor(VariantFactoryNPC.getUsedSkin(npc), GRUP_TYPE.ARMO);
 	if (skin == null) {
 	    SPGlobal.logError("SeedProfile", "Skipped seed " + npc + " because it had no skin.");
 	    return false;

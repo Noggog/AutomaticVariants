@@ -46,7 +46,6 @@ public class AV implements SUM {
     /*
      * Script/Property names
      */
-    static String raceAttachScript = "AVRaceAttachment";
     static private Mod merger;
     GLOB texturesOn;
     GLOB statsOn;
@@ -148,77 +147,6 @@ public class AV implements SUM {
 	if (delete.isFile()) {
 	    delete.delete();
 	}
-    }
-
-    static void setUpInGameScriptBasedVariants(Mod source) {
-	SPEL addScriptSpell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), generateAttachScript(), "AVGenericScriptAttach");
-	for (RACE race : source.getRaces()) {
-	    if (!AVFileVars.AVraces.containsKey(race.getForm())) {
-		race.addSpell(addScriptSpell.getForm());
-		SPGlobal.getGlobalPatch().addRecord(race);
-	    }
-	}
-    }
-
-    static boolean checkNPCskip(NPC_ npcSrc, boolean print, boolean last) {
-	if (npcSrc.get(NPC_.NPCFlag.Unique)) {
-	    if (print && SPGlobal.logging()) {
-		if (last) {
-		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		}
-		SPGlobal.log(header, "    Skipping " + npcSrc + " : Unique actor");
-	    }
-	    return true;
-	}
-	if (block.contains(AVFileVars.getUsedSkin(npcSrc))) {
-	    if (print && SPGlobal.logging()) {
-		if (last) {
-		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		}
-		SPGlobal.log(header, "    Skipping " + npcSrc + " : Blocked skin");
-	    }
-	    return true;
-	}
-	if (!npcSrc.getTemplate().equals(FormID.NULL)) {
-	    if (npcSrc.get(NPC_.TemplateFlag.USE_TRAITS)) {
-		if (print && SPGlobal.logging()) {
-		    if (last) {
-			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		    }
-		    SPGlobal.log(header, "    Skipping " + npcSrc + " : Template with traits flag");
-		}
-		return true;
-	    } else if (NiftyFunc.isTemplatedToLList(npcSrc) != null) {
-		if (print && SPGlobal.logging()) {
-		    if (last) {
-			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		    }
-		    SPGlobal.log(header, "    Skipping " + npcSrc + " : Template w/o traits flag but templated to a LList.");
-		    SPGlobal.logBlocked(header, "Templated w/o traits flag but templated to a LList", npcSrc);
-		}
-		return true;
-	    }
-	}
-	String edid = npcSrc.getEDID().toUpperCase();
-	for (String exclude : edidExclude) {
-	    if (edid.contains(exclude)) {
-		if (print && SPGlobal.logging()) {
-		    if (last) {
-			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		    }
-		    SPGlobal.log(header, "    Skipping " + npcSrc + " : edid exclude '" + exclude + "'");
-		    SPGlobal.logBlocked(header, "edid exclude " + exclude, npcSrc);
-		}
-		return true;
-	    }
-	}
-	return false;
-    }
-
-    static ScriptRef generateAttachScript() {
-	ScriptRef script = new ScriptRef(raceAttachScript);
-	script.setProperty("AVQuest", quest.getForm());
-	return script;
     }
 
     public void makeAVQuest() {

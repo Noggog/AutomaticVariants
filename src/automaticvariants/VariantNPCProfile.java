@@ -5,14 +5,11 @@
 package automaticvariants;
 
 import automaticvariants.AVFileVars.ARMO_spec;
+import automaticvariants.AVFileVars.VariantType;
 import automaticvariants.PackageNode.Type;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
-import java.util.zip.DataFormatException;
 import lev.LMergeMap;
-import lev.LPair;
-import lev.LShrinkArray;
 import lev.gui.LFileTree;
 import skyproc.AltTextures.AltTexture;
 import skyproc.*;
@@ -21,164 +18,35 @@ import skyproc.*;
  *
  * @author Justin Swanson
  */
-public class VariantNPCProfile {
+public class VariantNPCProfile extends VariantProfile {
 
-    public static ArrayList<VariantNPCProfile> profiles = new ArrayList<>();
-    static int nextID = 0;
     public RACE race;
     public ARMO skin;
     public ARMA piece;
-    String nifPath;
-    Map<String, Map<Integer, String>> nifInfoDatabase = new HashMap<>();
-    Map<String, ArrayList<String>> textures = new HashMap<>();
-    Map<String, ArrayList<String>> altTextures = new HashMap<>();
-    String texturesPrintout;
-    Set<String> texturesFlat;
-    Set<String> textureNames;
-    ArrayList<VariantSet> matchedVariantSets = new ArrayList<>();
-    public int ID;
 
     public VariantNPCProfile(RACE race, ARMO skin, ARMA piece) {
+	super();
 	this.race = race;
 	this.skin = skin;
 	this.piece = piece;
     }
 
     VariantNPCProfile() {
-	ID = nextID++;
-	profiles.add(this);
+	super();
     }
 
     VariantNPCProfile(VariantNPCProfile rhs) {
-	this();
+	super(rhs);
 	race = rhs.race;
 	skin = rhs.skin;
 	piece = rhs.piece;
-	nifPath = rhs.nifPath;
-	textures = new HashMap<>();
-	nifInfoDatabase = new HashMap<>(rhs.nifInfoDatabase);
-	for (String key : rhs.textures.keySet()) {
-	    ArrayList<String> list = new ArrayList<>();
-	    for (String value : rhs.textures.get(key)) {
-		list.add(value);
-	    }
-	    textures.put(key, list);
-	}
-	matchedVariantSets = new ArrayList<>(rhs.matchedVariantSets);
-    }
-
-    public void loadAltTextures(ArrayList<AltTexture> recordAltTextures) {
-	for (AltTexture altTex : recordAltTextures) {
-	    TXST txst = (TXST) SPDatabase.getMajor(altTex.getTexture(), GRUP_TYPE.TXST);
-	    if (txst == null) {
-		SPGlobal.logError(toString(), "Error locating txst with formID: " + altTex.getTexture());
-		continue;
-	    }
-	    ArrayList<String> txstTextures = txst.getTextures();
-	    if (!textures.containsKey(altTex.getName())) {
-		SPGlobal.logError(nifPath, "Skipping profile " + toString() + ", because it did not have a nif node name of: " + altTex.getName());
-		VariantNPCProfile.profiles.remove(this);
-		return;
-	    }
-	    altTextures.put(altTex.getName(), new ArrayList<String>());
-	    ArrayList<String> profileAltTextures = altTextures.get(altTex.getName());
-	    for (int i = 0; i < txstTextures.size(); i++) {
-		if (txstTextures.get(i) == null) {
-		    profileAltTextures.add("");
-		} else {
-		    profileAltTextures.add("TEXTURES\\" + txstTextures.get(i).toUpperCase());
-		}
-	    }
-	}
-    }
-
-    public void finalizeProfile() {
-	for (String key : altTextures.keySet()) {
-	    ArrayList<String> tex = textures.get(key);
-	    ArrayList<String> altTex = altTextures.get(key);
-	    for (int i = 0; i < tex.size() && i < altTex.size(); i++) {
-		tex.set(i, altTex.get(i));
-	    }
-	}
-	altTextures.clear();
     }
 
     public boolean isValid() {
 	return race != null && skin != null && piece != null;
     }
 
-    public static VariantNPCProfile find(RACE race, ARMO skin, ARMA piece, String nifPath) {
-	for (int i = 0; i < profiles.size(); i++) {
-	    if (profiles.get(i).is(race, skin, piece, nifPath)) {
-		return profiles.get(i);
-	    }
-	}
-	return null;
-    }
-
-    public static void printProfiles() {
-	SPGlobal.log("Print", "===========================================================");
-	SPGlobal.log("Print", "=============      Printing all Profiles     ==============");
-	SPGlobal.log("Print", "===========================================================");
-	SPGlobal.log("Print", "");
-	for (VariantNPCProfile v : profiles) {
-	    v.print();
-	}
-    }
-
-    public boolean catalogNif(String nifPath) {
-	if (!nifInfoDatabase.containsKey(nifPath)) {
-	    try {
-		LShrinkArray nifRawData = null;
-		File f = new File(nifPath);
-		if (f.exists()) {
-		    nifRawData = new LShrinkArray(f);
-		} else {
-		    nifRawData = BSA.getUsedFile(nifPath);
-		}
-		if (nifRawData != null) {
-		    Map<Integer, LPair<String, ArrayList<String>>> nifTextures = AVFileVars.loadNif(nifPath, nifRawData);
-		    Map<Integer, String> nifData = new HashMap<>();
-		    nifInfoDatabase.put(nifPath, nifData);
-		    for (Integer index : nifTextures.keySet()) {
-			LPair<String, ArrayList<String>> pair = nifTextures.get(index);
-			textures.put(pair.a, pair.b);
-			nifData.put(index, pair.a);
-		    }
-		    return true;
-		} else {
-		    SPGlobal.log(toString(), " * Could not catalog nif because it could not find file: " + nifPath);
-		}
-	    } catch (IOException | DataFormatException ex) {
-		SPGlobal.logException(ex);
-	    }
-	}
-	return false;
-    }
-
     @Override
-    public String toString() {
-	return "ID: " + ID;
-    }
-
-    public void print() {
-	SPGlobal.log(toString(), " /========================================");
-	SPGlobal.log(toString(), "| Profile Records and NIF: ");
-	printShort();
-	SPGlobal.log(toString(), " \\========================================");
-	SPGlobal.log(toString(), "    \\===== NIF nodes and Textures Used: ==");
-	for (String n : textures.keySet()) {
-	    SPGlobal.log(toString(), "    |===== " + n + " ====/");
-	    SPGlobal.log(toString(), "    |=========================/");
-	    int i = 0;
-	    for (String s : textures.get(n)) {
-		SPGlobal.log(toString(), "    | " + i++ + ": " + s);
-	    }
-	    SPGlobal.log(toString(), "    \\=====================================");
-	}
-	SPGlobal.log(toString(), "");
-    }
-
     public void printShort() {
 	SPGlobal.log(toString(), "|  Race: " + race);
 	SPGlobal.log(toString(), "|  Skin: " + skin);
@@ -217,17 +85,16 @@ public class VariantNPCProfile {
 	return true;
     }
 
+    @Override
     public boolean absorb(VariantSet varSet, Collection<SeedProfile> seeds) {
-
-	for (SeedProfile seed : seeds) {
-	    if (seed.race.equals(race)
-		    && seed.skin.equals(skin)
-		    && seed.piece.equals(piece)) {
-//		if (!hasCommonTexture(varSet)) {
-//		    return false;
-//		}
-		matchedVariantSets.add(varSet);
-		return true;
+	if (varSet.spec.type == VariantType.NPC_) {
+	    for (SeedProfile seed : seeds) {
+		if (seed.race.equals(race)
+			&& seed.skin.equals(skin)
+			&& seed.piece.equals(piece)) {
+		    matchedVariantSets.add(varSet);
+		    return true;
+		}
 	    }
 	}
 	return false;
@@ -310,47 +177,6 @@ public class VariantNPCProfile {
 	return globalMeshes;
     }
 
-    public void generateARMOs() {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(toString(), " ***********> Generating profile " + ID);
-	}
-	for (VariantSet varSet : matchedVariantSets) {
-	    if (SPGlobal.logging()) {
-		SPGlobal.log(toString(), " *************> Generating set " + varSet.printName("-"));
-	    }
-	    ArrayList<Variant> vars = varSet.multiplyAndFlatten(getGlobalMeshes());
-	    for (Variant var : vars) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(toString(), " ***************> Generating var " + var.printName("-"));
-		}
-
-		String targetNifPath;
-		ArrayList<PackageNode> varNifs = var.getAll(Type.MESH);
-		if (varNifs.size() > 0) {
-		    targetNifPath = varNifs.get(0).src.getPath();
-		    catalogNif(targetNifPath);
-		    SPGlobal.log(toString(), " * Using variant nif file: " + targetNifPath);
-		} else {
-		    targetNifPath = nifPath;
-		    SPGlobal.log(toString(), " * Using default nif file: " + targetNifPath);
-		}
-
-		Map<String, TXST> txsts = generateTXSTs(var, targetNifPath);
-		if (txsts.isEmpty()) {
-		    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated");
-		    continue;
-		}
-		ARMA arma = generateARMA(var, txsts, targetNifPath);
-		ARMO armo = generateARMO(var, arma);
-
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(toString(), " ******************************>");
-		    SPGlobal.log(toString(), "");
-		}
-	    }
-	}
-    }
-
     public boolean shouldGenerate(Variant var, String nodeName) {
 	ArrayList<String> varTextures = var.getTextureNames();
 	for (String profileTexture : textures.get(nodeName)) {
@@ -427,6 +253,47 @@ public class VariantNPCProfile {
 	return j;
     }
 
+    public void generateARMOs() {
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(toString(), " ***********> Generating profile " + ID);
+	}
+	for (VariantSet varSet : matchedVariantSets) {
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(toString(), " *************> Generating set " + varSet.printName("-"));
+	    }
+	    ArrayList<Variant> vars = varSet.multiplyAndFlatten(getGlobalMeshes());
+	    for (Variant var : vars) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(toString(), " ***************> Generating var " + var.printName("-"));
+		}
+
+		String targetNifPath;
+		ArrayList<PackageNode> varNifs = var.getAll(Type.MESH);
+		if (varNifs.size() > 0) {
+		    targetNifPath = varNifs.get(0).src.getPath();
+		    catalogNif(targetNifPath);
+		    SPGlobal.log(toString(), " * Using variant nif file: " + targetNifPath);
+		} else {
+		    targetNifPath = nifPath;
+		    SPGlobal.log(toString(), " * Using default nif file: " + targetNifPath);
+		}
+
+		Map<String, TXST> txsts = generateTXSTs(var, targetNifPath);
+		if (txsts.isEmpty()) {
+		    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated");
+		    continue;
+		}
+		ARMA arma = generateARMA(var, txsts, targetNifPath);
+		ARMO armo = generateARMO(var, arma);
+
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(toString(), " ******************************>");
+		    SPGlobal.log(toString(), "");
+		}
+	    }
+	}
+    }
+    
     public ARMA generateARMA(Variant var, Map<String, TXST> txsts, String nifPath) {
 	String edid = NiftyFunc.EDIDtrimmer(generateEDID(var) + "_arma");
 	if (SPGlobal.logging()) {
@@ -473,10 +340,10 @@ public class VariantNPCProfile {
 	//Ensure it won't show up as wearable
 	armo.getBodyTemplate().set(BodyTemplate.GeneralFlags.NonPlayable, true);
 
-	if (!AVFileVars.armors.containsKey(skin.getForm())) {
-	    AVFileVars.armors.put(skin.getForm(), new LMergeMap<FormID, ARMO_spec>(false));
+	if (!VariantFactoryNPC.armors.containsKey(skin.getForm())) {
+	    VariantFactoryNPC.armors.put(skin.getForm(), new LMergeMap<FormID, ARMO_spec>(false));
 	}
-	AVFileVars.armors.get(skin.getForm()).put(arma.getRace(), new ARMO_spec(armo, var.spec));
+	VariantFactoryNPC.armors.get(skin.getForm()).put(arma.getRace(), new ARMO_spec(armo, var.spec));
 
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(toString(), " * =====================================>");
@@ -485,6 +352,7 @@ public class VariantNPCProfile {
 	return armo;
     }
 
+    @Override
     public String profileHashCode() {
 	int hash = 7;
 	hash = 29 * hash + Objects.hashCode(this.race);
@@ -495,16 +363,5 @@ public class VariantNPCProfile {
 	} else {
 	    return "n" + Integer.toString(-hash);
 	}
-    }
-
-    public String generateEDID(Variant var) {
-	return "AV_" + profileHashCode() + "_" + var.printName("_");
-    }
-
-    @Override
-    public int hashCode() {
-	int hash = 3;
-	hash = 29 * hash + this.ID;
-	return hash;
     }
 }

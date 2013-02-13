@@ -306,7 +306,7 @@ public class WizSetTool extends WizTemplate {
 	@Override
 	public void run() {
 	    try {
-		AVFileVars.prepProfiles();
+		AVFileVars.npcFactory.prepProfiles();
 		SPGlobal.newLog("Set Tool/Run " + attempt++ + ".txt");
 		printSourceTextures();
 
@@ -317,7 +317,7 @@ public class WizSetTool extends WizTemplate {
 		    textureList.add(f.getName().toUpperCase());
 		}
 
-		for (VariantNPCProfile profile : VariantNPCProfile.profiles) {
+		for (VariantNPCProfile profile : AVFileVars.npcFactory.profiles) {
 		    ProfileDisplay display = new ProfileDisplay(profile);
 		    matchingProfiles.add(display);
 		    for (String s : textureList) {

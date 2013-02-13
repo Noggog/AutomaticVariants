@@ -309,8 +309,8 @@ public class WizSetManual extends WizTemplate {
 
 	@Override
 	public void run() {
-	    AVFileVars.prepProfiles();
-	    for (VariantNPCProfile profile : VariantNPCProfile.profiles) {
+	    AVFileVars.npcFactory.prepProfiles();
+	    for (VariantNPCProfile profile : AVFileVars.npcFactory.profiles) {
 		races.add(new ProfileDisplay(profile, profile.race.getEDID()));
 		skins.add(new ProfileDisplay(profile, profile.skin.getEDID()));
 		pieces.add(new ProfileDisplay(profile, profile.piece.getEDID()));
