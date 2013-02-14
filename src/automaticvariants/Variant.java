@@ -112,10 +112,13 @@ public class Variant extends PackageNode implements Serializable {
     }
 
     public Variant merge(Variant rhs) {
-	Variant out = new Variant(this);
+	Variant out = new Variant(rhs);
 	out.name = name + "_" + rhs.src.getName();
-	for (PackageNode p : rhs.getAll(Type.TEXTURE)) {
+	for (PackageNode p : getAll(Type.TEXTURE)) {
 	    out.add(new PackageNode(p.src, Type.TEXTURE));
+	}
+	for (PackageNode p : getAll(Type.MESH)) {
+	    out.add(new PackageNode(p.src, Type.MESH));
 	}
 	spec.Probability_Divider *= rhs.spec.Probability_Divider;
 	return out;

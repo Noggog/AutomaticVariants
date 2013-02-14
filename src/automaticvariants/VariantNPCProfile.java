@@ -303,7 +303,11 @@ public class VariantNPCProfile extends VariantProfile {
 	arma.setRace(race.getForm());
 	arma.clearAdditionalRaces();
 
-	arma.setModelPath(nifPath, Gender.MALE, Perspective.THIRD_PERSON);
+	String cleanNifPath = nifPath;
+	if (cleanNifPath.indexOf("MESHES\\") == 0) {
+	    cleanNifPath = cleanNifPath.substring(7);
+	}
+	arma.setModelPath(cleanNifPath, Gender.MALE, Perspective.THIRD_PERSON);
 
 	ArrayList<AltTexture> alts = arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
 	alts.clear();
