@@ -148,7 +148,7 @@ abstract public class VariantProfile {
 
     public abstract String profileHashCode();
 
-    public abstract boolean absorb(VariantSet varSet, Collection<SeedProfile> seeds);
+    public abstract boolean absorb(VariantSet varSet, Collection<Seed> seeds);
 
     public String generateEDID(Variant var) {
 	return "AV_" + profileHashCode() + "_" + var.printName("_");

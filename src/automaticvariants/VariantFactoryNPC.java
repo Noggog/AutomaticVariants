@@ -176,7 +176,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantNPCProfile> {
 				profiles.add(profile);
 			    }
 			    //Load in record setup
-			    profile.seed = new SeedProfile(r, armo, arma);
+			    profile.seed = new SeedNPC(r, armo, arma);
 
 			    //Load Alt Textures
 			    if (!profile.loadAltTextures(arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON))) {

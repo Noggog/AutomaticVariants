@@ -13,7 +13,7 @@ import skyproc.*;
  *
  * @author Justin Swanson
  */
-public class SeedProfile {
+public class SeedNPC extends Seed {
 
     NPC_ origNPC;
     NPC_ npc;
@@ -21,19 +21,20 @@ public class SeedProfile {
     ARMA piece;
     RACE race;
 
-    SeedProfile() {
+    SeedNPC() {
     }
     
-    SeedProfile(RACE raceRhs, ARMO skinRhs, ARMA pieceRhs) {
+    SeedNPC(RACE raceRhs, ARMO skinRhs, ARMA pieceRhs) {
 	race = raceRhs;
 	skin = skinRhs;
 	piece = pieceRhs;
     }
     
-    SeedProfile(SeedProfile rhs) {
+    SeedNPC(SeedNPC rhs) {
 	this(rhs.race, rhs.skin, rhs.piece);
     }
 
+    @Override
     public boolean load(ArrayList<FormID> ids) {
 	if (ids.size() == 1) {
 	    npc = (NPC_) SPDatabase.getMajor(ids.get(0), GRUP_TYPE.NPC_);
@@ -109,6 +110,7 @@ public class SeedProfile {
 	return true;
     }
 
+    @Override
     public void print() {
 	if (npc != null) {
 	    SPGlobal.log("SeedProfile", "|   Seed: " + npc);
@@ -128,7 +130,7 @@ public class SeedProfile {
 	if (getClass() != obj.getClass()) {
 	    return false;
 	}
-	final SeedProfile other = (SeedProfile) obj;
+	final SeedNPC other = (SeedNPC) obj;
 	if (!Objects.equals(this.skin, other.skin)) {
 	    return false;
 	}
@@ -150,6 +152,7 @@ public class SeedProfile {
 	return hash;
     }
     
+    @Override
     public boolean isValid() {
 	return race != null && skin != null && piece != null;
     }

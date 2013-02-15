@@ -20,21 +20,21 @@ import skyproc.*;
  */
 public class VariantNPCProfile extends VariantProfile {
 
-    public SeedProfile seed;
+    public SeedNPC seed;
 
     public VariantNPCProfile(RACE race, ARMO skin, ARMA piece) {
 	super();
-	seed = new SeedProfile(race, skin, piece);
+	seed = new SeedNPC(race, skin, piece);
     }
 
     VariantNPCProfile() {
 	super();
-	seed = new SeedProfile();
+	seed = new SeedNPC();
     }
 
     VariantNPCProfile(VariantNPCProfile rhs) {
 	super(rhs);
-	seed = new SeedProfile(rhs.seed);
+	seed = new SeedNPC(rhs.seed);
     }
 
     public boolean isValid() {
@@ -81,15 +81,14 @@ public class VariantNPCProfile extends VariantProfile {
     }
 
     @Override
-    public boolean absorb(VariantSet varSet, Collection<SeedProfile> seeds) {
-	if (varSet.spec.type == VariantType.NPC_) {
-	    for (SeedProfile seed : seeds) {
-		if (seed.race.equals(getRace())
-			&& seed.skin.equals(getSkin())
-			&& seed.piece.equals(getPiece())) {
-		    matchedVariantSets.add(varSet);
-		    return true;
-		}
+    public boolean absorb(VariantSet varSet, Collection<Seed> seeds) {
+	for (Seed seedG : seeds) {
+	    SeedNPC seed = (SeedNPC) seedG;
+	    if (seed.race.equals(getRace())
+		    && seed.skin.equals(getSkin())
+		    && seed.piece.equals(getPiece())) {
+		matchedVariantSets.add(varSet);
+		return true;
 	    }
 	}
 	return false;
@@ -288,7 +287,7 @@ public class VariantNPCProfile extends VariantProfile {
 	    }
 	}
     }
-    
+
     public ARMA generateARMA(Variant var, Map<String, TXST> txsts, String nifPath) {
 	String edid = NiftyFunc.EDIDtrimmer(generateEDID(var) + "_arma");
 	if (SPGlobal.logging()) {
@@ -363,15 +362,15 @@ public class VariantNPCProfile extends VariantProfile {
 	    return "n" + Integer.toString(-hash);
 	}
     }
-    
+
     public RACE getRace() {
 	return seed.race;
     }
-    
+
     public ARMO getSkin() {
 	return seed.skin;
     }
-    
+
     public ARMA getPiece() {
 	return seed.piece;
     }

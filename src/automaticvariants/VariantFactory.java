@@ -153,10 +153,10 @@ abstract public class VariantFactory<T extends VariantProfile> {
 		    SPGlobal.log("SortVariantSets", "|==============/");
 		}
 
-		ArrayList<SeedProfile> seeds = varSet.getSeeds();
+		ArrayList<Seed> seeds = varSet.getSeeds();
 
 		if (SPGlobal.logging()) {
-		    for (SeedProfile s : seeds) {
+		    for (Seed s : seeds) {
 			s.print();
 		    }
 		}

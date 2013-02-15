@@ -4,6 +4,7 @@
  */
 package automaticvariants;
 
+import automaticvariants.AVFileVars.VariantType;
 import automaticvariants.AVSaveFile.Settings;
 import java.io.*;
 import java.util.ArrayList;
@@ -297,15 +298,20 @@ public class VariantSet extends PackageNode implements Serializable {
 	return seedNPCs;
     }
 
-    public ArrayList<SeedProfile> getSeeds() {
-	ArrayList<SeedProfile> out = new ArrayList<>();
+    public ArrayList<Seed> getSeeds() {
+	ArrayList<Seed> out = new ArrayList<>();
 	for (String[] s : spec.Target_FormIDs) {
 	    ArrayList<FormID> ids = new ArrayList<>();
 	    for (int i = 2; i < s.length + 2; i += 2) {
 		FormID id = new FormID(s[i - 2], s[i - 1]);
 		ids.add(id);
 	    }
-	    SeedProfile seed = new SeedProfile();
+	    Seed seed;
+	    if (spec.type == VariantType.NPC_) {
+		seed = new SeedNPC();
+	    } else {
+		seed = new SeedNPC();
+	    }
 	    if (seed.load(ids)) {
 		out.add(seed);
 	    }
