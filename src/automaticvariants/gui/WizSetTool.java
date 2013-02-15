@@ -233,9 +233,9 @@ public class WizSetTool extends WizTemplate {
 	SUMGUI.helpPanel.setDefaultPos();
 	SUMGUI.helpPanel.setTitle("Profile Contents:");
 	String contents =
-		"Race:  " + profile.race.getEDID() + "\n"
-		+ "Skin:  " + profile.skin.getEDID() + "\n"
-		+ "Piece: " + profile.piece.getEDID() + "\n\n"
+		"Race:  " + profile.getRace().getEDID() + "\n"
+		+ "Skin:  " + profile.getSkin().getEDID() + "\n"
+		+ "Piece: " + profile.getPiece().getEDID() + "\n\n"
 		+ "Textures Used: \n"
 		+ profile.printAllTextures();
 	SUMGUI.helpPanel.setContent(contents);

@@ -228,11 +228,11 @@ public class WizSetManual extends WizTemplate {
 		    return;
 		}
 		VariantNPCProfile profile = new VariantNPCProfile(
-			race.profile.race, skin.profile.skin, piece.profile.piece);
+			race.profile.getRace(), skin.profile.getSkin(), piece.profile.getPiece());
 		ProfileDisplay display = new ProfileDisplay(profile,
-			profile.race.getEDID() + " | "
-			+ profile.skin.getEDID() + " | "
-			+ profile.piece.getEDID());
+			profile.getRace().getEDID() + " | "
+			+ profile.getSkin().getEDID() + " | "
+			+ profile.getPiece().getEDID());
 		targetProfiles.addElement(display);
 	    }
 	});
@@ -311,9 +311,9 @@ public class WizSetManual extends WizTemplate {
 	public void run() {
 	    AVFileVars.npcFactory.prepProfiles();
 	    for (VariantNPCProfile profile : AVFileVars.npcFactory.profiles) {
-		races.add(new ProfileDisplay(profile, profile.race.getEDID()));
-		skins.add(new ProfileDisplay(profile, profile.skin.getEDID()));
-		pieces.add(new ProfileDisplay(profile, profile.piece.getEDID()));
+		races.add(new ProfileDisplay(profile, profile.getRace().getEDID()));
+		skins.add(new ProfileDisplay(profile, profile.getSkin().getEDID()));
+		pieces.add(new ProfileDisplay(profile, profile.getPiece().getEDID()));
 	    }
 	    SwingUtilities.invokeLater(new Runnable() {
 
@@ -347,8 +347,8 @@ public class WizSetManual extends WizTemplate {
 	racePicker.removeAllItems();
 	for (ProfileDisplay d : races) {
 	    if (!exclusive.isSelected()
-		    && (skin == null || skin.profile.skin.equals(d.profile.skin))
-		    && (piece == null || piece.profile.piece.equals(d.profile.piece))) {
+		    && (skin == null || skin.profile.getSkin().equals(d.profile.getSkin()))
+		    && (piece == null || piece.profile.getPiece().equals(d.profile.getPiece()))) {
 		racePicker.addItem(d);
 	    }
 	}
@@ -363,7 +363,8 @@ public class WizSetManual extends WizTemplate {
 	skinPicker.removeAllItems();
 	for (ProfileDisplay d : skins) {
 	    if (!exclusive.isSelected()
-		    || ((race == null || race.profile.race.equals(d.profile.race)) && (piece == null || piece.profile.piece.equals(d.profile.piece)))) {
+		    || ((race == null || race.profile.getRace().equals(d.profile.getRace())) 
+		    && (piece == null || piece.profile.getPiece().equals(d.profile.getPiece())))) {
 		skinPicker.addItem(d);
 	    }
 	}
@@ -378,7 +379,8 @@ public class WizSetManual extends WizTemplate {
 	piecePicker.removeAllItems();
 	for (ProfileDisplay d : pieces) {
 	    if (!exclusive.isSelected()
-		    || ((race == null || race.profile.race.equals(d.profile.race)) && (skin == null || skin.profile.skin.equals(d.profile.skin)))) {
+		    || ((race == null || race.profile.getRace().equals(d.profile.getRace())) 
+		    && (skin == null || skin.profile.getSkin().equals(d.profile.getSkin())))) {
 		piecePicker.addItem(d);
 	    }
 	}

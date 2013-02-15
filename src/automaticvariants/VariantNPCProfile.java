@@ -20,48 +20,43 @@ import skyproc.*;
  */
 public class VariantNPCProfile extends VariantProfile {
 
-    public RACE race;
-    public ARMO skin;
-    public ARMA piece;
+    public SeedProfile seed;
 
     public VariantNPCProfile(RACE race, ARMO skin, ARMA piece) {
 	super();
-	this.race = race;
-	this.skin = skin;
-	this.piece = piece;
+	seed = new SeedProfile(race, skin, piece);
     }
 
     VariantNPCProfile() {
 	super();
+	seed = new SeedProfile();
     }
 
     VariantNPCProfile(VariantNPCProfile rhs) {
 	super(rhs);
-	race = rhs.race;
-	skin = rhs.skin;
-	piece = rhs.piece;
+	seed = new SeedProfile(rhs.seed);
     }
 
     public boolean isValid() {
-	return race != null && skin != null && piece != null;
+	return seed.isValid();
     }
 
     @Override
     public void printShort() {
-	SPGlobal.log(toString(), "|  Race: " + race);
-	SPGlobal.log(toString(), "|  Skin: " + skin);
-	SPGlobal.log(toString(), "| Piece: " + piece);
+	SPGlobal.log(toString(), "|  Race: " + getRace());
+	SPGlobal.log(toString(), "|  Skin: " + getSkin());
+	SPGlobal.log(toString(), "| Piece: " + getPiece());
 	SPGlobal.log(toString(), "|   NIF: " + nifPath);
     }
 
     public boolean is(RACE race, ARMO skin, ARMA piece, String nifPath) {
-	if (race != null && race != this.race) {
+	if (race != null && race != getRace()) {
 	    return false;
 	}
-	if (skin != null && skin != this.skin) {
+	if (skin != null && skin != getSkin()) {
 	    return false;
 	}
-	if (piece != null && piece != this.piece) {
+	if (piece != null && piece != getPiece()) {
 	    return false;
 	}
 	if (nifPath != null && !nifPath.equalsIgnoreCase(this.nifPath)) {
@@ -89,9 +84,9 @@ public class VariantNPCProfile extends VariantProfile {
     public boolean absorb(VariantSet varSet, Collection<SeedProfile> seeds) {
 	if (varSet.spec.type == VariantType.NPC_) {
 	    for (SeedProfile seed : seeds) {
-		if (seed.race.equals(race)
-			&& seed.skin.equals(skin)
-			&& seed.piece.equals(piece)) {
+		if (seed.race.equals(getRace())
+			&& seed.skin.equals(getSkin())
+			&& seed.piece.equals(getPiece())) {
 		    matchedVariantSets.add(varSet);
 		    return true;
 		}
@@ -299,8 +294,8 @@ public class VariantNPCProfile extends VariantProfile {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(toString(), " * ==> Generating ARMA: " + edid);
 	}
-	ARMA arma = (ARMA) SPGlobal.getGlobalPatch().makeCopy(piece, edid);
-	arma.setRace(race.getForm());
+	ARMA arma = (ARMA) SPGlobal.getGlobalPatch().makeCopy(getPiece(), edid);
+	arma.setRace(getRace().getForm());
 	arma.clearAdditionalRaces();
 
 	String cleanNifPath = nifPath;
@@ -335,19 +330,19 @@ public class VariantNPCProfile extends VariantProfile {
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(toString(), " * ==> Generating ARMO: " + edid);
 	}
-	ARMO armo = (ARMO) SPGlobal.getGlobalPatch().makeCopy(skin, edid);
+	ARMO armo = (ARMO) SPGlobal.getGlobalPatch().makeCopy(getSkin(), edid);
 	armo.setRace(arma.getRace());
 
-	armo.removeArmature(piece.getForm());
+	armo.removeArmature(getPiece().getForm());
 	armo.addArmature(arma.getForm());
 
 	//Ensure it won't show up as wearable
 	armo.getBodyTemplate().set(BodyTemplate.GeneralFlags.NonPlayable, true);
 
-	if (!VariantFactoryNPC.armors.containsKey(skin.getForm())) {
-	    VariantFactoryNPC.armors.put(skin.getForm(), new LMergeMap<FormID, ARMO_spec>(false));
+	if (!VariantFactoryNPC.armors.containsKey(getSkin().getForm())) {
+	    VariantFactoryNPC.armors.put(getSkin().getForm(), new LMergeMap<FormID, ARMO_spec>(false));
 	}
-	VariantFactoryNPC.armors.get(skin.getForm()).put(arma.getRace(), new ARMO_spec(armo, var.spec));
+	VariantFactoryNPC.armors.get(getSkin().getForm()).put(arma.getRace(), new ARMO_spec(armo, var.spec));
 
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(toString(), " * =====================================>");
@@ -359,13 +354,25 @@ public class VariantNPCProfile extends VariantProfile {
     @Override
     public String profileHashCode() {
 	int hash = 7;
-	hash = 29 * hash + Objects.hashCode(this.race);
-	hash = 29 * hash + Objects.hashCode(this.skin);
-	hash = 29 * hash + Objects.hashCode(this.piece);
+	hash = 29 * hash + Objects.hashCode(getRace());
+	hash = 29 * hash + Objects.hashCode(getSkin());
+	hash = 29 * hash + Objects.hashCode(getPiece());
 	if (hash >= 0) {
 	    return Integer.toString(hash);
 	} else {
 	    return "n" + Integer.toString(-hash);
 	}
+    }
+    
+    public RACE getRace() {
+	return seed.race;
+    }
+    
+    public ARMO getSkin() {
+	return seed.skin;
+    }
+    
+    public ARMA getPiece() {
+	return seed.piece;
     }
 }

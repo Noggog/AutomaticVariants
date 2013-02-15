@@ -18,9 +18,9 @@ public class ProfileDisplay implements Comparable {
 
     ProfileDisplay(VariantNPCProfile profile) {
 	this.profile = profile;
-	edid = profile.race.getEDID() + " | "
-		+ profile.skin.getEDID() + " | "
-		+ profile.piece.getEDID();
+	edid = profile.getRace().getEDID() + " | "
+		+ profile.getSkin().getEDID() + " | "
+		+ profile.getPiece().getEDID();
     }
 
     ProfileDisplay(VariantNPCProfile profile, String edid) {

@@ -23,6 +23,16 @@ public class SeedProfile {
 
     SeedProfile() {
     }
+    
+    SeedProfile(RACE raceRhs, ARMO skinRhs, ARMA pieceRhs) {
+	race = raceRhs;
+	skin = skinRhs;
+	piece = pieceRhs;
+    }
+    
+    SeedProfile(SeedProfile rhs) {
+	this(rhs.race, rhs.skin, rhs.piece);
+    }
 
     public boolean load(ArrayList<FormID> ids) {
 	if (ids.size() == 1) {
@@ -138,5 +148,9 @@ public class SeedProfile {
 	hash = 97 * hash + Objects.hashCode(this.piece);
 	hash = 97 * hash + Objects.hashCode(this.race);
 	return hash;
+    }
+    
+    public boolean isValid() {
+	return race != null && skin != null && piece != null;
     }
 }

@@ -170,15 +170,13 @@ public class VariantFactoryNPC extends VariantFactory<VariantNPCProfile> {
 			
 			for (RACE r : races) {
 			    //If profile is already filled, make duplicate
-			    if (profile.race != null) {
-				SPGlobal.log(header, "Duplicating for " + profile.nifPath + " || " + profile.race);
+			    if (profile.getRace() != null) {
+				SPGlobal.log(header, "Duplicating for " + profile.nifPath + " || " + profile.getRace());
 				profile = new VariantNPCProfile(profile);
 				profiles.add(profile);
 			    }
 			    //Load in record setup
-			    profile.race = r;
-			    profile.skin = armo;
-			    profile.piece = arma;
+			    profile.seed = new SeedProfile(r, armo, arma);
 
 			    //Load Alt Textures
 			    if (!profile.loadAltTextures(arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON))) {
