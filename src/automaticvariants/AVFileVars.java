@@ -33,7 +33,6 @@ public class AVFileVars {
     public static String AVMeshesDir = SPGlobal.pathToData + "meshes\\AV Packages\\";
     static String debugFolder = "File Variants/";
     static int debugNumber = 1;
-    static int numSupportedTextures = 8;
     public static PackageNode AVPackages = new PackageNode(new File(AVPackagesDir), PackageNode.Type.ROOT);
     public static VariantFactoryNPC npcFactory = new VariantFactoryNPC();
 
@@ -48,8 +47,10 @@ public class AVFileVars {
 
 	importVariants(true);
 	AVPackages.prune();
-	
+
+	SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Creating NPC Variants");
 	npcFactory.createVariants(source);
+	SPProgressBarPlug.incrementBar();
 
 	SPProgressBarPlug.done();
     }

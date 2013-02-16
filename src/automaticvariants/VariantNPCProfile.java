@@ -5,7 +5,6 @@
 package automaticvariants;
 
 import automaticvariants.AVFileVars.ARMO_spec;
-import automaticvariants.AVFileVars.VariantType;
 import automaticvariants.PackageNode.Type;
 import java.io.File;
 import java.util.*;

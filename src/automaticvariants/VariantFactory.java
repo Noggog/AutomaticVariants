@@ -13,7 +13,6 @@ import lev.LPair;
 import lev.LShrinkArray;
 import skyproc.*;
 import skyproc.exceptions.BadParameter;
-import skyproc.gui.SPProgressBarPlug;
 
 /**
  *

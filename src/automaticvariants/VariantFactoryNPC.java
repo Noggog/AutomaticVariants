@@ -237,17 +237,12 @@ public class VariantFactoryNPC extends VariantFactory<VariantNPCProfile> {
     }
     
     @Override
-    public void createVariantRecords(Mod source) {
-	SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Generating variant records.");
-	SPProgressBarPlug.reset();
-	SPProgressBarPlug.setMax(profiles.size());
-	
+    public void createVariantRecords(Mod source) {	
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Generate Variants.txt");
 	}
 	for (VariantNPCProfile profile : profiles) {
 	    profile.generateARMOs();
-	    SPProgressBarPlug.incrementBar();
 	}
     }
     
@@ -499,7 +494,6 @@ public class VariantFactoryNPC extends VariantFactory<VariantNPCProfile> {
 	    avr.race.addSpell(spell.getForm());
 	    SPGlobal.getGlobalPatch().addRecord(avr.race);
 	}
-	SPProgressBarPlug.incrementBar();
     }
     
     static void standardizeNPCtag(NPC_ n) {
