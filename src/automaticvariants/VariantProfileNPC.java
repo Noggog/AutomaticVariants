@@ -17,22 +17,24 @@ import skyproc.*;
  *
  * @author Justin Swanson
  */
-public class VariantNPCProfile extends VariantProfile {
+public class VariantProfileNPC extends VariantProfile {
 
     public SeedNPC seed;
+    String nifPath;
 
-    public VariantNPCProfile(RACE race, ARMO skin, ARMA piece) {
+    public VariantProfileNPC(RACE race, ARMO skin, ARMA piece) {
 	super();
 	seed = new SeedNPC(race, skin, piece);
     }
 
-    VariantNPCProfile() {
+    VariantProfileNPC() {
 	super();
 	seed = new SeedNPC();
     }
 
-    VariantNPCProfile(VariantNPCProfile rhs) {
+    VariantProfileNPC(VariantProfileNPC rhs) {
 	super(rhs);
+	nifPath = rhs.nifPath;
 	seed = new SeedNPC(rhs.seed);
     }
 
@@ -72,7 +74,7 @@ public class VariantNPCProfile extends VariantProfile {
 	if (getClass() != obj.getClass()) {
 	    return false;
 	}
-	final VariantNPCProfile other = (VariantNPCProfile) obj;
+	final VariantProfileNPC other = (VariantProfileNPC) obj;
 	if (this.ID != other.ID) {
 	    return false;
 	}
@@ -372,5 +374,10 @@ public class VariantNPCProfile extends VariantProfile {
 
     public ARMA getPiece() {
 	return seed.piece;
+    }
+
+    @Override
+    public String getNifPath() {
+	return nifPath;
     }
 }

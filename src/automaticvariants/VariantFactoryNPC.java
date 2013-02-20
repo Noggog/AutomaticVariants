@@ -5,17 +5,17 @@
 package automaticvariants;
 
 import automaticvariants.AVFileVars.ARMO_spec;
+import automaticvariants.AVFileVars.VariantType;
 import java.util.*;
 import lev.LMergeMap;
 import lev.Ln;
 import skyproc.*;
-import skyproc.gui.SPProgressBarPlug;
 
 /**
  *
  * @author Justin Swanson
  */
-public class VariantFactoryNPC extends VariantFactory<VariantNPCProfile> {
+public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
     
     static String header = "VariantFactory - NPC";
     static String raceAttachScript = "AVRaceAttachment";
@@ -123,7 +123,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantNPCProfile> {
     @Override
     public void loadProfileRecords() {
 	SPGlobal.log(header, "===========================================================");
-	SPGlobal.log(header, "================      Loading Records     =================");
+	SPGlobal.log(header, "==============      Loading NPC Records     ===============");
 	SPGlobal.log(header, "===========================================================");
 	for (ARMO armo : AV.getMerger().getArmors()) {
 	    if (!isUnused(armo.getForm())) {
@@ -157,7 +157,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantNPCProfile> {
 
 		// Find profile with that nif
 		String nifPath = "MESHES\\" + arma.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
-		VariantNPCProfile profile = find(null, null, null, nifPath);
+		VariantProfileNPC profile = find(null, null, null, nifPath);
 		
 		
 		if (profile != null) {
@@ -172,7 +172,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantNPCProfile> {
 			    //If profile is already filled, make duplicate
 			    if (profile.getRace() != null) {
 				SPGlobal.log(header, "Duplicating for " + profile.nifPath + " || " + profile.getRace());
-				profile = new VariantNPCProfile(profile);
+				profile = new VariantProfileNPC(profile);
 				profiles.add(profile);
 			    }
 			    //Load in record setup
@@ -219,7 +219,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantNPCProfile> {
 			    continue;
 			}
 			if (find(null, null, null, nifPath) == null) {
-			    VariantNPCProfile profile = new VariantNPCProfile();
+			    VariantProfileNPC profile = new VariantProfileNPC();
 			    profiles.add(profile);
 			    profile.nifPath = nifPath;
 			}
@@ -241,7 +241,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantNPCProfile> {
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Generate Variants.txt");
 	}
-	for (VariantNPCProfile profile : profiles) {
+	for (VariantProfileNPC profile : profiles) {
 	    profile.generateARMOs();
 	}
     }
@@ -559,12 +559,17 @@ public class VariantFactoryNPC extends VariantFactory<VariantNPCProfile> {
 	}
     }
     
-    public VariantNPCProfile find(RACE race, ARMO skin, ARMA piece, String nifPath) {
-	for (VariantNPCProfile prof : profiles) {
+    public VariantProfileNPC find(RACE race, ARMO skin, ARMA piece, String nifPath) {
+	for (VariantProfileNPC prof : profiles) {
 	    if (prof.is(race, skin, piece, nifPath)) {
 		return prof;
 	    }
 	}
 	return null;
+    }
+
+    @Override
+    public VariantType getType() {
+	return VariantType.NPC_;
     }
 }

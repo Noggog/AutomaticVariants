@@ -19,7 +19,7 @@ import skyproc.*;
 abstract public class VariantProfile {
 
     static int nextID = 0;
-    String nifPath;
+    Seed seed;
     Map<String, Map<Integer, String>> nifInfoDatabase = new HashMap<>();
     Map<String, ArrayList<String>> textures = new HashMap<>();
     Map<String, ArrayList<String>> altTextures = new HashMap<>();
@@ -35,7 +35,6 @@ abstract public class VariantProfile {
 
     VariantProfile(VariantProfile rhs) {
 	this();
-	nifPath = rhs.nifPath;
 	textures = new HashMap<>();
 	nifInfoDatabase = new HashMap<>(rhs.nifInfoDatabase);
 	for (String key : rhs.textures.keySet()) {
@@ -57,7 +56,7 @@ abstract public class VariantProfile {
 	    }
 	    ArrayList<String> txstTextures = txst.getTextures();
 	    if (!textures.containsKey(altTex.getName())) {
-		SPGlobal.logError(nifPath, "Skipping profile " + toString() + ", because it did not have a nif node name of: " + altTex.getName());
+		SPGlobal.logError(getNifPath(), "Skipping profile " + toString() + ", because it did not have a nif node name of: " + altTex.getName());
 		return false;
 	    }
 	    altTextures.put(altTex.getName(), new ArrayList<String>());
@@ -153,4 +152,6 @@ abstract public class VariantProfile {
     public String generateEDID(Variant var) {
 	return "AV_" + profileHashCode() + "_" + var.printName("_");
     }
+    
+    public abstract String getNifPath();
 }

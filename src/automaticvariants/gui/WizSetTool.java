@@ -7,7 +7,7 @@ package automaticvariants.gui;
 import automaticvariants.AV;
 import automaticvariants.AVFileVars;
 import automaticvariants.AVSaveFile.Settings;
-import automaticvariants.VariantNPCProfile;
+import automaticvariants.VariantProfileNPC;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -229,7 +229,7 @@ public class WizSetTool extends WizTemplate {
 	displaySwitch(0);
     }
 
-    void updateHelp(VariantNPCProfile profile) {
+    void updateHelp(VariantProfileNPC profile) {
 	SUMGUI.helpPanel.setDefaultPos();
 	SUMGUI.helpPanel.setTitle("Profile Contents:");
 	String contents =
@@ -317,7 +317,7 @@ public class WizSetTool extends WizTemplate {
 		    textureList.add(f.getName().toUpperCase());
 		}
 
-		for (VariantNPCProfile profile : AVFileVars.npcFactory.profiles) {
+		for (VariantProfileNPC profile : AVFileVars.npcFactory.profiles) {
 		    ProfileDisplay display = new ProfileDisplay(profile);
 		    matchingProfiles.add(display);
 		    for (String s : textureList) {

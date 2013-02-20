@@ -35,6 +35,7 @@ public class AVFileVars {
     static int debugNumber = 1;
     public static PackageNode AVPackages = new PackageNode(new File(AVPackagesDir), PackageNode.Type.ROOT);
     public static VariantFactoryNPC npcFactory = new VariantFactoryNPC();
+    public static VariantFactoryWEAP weapFactory = new VariantFactoryWEAP();
 
     static void setUpFileVariants(Mod source) throws IOException, Uninitialized, BadParameter {
 	if (SPGlobal.logging()) {
@@ -47,12 +48,31 @@ public class AVFileVars {
 
 	importVariants(true);
 	AVPackages.prune();
-
+	cleanBadSets();
+	
 	SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Creating NPC Variants");
 	npcFactory.createVariants(source);
 	SPProgressBarPlug.incrementBar();
+	
+	SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Creating WEAP Variants");
+	weapFactory.createVariants(source);
+	SPProgressBarPlug.incrementBar();
 
 	SPProgressBarPlug.done();
+    }
+    
+    static public void cleanBadSets() {
+	for (PackageNode avPackageC : AVFileVars.AVPackages.getAll(PackageNode.Type.PACKAGE)) {
+	    AVPackage avPackage = (AVPackage) avPackageC;
+	    for (PackageNode varSetP : avPackage.getAll(PackageNode.Type.VARSET)) {
+		VariantSet varSet = (VariantSet) varSetP;
+		if (varSet.spec == null || varSet.isEmpty()) {
+		    SPGlobal.logError(header, "Skipping " + varSet.src + " because it was empty or missing a spec file.");
+		    PackageNode p = (PackageNode) varSet.getParent();
+		    p.remove(varSet);
+		}
+	    }
+	}
     }
 
     /*
@@ -264,6 +284,7 @@ public class AVFileVars {
 
     public enum VariantType {
 
-	NPC_;
+	NPC_,
+	WEAP;
     }
 }

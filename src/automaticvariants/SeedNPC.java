@@ -55,7 +55,7 @@ public class SeedNPC extends Seed {
 		    piece = (ARMA) SPDatabase.getMajor(id, GRUP_TYPE.ARMA);
 		}
 	    }
-	    return race != null & skin != null && piece != null;
+	    return isValid();
 	}
 	return false;
     }

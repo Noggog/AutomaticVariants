@@ -47,7 +47,7 @@ public class SpecVariantSet extends SpecFile {
     public void loadSkins(ArrayList<ProfileDisplay> in) {
 	Target_FormIDs = new String[in.size()][6];
 	for (int i = 0; i < in.size(); i++) {
-	    VariantNPCProfile profile = in.get(i).profile;
+	    VariantProfileNPC profile = in.get(i).profile;
 	    RACE race = profile.getRace();
 	    ARMO skin = profile.getSkin();
 	    ARMA piece = profile.getPiece();

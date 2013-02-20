@@ -307,10 +307,12 @@ public class VariantSet extends PackageNode implements Serializable {
 		ids.add(id);
 	    }
 	    Seed seed;
-	    if (spec.type == VariantType.NPC_) {
-		seed = new SeedNPC();
-	    } else {
-		seed = new SeedNPC();
+	    switch (spec.type) {
+		case WEAP:
+		    seed = new SeedWEAP();
+		    break;
+		default:
+		    seed = new SeedNPC();
 	    }
 	    if (seed.load(ids)) {
 		out.add(seed);

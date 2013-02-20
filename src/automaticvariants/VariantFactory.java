@@ -4,6 +4,7 @@
  */
 package automaticvariants;
 
+import automaticvariants.AVFileVars.VariantType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,11 +51,11 @@ abstract public class VariantFactory<T extends VariantProfile> {
     public void loadProfileNifs() {
 	for (VariantProfile profile : new ArrayList<>(profiles)) {
 	    try {
-		LShrinkArray nifRawData = BSA.getUsedFile(profile.nifPath);
+		LShrinkArray nifRawData = BSA.getUsedFile(profile.getNifPath());
 		if (nifRawData != null) {
-		    Map<Integer, LPair<String, ArrayList<String>>> nifTextures = loadNif(profile.nifPath, nifRawData);
+		    Map<Integer, LPair<String, ArrayList<String>>> nifTextures = loadNif(profile.getNifPath(), nifRawData);
 		    Map<Integer, String> nifData = new HashMap<>();
-		    profile.nifInfoDatabase.put(profile.nifPath, nifData);
+		    profile.nifInfoDatabase.put(profile.getNifPath(), nifData);
 		    for (Integer index : nifTextures.keySet()) {
 			LPair<String, ArrayList<String>> pair = nifTextures.get(index);
 			profile.textures.put(pair.a, pair.b);
@@ -62,11 +63,11 @@ abstract public class VariantFactory<T extends VariantProfile> {
 		    }
 		    if (profile.textures.isEmpty()) {
 			remove(profile);
-			SPGlobal.log(profile.toString(), "Removing profile with nif because it had no textures: " + profile.nifPath);
+			SPGlobal.log(profile.toString(), "Removing profile with nif because it had no textures: " + profile.getNifPath());
 		    }
 		} else {
 		    remove(profile);
-		    SPGlobal.logError(header, "Error locating nif file: " + profile.nifPath + ", removing profile.");
+		    SPGlobal.logError(header, "Error locating nif file: " + profile.getNifPath() + ", removing profile.");
 		}
 	    } catch (IOException | DataFormatException ex) {
 		SPGlobal.logException(ex);
@@ -126,17 +127,16 @@ abstract public class VariantFactory<T extends VariantProfile> {
     }
 
     abstract boolean isUnused(FormID id);
-
+    
     public void dropVariantSetsInProfiles() {
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Processing Variant Seeds.txt");
 	}
-	for (PackageNode avPackageC : AVFileVars.AVPackages.getAll(PackageNode.Type.PACKAGE)) {
+ 	for (PackageNode avPackageC : AVFileVars.AVPackages.getAll(PackageNode.Type.PACKAGE)) {
 	    AVPackage avPackage = (AVPackage) avPackageC;
 	    for (PackageNode varSetP : avPackage.getAll(PackageNode.Type.VARSET)) {
 		VariantSet varSet = (VariantSet) varSetP;
-		if (varSet.spec == null || varSet.isEmpty()) {
-		    SPGlobal.logError(header, "Skipping " + varSet.src + " because it was empty or missing a spec file.");
+		if (varSet.spec.type != getType()) {
 		    continue;
 		} else if (SPGlobal.logging()) {
 		    SPGlobal.log("SortVariantSets", " /====================================");
@@ -201,4 +201,15 @@ abstract public class VariantFactory<T extends VariantProfile> {
     public abstract void implementOriginalAsVar();
     
     public abstract void createStructureRecords(Mod source);
+    
+    public abstract VariantType getType();
+    
+    public T find(Seed s) {
+	for (T profile : profiles) {
+	    if (s.equals(profile.seed)) {
+		return profile;
+	    }
+	}
+	return null;
+    }
 }

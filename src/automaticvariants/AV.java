@@ -66,7 +66,7 @@ public class AV implements SUM {
     public static Gson gson = new Gson();
     static boolean heightOnF = false;
     static int step = 1;
-    static int numSteps = 2;
+    static int numSteps = 3;
     //GUI
     static public SPMainMenuPanel settingsMenu;
     static public SPMainMenuConfig packageManagerConfig;

@@ -6,7 +6,7 @@ package automaticvariants.gui;
 
 import automaticvariants.AV;
 import automaticvariants.AVFileVars;
-import automaticvariants.VariantNPCProfile;
+import automaticvariants.VariantProfileNPC;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -227,7 +227,7 @@ public class WizSetManual extends WizTemplate {
 		if (race == null || skin == null || piece == null) {
 		    return;
 		}
-		VariantNPCProfile profile = new VariantNPCProfile(
+		VariantProfileNPC profile = new VariantProfileNPC(
 			race.profile.getRace(), skin.profile.getSkin(), piece.profile.getPiece());
 		ProfileDisplay display = new ProfileDisplay(profile,
 			profile.getRace().getEDID() + " | "
@@ -310,7 +310,7 @@ public class WizSetManual extends WizTemplate {
 	@Override
 	public void run() {
 	    AVFileVars.npcFactory.prepProfiles();
-	    for (VariantNPCProfile profile : AVFileVars.npcFactory.profiles) {
+	    for (VariantProfileNPC profile : AVFileVars.npcFactory.profiles) {
 		races.add(new ProfileDisplay(profile, profile.getRace().getEDID()));
 		skins.add(new ProfileDisplay(profile, profile.getSkin().getEDID()));
 		pieces.add(new ProfileDisplay(profile, profile.getPiece().getEDID()));
