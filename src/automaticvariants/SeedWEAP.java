@@ -28,7 +28,7 @@ public class SeedWEAP extends Seed {
     public boolean load(ArrayList<FormID> ids) {
 	if (!ids.isEmpty()) {
 	    WEAP origWeap = (WEAP) SPDatabase.getMajor(ids.get(0), GRUP_TYPE.WEAP);
-	    nifPath = origWeap.getModelFilename();
+	    setNifPath(origWeap.getModelFilename());
 	    return isValid();
 	}
 	return false;

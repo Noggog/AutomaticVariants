@@ -24,11 +24,6 @@ public class VariantProfileWEAP extends VariantProfile {
     public String profileHashCode() {
 	throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    @Override
-    public boolean absorb(VariantSet varSet, Collection<Seed> seeds) {
-	return false;
-    }
     
     public boolean is(String nifPath) {
 	return seed.getNifPath().equalsIgnoreCase(nifPath);

@@ -28,12 +28,14 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 	for (WEAP weapon : AV.getMerger().getWeapons()) {
 	    if (weapon.getTemplate().equals(FormID.NULL)) {
 		String nifPath = weapon.getModelFilename();
-		Seed test = new SeedWEAP(nifPath);
-		if (test.isValid()
-			&& find(test) == null) {
-		    VariantProfileWEAP profile = new VariantProfileWEAP();
-		    profiles.add(profile);
-		    profile.seed.setNifPath(weapon.getModelFilename());
+		if (!"".equals(nifPath)) {
+		    Seed test = new SeedWEAP(nifPath);
+		    if (test.isValid()
+			    && find(test) == null) {
+			VariantProfileWEAP profile = new VariantProfileWEAP();
+			profiles.add(profile);
+			profile.seed.setNifPath(weapon.getModelFilename());
+		    }
 		}
 	    }
 	}

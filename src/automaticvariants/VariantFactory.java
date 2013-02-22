@@ -176,6 +176,7 @@ abstract public class VariantFactory<T extends VariantProfile> {
 		    if (!absorbed) {
 			SPGlobal.logError("Absorbing", "Variant Set " + varSet.src + " could not be absorbed by any profile.");
 		    } else {
+			// Spacing in logs
 			SPGlobal.log(header, "");
 			SPGlobal.log(header, "");
 			SPGlobal.log(header, "");
