@@ -4,7 +4,7 @@
  */
 package automaticvariants;
 
-import automaticvariants.AVFileVars.VariantType;
+import automaticvariants.SpecVariantSet.VariantType;
 import skyproc.FormID;
 import skyproc.Mod;
 import skyproc.SPGlobal;
@@ -33,7 +33,7 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 			&& find(test) == null) {
 		    VariantProfileWEAP profile = new VariantProfileWEAP();
 		    profiles.add(profile);
-		    profile.seed.nifPath = "MESHES\\" + weapon.getModelFilename();
+		    profile.seed.setNifPath(weapon.getModelFilename());
 		}
 	    }
 	}

@@ -19,7 +19,6 @@ import skyproc.*;
 abstract public class VariantProfile {
 
     static int nextID = 0;
-    Seed seed;
     Map<String, Map<Integer, String>> nifInfoDatabase = new HashMap<>();
     Map<String, ArrayList<String>> textures = new HashMap<>();
     Map<String, ArrayList<String>> altTextures = new HashMap<>();
@@ -154,4 +153,6 @@ abstract public class VariantProfile {
     }
     
     public abstract String getNifPath();
+    
+    public abstract Seed getSeed();
 }

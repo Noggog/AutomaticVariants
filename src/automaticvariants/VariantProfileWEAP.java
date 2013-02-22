@@ -31,12 +31,21 @@ public class VariantProfileWEAP extends VariantProfile {
     }
     
     public boolean is(String nifPath) {
-	return seed.nifPath.equalsIgnoreCase(nifPath);
+	return seed.getNifPath().equalsIgnoreCase(nifPath);
     }
 
     @Override
     public String getNifPath() {
-	return seed.nifPath;
+	return seed.getNifPath();
+    }
+    
+    public void setNifPath(String in) {
+	
+    }
+
+    @Override
+    public Seed getSeed() {
+	return seed;
     }
     
 }

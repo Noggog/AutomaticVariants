@@ -4,7 +4,7 @@
  */
 package automaticvariants;
 
-import automaticvariants.AVFileVars.VariantType;
+import automaticvariants.SpecVariantSet.VariantType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ abstract public class VariantFactory<T extends VariantProfile> {
 	}
 	createStructureRecords(source);
     }
-    
+
     public void prepProfiles() {
 	BSA.loadInBSAs(BSA.FileType.NIF, BSA.FileType.DDS);
 	locateUnused();
@@ -127,16 +127,16 @@ abstract public class VariantFactory<T extends VariantProfile> {
     }
 
     abstract boolean isUnused(FormID id);
-    
+
     public void dropVariantSetsInProfiles() {
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Processing Variant Seeds.txt");
 	}
- 	for (PackageNode avPackageC : AVFileVars.AVPackages.getAll(PackageNode.Type.PACKAGE)) {
+	for (PackageNode avPackageC : AVFileVars.AVPackages.getAll(PackageNode.Type.PACKAGE)) {
 	    AVPackage avPackage = (AVPackage) avPackageC;
 	    for (PackageNode varSetP : avPackage.getAll(PackageNode.Type.VARSET)) {
 		VariantSet varSet = (VariantSet) varSetP;
-		if (varSet.spec.type != getType()) {
+		if (varSet.spec.getType() != getType()) {
 		    continue;
 		} else if (SPGlobal.logging()) {
 		    SPGlobal.log("SortVariantSets", " /====================================");
@@ -199,14 +199,14 @@ abstract public class VariantFactory<T extends VariantProfile> {
     public abstract void createVariantRecords(Mod source);
 
     public abstract void implementOriginalAsVar();
-    
+
     public abstract void createStructureRecords(Mod source);
-    
+
     public abstract VariantType getType();
-    
+
     public T find(Seed s) {
 	for (T profile : profiles) {
-	    if (s.equals(profile.seed)) {
+	    if (s.equals(profile.getSeed())) {
 		return profile;
 	    }
 	}

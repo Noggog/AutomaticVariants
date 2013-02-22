@@ -5,7 +5,7 @@
 package automaticvariants;
 
 import automaticvariants.AVFileVars.ARMO_spec;
-import automaticvariants.AVFileVars.VariantType;
+import automaticvariants.SpecVariantSet.VariantType;
 import java.util.*;
 import lev.LMergeMap;
 import lev.Ln;

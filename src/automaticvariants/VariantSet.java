@@ -4,7 +4,6 @@
  */
 package automaticvariants;
 
-import automaticvariants.AVFileVars.VariantType;
 import automaticvariants.AVSaveFile.Settings;
 import java.io.*;
 import java.util.ArrayList;
@@ -307,7 +306,7 @@ public class VariantSet extends PackageNode implements Serializable {
 		ids.add(id);
 	    }
 	    Seed seed;
-	    switch (spec.type) {
+	    switch (spec.getType()) {
 		case WEAP:
 		    seed = new SeedWEAP();
 		    break;

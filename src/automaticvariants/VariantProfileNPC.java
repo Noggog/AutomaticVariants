@@ -380,4 +380,9 @@ public class VariantProfileNPC extends VariantProfile {
     public String getNifPath() {
 	return nifPath;
     }
+
+    @Override
+    public Seed getSeed() {
+	return seed;
+    }
 }

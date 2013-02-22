@@ -14,14 +14,14 @@ import skyproc.*;
  */
 public class SeedWEAP extends Seed {
 
-    String nifPath = "";
+    private String nifPath = "";
     
     public SeedWEAP() {
 	
     }
     
     public SeedWEAP(String nifPath) {
-	this.nifPath = nifPath;
+	setNifPath(nifPath);
     }
     
     @Override
@@ -54,7 +54,7 @@ public class SeedWEAP extends Seed {
 	    return false;
 	}
 	final SeedWEAP other = (SeedWEAP) obj;
-	if (!Objects.equals(this.nifPath, other.nifPath)) {
+	if (!this.nifPath.equalsIgnoreCase(other.nifPath)) {
 	    return false;
 	}
 	return true;
@@ -67,4 +67,14 @@ public class SeedWEAP extends Seed {
 	return hash;
     }
     
+    public String getNifPath() {
+	return nifPath;
+    }
+    
+    public final void setNifPath(String s) {
+	if (s.toUpperCase().indexOf("MESHES\\") != 0) {
+	    s = "MESHES\\" + s;
+	}
+	nifPath = s;
+    }
 }

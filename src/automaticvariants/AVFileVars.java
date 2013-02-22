@@ -281,10 +281,4 @@ public class AVFileVars {
 	    return out;
 	}
     }
-
-    public enum VariantType {
-
-	NPC_,
-	WEAP;
-    }
 }
