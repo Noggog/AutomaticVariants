@@ -163,4 +163,6 @@ abstract public class VariantProfile {
     public abstract String getNifPath();
     
     public abstract Seed getSeed();
+    
+    public abstract void generateRecords();
 }

@@ -236,16 +236,6 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 		|| unusedPieces.containsValue(id);
     }
     
-    @Override
-    public void createVariantRecords(Mod source) {	
-	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Generate Variants.txt");
-	}
-	for (VariantProfileNPC profile : profiles) {
-	    profile.generateARMOs();
-	}
-    }
-    
     void implementOrigAsVar() {
 	for (FormID armoSrc : armors.keySet()) {
 	    ARMO src = (ARMO) SPDatabase.getMajor(armoSrc, GRUP_TYPE.ARMO);

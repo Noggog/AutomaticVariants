@@ -385,4 +385,9 @@ public class VariantProfileNPC extends VariantProfile {
     public Seed getSeed() {
 	return seed;
     }
+
+    @Override
+    public void generateRecords() {
+	generateARMOs();
+    }
 }

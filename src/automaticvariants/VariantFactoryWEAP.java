@@ -5,10 +5,7 @@
 package automaticvariants;
 
 import automaticvariants.SpecVariantSet.VariantType;
-import skyproc.FormID;
-import skyproc.Mod;
-import skyproc.SPGlobal;
-import skyproc.WEAP;
+import skyproc.*;
 
 /**
  *
@@ -26,19 +23,35 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 	SPGlobal.log(header, "===================      Creating WEAP Profiles     =================");
 	SPGlobal.log(header, "====================================================================");
 	for (WEAP weapon : AV.getMerger().getWeapons()) {
-	    if (weapon.getTemplate().equals(FormID.NULL)) {
-		String nifPath = weapon.getModelFilename();
-		if (!"".equals(nifPath)) {
-		    Seed test = new SeedWEAP(nifPath);
-		    if (test.isValid()
-			    && find(test) == null) {
-			VariantProfileWEAP profile = new VariantProfileWEAP();
+	    WEAP templateTop = getTemplateTop(weapon);
+	    if (templateTop == null) {
+		continue;
+	    }
+	    String nifPath = templateTop.getModelFilename();
+	    if (!"".equals(nifPath)) {
+		Seed test = new SeedWEAP(nifPath);
+		if (test.isValid()) {
+		    VariantProfileWEAP profile = find(test);
+		    if (profile == null) {
+			profile = new VariantProfileWEAP(templateTop);
 			profiles.add(profile);
-			profile.seed.setNifPath(weapon.getModelFilename());
 		    }
+		    profile.addWeapon(weapon);
 		}
 	    }
 	}
+    }
+    
+    public WEAP getTemplateTop(WEAP in) {
+	int counter = 0;
+	while (in != null && !in.getTemplate().isNull()) {
+	    // Circular safeguard
+	    if (counter++ > 25) {
+		return null;
+	    }
+	    in = (WEAP) SPDatabase.getMajor(in.getTemplate(), GRUP_TYPE.WEAP);
+	}
+	return in;
     }
 
     @Override
@@ -52,7 +65,6 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 
     @Override
     public void createVariantRecords(Mod source) {
-	throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
