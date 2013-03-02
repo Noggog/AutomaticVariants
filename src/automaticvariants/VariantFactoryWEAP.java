@@ -64,10 +64,6 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
     }
 
     @Override
-    public void createVariantRecords(Mod source) {
-    }
-
-    @Override
     public void implementOriginalAsVar() {
 	throw new UnsupportedOperationException("Not supported yet.");
     }

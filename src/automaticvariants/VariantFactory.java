@@ -197,11 +197,14 @@ abstract public class VariantFactory<T extends VariantProfile> {
 	}
     }
 
-    public void createVariantRecords(Mod source) {	
+    public void createVariantRecords(Mod source) {
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Generate Variants.txt");
 	}
 	for (VariantProfile profile : profiles) {
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(toString(), " ***********> Generating profile " + profile.ID);
+	    }
 	    profile.generateRecords();
 	}
     }

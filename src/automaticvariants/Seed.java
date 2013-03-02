@@ -15,4 +15,5 @@ public abstract class Seed {
     public abstract boolean load(ArrayList<FormID> ids);
     public abstract boolean isValid();
     public abstract void print();
+    public abstract String getSeedHashCode();
 }

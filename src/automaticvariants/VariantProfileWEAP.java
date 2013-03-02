@@ -5,7 +5,11 @@
 package automaticvariants;
 
 import java.util.ArrayList;
+import java.util.Map;
+import lev.LMergeMap;
+import skyproc.NiftyFunc;
 import skyproc.SPGlobal;
+import skyproc.TXST;
 import skyproc.WEAP;
 
 /**
@@ -16,11 +20,12 @@ public class VariantProfileWEAP extends VariantProfile {
 
     SeedWEAP seed = new SeedWEAP();
     private ArrayList<WEAP> matchedWeapons = new ArrayList<>();
+    static LMergeMap<WEAP, WEAP> createdVariants = new LMergeMap<>(false);
 
     public VariantProfileWEAP(WEAP in) {
 	seed.setNifPath(in.getModelFilename());
     }
-    
+
     public void addWeapon(WEAP in) {
 	matchedWeapons.add(in);
     }
@@ -39,11 +44,6 @@ public class VariantProfileWEAP extends VariantProfile {
     @Override
     public void printShort() {
 	SPGlobal.log(toString(), "|   NIF: " + getNifPath());
-    }
-
-    @Override
-    public String profileHashCode() {
-	throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public boolean is(String nifPath) {
@@ -65,5 +65,36 @@ public class VariantProfileWEAP extends VariantProfile {
 
     @Override
     public void generateRecords() {
+	for (VariantSet varSet : matchedVariantSets) {
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(toString(), " *************> Generating set " + varSet.printName("-"));
+	    }
+	    ArrayList<Variant> vars = varSet.multiplyAndFlatten(getGlobalMeshes());
+	    for (Variant var : vars) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(toString(), " ***************> Generating var " + var.printName("-"));
+		}
+		String varEDID = NiftyFunc.EDIDtrimmer(generateEDID(var));
+		for (WEAP weapon : matchedWeapons) {
+		    String edid = varEDID + weapon.getEDID() + "_weap";
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(toString(), " * ==> Generating WEAP: " + edid);
+		    }
+		    WEAP weaponDup = (WEAP) SPGlobal.getGlobalPatch().makeCopy(weapon, edid);
+		    String nifPath = getNifPath(var);
+		    weaponDup.setModelFilename(nifPath);
+		    Map<String, TXST> txsts = generateTXSTs(var, nifPath);
+		    if (txsts.isEmpty()) {
+			SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated");
+			continue;
+		    }
+		    
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(toString(), " ******************************>");
+			SPGlobal.log(toString(), "");
+		    }
+		}
+	    }
+	}
     }
 }

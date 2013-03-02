@@ -156,4 +156,17 @@ public class SeedNPC extends Seed {
     public boolean isValid() {
 	return race != null && skin != null && piece != null;
     }
+
+    @Override
+    public String getSeedHashCode() {
+	int hash = 7;
+	hash = 29 * hash + Objects.hashCode(race);
+	hash = 29 * hash + Objects.hashCode(skin);
+	hash = 29 * hash + Objects.hashCode(piece);
+	if (hash >= 0) {
+	    return Integer.toString(hash);
+	} else {
+	    return "n" + Integer.toString(-hash);
+	}
+    }
 }

@@ -77,4 +77,14 @@ public class SeedWEAP extends Seed {
 	}
 	nifPath = s;
     }
+    
+    @Override
+    public String getSeedHashCode() {
+	int hash = hashCode();
+	if (hash >= 0) {
+	    return Integer.toString(hash);
+	} else {
+	    return "n" + Integer.toString(-hash);
+	}
+    }
 }

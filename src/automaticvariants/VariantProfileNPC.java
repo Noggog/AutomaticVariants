@@ -164,94 +164,7 @@ public class VariantProfileNPC extends VariantProfile {
 	return hasTexture(texture.getName().toUpperCase());
     }
 
-    public ArrayList<VariantGlobalMesh> getGlobalMeshes() {
-	ArrayList<VariantGlobalMesh> globalMeshes = new ArrayList<>();
-	for (VariantSet varSet : matchedVariantSets) {
-	    globalMeshes.addAll(varSet.getGlobalMeshes());
-	}
-	return globalMeshes;
-    }
-
-    public boolean shouldGenerate(Variant var, String nodeName) {
-	ArrayList<String> varTextures = var.getTextureNames();
-	for (String profileTexture : textures.get(nodeName)) {
-	    for (String varTex : varTextures) {
-		if (profileTexture.contains(varTex)) {
-		    return true;
-		}
-	    }
-	}
-	return false;
-    }
-
-    public Map<String, TXST> generateTXSTs(Variant var, String nifPath) {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(toString(), " * ==> Generating TXSTs");
-	}
-	Map<String, TXST> out = new HashMap<>();
-
-	Map<Integer, String> nifInfo = nifInfoDatabase.get(nifPath);
-	for (Integer index : nifInfo.keySet()) {
-	    String nodeName = nifInfo.get(index);
-	    if (shouldGenerate(var, nodeName)) {
-		String edid = NiftyFunc.EDIDtrimmer(generateEDID(var) + "_" + nodeName + "_txst");
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(toString(), " * | Generating: " + edid);
-		}
-
-		// Create TXST
-		TXST txst = new TXST(SPGlobal.getGlobalPatch(), edid);
-		txst.set(TXST.TXSTflag.FACEGEN_TEXTURES, true);
-
-		// For each texture there normally...
-		ArrayList<File> varFiles = var.getTextureFiles();
-		for (int i = 0; i < textures.get(nodeName).size(); i++) {
-		    String texture = textures.get(nodeName).get(i);
-		    if (texture.length() < 9) {
-			continue;
-		    }
-		    texture = texture.substring(9);
-		    if (texture.equals("")) {
-			continue;
-		    }
-		    // Then check if there is a variant file that matches
-		    int set = readjustTXSTindices(i);
-		    txst.setNthMap(set, texture);
-		    for (File varFile : varFiles) {
-			if (texture.contains(varFile.getName().toUpperCase())) {
-			    // And then sub it in the TXST
-			    String varTex = varFile.getPath();
-			    varTex = varTex.substring(varTex.indexOf("AV Packages"));
-			    txst.setNthMap(set, varTex);
-			    if (SPGlobal.logging()) {
-				SPGlobal.log(toString(), " * |    Loading " + i + ": " + varTex);
-			    }
-			    break;
-			}
-		    }
-		}
-
-		out.put(nodeName, txst);
-	    }
-	}
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(toString(), " * =====================================>");
-	}
-	return out;
-    }
-
-    static int readjustTXSTindices(int j) {
-	// Because nif fields map 2->3 if facegen flag is on.
-	if (j == 2) {
-	    return 3;
-	}
-	return j;
-    }
-
     public void generateARMOs() {
-	if (SPGlobal.logging()) {
-	    SPGlobal.log(toString(), " ***********> Generating profile " + ID);
-	}
 	for (VariantSet varSet : matchedVariantSets) {
 	    if (SPGlobal.logging()) {
 		SPGlobal.log(toString(), " *************> Generating set " + varSet.printName("-"));
@@ -262,16 +175,7 @@ public class VariantProfileNPC extends VariantProfile {
 		    SPGlobal.log(toString(), " ***************> Generating var " + var.printName("-"));
 		}
 
-		String targetNifPath;
-		ArrayList<PackageNode> varNifs = var.getAll(Type.MESH);
-		if (varNifs.size() > 0) {
-		    targetNifPath = varNifs.get(0).src.getPath();
-		    catalogNif(targetNifPath);
-		    SPGlobal.log(toString(), " * Using variant nif file: " + targetNifPath);
-		} else {
-		    targetNifPath = nifPath;
-		    SPGlobal.log(toString(), " * Using default nif file: " + targetNifPath);
-		}
+		String targetNifPath = getNifPath(var);
 
 		Map<String, TXST> txsts = generateTXSTs(var, targetNifPath);
 		if (txsts.isEmpty()) {
@@ -303,20 +207,8 @@ public class VariantProfileNPC extends VariantProfile {
 	    cleanNifPath = cleanNifPath.substring(7);
 	}
 	arma.setModelPath(cleanNifPath, Gender.MALE, Perspective.THIRD_PERSON);
-
-	ArrayList<AltTexture> alts = arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON);
-	alts.clear();
-
-	Map<Integer, String> nifInfo = nifInfoDatabase.get(nifPath);
-	for (Integer index : nifInfo.keySet()) {
-	    String nifNodeName = nifInfo.get(index);
-	    if (txsts.containsKey(nifNodeName)) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(toString(), " * | Loading TXST for " + nifNodeName + " index " + index);
-		}
-		alts.add(new AltTexture(nifNodeName, txsts.get(nifNodeName).getForm(), index));
-	    }
-	}
+	
+	loadAltTextures(arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON), txsts, nifPath);
 
 	if (SPGlobal.logging()) {
 	    SPGlobal.log(toString(), " * =====================================>");
@@ -349,19 +241,6 @@ public class VariantProfileNPC extends VariantProfile {
 	}
 
 	return armo;
-    }
-
-    @Override
-    public String profileHashCode() {
-	int hash = 7;
-	hash = 29 * hash + Objects.hashCode(getRace());
-	hash = 29 * hash + Objects.hashCode(getSkin());
-	hash = 29 * hash + Objects.hashCode(getPiece());
-	if (hash >= 0) {
-	    return Integer.toString(hash);
-	} else {
-	    return "n" + Integer.toString(-hash);
-	}
     }
 
     public RACE getRace() {
