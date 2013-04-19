@@ -49,18 +49,18 @@ public class AVFileVars {
 	importVariants(true);
 	AVPackages.prune();
 	cleanBadSets();
-	
+
 	SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Creating NPC Variants");
 	npcFactory.createVariants(source);
 	SPProgressBarPlug.incrementBar();
-	
+
 	SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Creating WEAP Variants");
 	weapFactory.createVariants(source);
 	SPProgressBarPlug.incrementBar();
 
 	SPProgressBarPlug.done();
     }
-    
+
     static public void cleanBadSets() {
 	for (PackageNode avPackageC : AVFileVars.AVPackages.getAll(PackageNode.Type.PACKAGE)) {
 	    AVPackage avPackage = (AVPackage) avPackageC;
@@ -236,10 +236,9 @@ public class AVFileVars {
     /*
      * Internal Classes
      */
-    static class ARMO_spec {
+    static class ARMO_spec extends SpecHolder {
 
 	ARMO armo;
-	SpecVariant spec;
 
 	ARMO_spec(ARMO armoSrc) {
 	    this.armo = armoSrc;
@@ -252,6 +251,26 @@ public class AVFileVars {
 	}
     }
 
+    static class WEAP_spec extends SpecHolder {
+
+	WEAP weap;
+	SpecVariant spec;
+
+	WEAP_spec(WEAP weapSrc) {
+	    this.weap = weapSrc;
+	    spec = new SpecVariant();
+	}
+
+	WEAP_spec(WEAP weap, SpecVariant spec) {
+	    this.weap = weap;
+	    this.spec = spec;
+	}
+    }
+
+    static class SpecHolder {
+	SpecVariant spec;
+    }
+
     static class AV_Race {
 
 	RACE race;
@@ -262,7 +281,7 @@ public class AVFileVars {
 
 	public AV_Race(FormID id) {
 	    race = (RACE) SPDatabase.getMajor(id, GRUP_TYPE.RACE);
-	    AltOptions = new FLST(SPGlobal.getGlobalPatch(), "AV_" + race.getEDID() + "_flst");
+	    AltOptions = new FLST("AV_" + race.getEDID() + "_flst");
 	}
 
 	final public Set<FormID> getCells() {

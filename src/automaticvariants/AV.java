@@ -170,7 +170,7 @@ public class AV implements SUM {
 	}
 	questScript.setProperty("LogTable", logTable);
 
-	quest = NiftyFunc.makeScriptQuest(SPGlobal.getGlobalPatch(), questScript);
+	quest = NiftyFunc.makeScriptQuest(questScript);
     }
 
     public static ScriptRef getQuestScript() {
@@ -178,50 +178,50 @@ public class AV implements SUM {
     }
 
     public void makeGlobals() {
-	forceRepick = new GLOB(SPGlobal.getGlobalPatch(), "AVForceRepick", GLOBType.Short);
+	forceRepick = new GLOB("AVForceRepick", GLOBType.Short);
 	forceRepick.setValue((float) AV.save.getInt(Settings.PACKAGES_FORCE_REPICK));
 	forceRepick.setConstant(true);
 
-	texturesOn = new GLOB(SPGlobal.getGlobalPatch(), "AVTexturesOn", GLOBType.Short);
+	texturesOn = new GLOB("AVTexturesOn", GLOBType.Short);
 	texturesOn.setValue(save.getBool(Settings.PACKAGES_ON));
 	texturesOn.setConstant(true);
 
-	statsOn = new GLOB(SPGlobal.getGlobalPatch(), "AVStatsOn", GLOBType.Short);
+	statsOn = new GLOB("AVStatsOn", GLOBType.Short);
 	statsOn.setValue(save.getBool(Settings.STATS_ON));
 	statsOn.setConstant(true);
 
 	double scale = 100.0 // To percent (.01) instead of ints (1)
 		* 3.0; // Scaled to 3 standard deviations
 
-	heightScale = new GLOB(SPGlobal.getGlobalPatch(), "AVHeightScale", GLOBType.Float);
+	heightScale = new GLOB("AVHeightScale", GLOBType.Float);
 	heightScale.setValue((float) (save.getInt(Settings.STATS_HEIGHT_MAX) / scale));
 	heightScale.setConstant(true);
 
-	healthScale = new GLOB(SPGlobal.getGlobalPatch(), "AVHealthScale", GLOBType.Float);
+	healthScale = new GLOB("AVHealthScale", GLOBType.Float);
 	healthScale.setValue((float) (save.getInt(Settings.STATS_HEALTH_MAX) / scale));
 	healthScale.setConstant(true);
 
-	magickaScale = new GLOB(SPGlobal.getGlobalPatch(), "AVMagickaScale", GLOBType.Float);
+	magickaScale = new GLOB("AVMagickaScale", GLOBType.Float);
 	magickaScale.setValue((float) (save.getInt(Settings.STATS_MAGIC_MAX) / scale));
 	magickaScale.setConstant(true);
 
-	staminaScale = new GLOB(SPGlobal.getGlobalPatch(), "AVStaminaScale", GLOBType.Float);
+	staminaScale = new GLOB("AVStaminaScale", GLOBType.Float);
 	staminaScale.setValue((float) (save.getInt(Settings.STATS_STAMINA_MAX) / scale));
 	staminaScale.setConstant(true);
 
-	speedScale = new GLOB(SPGlobal.getGlobalPatch(), "AVSpeedScale", GLOBType.Float);
+	speedScale = new GLOB("AVSpeedScale", GLOBType.Float);
 	speedScale.setValue((float) (save.getInt(Settings.STATS_SPEED_MAX) / scale));
 	speedScale.setConstant(true);
 
-	tieStats = new GLOB(SPGlobal.getGlobalPatch(), "AVTieStats", GLOBType.Short);
+	tieStats = new GLOB("AVTieStats", GLOBType.Short);
 	tieStats.setValue(save.getBool(Settings.STATS_TIE));
 	tieStats.setConstant(true);
 
-	debugOn = new GLOB(SPGlobal.getGlobalPatch(), "DebugOn", GLOBType.Short);
+	debugOn = new GLOB("DebugOn", GLOBType.Short);
 	debugOn.setValue(save.getBool(Settings.DEBUG_ON));
 	debugOn.setConstant(true);
 
-	debugRegional = new GLOB(SPGlobal.getGlobalPatch(), "DebugRegional", GLOBType.Short);
+	debugRegional = new GLOB("DebugRegional", GLOBType.Short);
 	debugRegional.setValue(save.getBool(Settings.DEBUG_REGIONAL));
 	debugRegional.setConstant(true);
     }

@@ -4,6 +4,7 @@
  */
 package automaticvariants;
 
+import automaticvariants.AVFileVars.SpecHolder;
 import automaticvariants.SpecVariantSet.VariantType;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.zip.DataFormatException;
 import lev.LPair;
 import lev.LShrinkArray;
+import lev.Ln;
 import skyproc.*;
 import skyproc.exceptions.BadParameter;
 
@@ -222,5 +224,13 @@ abstract public class VariantFactory<T extends VariantProfile> {
 	    }
 	}
 	return null;
+    }
+
+    static int calcLCM(ArrayList specs) {
+	int[] divs = new int[specs.size()];
+	for (int i = 0; i < divs.length; i++) {
+	    divs[i] = ((SpecHolder)specs.get(i)).spec.Probability_Divider;
+	}
+	return Ln.lcmm(divs);
     }
 }

@@ -4,9 +4,9 @@
  */
 package automaticvariants;
 
+import automaticvariants.AVFileVars.WEAP_spec;
 import java.util.ArrayList;
 import java.util.Map;
-import lev.LMergeMap;
 import skyproc.NiftyFunc;
 import skyproc.SPGlobal;
 import skyproc.TXST;
@@ -20,7 +20,6 @@ public class VariantProfileWEAP extends VariantProfile {
 
     SeedWEAP seed = new SeedWEAP();
     private ArrayList<WEAP> matchedWeapons = new ArrayList<>();
-    static LMergeMap<WEAP, WEAP> createdVariants = new LMergeMap<>(false);
 
     public VariantProfileWEAP(WEAP in) {
 	seed.setNifPath(in.getModelFilename());
@@ -81,14 +80,24 @@ public class VariantProfileWEAP extends VariantProfile {
 			SPGlobal.log(toString(), " * ==> Generating WEAP: " + edid);
 		    }
 		    WEAP weaponDup = (WEAP) SPGlobal.getGlobalPatch().makeCopy(weapon, edid);
+		    // Set nif
 		    String nifPath = getNifPath(var);
-		    weaponDup.setModelFilename(nifPath);
+		    String cleanNifPath = nifPath;
+		    if (cleanNifPath.indexOf("MESHES\\") == 0) {
+			cleanNifPath = cleanNifPath.substring(7);
+		    }
+		    weaponDup.setModelFilename(cleanNifPath);
+		    
+		    //Generate and set alt textures
 		    Map<String, TXST> txsts = generateTXSTs(var, nifPath);
 		    if (txsts.isEmpty()) {
 			SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated");
 			continue;
 		    }
+		    loadAltTextures(weaponDup.getAltTextures(), txsts, nifPath);
 		    
+		    VariantFactoryWEAP.weapons.put(weapon, new WEAP_spec(weaponDup, var.spec));
+
 		    if (SPGlobal.logging()) {
 			SPGlobal.log(toString(), " ******************************>");
 			SPGlobal.log(toString(), "");

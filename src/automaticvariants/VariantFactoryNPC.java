@@ -5,10 +5,10 @@
 package automaticvariants;
 
 import automaticvariants.AVFileVars.ARMO_spec;
+import automaticvariants.AVFileVars.SpecHolder;
 import automaticvariants.SpecVariantSet.VariantType;
 import java.util.*;
 import lev.LMergeMap;
-import lev.Ln;
 import skyproc.*;
 
 /**
@@ -16,7 +16,7 @@ import skyproc.*;
  * @author Justin Swanson
  */
 public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
-    
+
     static String header = "VariantFactory - NPC";
     static String raceAttachScript = "AVRaceAttachment";
     static public HashSet<FormID> unusedRaces;
@@ -24,14 +24,14 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
     static public LMergeMap<FormID, FormID> unusedPieces;
     static Map<FormID, LMergeMap<FormID, AVFileVars.ARMO_spec>> armors = new HashMap<>();
     static Map<FormID, AVFileVars.AV_Race> AVraces = new HashMap<>();
-    
+
     @Override
     public void locateUnused() {
-	
+
 	if (unusedRaces != null) {
 	    return;
 	}
-	
+
 	Mod source = AV.getMerger();
 
 	// Load all races, skins, pieces into containers
@@ -83,7 +83,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 		unusedPieces.put(skin, new ArrayList<FormID>(0));
 	    }
 	}
-	
+
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Locate Unused.txt");
 	    SPGlobal.log(header, "Unused Races:");
@@ -103,7 +103,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    }
 	}
     }
-    
+
     static public FormID getUsedSkin(NPC_ npcSrc) {
 	if (!npcSrc.getSkin().equals(FormID.NULL)) {
 	    return npcSrc.getSkin();
@@ -119,7 +119,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    }
 	}
     }
-    
+
     @Override
     public void loadProfileRecords() {
 	SPGlobal.log(header, "===========================================================");
@@ -135,14 +135,14 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    }
 	}
     }
-    
+
     public void loadProfileSkin(ARMO armo) {
 	for (FormID armaForm : armo.getArmatures()) {
 	    // If a used piece
 	    if ((!unusedPieces.containsKey(armo.getForm())
 		    || !unusedPieces.get(armo.getForm()).contains(armaForm))
 		    && !AV.block.contains(armo.getForm())) {
-		
+
 		ARMA arma = (ARMA) SPDatabase.getMajor(armaForm, GRUP_TYPE.ARMA);
 
 		// Make sure it has a race
@@ -158,8 +158,8 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 		// Find profile with that nif
 		String nifPath = "MESHES\\" + arma.getModelPath(Gender.MALE, Perspective.THIRD_PERSON).toUpperCase();
 		VariantProfileNPC profile = find(null, null, null, nifPath);
-		
-		
+
+
 		if (profile != null) {
 		    try {
 			Set<RACE> races = new HashSet<>();
@@ -167,7 +167,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 			for (FormID raceID : arma.getAdditionalRaces()) {
 			    races.add((RACE) SPDatabase.getMajor(raceID, GRUP_TYPE.RACE));
 			}
-			
+
 			for (RACE r : races) {
 			    //If profile is already filled, make duplicate
 			    if (profile.getRace() != null) {
@@ -194,7 +194,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    }
 	}
     }
-    
+
     @Override
     public void createProfileShells() {
 	SPGlobal.log(header, "====================================================================");
@@ -228,23 +228,14 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    }
 	}
     }
-    
+
     @Override
     boolean isUnused(FormID id) {
 	return unusedSkins.contains(id)
 		|| unusedRaces.contains(id)
 		|| unusedPieces.containsValue(id);
     }
-    
-    void implementOrigAsVar() {
-	for (FormID armoSrc : armors.keySet()) {
-	    ARMO src = (ARMO) SPDatabase.getMajor(armoSrc, GRUP_TYPE.ARMO);
-	    for (FormID race : armors.get(armoSrc).keySet()) {
-		armors.get(armoSrc).put(race, new AVFileVars.ARMO_spec(src));
-	    }
-	}
-    }
-    
+
     @Override
     public void implementOriginalAsVar() {
 	for (FormID armoSrc : armors.keySet()) {
@@ -254,12 +245,12 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    }
 	}
     }
-    
+
     @Override
     public void createStructureRecords(Mod source) {
-	
+
 	createAVRaceObjects();
-	
+
 	setUpExclusiveCellList();
 
 	// Generate FormLists of RACE variants
@@ -271,7 +262,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	// Add AV keywords to NPCs that have alt skins
 	tagNPCs(source);
     }
-    
+
     static void createAVRaceObjects() {
 	for (FormID armoSrcForm : armors.keySet()) {
 	    for (FormID race : armors.get(armoSrcForm).keySet()) {
@@ -292,12 +283,12 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 			}
 		    }
 		}
-		
+
 		AVraces.get(race).variantMap.put(armoSrcForm, cellToARMO);
 	    }
 	}
     }
-    
+
     static void setUpExclusiveCellList() {
 	// If not allowed, leave it empty and return
 	if (AV.save.getInt(AVSaveFile.Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION) < 2) {
@@ -320,7 +311,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	}
 	AV.quest.getScriptPackage().getScript("AVQuestScript").setProperty("ExclusiveCellList", eCells.toArray(new FormID[0]));
     }
-    
+
     static void generateFormLists(Mod source) {
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Generate Form Lists.txt");
@@ -337,7 +328,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    }
 
 	    // Generate Cell Index FLST
-	    avr.Cells = new FLST(SPGlobal.getGlobalPatch(), "AV_" + avr.race.getEDID() + "_cells_flst");
+	    avr.Cells = new FLST("AV_" + avr.race.getEDID() + "_cells_flst");
 	    for (FormID cell : avr.getCells()) {
 		if (!cell.isNull()) {
 		    avr.Cells.addFormEntryAtIndex(cell, 0);
@@ -347,7 +338,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    // For each skin with variants applied to that race
 	    for (FormID skinID : avr.variantMap.keySet()) {
 		ARMO skinSrc = (ARMO) SPDatabase.getMajor(skinID, GRUP_TYPE.ARMO);
-		FLST flstSkin = new FLST(SPGlobal.getGlobalPatch(), "AV_" + skinSrc.getEDID() + "_" + raceSrc.getEDID() + "_flst");
+		FLST flstSkin = new FLST("AV_" + skinSrc.getEDID() + "_" + raceSrc.getEDID() + "_flst");
 		if (raceSrc.getWornArmor().equals(skinID)) {
 		    if (SPGlobal.logging()) {
 			SPGlobal.log(header, "    Generating for normal skin " + skinSrc);
@@ -363,22 +354,17 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 		}
 
 		// Calculate the lowest common mult between variant probablity dividers
-		ArrayList<AVFileVars.ARMO_spec> armoVars = avr.variantMap.get(skinID).valuesFlat();
-		int[] divs = new int[armoVars.size()];
-		for (int i = 0; i < divs.length; i++) {
-		    divs[i] = armoVars.get(i).spec.Probability_Divider;
-		}
-		int lowestCommMult = Ln.lcmm(divs);
+		int lowestCommMult = calcLCM(avr.variantMap.get(skinID).valuesFlat());
 
 		// For each cell
 		for (FormID cell : avr.getCells()) {
-		    FLST flstCell = new FLST(SPGlobal.getGlobalPatch(), "AV_" + skinSrc.getEDID() + "_" + raceSrc.getEDID() + "_cell_ " + cell.getFormStr() + "_flst");
+		    FLST flstCell = new FLST("AV_" + skinSrc.getEDID() + "_" + raceSrc.getEDID() + "_cell_ " + cell.getFormStr() + "_flst");
 		    if (!cell.isNull()) {
 			flstSkin.addFormEntryAtIndex(flstCell.getForm(), 0);
 		    } else {
 			flstSkin.addFormEntry(flstCell.getForm());
 		    }
-		    
+
 		    if (avr.variantMap.get(skinID).containsKey(cell)) {
 			if (SPGlobal.logging()) {
 			    SPGlobal.log(header, "      Generating for cell " + cell);
@@ -399,12 +385,12 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    }
 	}
     }
-    
+
     static void generateSPELvariants(Mod source) {
 	for (AVFileVars.AV_Race avr : AVraces.values()) {
 	    ScriptRef script = new ScriptRef(raceAttachScript);
 	    script.setProperty("AVQuest", AV.quest.getForm());
-	    
+
 	    script.setProperty("AltOptions", avr.AltOptions.getForm());
 	    ArrayList<FormID> cells = avr.Cells.getFormIDEntries();
 	    if (!cells.isEmpty()) {
@@ -480,12 +466,12 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    }
 
 	    // Generate the spell
-	    SPEL spell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), script, avr.race.getEDID());
+	    SPEL spell = NiftyFunc.genScriptAttachingSpel(script, avr.race.getEDID());
 	    avr.race.addSpell(spell.getForm());
 	    SPGlobal.getGlobalPatch().addRecord(avr.race);
 	}
     }
-    
+
     static void standardizeNPCtag(NPC_ n) {
 	float weight = n.getWeight() * 100;
 	int tmp = (int) Math.round(weight);
@@ -494,7 +480,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    SPGlobal.getGlobalPatch().addRecord(n);
 	}
     }
-    
+
     static void tagNPCs(Mod source) {
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Tagging NPCs.txt");
@@ -533,11 +519,11 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    }
 	}
     }
-    
+
     static void tagNPC(NPC_ n, float i) {
 	n.setHeight(n.getHeight() + i / 10000);
     }
-    
+
     static FormID getTemplatedSkin(NPC_ n) {
 	if (n == null) {
 	    return null;
@@ -548,7 +534,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    return n.getSkin();
 	}
     }
-    
+
     public VariantProfileNPC find(RACE race, ARMO skin, ARMA piece, String nifPath) {
 	for (VariantProfileNPC prof : profiles) {
 	    if (prof.is(race, skin, piece, nifPath)) {

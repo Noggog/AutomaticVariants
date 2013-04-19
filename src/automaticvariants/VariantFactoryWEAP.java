@@ -4,7 +4,11 @@
  */
 package automaticvariants;
 
+import automaticvariants.AVFileVars.WEAP_spec;
 import automaticvariants.SpecVariantSet.VariantType;
+import java.util.HashMap;
+import java.util.Map;
+import lev.LMergeMap;
 import skyproc.*;
 
 /**
@@ -12,6 +16,9 @@ import skyproc.*;
  * @author Justin Swanson
  */
 public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
+
+    static LMergeMap<WEAP, WEAP_spec> weapons = new LMergeMap<>(false);
+    static Map<WEAP, LVLI> llists = new HashMap<>();
 
     @Override
     public void locateUnused() {
@@ -41,7 +48,7 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 	    }
 	}
     }
-    
+
     public WEAP getTemplateTop(WEAP in) {
 	int counter = 0;
 	while (in != null && !in.getTemplate().isNull()) {
@@ -65,12 +72,57 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 
     @Override
     public void implementOriginalAsVar() {
-	throw new UnsupportedOperationException("Not supported yet.");
+	for (WEAP weapSrc : weapons.keySet()) {
+	    weapons.put(weapSrc, new WEAP_spec(weapSrc));
+	}
     }
 
     @Override
     public void createStructureRecords(Mod source) {
-	throw new UnsupportedOperationException("Not supported yet.");
+	generateLLists();
+
+	subIn(source);
+    }
+
+    public void subIn(Mod source) {
+	for (WEAP weap : weapons.keySet()) {
+	    LVLI replacement = llists.get(weap);
+
+	    // Replace in existing LLists
+	    for (LVLI existingList : source.getLeveledItems()) {
+		existingList.replace(weap, replacement);
+		SPGlobal.getGlobalPatch().addRecord(existingList);
+	    }
+
+	    // Replace in NPC inventories
+	    for (NPC_ npc : source.getNPCs()) {
+		for (SubFormInt item : npc.getItems()) {
+		    if (item.getForm().equals(weap.getForm())) {
+			item.setForm(replacement.getForm());
+			SPGlobal.getGlobalPatch().addRecord(npc);
+		    }
+		}
+	    }
+	}
+    }
+
+    public void generateLLists() {
+	for (WEAP weapSrc : weapons.keySet()) {
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(header, "  Generating for " + weapSrc);
+	    }
+	    LVLI list = new LVLI(weapSrc.getEDID() + "_llist");
+	    llists.put(weapSrc, list);
+	    int lcm = calcLCM(weapons.get(weapSrc));
+	    for (WEAP_spec weapNew : weapons.get(weapSrc)) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "    Generating " + (lcm / weapNew.spec.Probability_Divider) + " entries for " + weapNew.weap);
+		}
+		for (int i = 0; i < lcm / weapNew.spec.Probability_Divider; i++) {
+		    list.addEntry(weapNew.weap.getForm(), 1, 1);
+		}
+	    }
+	}
     }
 
     @Override

@@ -26,6 +26,7 @@ abstract public class VariantProfile {
     Set<String> texturesFlat;
     Set<String> textureNames;
     ArrayList<VariantSet> matchedVariantSets = new ArrayList<>();
+    ArrayList<TXST> generatedTXSTs = new ArrayList<>();
     public int ID;
 
     VariantProfile() {
@@ -161,11 +162,11 @@ abstract public class VariantProfile {
     public String generateEDID(Variant var) {
 	return "AV_" + profileHashCode() + "_" + var.printName("_");
     }
-    
+
     public abstract String getNifPath();
-    
+
     public abstract Seed getSeed();
-    
+
     public abstract void generateRecords();
 
     public ArrayList<VariantGlobalMesh> getGlobalMeshes() {
@@ -189,7 +190,7 @@ abstract public class VariantProfile {
 	}
 	return targetNifPath;
     }
-    
+
     public void loadAltTextures(ArrayList<AltTextures.AltTexture> alts, Map<String, TXST> txsts, String nifPath) {
 	alts.clear();
 
@@ -221,7 +222,7 @@ abstract public class VariantProfile {
 		}
 
 		// Create TXST
-		TXST txst = new TXST(SPGlobal.getGlobalPatch(), edid);
+		TXST txst = new TXST(edid);
 		txst.set(TXST.TXSTflag.FACEGEN_TEXTURES, true);
 
 		// For each texture there normally...
@@ -252,6 +253,18 @@ abstract public class VariantProfile {
 		    }
 		}
 
+		//Check to see if generated txst is duplicate
+		for (TXST existingtxst : generatedTXSTs) {
+		    if (existingtxst.deepEquals(txst)) {
+			if (SPGlobal.logging()) {
+			    SPGlobal.log(toString(), " * |    Discarding txst because it was duplicate with " + existingtxst);
+			}
+			SPGlobal.getGlobalPatch().remove(txst.getForm());
+			txst = existingtxst;
+			break;
+		    }
+		}
+
 		out.put(nodeName, txst);
 	    }
 	}
@@ -270,6 +283,11 @@ abstract public class VariantProfile {
     }
 
     public boolean shouldGenerate(Variant var, String nodeName) {
+	// Also need to check if TXST already exists with data
+	return profileContainsVarTex(var, nodeName);
+    }
+
+    public boolean profileContainsVarTex(Variant var, String nodeName) {
 	ArrayList<String> varTextures = var.getTextureNames();
 	for (String profileTexture : textures.get(nodeName)) {
 	    for (String varTex : varTextures) {
