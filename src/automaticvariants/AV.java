@@ -335,7 +335,7 @@ public class AV implements SUM {
 	    AVFileVars.moveOut();
 	}
 	if (patchWasGenerated) {
-	    AV.save.curSettings.get(Settings.PREV_VERSION).setTo(NiftyFunc.versionToNum(AV.version));
+	    AV.save.setInt(Settings.PREV_VERSION, NiftyFunc.versionToNum(AV.version));
 	}
     }
 

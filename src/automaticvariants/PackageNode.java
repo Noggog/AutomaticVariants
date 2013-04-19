@@ -39,7 +39,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	}
 	this.type = type;
     }
-    
+
     public PackageNode(PackageNode p) {
 	this.src = p.src;
 	this.type = p.type;
@@ -49,7 +49,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
     public PackageNode get(LSwingTreeNode node) {
 	return (PackageNode) super.get(node);
     }
-    
+
     public void removeAll(Type t) {
 	ArrayList<PackageNode> get = getAll(t);
 	for (PackageNode p : get) {
@@ -331,14 +331,14 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	if (all.isEmpty()) {
 	    String path = AVFileVars.standardizePath(f);
 	    if (enable) {
-		int index = Ln.indexOfContains(AV.save.curSettings.get(AVSaveFile.Settings.DISABLED_PACKAGES).getStrings(), path);
+		int index = Ln.indexOfContains(AV.save.getStrings(AVSaveFile.Settings.DISABLED_PACKAGES), path);
 		if (index != -1) {
-		    ArrayList<String> disabled = AV.save.curSettings.get(AVSaveFile.Settings.DISABLED_PACKAGES).getStrings();
+		    ArrayList<String> disabled = AV.save.getStrings(AVSaveFile.Settings.DISABLED_PACKAGES);
 		    disabled.remove(index);
-		    AV.save.curSettings.get(AVSaveFile.Settings.DISABLED_PACKAGES).setTo(disabled);
+		    AV.save.setStrings(AVSaveFile.Settings.DISABLED_PACKAGES, disabled);
 		}
 	    } else {
-		AV.save.curSettings.get(AVSaveFile.Settings.DISABLED_PACKAGES).getStrings().add(f.getPath());
+		AV.save.addString(AVSaveFile.Settings.DISABLED_PACKAGES, f.getPath());
 	    }
 	} else {
 	    for (PackageNode n : getAll()) {

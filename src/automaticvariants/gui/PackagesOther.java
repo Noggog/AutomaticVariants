@@ -45,7 +45,7 @@ public class PackagesOther extends SPSettingPanel {
 	origAsVar.addShadow();
 	setPlacement(origAsVar);
 	Add(origAsVar);
-	
+
 	movePackageFiles = new LCheckBox("Move Package Files", AV.AVFont, AV.yellow);
 	movePackageFiles.setOffset(0);
 	movePackageFiles.tie(AVSaveFile.Settings.MOVE_PACKAGE_FILES, AV.save, SUMGUI.helpPanel, true);
@@ -91,7 +91,7 @@ public class PackagesOther extends SPSettingPanel {
 	if (onceForce) {
 	    onceForce = false;
 	    SUMGUI.setPatchNeeded(true);
-	    AV.save.curSettings.get(Settings.PACKAGES_FORCE_REPICK).setTo(AV.save.getInt(Settings.PACKAGES_FORCE_REPICK) + 1);
+	    AV.save.setInt(Settings.PACKAGES_FORCE_REPICK, AV.save.getInt(Settings.PACKAGES_FORCE_REPICK) + 1);
 	}
     }
 
