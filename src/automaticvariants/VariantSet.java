@@ -33,10 +33,10 @@ public class VariantSet extends PackageNode implements Serializable {
 
     final public boolean loadVariants() throws FileNotFoundException, IOException {
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(src.getName(), depth + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-	    SPGlobal.log(src.getName(), depth + " Adding Variant Set: " + src);
-	    SPGlobal.log(src.getName(), depth + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-	    SPGlobal.log(src.getName(), depth);
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + " Adding Variant Set: " + src);
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth);
 	}
 
 	ArrayList<File> files = new ArrayList<>(Arrays.asList(src.listFiles()));
@@ -48,7 +48,7 @@ public class VariantSet extends PackageNode implements Serializable {
 		    if (spec != null) {
 			spec.src = f;
 			if (SPGlobal.logging()) {
-			    spec.printToLog(src.getName());
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName());
 			}
 		    }
 		} catch (com.google.gson.JsonSyntaxException ex) {
@@ -61,7 +61,7 @@ public class VariantSet extends PackageNode implements Serializable {
 	    } else if (f.isDirectory()) {
 		if (f.getName().equalsIgnoreCase(setMeshName)) {
 		    if (SPGlobal.logging()) {
-			SPGlobal.log(src.getName(), depth + "   ********* Loading Global Meshes");
+			SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "   ********* Loading Global Meshes");
 		    }
 		    PackageNode globalMeshDirN = new PackageNode(f, Type.GLOBALMESHSET);
 		    add(globalMeshDirN);
@@ -71,7 +71,7 @@ public class VariantSet extends PackageNode implements Serializable {
 			globalMeshDirN.add(ms);
 		    }
 		    if (SPGlobal.logging()) {
-			SPGlobal.log(src.getName(), depth + "   ******************");
+			SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "   ******************");
 		    }
 		} else {
 		    VariantGroup v = new VariantGroup(f);
@@ -83,31 +83,31 @@ public class VariantSet extends PackageNode implements Serializable {
 		PackageNode c = new PackageNode(f, Type.GENTEXTURE);
 		add(c);
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(src.getName(), depth + "   Loaded common texture: " + f);
+		    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "   Loaded common texture: " + f);
 		}
 	    } else if (AVFileVars.isNIF(f)) {
 		PackageNode c = new PackageNode(f, Type.GENMESH);
 		add(c);
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(src.getName(), depth + "   Loaded common mesh: " + f);
+		    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "   Loaded common mesh: " + f);
 		}
 	    } else if (AVFileVars.isReroute(f)) {
 		RerouteFile c = new RerouteFile(f);
 		if (AVFileVars.isDDS(c.src)) {
 		    c.type = PackageNode.Type.GENTEXTURE;
 		    if (SPGlobal.logging()) {
-			SPGlobal.log(src.getName(), depth + "   Loaded ROUTED common texture: " + c.src);
+			SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "   Loaded ROUTED common texture: " + c.src);
 		    }
 		}
 		add(c);
 	    } else if (SPGlobal.logging()) {
-		SPGlobal.log(src.getName(), depth + "   Skipped file: " + f);
+		SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "   Skipped file: " + f);
 	    }
 	}
 
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(src.getName(), depth + "");
-	    SPGlobal.log(src.getName(), depth + "++++++ END Variant Set: " + src);
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "");
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "++++++ END Variant Set: " + src);
 	}
 	return true;
     }
@@ -204,7 +204,7 @@ public class VariantSet extends PackageNode implements Serializable {
     @Override
     public void consolidateCommonFiles() throws FileNotFoundException, IOException {
 	// First, check current common textures and see if any groups have them
-	SPGlobal.log(src.getName(), "Consolidating common files");
+	SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "Consolidating common files");
 	SPGlobal.flush();
 	for (VariantGroup g : getGroups()) {
 	    g.deleteMatches(toFiles(getAll(Type.GENTEXTURE)));
@@ -217,9 +217,9 @@ public class VariantSet extends PackageNode implements Serializable {
 	    commonFiles.addAll(g.consolidateCommonFilesInternal());
 	}
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(src.getName(), "Common Files:");
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "Common Files:");
 	    for (PackageNode c : commonFiles) {
-		SPGlobal.log(src.getName(), "  " + c.src.getName());
+		SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  " + c.src.getName());
 	    }
 	}
 	for (PackageNode c : commonFiles) {
@@ -247,9 +247,9 @@ public class VariantSet extends PackageNode implements Serializable {
 			for (File key : duplicates.keySet()) {
 			    if (Ln.validateCompare(tex.src, key, 0)) {
 				if (SPGlobal.logging()) {
-				    SPGlobal.log(src.getName(), "  " + tex.src);
-				    SPGlobal.log(src.getName(), "  was the same as ");
-				    SPGlobal.log(src.getName(), "  " + key);
+				    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  " + tex.src);
+				    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  was the same as ");
+				    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  " + key);
 				}
 				duplicates.put(key, tex.src);
 				found = true;
@@ -258,11 +258,11 @@ public class VariantSet extends PackageNode implements Serializable {
 			}
 			if (!found) {
 			    if (SPGlobal.logging()) {
-				SPGlobal.log(src.getName(), "  UNIQUE: " + tex.src);
+				SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  UNIQUE: " + tex.src);
 			    }
 			    duplicates.put(tex.src, tex.src);
 			}
-			SPGlobal.log(src.getName(), "  --------------------------");
+			SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  --------------------------");
 		    }
 		}
 	    }

@@ -47,9 +47,9 @@ public class AVPackage extends PackageNode {
     @Override
     public void consolidateCommonFiles() throws FileNotFoundException, IOException {
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(src.getName(), "==============================================");
-	    SPGlobal.log(src.getName(), "Consolidating Common Files " + src);
-	    SPGlobal.log(src.getName(), "==============================================");
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "==============================================");
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "Consolidating Common Files " + src);
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "==============================================");
 	    SPGlobal.flush();
 	}
 	for (VariantSet set : getSets()) {
@@ -60,9 +60,9 @@ public class AVPackage extends PackageNode {
     @Override
     public LMergeMap<File, File> getDuplicateFiles() throws FileNotFoundException, IOException {
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(src.getName(), "==============================================");
-	    SPGlobal.log(src.getName(), "Creating File Shortcuts " + src);
-	    SPGlobal.log(src.getName(), "==============================================");
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "==============================================");
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "Creating File Shortcuts " + src);
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "==============================================");
 	    SPGlobal.flush();
 	}
 	LMergeMap<File, File> duplicates = new LMergeMap<>(false);
@@ -88,9 +88,9 @@ public class AVPackage extends PackageNode {
 
     final public void loadSets() throws FileNotFoundException, IOException {
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(src.getName(), depth + "************************************************************");
-	    SPGlobal.log(src.getName(), depth + "* Loading package: " + src);
-	    SPGlobal.log(src.getName(), depth + "************************************************************");
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "************************************************************");
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "* Loading package: " + src);
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "************************************************************");
 	}
 	for (File f : src.listFiles()) {
 	    if (f.isDirectory()) {
@@ -104,7 +104,7 @@ public class AVPackage extends PackageNode {
 	    }
 	}
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(src.getName(), depth + "*** END package: " + src);
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "*** END package: " + src);
 	}
     }
 }

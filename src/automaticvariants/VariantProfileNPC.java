@@ -4,6 +4,8 @@
  */
 package automaticvariants;
 
+import skyproc.genenums.Perspective;
+import skyproc.genenums.Gender;
 import automaticvariants.AVFileVars.ARMO_spec;
 import automaticvariants.PackageNode.Type;
 import java.io.File;
@@ -207,7 +209,7 @@ public class VariantProfileNPC extends VariantProfile {
 	    cleanNifPath = cleanNifPath.substring(7);
 	}
 	arma.setModelPath(cleanNifPath, Gender.MALE, Perspective.THIRD_PERSON);
-	
+
 	loadAltTextures(arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON), txsts, nifPath);
 
 	if (SPGlobal.logging()) {

@@ -4,6 +4,8 @@
  */
 package automaticvariants;
 
+import skyproc.genenums.Perspective;
+import skyproc.genenums.Gender;
 import automaticvariants.AVFileVars.ARMO_spec;
 import automaticvariants.AVFileVars.SpecHolder;
 import automaticvariants.SpecVariantSet.VariantType;

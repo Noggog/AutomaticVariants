@@ -37,6 +37,10 @@ public class AVFileVars {
     public static VariantFactoryNPC npcFactory = new VariantFactoryNPC();
     public static VariantFactoryWEAP weapFactory = new VariantFactoryWEAP();
 
+    enum AVFileLogs {
+	PackageImport;
+    }
+
     static void setUpFileVariants(Mod source) throws IOException, Uninitialized, BadParameter {
 	if (SPGlobal.logging()) {
 	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Import Packages.txt");

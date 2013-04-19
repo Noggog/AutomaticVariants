@@ -48,12 +48,12 @@ public class VariantGlobalMesh extends PackageNode {
 	}
 	if (globalMesh != null) {
 	    if (SPGlobal.logging()) {
-		SPGlobal.log(src.getName(), depth + "* Adding Global Mesh: " + src);
+		SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "* Adding Global Mesh: " + src);
 	    }
 	    PackageNode globalMeshN = new PackageNode(globalMesh, Type.MESH);
 	    add(globalMeshN);
 	} else if (SPGlobal.logging()) {
-	    SPGlobal.log(src.getName(), depth + "* Skipped Global Mesh: " + src);
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "* Skipped Global Mesh: " + src);
 	}
     }
 

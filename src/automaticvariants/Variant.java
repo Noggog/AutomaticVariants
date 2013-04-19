@@ -45,18 +45,18 @@ public class Variant extends PackageNode implements Serializable {
 
     public void load() throws FileNotFoundException, IOException {
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(src.getName(), depth + "  Adding Variant: " + src);
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "  Adding Variant: " + src);
 	}
 	for (File f : src.listFiles()) {
 	    if (AVFileVars.isDDS(f)) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(src.getName(), depth + "    Added texture: " + f);
+		    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "    Added texture: " + f);
 		}
 		PackageNode c = new PackageNode(f, Type.TEXTURE);
 		add(c);
 	    } else if (AVFileVars.isNIF(f)) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(src.getName(), depth + "    Added nif: " + f);
+		    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "    Added nif: " + f);
 		}
 		PackageNode c = new PackageNode(f, Type.MESH);
 		add(c);
@@ -66,7 +66,7 @@ public class Variant extends PackageNode implements Serializable {
 		    if (spec != null) {
 			spec.src = f;
 			if (SPGlobal.logging()) {
-			    spec.printToLog(src.getName());
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName());
 			}
 		    }
 		} catch (com.google.gson.JsonSyntaxException ex) {
@@ -76,7 +76,7 @@ public class Variant extends PackageNode implements Serializable {
 	    } else if (AVFileVars.isReroute(f)) {
 		RerouteFile c = new RerouteFile(f);
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(src.getName(), depth + "    Added ROUTED file: " + c.routeFile);
+		    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "    Added ROUTED file: " + c.routeFile);
 		}
 		add(c);
 	    }

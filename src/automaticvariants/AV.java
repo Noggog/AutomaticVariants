@@ -100,17 +100,13 @@ public class AV implements SUM {
 	ArrayList<String> arguments = new ArrayList<>(Arrays.asList(args));
 	try {
 	    save.init();
-
 	    if (handleArgs(arguments)) {
 		SPGlobal.closeDebug();
 		return;
 	    }
 	    cleanUp();
 	    setSkyProcGlobals();
-	    setDebugLevel();
-
 	    SUMGUI.open(new AV(), args);
-
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.
 	    System.err.println(e.toString());
@@ -119,9 +115,6 @@ public class AV implements SUM {
 	    SPGlobal.closeDebug();
 	}
 
-    }
-
-    static void setDebugLevel() {
     }
 
     static void cleanUp() {
@@ -356,6 +349,9 @@ public class AV implements SUM {
 	    SPGlobal.logException(ex);
 	    AVFont = new Font("Serif", Font.BOLD, 16);
 	}
+
+	// Debug Init
+	SPGlobal.newSpecialLog(AVFileVars.AVFileLogs.PackageImport, "Package Imports.txt");
 
 	// Prep AV
 	readInExceptions();
