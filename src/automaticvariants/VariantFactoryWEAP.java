@@ -6,6 +6,7 @@ package automaticvariants;
 
 import automaticvariants.AVFileVars.WEAP_spec;
 import automaticvariants.SpecVariantSet.VariantType;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import lev.LMergeMap;
@@ -85,28 +86,51 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
     }
 
     public void subIn(Mod source) {
+	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Substitute In.txt");
+	    SPGlobal.debugStream = false;
+	}
 	for (WEAP weap : weapons.keySet()) {
 	    LVLI replacement = llists.get(weap);
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(header, "Replacing " + weap + " with " + replacement);
+	    }
 
 	    // Replace in existing LLists
 	    for (LVLI existingList : source.getLeveledItems()) {
-		existingList.replace(weap, replacement);
-		SPGlobal.getGlobalPatch().addRecord(existingList);
+		int num = existingList.replace(weap, replacement);
+		if (num > 0) {
+		    SPGlobal.getGlobalPatch().addRecord(existingList);
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "  Replaced " + num + " times in " + existingList);
+		    }
+		}
 	    }
 
 	    // Replace in NPC inventories
 	    for (NPC_ npc : source.getNPCs()) {
+		int num = 0;
 		for (SubFormInt item : npc.getItems()) {
 		    if (item.getForm().equals(weap.getForm())) {
 			item.setForm(replacement.getForm());
-			SPGlobal.getGlobalPatch().addRecord(npc);
+			num++;
+		    }
+		}
+		if (num > 0) {
+		    SPGlobal.getGlobalPatch().addRecord(npc);
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "  Replaced " + num + " times in " + npc);
 		    }
 		}
 	    }
 	}
+	SPGlobal.debugStream = true;
     }
 
     public void generateLLists() {
+	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Generate LLists.txt");
+	}
 	for (WEAP weapSrc : weapons.keySet()) {
 	    if (SPGlobal.logging()) {
 		SPGlobal.log(header, "  Generating for " + weapSrc);

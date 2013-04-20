@@ -229,7 +229,8 @@ abstract public class VariantFactory<T extends VariantProfile> {
     static int calcLCM(ArrayList specs) {
 	int[] divs = new int[specs.size()];
 	for (int i = 0; i < divs.length; i++) {
-	    divs[i] = ((SpecHolder)specs.get(i)).spec.Probability_Divider;
+	    SpecHolder holder = ((SpecHolder)specs.get(i));
+	    divs[i] = holder.spec.Probability_Divider;
 	}
 	return Ln.lcmm(divs);
     }

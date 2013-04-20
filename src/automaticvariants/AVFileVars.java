@@ -258,7 +258,6 @@ public class AVFileVars {
     static class WEAP_spec extends SpecHolder {
 
 	WEAP weap;
-	SpecVariant spec;
 
 	WEAP_spec(WEAP weapSrc) {
 	    this.weap = weapSrc;
