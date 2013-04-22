@@ -389,7 +389,8 @@ public class AV implements SUM {
 		    GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
 		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
 		    GRUP_TYPE.TXST, GRUP_TYPE.LVLN,
-		    GRUP_TYPE.WEAP, GRUP_TYPE.LVLI};
+		    GRUP_TYPE.WEAP, GRUP_TYPE.LVLI,
+		    GRUP_TYPE.CONT};
     }
 
     @Override

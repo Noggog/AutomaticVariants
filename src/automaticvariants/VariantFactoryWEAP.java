@@ -107,10 +107,22 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 		}
 	    }
 
+	    // Replace in containers
+	    for (CONT cont : source.getContainers()) {
+		int num = cont.replace(weap, replacement);
+		if (num > 0) {
+		    SPGlobal.getGlobalPatch().addRecord(cont);
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "  Replaced " + num + " times in " + cont);
+		    }
+		}
+	    }
+
 	    // Replace in NPC inventories
 	    for (NPC_ npc : source.getNPCs()) {
 		int num = 0;
-		for (SubFormInt item : npc.getItems()) {
+		ArrayList<ItemListing> items = npc.getItems();
+		for (ItemListing item : items) {
 		    if (item.getForm().equals(weap.getForm())) {
 			item.setForm(replacement.getForm());
 			num++;
@@ -132,10 +144,11 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Generate LLists.txt");
 	}
 	for (WEAP weapSrc : weapons.keySet()) {
-	    if (SPGlobal.logging()) {
-		SPGlobal.log(header, "  Generating for " + weapSrc);
-	    }
 	    LVLI list = new LVLI(weapSrc.getEDID() + "_llist");
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(header, "Generating for " + weapSrc);
+		SPGlobal.log(header, "  Generating " + list);
+	    }
 	    llists.put(weapSrc, list);
 	    int lcm = calcLCM(weapons.get(weapSrc));
 	    for (WEAP_spec weapNew : weapons.get(weapSrc)) {
