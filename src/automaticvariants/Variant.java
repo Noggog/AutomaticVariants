@@ -31,20 +31,32 @@ public class Variant extends PackageNode implements Serializable {
 	spec = new SpecVariantNPC();
     }
 
+    Variant(Variant rhs) {
+	this();
+	name = rhs.name;
+	for (PackageNode p : rhs.getAll(Type.TEXTURE)) {
+	    add(new PackageNode(p.src, Type.TEXTURE));
+	}
+	for (PackageNode p : rhs.getAll(Type.MESH)) {
+	    add(new PackageNode(p.src, Type.MESH));
+	}
+	parent = rhs.parent;
+    }
+
     public void load() throws FileNotFoundException, IOException {
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(src.getName(), depth + "  Adding Variant: " + src);
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "  Adding Variant: " + src);
 	}
 	for (File f : src.listFiles()) {
 	    if (AVFileVars.isDDS(f)) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(src.getName(), depth + "    Added texture: " + f);
+		    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "    Added texture: " + f);
 		}
 		PackageNode c = new PackageNode(f, Type.TEXTURE);
 		add(c);
 	    } else if (AVFileVars.isNIF(f)) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(src.getName(), depth + "    Added nif: " + f);
+		    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "    Added nif: " + f);
 		}
 		PackageNode c = new PackageNode(f, Type.MESH);
 		add(c);
@@ -54,20 +66,17 @@ public class Variant extends PackageNode implements Serializable {
 		    if (spec != null) {
 			spec.src = f;
 			if (SPGlobal.logging()) {
-			    spec.printToLog(src.getName());
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName());
 			}
 		    }
 		} catch (com.google.gson.JsonSyntaxException ex) {
 		    SPGlobal.logException(ex);
-		    JOptionPane.showMessageDialog(null, "Variant set " + f.getPath() + " had a bad specifications file.  Skipped.");
+		    JOptionPane.showMessageDialog(null, "Variant " + f.getPath() + " had a bad specifications file.  Skipped.");
 		}
 	    } else if (AVFileVars.isReroute(f)) {
 		RerouteFile c = new RerouteFile(f);
-		if (AVFileVars.isDDS(c.src)) {
-		    c.type = PackageNode.Type.TEXTURE;
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(src.getName(), depth + "    Added ROUTED texture: " + c.routeFile);
-		    }
+		if (SPGlobal.logging()) {
+		    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "    Added ROUTED file: " + c.routeFile);
 		}
 		add(c);
 	    }
@@ -77,29 +86,40 @@ public class Variant extends PackageNode implements Serializable {
     public void mergeInGlobals(ArrayList<PackageNode> globalFiles) {
 	ArrayList<PackageNode> texs = getAll(Type.TEXTURE);
 	for (PackageNode global : globalFiles) {
-	    boolean exists = false;
-	    for (PackageNode tex : texs) {
-		if (global.src.getName().equalsIgnoreCase(tex.src.getName())) {
-		    exists = true;
-		    break;
+	    if (global.type == Type.GENTEXTURE) {
+		boolean exists = false;
+		for (PackageNode tex : texs) {
+		    if (global.src.getName().equalsIgnoreCase(tex.src.getName())) {
+			exists = true;
+			break;
+		    }
+		}
+		if (!exists) {
+		    add(new PackageNode(global.src, Type.TEXTURE));
 		}
 	    }
-	    if (!exists) {
-		add(new PackageNode(global.src, Type.TEXTURE));
+	}
+
+	ArrayList<PackageNode> mesh = getAll(Type.MESH);
+	if (mesh.isEmpty()) {
+	    for (PackageNode global : globalFiles) {
+		if (global.type == Type.GENMESH) {
+		    add(new PackageNode(global.src, Type.MESH));
+		    break;
+		}
 	    }
 	}
     }
 
     public Variant merge(Variant rhs) {
-	Variant out = new Variant();
+	Variant out = new Variant(rhs);
 	out.name = name + "_" + rhs.src.getName();
-	for (PackageNode tex : getAll(Type.TEXTURE)) {
-	    out.add(new PackageNode(tex.src, Type.TEXTURE));
-	}
-	for (PackageNode p : rhs.getAll(Type.TEXTURE)) {
+	for (PackageNode p : getAll(Type.TEXTURE)) {
 	    out.add(new PackageNode(p.src, Type.TEXTURE));
 	}
-	out.parent = rhs.parent;
+	for (PackageNode p : getAll(Type.MESH)) {
+	    out.add(new PackageNode(p.src, Type.MESH));
+	}
 	spec.Probability_Divider *= rhs.spec.Probability_Divider;
 	return out;
     }
@@ -110,10 +130,18 @@ public class Variant extends PackageNode implements Serializable {
 
     public ArrayList<File> getTextureFiles() {
 	ArrayList<File> out = new ArrayList<>();
-	for (PackageNode p : getAll(Type.TEXTURE)){
+	for (PackageNode p : getAll(Type.TEXTURE)) {
 	    out.add(p.src);
 	}
 	return out;
+    }
+
+    public void absorbGlobalMesh(VariantGlobalMesh globalMesh) {
+	name += "_" + globalMesh.src.getName();
+	removeAll(Type.MESH);
+	PackageNode mesh = globalMesh.getAll(Type.MESH).get(0);
+	add(new PackageNode(mesh));
+	spec = spec.merge(globalMesh.spec);
     }
 
     public ArrayList<String> getTextureNames() {

@@ -25,8 +25,8 @@ import skyproc.gui.SUMGUI;
 public class PackagesOther extends SPSettingPanel {
 
     LButton gatherAndExit;
-    public LCheckBox forceRepick;
     LCheckBox origAsVar;
+    LCheckBox movePackageFiles;
     LComboBox allowRegions;
     LButton packageManager;
     boolean onceForce = true;
@@ -46,6 +46,13 @@ public class PackagesOther extends SPSettingPanel {
 	setPlacement(origAsVar);
 	Add(origAsVar);
 
+	movePackageFiles = new LCheckBox("Move Package Files", AV.AVFont, AV.yellow);
+	movePackageFiles.setOffset(0);
+	movePackageFiles.tie(AVSaveFile.Settings.MOVE_PACKAGE_FILES, AV.save, SUMGUI.helpPanel, true);
+	movePackageFiles.addShadow();
+	setPlacement(movePackageFiles);
+	Add(movePackageFiles);
+
 	allowRegions = new LComboBox("Allow Regional Variants", AV.AVFont, AV.yellow);
 	allowRegions.setSize(220, 60);
 	allowRegions.addItem("Block Regions");
@@ -54,20 +61,6 @@ public class PackagesOther extends SPSettingPanel {
 	allowRegions.tie(AVSaveFile.Settings.PACKAGES_ALLOW_EXCLUSIVE_REGION, AV.save, SUMGUI.helpPanel, true);
 	setPlacement(allowRegions);
 	Add(allowRegions);
-
-//	forceRepick = new LCheckBox("Force Texture Repick", AV.AVFont, AV.yellow);
-//	forceRepick.setOffset(0);
-//	forceRepick.linkTo(AVSaveFile.Settings.PACKAGES_FORCE_REPICK, AV.save, SUMGUI.helpPanel, true);
-//	forceRepick.addShadow();
-//	forceRepick.addActionListener(new ActionListener() {
-//
-//	    @Override
-//	    public void actionPerformed(ActionEvent e) {
-//		forceRepick();
-//	    }
-//	});
-//	setPlacement(forceRepick);
-//	Add(forceRepick);
 
 	gatherAndExit = new LButton("Gather Files and Exit");
 	gatherAndExit.addActionListener(new ActionListener() {
@@ -98,7 +91,7 @@ public class PackagesOther extends SPSettingPanel {
 	if (onceForce) {
 	    onceForce = false;
 	    SUMGUI.setPatchNeeded(true);
-	    AV.save.curSettings.get(Settings.PACKAGES_FORCE_REPICK).setTo(AV.save.getInt(Settings.PACKAGES_FORCE_REPICK) + 1);
+	    AV.save.setInt(Settings.PACKAGES_FORCE_REPICK, AV.save.getInt(Settings.PACKAGES_FORCE_REPICK) + 1);
 	}
     }
 

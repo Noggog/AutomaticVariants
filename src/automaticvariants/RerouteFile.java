@@ -17,7 +17,7 @@ public class RerouteFile extends PackageNode {
     File routeFile;
     static LMergeMap<File, RerouteFile> reroutes = new LMergeMap<>(false, false);
 
-    public RerouteFile (File src) throws FileNotFoundException, IOException {
+    public RerouteFile(File src) throws FileNotFoundException, IOException {
 	super(src, Type.REROUTE);
 	BufferedReader in = new BufferedReader(new FileReader(src));
 	File to = new File(in.readLine());
@@ -25,10 +25,13 @@ public class RerouteFile extends PackageNode {
 	routeFile = src;
 	this.src = to;
 	reroutes.put(this.src, this);
+	if (AVFileVars.isDDS(this.src)) {
+	    type = PackageNode.Type.TEXTURE;
+	}
     }
 
     @Override
-    public boolean isReroute () {
+    public boolean isReroute() {
 	return true;
     }
 
@@ -44,7 +47,7 @@ public class RerouteFile extends PackageNode {
 
     @Override
     public boolean isDisabled() {
-	return AV.save.getStrings(AVSaveFile.Settings.DISABLED_PACKAGES).contains(routeFile.getPath());
+	return isDisabled(routeFile);
     }
 
     @Override
@@ -81,7 +84,7 @@ public class RerouteFile extends PackageNode {
 	return reroute;
     }
 
-    void writeRouteTo (File from, File to) throws IOException {
+    void writeRouteTo(File from, File to) throws IOException {
 	BufferedWriter out = new BufferedWriter(new FileWriter(from));
 	out.write(to.getPath());
 	out.close();
@@ -90,5 +93,4 @@ public class RerouteFile extends PackageNode {
     public void changeRouteTo(File f) throws IOException {
 	writeRouteTo(routeFile, f);
     }
-
 }

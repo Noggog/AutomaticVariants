@@ -20,14 +20,16 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import lev.LMergeMap;
 import lev.Ln;
 import lev.debug.LDebug;
 import lev.gui.LImagePane;
 import lev.gui.LSaveFile;
 import skyproc.GLOB.GLOBType;
 import skyproc.*;
-import skyproc.gui.*;
+import skyproc.gui.SPMainMenuConfig;
+import skyproc.gui.SPMainMenuPanel;
+import skyproc.gui.SUM;
+import skyproc.gui.SUMGUI;
 
 /**
  * ToDo: - Make compress work for disabled files
@@ -36,18 +38,8 @@ import skyproc.gui.*;
  */
 public class AV implements SUM {
 
-    // Version
-    public static String version = "1.6.1";
-    public static String lastMajorVersion = "1.6.1";
-
-    /*
-     * Static Strings
-     */
+    public static String version = "2.0";
     static private String header = "AV";
-    /*
-     * Storage Maps
-     */
-    static LMergeMap<FormID, NPC_> modifiedNPCs = new LMergeMap<>(false);
     /*
      * Exception lists
      */
@@ -56,7 +48,6 @@ public class AV implements SUM {
     /*
      * Script/Property names
      */
-    static String raceAttachScript = "AVRaceAttachment";
     static private Mod merger;
     GLOB texturesOn;
     GLOB statsOn;
@@ -74,13 +65,10 @@ public class AV implements SUM {
      */
     public static LSaveFile save = new AVSaveFile();
     public static QUST quest;
-    public static Thread parser;
     public static Gson gson = new Gson();
     static boolean heightOnF = false;
-    static int step = 0;
-    static int numSteps = 4;
-    static int initDebugLevel = -1;
-    static boolean secondF = false;
+    static int step = 1;
+    static int numSteps = 3;
     //GUI
     static public SPMainMenuPanel settingsMenu;
     static public SPMainMenuConfig packageManagerConfig;
@@ -115,17 +103,13 @@ public class AV implements SUM {
 	try {
 	    // Need to load memory settings
 	    save.init();
-	    cleanUp();
-	    setSkyProcGlobals();
-	    setDebugLevel();
-
 	    if (handleArgs(arguments)) {
 		SPGlobal.closeDebug();
 		return;
 	    }
-
+	    cleanUp();
+	    setSkyProcGlobals();
 	    SUMGUI.open(new AV(), args);
-
 	} catch (Exception e) {
 	    // If a major error happens, print it everywhere and display a message box.
 	    System.err.println(e.toString());
@@ -134,19 +118,6 @@ public class AV implements SUM {
 	    SPGlobal.closeDebug();
 	}
 
-    }
-
-    static void setDebugLevel() {
-	if (initDebugLevel != -1) {
-	    save.saveSettings.get(Settings.DEBUG_LEVEL).setTo(initDebugLevel);
-	    save.curSettings.get(Settings.DEBUG_LEVEL).setTo(initDebugLevel);
-	}
-	if (save.getInt(Settings.DEBUG_LEVEL) < 2) {
-	    SPGlobal.loggingSync(false);
-	} else if (save.getInt(Settings.DEBUG_LEVEL) < 1) {
-	    SPGlobal.logging(false);
-	}
-	SPGlobal.debugConsistencyImport = true;
     }
 
     static void cleanUp() {
@@ -174,77 +145,6 @@ public class AV implements SUM {
 	}
     }
 
-    static void setUpInGameScriptBasedVariants(Mod source) {
-	SPEL addScriptSpell = NiftyFunc.genScriptAttachingSpel(SPGlobal.getGlobalPatch(), generateAttachScript(), "AVGenericScriptAttach");
-	for (RACE race : source.getRaces()) {
-	    if (!AVFileVars.AVraces.containsKey(race.getForm())) {
-		race.addSpell(addScriptSpell.getForm());
-		SPGlobal.getGlobalPatch().addRecord(race);
-	    }
-	}
-    }
-
-    static boolean checkNPCskip(NPC_ npcSrc, boolean print, boolean last) {
-	if (npcSrc.get(NPC_.NPCFlag.Unique)) {
-	    if (print && SPGlobal.logging()) {
-		if (last) {
-		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		}
-		SPGlobal.log(header, "    Skipping " + npcSrc + " : Unique actor");
-	    }
-	    return true;
-	}
-	if (block.contains(AVFileVars.getUsedSkin(npcSrc))) {
-	    if (print && SPGlobal.logging()) {
-		if (last) {
-		    SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		}
-		SPGlobal.log(header, "    Skipping " + npcSrc + " : Blocked skin");
-	    }
-	    return true;
-	}
-	if (!npcSrc.getTemplate().equals(FormID.NULL)) {
-	    if (npcSrc.get(NPC_.TemplateFlag.USE_TRAITS)) {
-		if (print && SPGlobal.logging()) {
-		    if (last) {
-			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		    }
-		    SPGlobal.log(header, "    Skipping " + npcSrc + " : Template with traits flag");
-		}
-		return true;
-	    } else if (NiftyFunc.isTemplatedToLList(npcSrc) != null) {
-		if (print && SPGlobal.logging()) {
-		    if (last) {
-			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		    }
-		    SPGlobal.log(header, "    Skipping " + npcSrc + " : Template w/o traits flag but templated to a LList.");
-		    SPGlobal.logBlocked(header, "Templated w/o traits flag but templated to a LList", npcSrc);
-		}
-		return true;
-	    }
-	}
-	String edid = npcSrc.getEDID().toUpperCase();
-	for (String exclude : edidExclude) {
-	    if (edid.contains(exclude)) {
-		if (print && SPGlobal.logging()) {
-		    if (last) {
-			SPGlobal.log(header, "---------------------------------------------------------------------------------------------------------");
-		    }
-		    SPGlobal.log(header, "    Skipping " + npcSrc + " : edid exclude '" + exclude + "'");
-		    SPGlobal.logBlocked(header, "edid exclude " + exclude, npcSrc);
-		}
-		return true;
-	    }
-	}
-	return false;
-    }
-
-    static ScriptRef generateAttachScript() {
-	ScriptRef script = new ScriptRef(raceAttachScript);
-	script.setProperty("AVQuest", quest.getForm());
-	return script;
-    }
-
     public void makeAVQuest() {
 	ScriptRef questScript = new ScriptRef("AVQuestScript");
 	questScript.setProperty("TexturesOn", texturesOn.getForm());
@@ -266,7 +166,7 @@ public class AV implements SUM {
 	}
 	questScript.setProperty("LogTable", logTable);
 
-	quest = NiftyFunc.makeScriptQuest(SPGlobal.getGlobalPatch(), questScript);
+	quest = NiftyFunc.makeScriptQuest(questScript);
     }
 
     public static ScriptRef getQuestScript() {
@@ -274,50 +174,50 @@ public class AV implements SUM {
     }
 
     public void makeGlobals() {
-	forceRepick = new GLOB(SPGlobal.getGlobalPatch(), "AVForceRepick", GLOBType.Short);
+	forceRepick = new GLOB("AVForceRepick", GLOBType.Short);
 	forceRepick.setValue((float) AV.save.getInt(Settings.PACKAGES_FORCE_REPICK));
 	forceRepick.setConstant(true);
 
-	texturesOn = new GLOB(SPGlobal.getGlobalPatch(), "AVTexturesOn", GLOBType.Short);
+	texturesOn = new GLOB("AVTexturesOn", GLOBType.Short);
 	texturesOn.setValue(save.getBool(Settings.PACKAGES_ON));
 	texturesOn.setConstant(true);
 
-	statsOn = new GLOB(SPGlobal.getGlobalPatch(), "AVStatsOn", GLOBType.Short);
+	statsOn = new GLOB("AVStatsOn", GLOBType.Short);
 	statsOn.setValue(save.getBool(Settings.STATS_ON));
 	statsOn.setConstant(true);
 
 	double scale = 100.0 // To percent (.01) instead of ints (1)
 		* 3.0; // Scaled to 3 standard deviations
 
-	heightScale = new GLOB(SPGlobal.getGlobalPatch(), "AVHeightScale", GLOBType.Float);
+	heightScale = new GLOB("AVHeightScale", GLOBType.Float);
 	heightScale.setValue((float) (save.getInt(Settings.STATS_HEIGHT_MAX) / scale));
 	heightScale.setConstant(true);
 
-	healthScale = new GLOB(SPGlobal.getGlobalPatch(), "AVHealthScale", GLOBType.Float);
+	healthScale = new GLOB("AVHealthScale", GLOBType.Float);
 	healthScale.setValue((float) (save.getInt(Settings.STATS_HEALTH_MAX) / scale));
 	healthScale.setConstant(true);
 
-	magickaScale = new GLOB(SPGlobal.getGlobalPatch(), "AVMagickaScale", GLOBType.Float);
+	magickaScale = new GLOB("AVMagickaScale", GLOBType.Float);
 	magickaScale.setValue((float) (save.getInt(Settings.STATS_MAGIC_MAX) / scale));
 	magickaScale.setConstant(true);
 
-	staminaScale = new GLOB(SPGlobal.getGlobalPatch(), "AVStaminaScale", GLOBType.Float);
+	staminaScale = new GLOB("AVStaminaScale", GLOBType.Float);
 	staminaScale.setValue((float) (save.getInt(Settings.STATS_STAMINA_MAX) / scale));
 	staminaScale.setConstant(true);
 
-	speedScale = new GLOB(SPGlobal.getGlobalPatch(), "AVSpeedScale", GLOBType.Float);
+	speedScale = new GLOB("AVSpeedScale", GLOBType.Float);
 	speedScale.setValue((float) (save.getInt(Settings.STATS_SPEED_MAX) / scale));
 	speedScale.setConstant(true);
 
-	tieStats = new GLOB(SPGlobal.getGlobalPatch(), "AVTieStats", GLOBType.Short);
+	tieStats = new GLOB("AVTieStats", GLOBType.Short);
 	tieStats.setValue(save.getBool(Settings.STATS_TIE));
 	tieStats.setConstant(true);
 
-	debugOn = new GLOB(SPGlobal.getGlobalPatch(), "DebugOn", GLOBType.Short);
+	debugOn = new GLOB("DebugOn", GLOBType.Short);
 	debugOn.setValue(save.getBool(Settings.DEBUG_ON));
 	debugOn.setConstant(true);
 
-	debugRegional = new GLOB(SPGlobal.getGlobalPatch(), "DebugRegional", GLOBType.Short);
+	debugRegional = new GLOB("DebugRegional", GLOBType.Short);
 	debugRegional.setValue(save.getBool(Settings.DEBUG_REGIONAL));
 	debugRegional.setConstant(true);
     }
@@ -331,17 +231,8 @@ public class AV implements SUM {
 	SPGlobal.debugExportSummary = false;
 	SPGlobal.debugBSAimport = false;
 	SPGlobal.debugNIFimport = false;
-	SPGlobal.newSpecialLog(SpecialLogs.WARNINGS, "Warnings.txt");
 	LDebug.timeElapsed = true;
 	LDebug.timeStamp = true;
-
-	SPGlobal.logMain(header, "AV version: " + version);
-	if (secondF) {
-	    SPGlobal.logMain(header, "This is a second process started by a previous AV.");
-	}
-	SPGlobal.logMain(header, "Available Memory: " + Ln.toMB(Runtime.getRuntime().totalMemory()) + "MB");
-	SPGlobal.logMain(header, "Max Memory: " + Ln.toMB(Runtime.getRuntime().maxMemory()) + "MB");
-
     }
 
     static void readInExceptions() {
@@ -376,33 +267,7 @@ public class AV implements SUM {
 
     static boolean handleArgs(ArrayList<String> arguments) throws IOException, InterruptedException {
 	Ln.toUpper(arguments);
-	String debug = "-DEBUG";
-	String nonew = "-NONEW";
-	String second = "-SECONDPROCESS";
 	String gather = "-GATHER";
-
-	for (String s : arguments) {
-	    if (s.contains(debug)) {
-		s = s.substring(s.indexOf(debug) + debug.length()).trim();
-		try {
-		    initDebugLevel = Integer.valueOf(s);
-		} catch (NumberFormatException e) {
-		}
-	    }
-	}
-
-	if (arguments.contains(second)) {
-	    secondF = true;
-	    AV.save.helpInfo.put(Settings.MAX_MEM, AV.save.helpInfo.get(Settings.MAX_MEM)
-		    + "\n\n(This AV process is currently a second one that was allocated more memory.)");
-	}
-
-	if (!arguments.contains(nonew)) {
-	    // Less than .85 * max memory desired
-	    if (Runtime.getRuntime().maxMemory() < AV.save.getInt(Settings.MAX_MEM) * 0.85 * 1024 * 1024) {
-		NiftyFunc.allocateMoreMemory("100m", AV.save.getInt(Settings.MAX_MEM) + "m", "Automatic Variants.jar", nonew, second);
-	    }
-	}
 
 	if (arguments.contains(gather)) {
 	    AVFileVars.gatherFiles();
@@ -425,18 +290,12 @@ public class AV implements SUM {
 
     @Override
     public boolean needsPatching() {
-	//Check versions
-	if (AV.save.getInt(Settings.PREV_VERSION) < NiftyFunc.versionToNum(lastMajorVersion)) {
-	    if (SPGlobal.logging()) {
-		SPGlobal.logMain(header, "Needs update because of AV versioning: " + AV.save.getInt(Settings.PREV_VERSION) + " to " + version);
-	    }
-	    return true;
-	}
+
 
 	//Need to check if packages have changed.
 	ArrayList<File> files = Ln.generateFileList(new File(AVFileVars.AVPackagesDir), false);
 	try {
-	    Set<String> last = AVFileVars.getAVPackagesListing();
+	    ArrayList<String> last = AVFileVars.getAVPackagesListing();
 	    if (files.size() != last.size()) {
 		if (SPGlobal.logging()) {
 		    SPGlobal.logMain(header, "Needs update because number of package files changed.");
@@ -465,10 +324,11 @@ public class AV implements SUM {
     public void onExit(boolean patchWasGenerated) throws IOException {
 	if (!gatheringAndExiting) {
 	    AVFileVars.saveAVPackagesListing();
+	    AVFileVars.moveOut();
 	}
 	AVFileVars.moveOut();
 	if (patchWasGenerated) {
-	    AV.save.curSettings.get(Settings.PREV_VERSION).setTo(NiftyFunc.versionToNum(AV.version));
+	    AV.save.setInt(Settings.PREV_VERSION, NiftyFunc.versionToNum(AV.version));
 	}
     }
 
@@ -483,9 +343,16 @@ public class AV implements SUM {
 	    AVFont = new Font("Serif", Font.BOLD, 16);
 	}
 
+	// Debug Init
+	SPGlobal.newSpecialLog(AVFileVars.AVFileLogs.PackageImport, "Package Imports.txt");
+
 	// Prep AV
 	readInExceptions();
-	AVFileVars.gatherFiles();
+	if (save.getBool(Settings.MOVE_PACKAGE_FILES)) {
+	    AVFileVars.gatherFiles();
+	} else {
+	    AVFileVars.moveOut();
+	}
 	AVFileVars.importVariants(false);
     }
 
@@ -496,13 +363,7 @@ public class AV implements SUM {
 
     @Override
     public String description() {
-	return "AV Provides an easy place to drag-and-drop alternate monster textures and have them automatically integrated into the game.\n\n"
-		+ "Never again will you have to choose only one texture or model from an entire selection.";
-    }
-
-    public enum SpecialLogs {
-
-	WARNINGS;
+	return "";
     }
 
     @Override
@@ -517,8 +378,12 @@ public class AV implements SUM {
 
     @Override
     public GRUP_TYPE[] importRequests() {
-	return new GRUP_TYPE[]{GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
-		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA, GRUP_TYPE.TXST, GRUP_TYPE.LVLN};
+	return new GRUP_TYPE[]{
+		    GRUP_TYPE.NPC_, GRUP_TYPE.RACE,
+		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
+		    GRUP_TYPE.TXST, GRUP_TYPE.LVLN,
+		    GRUP_TYPE.WEAP, GRUP_TYPE.LVLI,
+		    GRUP_TYPE.CONT};
     }
 
     @Override
@@ -579,6 +444,7 @@ public class AV implements SUM {
     public LImagePane donateButton() throws IOException {
 	final LImagePane donate = new LImagePane(SettingsOther.class.getResource("ConsiderDonatingDark.png"));
 	donate.addMouseListener(new MouseListener() {
+
 	    @Override
 	    public void mouseClicked(MouseEvent e) {
 		try {
@@ -643,10 +509,14 @@ public class AV implements SUM {
 	SPGlobal.loggingSync(true);
 	SPGlobal.logging(true);
 
+	if (save.getBool(Settings.MOVE_PACKAGE_FILES)) {
+	    AVFileVars.gatherFiles();
+	} else {
+	    AVFileVars.moveOut();
+	}
+
 	makeGlobals();
 	makeAVQuest();
-
-	SPProgressBarPlug.setStatus(0, 1, "Initializing AV");
 
 	// For all race SWITCHING variants
 	// (such as texture variants)

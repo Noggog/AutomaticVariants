@@ -25,7 +25,7 @@ public class VariantGroup extends PackageNode {
 
     public void load() throws FileNotFoundException, IOException {
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(src.getName(), depth + "### Adding Variant Group: " + src);
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "### Adding Variant Group: " + src);
 	}
 	for (File f : src.listFiles()) {
 	    if (f.isDirectory()) {
@@ -35,7 +35,7 @@ public class VariantGroup extends PackageNode {
 	    }
 	}
 	if (SPGlobal.logging()) {
-	    SPGlobal.log(src.getName(), depth + "####################################");
+	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "####################################");
 	}
     }
 
@@ -61,11 +61,11 @@ public class VariantGroup extends PackageNode {
 		for (PackageNode c : v.getAll(Type.TEXTURE)) {
 		    if (common.getName().equalsIgnoreCase(c.src.getName())) {
 			if (SPGlobal.logging()) {
-			    SPGlobal.log(src.getName(), "  ------------------------------");
-			    SPGlobal.log(src.getName(), "  Comparing");
-			    SPGlobal.log("Consoldiate", "  " + common);
-			    SPGlobal.log(src.getName(), "    and");
-			    SPGlobal.log("Consoldiate", "  " + c.src);
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  ------------------------------");
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  Comparing");
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, "Consoldiate", "  " + common);
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "    and");
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, "Consoldiate", "  " + c.src);
 			    SPGlobal.flush();
 			}
 			if (Ln.validateCompare(common, c.src, 0)) {
@@ -73,7 +73,7 @@ public class VariantGroup extends PackageNode {
 				c.src.delete();
 			    }
 			    if (SPGlobal.logging()) {
-				SPGlobal.log(src.getName(), "  Deleted " + c + " because it was a common file.");
+				SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  Deleted " + c + " because it was a common file.");
 			    }
 			}
 		    }
@@ -90,9 +90,9 @@ public class VariantGroup extends PackageNode {
 	    // For each texture in the first variant
 	    for (PackageNode tex : first.getAll(Type.TEXTURE)) {
 		if (SPGlobal.logging()) {
-		    SPGlobal.log(src.getName(), "  ---------------");
-		    SPGlobal.log(src.getName(), "  CHECKING " + tex.src);
-		    SPGlobal.log(src.getName(), "  ---------------");
+		    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  ---------------");
+		    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  CHECKING " + tex.src);
+		    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  ---------------");
 		}
 		boolean textureCommon = true;
 		ArrayList<PackageNode> delete = new ArrayList<>();
@@ -101,29 +101,29 @@ public class VariantGroup extends PackageNode {
 		    boolean variantContained = false;
 		    for (PackageNode texRhs : vars.get(i).getAll(Type.TEXTURE)) {
 			if (SPGlobal.logging()) {
-			    SPGlobal.log(src.getName(), "    ------------------------------");
-			    SPGlobal.log(src.getName(), "    Comparing");
-			    SPGlobal.log("Consoldiate", "    " + tex.src);
-			    SPGlobal.log(src.getName(), "      and");
-			    SPGlobal.log("Consoldiate", "    " + texRhs.src);
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "    ------------------------------");
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "    Comparing");
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, "Consoldiate", "    " + tex.src);
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "      and");
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, "Consoldiate", "    " + texRhs.src);
 			    SPGlobal.flush();
 			}
 			// If other variant had texture, move on to next and
 			// mark that texture for deletion
 			if (tex.src.getName().equalsIgnoreCase(texRhs.src.getName())
 				&& Ln.validateCompare(tex.src, texRhs.src, 0)) {
-			    SPGlobal.log(src.getName(), "      Matched");
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "      Matched");
 			    delete.add(texRhs);
 			    variantContained = true;
 			    break;
 			} else {
-			    SPGlobal.log(src.getName(), "      DID NOT match.");
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "      DID NOT match.");
 			}
 		    }
 		    // If one variant in group did not have texture, then
 		    // it is not a common texture
 		    if (!variantContained) {
-			SPGlobal.log(src.getName(), "  == Was NOT a common texture: " + tex.src);
+			SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  == Was NOT a common texture: " + tex.src);
 			textureCommon = false;
 			break;
 		    }
@@ -131,11 +131,11 @@ public class VariantGroup extends PackageNode {
 		// If common texture, return it and delete
 		// the duplicate textures
 		if (textureCommon) {
-		    SPGlobal.log(src.getName(), "  == WAS a common texture: " + tex.src);
+		    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  == WAS a common texture: " + tex.src);
 		    out.add(tex);
 		    for (PackageNode p : delete) {
 			if (!p.isReroute() && p.src.delete()) {
-			    SPGlobal.log(src.getName(), "  " + p.src + " was deleted.");
+			    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), "  " + p.src + " was deleted.");
 			} else {
 			    SPGlobal.logError(src.getName(), "  !!!" + p.src + " was NOT successfully deleted.");
 			}

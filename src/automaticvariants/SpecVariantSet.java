@@ -15,25 +15,29 @@ import skyproc.*;
  */
 public class SpecVariantSet extends SpecFile {
 
-    public AVFileVars.VariantType type = AVFileVars.VariantType.NPC_;
+    public VariantType Type = VariantType.NPC_;
     public String[][] Target_FormIDs = new String[0][];
 
     public SpecVariantSet(File src) {
 	super(src);
     }
 
-    public Boolean isValid() {
-	if (type == null) {
-	    type = AVFileVars.VariantType.NPC_;
-	}
+    public boolean isValid() {
 	return true;
+    }
+    
+    public VariantType getType() {
+	if (Type == null) {
+	    Type = VariantType.NPC_;
+	}
+	return Type;
     }
 
     @Override
     ArrayList<String> print() {
 	ArrayList<String> out = new ArrayList<>();
 	if (isValid()) {
-	    out.add("   | Type: " + type);
+	    out.add("   | Type: " + Type);
 	    out.add("   | Target FormIDs: ");
 	    for (String[] s : Target_FormIDs) {
 		out.add("   |   " + s[0] + " | " + s[1]);
@@ -47,10 +51,10 @@ public class SpecVariantSet extends SpecFile {
     public void loadSkins(ArrayList<ProfileDisplay> in) {
 	Target_FormIDs = new String[in.size()][6];
 	for (int i = 0; i < in.size(); i++) {
-	    VariantProfile profile = in.get(i).profile;
-	    RACE race = profile.race;
-	    ARMO skin = profile.skin;
-	    ARMA piece = profile.piece;
+	    VariantProfileNPC profile = in.get(i).profile;
+	    RACE race = profile.getRace();
+	    ARMO skin = profile.getSkin();
+	    ARMA piece = profile.getPiece();
 	    Target_FormIDs[i][0] = race.getFormStr().substring(0, 6);
 	    Target_FormIDs[i][1] = race.getFormStr().substring(6);
 	    Target_FormIDs[i][2] = skin.getFormStr().substring(0, 6);
@@ -77,5 +81,11 @@ public class SpecVariantSet extends SpecFile {
 	    content += printFormID(formID, GRUP_TYPE.NPC_, GRUP_TYPE.RACE, GRUP_TYPE.ARMA, GRUP_TYPE.ARMO);
 	}
 	return content;
+    }
+
+    public enum VariantType {
+
+	NPC_,
+	WEAP;
     }
 }

@@ -7,7 +7,7 @@ package automaticvariants.gui;
 import automaticvariants.AV;
 import automaticvariants.AVFileVars;
 import automaticvariants.AVSaveFile.Settings;
-import automaticvariants.VariantProfile;
+import automaticvariants.VariantProfileNPC;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -229,13 +229,13 @@ public class WizSetTool extends WizTemplate {
 	displaySwitch(0);
     }
 
-    void updateHelp(VariantProfile profile) {
+    void updateHelp(VariantProfileNPC profile) {
 	SUMGUI.helpPanel.setDefaultPos();
 	SUMGUI.helpPanel.setTitle("Profile Contents:");
 	String contents =
-		"Race:  " + profile.race.getEDID() + "\n"
-		+ "Skin:  " + profile.skin.getEDID() + "\n"
-		+ "Piece: " + profile.piece.getEDID() + "\n\n"
+		"Race:  " + profile.getRace().getEDID() + "\n"
+		+ "Skin:  " + profile.getSkin().getEDID() + "\n"
+		+ "Piece: " + profile.getPiece().getEDID() + "\n\n"
 		+ "Textures Used: \n"
 		+ profile.printAllTextures();
 	SUMGUI.helpPanel.setContent(contents);
@@ -306,7 +306,7 @@ public class WizSetTool extends WizTemplate {
 	@Override
 	public void run() {
 	    try {
-		AVFileVars.prepProfiles();
+		AVFileVars.npcFactory.prepProfiles();
 		SPGlobal.newLog("Set Tool/Run " + attempt++ + ".txt");
 		printSourceTextures();
 
@@ -317,7 +317,7 @@ public class WizSetTool extends WizTemplate {
 		    textureList.add(f.getName().toUpperCase());
 		}
 
-		for (VariantProfile profile : VariantProfile.profiles) {
+		for (VariantProfileNPC profile : AVFileVars.npcFactory.profiles) {
 		    ProfileDisplay display = new ProfileDisplay(profile);
 		    matchingProfiles.add(display);
 		    for (String s : textureList) {

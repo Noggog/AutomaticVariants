@@ -9,7 +9,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import javax.swing.SwingUtilities;
 import lev.LMergeMap;
 import lev.Ln;
@@ -38,9 +40,21 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	this.type = type;
     }
 
+    public PackageNode(PackageNode p) {
+	this.src = p.src;
+	this.type = p.type;
+    }
+
     @Override
     public PackageNode get(LSwingTreeNode node) {
 	return (PackageNode) super.get(node);
+    }
+
+    public void removeAll(Type t) {
+	ArrayList<PackageNode> get = getAll(t);
+	for (PackageNode p : get) {
+	    this.remove(p);
+	}
     }
 
     boolean moveOut() {
@@ -74,7 +88,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	ArrayList<LSwingTreeNode> tmp = getAllObjects(recursive);
 	ArrayList<PackageNode> out = new ArrayList<>(tmp.size());
 	for (Object o : tmp) {
-	    out.add((PackageNode)o);
+	    out.add((PackageNode) o);
 	}
 	return out;
     }
@@ -137,7 +151,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
     public boolean isDisabled() {
 	ArrayList<PackageNode> all = getAll();
 	if (all.isEmpty()) {
-	    return AV.save.getStrings(AVSaveFile.Settings.DISABLED_PACKAGES).contains(src.getPath());
+	    return isDisabled(src);
 	} else {
 	    for (PackageNode p : all) {
 		if (!p.isDisabled()) {
@@ -146,6 +160,12 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	    }
 	    return true;
 	}
+    }
+
+    boolean isDisabled(File source) {
+	String path = AVFileVars.standardizePath(source);
+	boolean out = Ln.contains(AV.save.getStrings(AVSaveFile.Settings.DISABLED_PACKAGES), path);
+	return out;
     }
 
     public void updateHelp(LHelpPanel help, boolean first) {
@@ -236,7 +256,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	help.hideArrow();
     }
 
-    File meshPath () {
+    File meshPath() {
 	String path = src.getPath();
 	path = path.replaceAll(AVFileVars.AVTexturesDir, AVFileVars.AVMeshesDir);
 	return new File(path);
@@ -263,6 +283,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 
     void displayImage(final File src) {
 	SwingUtilities.invokeLater(new Runnable() {
+
 	    @Override
 	    public void run() {
 		if (!src.equals(lastDisplayed)) {
@@ -308,10 +329,16 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
     void enable(boolean enable, File f) {
 	ArrayList<PackageNode> all = getAll();
 	if (all.isEmpty()) {
+	    String path = AVFileVars.standardizePath(f);
 	    if (enable) {
-		AV.save.curSettings.get(AVSaveFile.Settings.DISABLED_PACKAGES).getStrings().remove(f.getPath());
+		int index = Ln.indexOfContains(AV.save.getStrings(AVSaveFile.Settings.DISABLED_PACKAGES), path);
+		if (index != -1) {
+		    ArrayList<String> disabled = AV.save.getStrings(AVSaveFile.Settings.DISABLED_PACKAGES);
+		    disabled.remove(index);
+		    AV.save.setStrings(AVSaveFile.Settings.DISABLED_PACKAGES, disabled);
+		}
 	    } else {
-		AV.save.curSettings.get(AVSaveFile.Settings.DISABLED_PACKAGES).getStrings().add(f.getPath());
+		AV.save.addString(AVSaveFile.Settings.DISABLED_PACKAGES, f.getPath());
 	    }
 	} else {
 	    for (PackageNode n : getAll()) {
@@ -410,6 +437,7 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	    return;
 	}
 	Collections.sort(this.children, new Comparator() {
+
 	    @Override
 	    public int compare(Object arg0, Object arg1) {
 		PackageNode node = (PackageNode) arg0;
@@ -441,6 +469,8 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 	MESH,
 	GENTEXTURE,
 	GENMESH,
+	GLOBALMESH,
+	GLOBALMESHSET,
 	REROUTE;
     }
 

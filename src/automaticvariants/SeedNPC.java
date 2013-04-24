@@ -13,7 +13,7 @@ import skyproc.*;
  *
  * @author Justin Swanson
  */
-public class SeedProfile {
+public class SeedNPC extends Seed {
 
     NPC_ origNPC;
     NPC_ npc;
@@ -21,9 +21,20 @@ public class SeedProfile {
     ARMA piece;
     RACE race;
 
-    SeedProfile() {
+    SeedNPC() {
+    }
+    
+    SeedNPC(RACE raceRhs, ARMO skinRhs, ARMA pieceRhs) {
+	race = raceRhs;
+	skin = skinRhs;
+	piece = pieceRhs;
+    }
+    
+    SeedNPC(SeedNPC rhs) {
+	this(rhs.race, rhs.skin, rhs.piece);
     }
 
+    @Override
     public boolean load(ArrayList<FormID> ids) {
 	if (ids.size() == 1) {
 	    npc = (NPC_) SPDatabase.getMajor(ids.get(0), GRUP_TYPE.NPC_);
@@ -44,7 +55,7 @@ public class SeedProfile {
 		    piece = (ARMA) SPDatabase.getMajor(id, GRUP_TYPE.ARMA);
 		}
 	    }
-	    return race != null & skin != null && piece != null;
+	    return isValid();
 	}
 	return false;
     }
@@ -78,7 +89,7 @@ public class SeedProfile {
 	    return false;
 	}
 
-	skin = (ARMO) SPDatabase.getMajor(AVFileVars.getUsedSkin(npc), GRUP_TYPE.ARMO);
+	skin = (ARMO) SPDatabase.getMajor(VariantFactoryNPC.getUsedSkin(npc), GRUP_TYPE.ARMO);
 	if (skin == null) {
 	    SPGlobal.logError("SeedProfile", "Skipped seed " + npc + " because it had no skin.");
 	    return false;
@@ -99,6 +110,7 @@ public class SeedProfile {
 	return true;
     }
 
+    @Override
     public void print() {
 	if (npc != null) {
 	    SPGlobal.log("SeedProfile", "|   Seed: " + npc);
@@ -118,7 +130,7 @@ public class SeedProfile {
 	if (getClass() != obj.getClass()) {
 	    return false;
 	}
-	final SeedProfile other = (SeedProfile) obj;
+	final SeedNPC other = (SeedNPC) obj;
 	if (!Objects.equals(this.skin, other.skin)) {
 	    return false;
 	}
@@ -138,5 +150,23 @@ public class SeedProfile {
 	hash = 97 * hash + Objects.hashCode(this.piece);
 	hash = 97 * hash + Objects.hashCode(this.race);
 	return hash;
+    }
+    
+    @Override
+    public boolean isValid() {
+	return race != null && skin != null && piece != null;
+    }
+
+    @Override
+    public String getSeedHashCode() {
+	int hash = 7;
+	hash = 29 * hash + Objects.hashCode(race);
+	hash = 29 * hash + Objects.hashCode(skin);
+	hash = 29 * hash + Objects.hashCode(piece);
+	if (hash >= 0) {
+	    return Integer.toString(hash);
+	} else {
+	    return "n" + Integer.toString(-hash);
+	}
     }
 }
