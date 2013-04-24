@@ -28,14 +28,16 @@ abstract public class VariantFactory<T extends VariantProfile> {
     int folderNumber = 1;
 
     public void createVariants(Mod source) {
-	prepProfiles();
-	dropVariantSetsInProfiles();
-	clearUnusedProfiles();
-	createVariantRecords(source);
-	if (AV.save.getBool(AVSaveFile.Settings.PACKAGES_ORIG_AS_VAR)) {
-	    implementOriginalAsVar();
+	if (needed()) {
+	    prepProfiles();
+	    dropVariantSetsInProfiles();
+	    clearUnusedProfiles();
+	    createVariantRecords(source);
+	    if (AV.save.getBool(AVSaveFile.Settings.PACKAGES_ORIG_AS_VAR)) {
+		implementOriginalAsVar();
+	    }
+	    createStructureRecords(source);
 	}
-	createStructureRecords(source);
     }
 
     public abstract String debugName();
@@ -226,6 +228,19 @@ abstract public class VariantFactory<T extends VariantProfile> {
     public abstract void createStructureRecords(Mod source);
 
     public abstract VariantType getType();
+    
+    public boolean needed() {
+	for (PackageNode avPackageC : AVFileVars.AVPackages.getAll(PackageNode.Type.PACKAGE)) {
+	    AVPackage avPackage = (AVPackage) avPackageC;
+	    for (PackageNode varSetP : avPackage.getAll(PackageNode.Type.VARSET)) {
+		VariantSet varSet = (VariantSet) varSetP;
+		if (!varSet.isDisabled() && varSet.spec.getType() == getType()) {
+		    return true;
+		}
+	    }
+	}
+	return false;
+    }
 
     public T find(Seed s) {
 	for (T profile : profiles) {
