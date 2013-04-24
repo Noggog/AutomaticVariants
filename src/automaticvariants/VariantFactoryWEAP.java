@@ -118,6 +118,22 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 		}
 	    }
 
+	    // Replace in form lists
+	    ArrayList<FormID> replaceList = new ArrayList<>(replacement.getEntries().size());
+	    for (LeveledEntry e : replacement.getEntries()) {
+		replaceList.add(e.getForm());
+	    }
+	    FormID[] replaceArray = replaceList.toArray(new FormID[0]);
+	    for (FLST flst : source.getFormLists()) {
+		int result = NiftyFunc.replaceAll(flst.getFormIDEntries(), weap.getForm(), replaceArray);
+		if (result > 0) {
+		    if (SPGlobal.logging()) {
+			SPGlobal.log(header, "  Replaced " + result + " times in " + flst);
+		    }
+		    SPGlobal.getGlobalPatch().addRecord(flst);
+		}
+	    }
+
 	    // Replace in NPC inventories
 	    for (NPC_ npc : source.getNPCs()) {
 		int num = 0;

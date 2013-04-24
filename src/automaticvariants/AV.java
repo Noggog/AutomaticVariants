@@ -300,7 +300,7 @@ public class AV implements SUM {
 
 
 	//Need to check if packages have changed.
-	ArrayList<File> files = Ln.generateFileList(new File(AVFileVars.AVTexturesDir), false);
+	ArrayList<File> files = Ln.generateFileList(new File(AVFileVars.AVPackagesDir), false);
 	try {
 	    ArrayList<String> last = AVFileVars.getAVPackagesListing();
 	    if (files.size() != last.size()) {
@@ -389,7 +389,7 @@ public class AV implements SUM {
 		    GRUP_TYPE.ARMO, GRUP_TYPE.ARMA,
 		    GRUP_TYPE.TXST, GRUP_TYPE.LVLN,
 		    GRUP_TYPE.WEAP, GRUP_TYPE.LVLI,
-		    GRUP_TYPE.CONT};
+		    GRUP_TYPE.CONT, GRUP_TYPE.FLST};
     }
 
     @Override
