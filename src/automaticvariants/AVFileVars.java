@@ -32,7 +32,6 @@ public class AVFileVars {
     public static String AVTexturesDir = SPGlobal.pathToData + "textures\\AV Packages\\";
     public static String AVMeshesDir = SPGlobal.pathToData + "meshes\\AV Packages\\";
     static String debugFolder = "File Variants/";
-    static int debugNumber = 1;
     public static PackageNode AVPackages = new PackageNode(new File(AVPackagesDir), PackageNode.Type.ROOT);
     public static VariantFactoryNPC npcFactory = new VariantFactoryNPC();
     public static VariantFactoryWEAP weapFactory = new VariantFactoryWEAP();
@@ -42,13 +41,6 @@ public class AVFileVars {
     }
 
     static void setUpFileVariants(Mod source) throws IOException, Uninitialized, BadParameter {
-	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(debugFolder + debugNumber++ + " - Import Packages.txt");
-	    File f = new File(SPGlobal.pathToDebug() + "Asynchronous log.txt");
-	    if (f.isFile()) {
-		f.delete();
-	    }
-	}
 
 	importVariants(true);
 	AVPackages.prune();
@@ -190,7 +182,7 @@ public class AVFileVars {
     }
 
     public static void gatherFolder(String folder) {
-	ArrayList<File> files = Ln.generateFileList(new File(folder), 0, 4, false);
+	ArrayList<File> files = Ln.generateFileList(new File(folder), 2, 4, false);
 	boolean fail = false;
 	for (File file : files) {
 	    File dest = new File(AVPackagesDir + file.getPath().substring(folder.length()));
@@ -246,10 +238,10 @@ public class AVFileVars {
 
 	ARMO_spec(ARMO armoSrc) {
 	    this.armo = armoSrc;
-	    spec = new SpecVariantNPC();
+	    spec = new SpecVariant();
 	}
 
-	ARMO_spec(ARMO armo, SpecVariantNPC spec) {
+	ARMO_spec(ARMO armo, SpecVariant spec) {
 	    this.armo = armo;
 	    this.spec = spec;
 	}

@@ -17,18 +17,18 @@ public class Variant extends PackageNode implements Serializable {
 
     String name = "";
     ArrayList<String> textureNames;
-    public SpecVariantNPC spec;
+    public SpecVariant spec;
     static String depth = "* +   # ";
 
     public Variant(File variantDir) {
 	super(variantDir, Type.VAR);
 	this.name = variantDir.getName();
-	spec = new SpecVariantNPC(variantDir);
+	spec = new SpecVariant(variantDir);
     }
 
     Variant() {
 	super(null, Type.VAR);
-	spec = new SpecVariantNPC();
+	spec = new SpecVariant();
     }
 
     Variant(Variant rhs) {
@@ -62,7 +62,7 @@ public class Variant extends PackageNode implements Serializable {
 		add(c);
 	    } else if (AVFileVars.isSpec(f)) {
 		try {
-		    spec = AV.gson.fromJson(new FileReader(f), SpecVariantNPC.class);
+		    spec = AV.gson.fromJson(new FileReader(f), SpecVariant.class);
 		    if (spec != null) {
 			spec.src = f;
 			if (SPGlobal.logging()) {

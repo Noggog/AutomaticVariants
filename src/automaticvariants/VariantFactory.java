@@ -25,6 +25,7 @@ abstract public class VariantFactory<T extends VariantProfile> {
 
     static String header = "VariantFactory";
     public ArrayList<T> profiles = new ArrayList<>();
+    int folderNumber = 1;
 
     public void createVariants(Mod source) {
 	prepProfiles();
@@ -37,11 +38,20 @@ abstract public class VariantFactory<T extends VariantProfile> {
 	createStructureRecords(source);
     }
 
+    public abstract String debugName();
+
+    public String debugFolder() {
+	return AVFileVars.debugFolder + debugName() + "/" + folderNumber++ + " - ";
+    }
+
     public void prepProfiles() {
 	BSA.loadInBSAs(BSA.FileType.NIF, BSA.FileType.DDS);
+	if (SPGlobal.logging()) {
+	    SPGlobal.newLog(debugFolder() + "Locate Unused.txt");
+	}
 	locateUnused();
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Load Variant Profiles.txt");
+	    SPGlobal.newLog(debugFolder() + "Load Variant Profiles.txt");
 	}
 	createProfileShells();
 	loadProfileNifs();
@@ -115,7 +125,7 @@ abstract public class VariantFactory<T extends VariantProfile> {
 
     void clearUnusedProfiles() {
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Clear Unused Profiles.txt");
+	    SPGlobal.newLog(debugFolder() + "Clear Unused Profiles.txt");
 	}
 	for (VariantProfile profile : new ArrayList<>(profiles)) {
 	    if (profile.matchedVariantSets.isEmpty()) {
@@ -132,7 +142,7 @@ abstract public class VariantFactory<T extends VariantProfile> {
 
     public void dropVariantSetsInProfiles() {
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Processing Variant Seeds.txt");
+	    SPGlobal.newLog(debugFolder() + "Processing Variant Seeds.txt");
 	}
 	for (PackageNode avPackageC : AVFileVars.AVPackages.getAll(PackageNode.Type.PACKAGE)) {
 	    AVPackage avPackage = (AVPackage) avPackageC;
@@ -201,7 +211,7 @@ abstract public class VariantFactory<T extends VariantProfile> {
 
     public void createVariantRecords(Mod source) {
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Generate Variants.txt");
+	    SPGlobal.newLog(debugFolder() + "Generate Variants.txt");
 	}
 	for (VariantProfile profile : profiles) {
 	    if (SPGlobal.logging()) {
@@ -229,7 +239,7 @@ abstract public class VariantFactory<T extends VariantProfile> {
     static int calcLCM(ArrayList specs) {
 	int[] divs = new int[specs.size()];
 	for (int i = 0; i < divs.length; i++) {
-	    SpecHolder holder = ((SpecHolder)specs.get(i));
+	    SpecHolder holder = ((SpecHolder) specs.get(i));
 	    divs[i] = holder.spec.Probability_Divider;
 	}
 	return Ln.lcmm(divs);

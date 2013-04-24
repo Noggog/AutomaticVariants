@@ -9,10 +9,7 @@ import java.awt.FontFormatException;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +42,7 @@ public class AV implements SUM {
      */
     static Set<FormID> block = new HashSet<>();
     static Set<String> edidExclude = new HashSet<>();
+    static Set<String> modExclude = new HashSet<>();
     /*
      * Script/Property names
      */
@@ -101,7 +99,6 @@ public class AV implements SUM {
     public static void main(String[] args) {
 	ArrayList<String> arguments = new ArrayList<>(Arrays.asList(args));
 	try {
-	    // Need to load memory settings
 	    save.init();
 	    if (handleArgs(arguments)) {
 		SPGlobal.closeDebug();
@@ -228,14 +225,13 @@ public class AV implements SUM {
 	 */
 	SPGlobal.createGlobalLog();
 	SPGlobal.debugModMerge = false;
-	SPGlobal.debugExportSummary = false;
 	SPGlobal.debugBSAimport = false;
 	SPGlobal.debugNIFimport = false;
 	LDebug.timeElapsed = true;
 	LDebug.timeStamp = true;
     }
 
-    static void readInExceptions() {
+    static void readInExceptions() throws IOException {
 	try {
 	    BufferedReader in = new BufferedReader(new FileReader("Files/BlockList.txt"));
 	    Set target = null;
@@ -251,7 +247,7 @@ public class AV implements SUM {
 		} else if (read.contains("EDID BLOCKS")) {
 		    target = edidExclude;
 		} else if (read.contains("MOD BLOCKS")) {
-		    target = null;
+		    target = modExclude;
 		} else if (target != null && !read.equals("")) {
 		    if (target == block) {
 			target.add(new FormID(read));
@@ -260,8 +256,19 @@ public class AV implements SUM {
 		    }
 		}
 	    }
-	} catch (IOException ex) {
-	    SPGlobal.logError("ReadInExceptions", "Failed to locate or read 'BlockList.txt'");
+
+	    Set<String> tmp = new HashSet<>(modExclude);
+	    for (String s : tmp) {
+		if (s.contains(".ESP") || s.contains(".ESM")) {
+		    SPGlobal.addModToSkip(new ModListing(s));
+		    modExclude.remove(s);
+		}
+	    }
+	    for (String s : modExclude) {
+		SPGlobal.addModToSkip(s);
+	    }
+	} catch (FileNotFoundException ex) {
+	    SPGlobal.logError("ReadInExceptions", "Failed to locate 'BlockList.txt'");
 	}
     }
 
@@ -293,7 +300,7 @@ public class AV implements SUM {
 
 
 	//Need to check if packages have changed.
-	ArrayList<File> files = Ln.generateFileList(new File(AVFileVars.AVPackagesDir), false);
+	ArrayList<File> files = Ln.generateFileList(new File(AVFileVars.AVTexturesDir), false);
 	try {
 	    ArrayList<String> last = AVFileVars.getAVPackagesListing();
 	    if (files.size() != last.size()) {
@@ -326,7 +333,6 @@ public class AV implements SUM {
 	    AVFileVars.saveAVPackagesListing();
 	    AVFileVars.moveOut();
 	}
-	AVFileVars.moveOut();
 	if (patchWasGenerated) {
 	    AV.save.setInt(Settings.PREV_VERSION, NiftyFunc.versionToNum(AV.version));
 	}
@@ -344,7 +350,7 @@ public class AV implements SUM {
 	}
 
 	// Debug Init
-	SPGlobal.newSpecialLog(AVFileVars.AVFileLogs.PackageImport, "Package Imports.txt");
+	SPGlobal.newSpecialLog(AVFileVars.AVFileLogs.PackageImport, AVFileVars.debugFolder + "Package Imports.txt");
 
 	// Prep AV
 	readInExceptions();

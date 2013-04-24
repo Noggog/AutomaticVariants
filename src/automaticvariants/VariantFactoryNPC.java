@@ -87,7 +87,6 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	}
 
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Locate Unused.txt");
 	    SPGlobal.log(header, "Unused Races:");
 	    for (FormID race : unusedRaces) {
 		SPGlobal.log(header, "  " + SPDatabase.getMajor(race, GRUP_TYPE.RACE));
@@ -314,9 +313,9 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	AV.quest.getScriptPackage().getScript("AVQuestScript").setProperty("ExclusiveCellList", eCells.toArray(new FormID[0]));
     }
 
-    static void generateFormLists(Mod source) {
+    void generateFormLists(Mod source) {
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Generate Form Lists.txt");
+	    SPGlobal.newLog(debugFolder() + "Generate Form Lists.txt");
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Generating FormLists for each ARMO variant");
 	    SPGlobal.log(header, "====================================================================");
@@ -483,9 +482,9 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	}
     }
 
-    static void tagNPCs(Mod source) {
+    void tagNPCs(Mod source) {
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Tagging NPCs.txt");
+	    SPGlobal.newLog(debugFolder() + "Tagging NPCs.txt");
 	    SPGlobal.log(header, "====================================================================");
 	    SPGlobal.log(header, "Tagging NPCs that have alt skins");
 	    SPGlobal.log(header, "====================================================================");
@@ -549,5 +548,10 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
     @Override
     public VariantType getType() {
 	return VariantType.NPC_;
+    }
+
+    @Override
+    public String debugName() {
+	return "NPC";
     }
 }

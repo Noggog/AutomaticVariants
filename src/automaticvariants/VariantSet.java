@@ -105,13 +105,6 @@ public class VariantSet extends PackageNode implements Serializable {
 	    }
 	}
 
-	// Process variant groups last
-	for (File f : variantDirs) {
-	    VariantGroup v = new VariantGroup(f);
-	    v.load();
-	    add(v);
-	}
-
 	if (SPGlobal.logging()) {
 	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "");
 	    SPGlobal.logSpecial(AVFileVars.AVFileLogs.PackageImport, src.getName(), depth + "++++++ END Variant Set: " + src);

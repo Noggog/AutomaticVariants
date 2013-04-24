@@ -87,7 +87,7 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 
     public void subIn(Mod source) {
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Substitute In.txt");
+	    SPGlobal.newLog(debugFolder() + "Substitute In.txt");
 	    SPGlobal.debugStream = false;
 	}
 	for (WEAP weap : weapons.keySet()) {
@@ -141,7 +141,7 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 
     public void generateLLists() {
 	if (SPGlobal.logging()) {
-	    SPGlobal.newLog(AVFileVars.debugFolder + AVFileVars.debugNumber++ + " - Generate LLists.txt");
+	    SPGlobal.newLog(debugFolder() + "Generate LLists.txt");
 	}
 	for (WEAP weapSrc : weapons.keySet()) {
 	    LVLI list = new LVLI(weapSrc.getEDID() + "_llist");
@@ -165,5 +165,10 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
     @Override
     public VariantType getType() {
 	return VariantType.WEAP;
+    }
+
+    @Override
+    public String debugName() {
+	return "Weapon";
     }
 }
