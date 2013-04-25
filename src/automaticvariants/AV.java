@@ -512,9 +512,6 @@ public class AV implements SUM {
     @Override
     public void runChangesToPatch() throws Exception {
 
-	SPGlobal.loggingSync(true);
-	SPGlobal.logging(true);
-
 	if (save.getBool(Settings.MOVE_PACKAGE_FILES)) {
 	    AVFileVars.gatherFiles();
 	} else {
