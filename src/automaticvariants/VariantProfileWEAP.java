@@ -7,10 +7,7 @@ package automaticvariants;
 import automaticvariants.AVFileVars.WEAP_spec;
 import java.util.ArrayList;
 import java.util.Map;
-import skyproc.NiftyFunc;
-import skyproc.SPGlobal;
-import skyproc.TXST;
-import skyproc.WEAP;
+import skyproc.*;
 
 /**
  *
@@ -80,6 +77,8 @@ public class VariantProfileWEAP extends VariantProfile {
 			SPGlobal.log(toString(), " * ==> Generating WEAP: " + edid);
 		    }
 		    WEAP weaponDup = (WEAP) SPGlobal.getGlobalPatch().makeCopy(weapon, edid);
+		    STAT stat = new STAT(varEDID + "_stat");
+		    weaponDup.setFirstPersonModel(stat.getForm());
 		    // Set nif
 		    String nifPath = getNifPath(var);
 		    String cleanNifPath = nifPath;
@@ -87,7 +86,8 @@ public class VariantProfileWEAP extends VariantProfile {
 			cleanNifPath = cleanNifPath.substring(7);
 		    }
 		    weaponDup.setModelFilename(cleanNifPath);
-		    
+		    stat.getModelData().setFileName(cleanNifPath);
+
 		    //Generate and set alt textures
 		    Map<String, TXST> txsts = generateTXSTs(var, nifPath);
 		    if (txsts.isEmpty()) {
@@ -95,7 +95,8 @@ public class VariantProfileWEAP extends VariantProfile {
 			continue;
 		    }
 		    loadAltTextures(weaponDup.getAltTextures(), txsts, nifPath);
-		    
+		    loadAltTextures(stat.getModelData().getAltTextures(), txsts, nifPath);
+
 		    VariantFactoryWEAP.weapons.put(weapon, new WEAP_spec(weaponDup, var.spec));
 
 		    if (SPGlobal.logging()) {
