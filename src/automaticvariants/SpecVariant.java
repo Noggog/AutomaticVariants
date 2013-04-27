@@ -25,19 +25,19 @@ public class SpecVariant extends SpecFile {
     public boolean Exclusive_Region = false;
     public String Name_Affix = "";
     public String Name_Prefix = "";
+    public String Name_Set = "";
     
     // NPC
-    public int Health_Mult = 100;
-    public int Height_Mult = 100;
-    public int Magicka_Mult = 100;
-    public int Stamina_Mult = 100;
-    public int Speed_Mult = 100;
+    public String Health = "%100";
+    public String Height = "%100";
+    public String Magicka = "%100";
+    public String Stamina = "%100";
+    public String Speed = "%100";
     
     // Items
     public String Gold_Value = "%100";
     public String Enchantment = "%100";
     public String[] Enchantment_Form = new String[0];
-    public String Speed_Item = "%100";
     public String Weight = "%100";
     public String Reach = "%100";
     public String Damage = "%100";
@@ -70,15 +70,16 @@ public class SpecVariant extends SpecFile {
 	
 	out.Exclusive_Region = this.Exclusive_Region || rhs.Exclusive_Region;
 	
-	out.Name_Affix = this.Name_Affix;
-	out.Name_Prefix = this.Name_Prefix;
+	out.Name_Set = "".equals(this.Name_Set) ? rhs.Name_Set : this.Name_Set;
+	out.Name_Affix = "".equals(this.Name_Affix) ? rhs.Name_Affix : this.Name_Affix;
+	out.Name_Prefix = "".equals(this.Name_Prefix) ? rhs.Name_Prefix : this.Name_Prefix;
 	
 	//NPC
-	out.Health_Mult = (this.Health_Mult + rhs.Health_Mult) / 2;
-	out.Height_Mult = (this.Height_Mult + rhs.Height_Mult) / 2;
-	out.Magicka_Mult = (this.Magicka_Mult + rhs.Magicka_Mult) / 2;
-	out.Stamina_Mult = (this.Stamina_Mult + rhs.Stamina_Mult) / 2;
-	out.Speed_Mult = (this.Speed_Mult + rhs.Speed_Mult) / 2;
+	out.Health = AVNum.merge(out.Health, rhs.Health);
+	out.Height = AVNum.merge(out.Height, rhs.Height);
+	out.Magicka = AVNum.merge(out.Magicka, rhs.Magicka);
+	out.Stamina = AVNum.merge(out.Stamina, rhs.Stamina);
+	out.Speed = AVNum.merge(out.Speed, rhs.Speed);
 	
 	//Items
 	out.Gold_Value = AVNum.merge(this.Gold_Value, rhs.Gold_Value);
@@ -88,7 +89,6 @@ public class SpecVariant extends SpecFile {
 	} else {
 	    out.Enchantment_Form = rhs.Enchantment_Form;
 	}
-	out.Speed_Item = AVNum.merge(this.Speed_Item, rhs.Speed_Item);
 	out.Weight = AVNum.merge(this.Weight, rhs.Weight);
 	out.Reach = AVNum.merge(this.Gold_Value, rhs.Reach);
 	out.Damage = AVNum.merge(this.Damage, rhs.Damage);
@@ -123,21 +123,6 @@ public class SpecVariant extends SpecFile {
 		out.add("   " + tmp);
 	    }
 	    out.add("Exclusive Region: " + Exclusive_Region);
-	}
-	if (Health_Mult != 100) {
-	    out.add("Relative Health: " + Health_Mult);
-	}
-	if (Magicka_Mult != 100) {
-	    out.add("Relative Magicka: " + Magicka_Mult);
-	}
-	if (Stamina_Mult != 100) {
-	    out.add("Relative Stamina: " + Stamina_Mult);
-	}
-	if (Speed_Mult != 100) {
-	    out.add("Relative Speed: " + Speed_Mult);
-	}
-	if (Height_Mult != 100) {
-	    out.add("Relative Height: " + Height_Mult);
 	}
 	if (Name_Prefix != null && !Name_Prefix.equals("")) {
 	    out.add("Name Prefix: " + Name_Prefix);
@@ -176,22 +161,6 @@ public class SpecVariant extends SpecFile {
 	    }
 	    out += "\n";
 	}
-	if (Height_Mult != 100) {
-	    out += "Relative Height: " + Height_Mult + "%\n";
-	}
-	if (Health_Mult != 100) {
-	    out += "Relative Health: " + Health_Mult + "%\n";
-	}
-	if (Magicka_Mult != 100) {
-	    out += "Relative Magicka: " + Magicka_Mult + "%\n";
-	}
-	if (Stamina_Mult != 100) {
-	    out += "Relative Stamina: " + Stamina_Mult + "%\n";
-	}
-	if (Speed_Mult != 100) {
-	    out += "Relative Speed: " + Speed_Mult + "%\n";
-	}
-
 	return out;
     }
 

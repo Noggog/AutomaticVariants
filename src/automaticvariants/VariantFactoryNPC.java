@@ -399,78 +399,81 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    }
 	    script.setProperty("RaceHeightOffset", avr.race.getHeight(Gender.MALE));
 
-	    // Loop through all variants for this race
-	    // and load up non-standard spec file info
-	    ArrayList<Integer> heights = new ArrayList<>();
-	    ArrayList<Integer> healths = new ArrayList<>();
-	    ArrayList<Integer> magickas = new ArrayList<>();
-	    ArrayList<Integer> staminas = new ArrayList<>();
-	    ArrayList<Integer> speeds = new ArrayList<>();
-	    ArrayList<Integer> prefixKey = new ArrayList<>();
-	    ArrayList<String> prefix = new ArrayList<>();
-	    ArrayList<Integer> affixKey = new ArrayList<>();
-	    ArrayList<String> affix = new ArrayList<>();
-	    int index = 0;
-	    for (AVFileVars.ARMO_spec variant : avr.getVariants()) {
-		if (variant.spec.Height_Mult != SpecVariant.prototype.Height_Mult) {
-		    heights.add(index);
-		    heights.add(variant.spec.Height_Mult);
-		}
-		if (variant.spec.Health_Mult != SpecVariant.prototype.Health_Mult) {
-		    healths.add(index);
-		    healths.add(variant.spec.Health_Mult);
-		}
-		if (variant.spec.Magicka_Mult != SpecVariant.prototype.Magicka_Mult) {
-		    magickas.add(index);
-		    magickas.add(variant.spec.Magicka_Mult);
-		}
-		if (variant.spec.Stamina_Mult != SpecVariant.prototype.Stamina_Mult) {
-		    staminas.add(index);
-		    staminas.add(variant.spec.Stamina_Mult);
-		}
-		if (variant.spec.Speed_Mult != SpecVariant.prototype.Speed_Mult) {
-		    speeds.add(index);
-		    speeds.add(variant.spec.Speed_Mult);
-		}
-		if (!variant.spec.Name_Prefix.equals("")) {
-		    prefixKey.add(index);
-		    prefix.add(variant.spec.Name_Prefix);
-		}
-		if (!variant.spec.Name_Affix.equals("")) {
-		    affixKey.add(index);
-		    affix.add(variant.spec.Name_Affix);
-		}
-		index++;
-	    }
-	    if (!heights.isEmpty()) {
-		script.setProperty("HeightVariants", heights.toArray(new Integer[0]));
-	    }
-	    if (!healths.isEmpty()) {
-		script.setProperty("HealthVariants", healths.toArray(new Integer[0]));
-	    }
-	    if (!magickas.isEmpty()) {
-		script.setProperty("MagickaVariants", magickas.toArray(new Integer[0]));
-	    }
-	    if (!staminas.isEmpty()) {
-		script.setProperty("StaminaVariants", staminas.toArray(new Integer[0]));
-	    }
-	    if (!speeds.isEmpty()) {
-		script.setProperty("SpeedVariants", speeds.toArray(new Integer[0]));
-	    }
-	    if (!prefixKey.isEmpty()) {
-		script.setProperty("PrefixKey", prefixKey.toArray(new Integer[0]));
-		script.setProperty("Prefix", prefix.toArray(new String[0]));
-	    }
-	    if (!affixKey.isEmpty()) {
-		script.setProperty("AffixKey", affixKey.toArray(new Integer[0]));
-		script.setProperty("Affix", affix.toArray(new String[0]));
-	    }
-
+	    setStats(script);
+	    
 	    // Generate the spell
 	    SPEL spell = NiftyFunc.genScriptAttachingSpel(script, avr.race.getEDID());
 	    avr.race.addSpell(spell.getForm());
 	    SPGlobal.getGlobalPatch().addRecord(avr.race);
 	}
+    }
+
+    static void setStats(ScriptRef script) {
+
+//	ArrayList<Integer> heights = new ArrayList<>();
+//	ArrayList<Integer> healths = new ArrayList<>();
+//	ArrayList<Integer> magickas = new ArrayList<>();
+//	ArrayList<Integer> staminas = new ArrayList<>();
+//	ArrayList<Integer> speeds = new ArrayList<>();
+//	ArrayList<Integer> prefixKey = new ArrayList<>();
+//	ArrayList<String> prefix = new ArrayList<>();
+//	ArrayList<Integer> affixKey = new ArrayList<>();
+//	ArrayList<String> affix = new ArrayList<>();
+//	int index = 0;
+//	for (AVFileVars.ARMO_spec variant : avr.getVariants()) {
+//	    if (variant.spec.Height.equals(SpecVariant.prototype.Height)) {
+//		heights.add(index);
+//		heights.add(variant.spec.Height);
+//	    }
+//	    if (variant.spec.Health != SpecVariant.prototype.Health) {
+//		healths.add(index);
+//		healths.add(variant.spec.Health);
+//	    }
+//	    if (variant.spec.Magicka != SpecVariant.prototype.Magicka) {
+//		magickas.add(index);
+//		magickas.add(variant.spec.Magicka);
+//	    }
+//	    if (variant.spec.Stamina != SpecVariant.prototype.Stamina) {
+//		staminas.add(index);
+//		staminas.add(variant.spec.Stamina);
+//	    }
+//	    if (variant.spec.Speed != SpecVariant.prototype.Speed) {
+//		speeds.add(index);
+//		speeds.add(variant.spec.Speed);
+//	    }
+//	    if (!variant.spec.Name_Prefix.equals("")) {
+//		prefixKey.add(index);
+//		prefix.add(variant.spec.Name_Prefix);
+//	    }
+//	    if (!variant.spec.Name_Affix.equals("")) {
+//		affixKey.add(index);
+//		affix.add(variant.spec.Name_Affix);
+//	    }
+//	    index++;
+//	}
+//	if (!heights.isEmpty()) {
+//	    script.setProperty("HeightVariants", heights.toArray(new Integer[0]));
+//	}
+//	if (!healths.isEmpty()) {
+//	    script.setProperty("HealthVariants", healths.toArray(new Integer[0]));
+//	}
+//	if (!magickas.isEmpty()) {
+//	    script.setProperty("MagickaVariants", magickas.toArray(new Integer[0]));
+//	}
+//	if (!staminas.isEmpty()) {
+//	    script.setProperty("StaminaVariants", staminas.toArray(new Integer[0]));
+//	}
+//	if (!speeds.isEmpty()) {
+//	    script.setProperty("SpeedVariants", speeds.toArray(new Integer[0]));
+//	}
+//	if (!prefixKey.isEmpty()) {
+//	    script.setProperty("PrefixKey", prefixKey.toArray(new Integer[0]));
+//	    script.setProperty("Prefix", prefix.toArray(new String[0]));
+//	}
+//	if (!affixKey.isEmpty()) {
+//	    script.setProperty("AffixKey", affixKey.toArray(new Integer[0]));
+//	    script.setProperty("Affix", affix.toArray(new String[0]));
+//	}
     }
 
     static void standardizeNPCtag(NPC_ n) {

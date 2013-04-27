@@ -5,6 +5,7 @@
 package automaticvariants;
 
 import automaticvariants.AVFileVars.WEAP_spec;
+import automaticvariants.AVNum.AVNumSet;
 import automaticvariants.SpecVariantSet.VariantType;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -171,8 +172,13 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(header, "    Generating " + (lcm / weapNew.spec.Probability_Divider) + " entries for " + weapNew.weap);
 		}
+		int level = 1;
+		AVNum levelSpec = AVNum.factory(weapNew.spec.Spawn_Level);
+		if (levelSpec.getClass().equals(AVNumSet.class)) {
+		    level = (int) levelSpec.value();
+		} 
 		for (int i = 0; i < lcm / weapNew.spec.Probability_Divider; i++) {
-		    list.addEntry(weapNew.weap.getForm(), 1, 1);
+		    list.addEntry(weapNew.weap.getForm(), level, 1);
 		}
 	    }
 	}

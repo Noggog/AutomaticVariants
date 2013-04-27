@@ -10,20 +10,20 @@ package automaticvariants;
  */
 abstract public class AVNum {
 
-    int num;
+    float num;
 
     public static AVNum factory(String in) {
 	AVNum out;
 	switch (in.charAt(0)) {
-	    case '=':
-		out = new AVNumSet();
+	    case '%':
+		out = new AVNumPct();
 		break;
 	    case '-':
 	    case '+':
 		out = new AVNumAdd();
 		break;
 	    default:
-		out = new AVNumPct();
+		out = new AVNumSet();
 	}
 	out.set(in);
 	return out;
@@ -33,9 +33,11 @@ abstract public class AVNum {
 	num = Integer.valueOf(s.substring(1));
     }
 
-    double value() {
+    float value() {
 	return num;
     }
+
+    abstract float value(float val);
 
     abstract AVNum merge(AVNum n);
 
@@ -61,9 +63,23 @@ abstract public class AVNum {
 	    } else if (n.getClass() == AVNumAdd.class) {
 		out.num = num + n.num;
 	    } else {
-		out.num = (int)(num * n.value());
+		out.num = (int) (num * n.value());
 	    }
 	    return out;
+	}
+
+	@Override
+	float value(float val) {
+	    return value();
+	}
+
+	@Override
+	void set(String s) {
+	    if (s.charAt(0) == '=') {
+		super.set(s);
+	    } else {
+		num = Integer.valueOf(s);
+	    }
 	}
     }
 
@@ -89,14 +105,19 @@ abstract public class AVNum {
 	AVNum merge(AVNum n) {
 	    if (n.getClass() == AVNumSet.class) {
 		return n.merge(this);
-	    } 
+	    }
 	    AVNumAdd out = new AVNumAdd();
 	    if (n.getClass() == AVNumAdd.class) {
-		out.num = (int)(value() + n.value());
+		out.num = (int) (value() + n.value());
 	    } else {
-		out.num = (int)(value() * n.value());
+		out.num = (int) (value() * n.value());
 	    }
 	    return out;
+	}
+
+	@Override
+	float value(float val) {
+	    return val + value();
 	}
     }
 
@@ -108,18 +129,27 @@ abstract public class AVNum {
 	}
 
 	@Override
-	double value() {
-	    return num / 100.0;
+	float value() {
+	    return num / 100;
 	}
 
 	@Override
 	AVNum merge(AVNum n) {
 	    if (n.getClass() == AVNumPct.class) {
 		AVNumPct out = new AVNumPct();
-		out.num = (int)(value() * n.value() * 100);
+		out.num = (int) (value() * n.value() * 100);
 	    }
 	    return n.merge(this);
 	}
-	
+
+	@Override
+	float value(float val) {
+	    return val *= value();
+	}
+    }
+
+    boolean modified() {
+	return !getClass().equals(AVNumPct.class)
+		|| value() != 100.0;
     }
 }

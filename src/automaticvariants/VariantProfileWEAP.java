@@ -77,6 +77,7 @@ public class VariantProfileWEAP extends VariantProfile {
 			SPGlobal.log(toString(), " * ==> Generating WEAP: " + edid);
 		    }
 		    WEAP weaponDup = (WEAP) SPGlobal.getGlobalPatch().makeCopy(weapon, edid);
+		    setStats(weaponDup, var);
 		    STAT stat = new STAT(varEDID + "_stat");
 		    weaponDup.setFirstPersonModel(stat.getForm());
 		    // Set nif
@@ -105,6 +106,74 @@ public class VariantProfileWEAP extends VariantProfile {
 		    }
 		}
 	    }
+	}
+    }
+
+    void setStats(WEAP weap, Variant var) {
+	if (!"".equals(var.spec.Name_Set)) {
+	    weap.setName(var.spec.Name_Set);
+	}
+	if (!"".equals(var.spec.Name_Prefix)) {
+	    weap.setName(var.spec.Name_Prefix + " " + weap.getName());
+	}
+	if (!"".equals(var.spec.Name_Affix)) {
+	    weap.setName(weap.getName() + " " + var.spec.Name_Affix);
+	}
+	AVNum speed = AVNum.factory(var.spec.Speed);
+	if (speed.modified()) {
+	    weap.setSpeed(speed.value(weap.getSpeed()));
+	}
+	AVNum gold = AVNum.factory(var.spec.Gold_Value);
+	if (gold.modified()) {
+	    weap.setValue((int) gold.value(weap.getValue()));
+	}
+	AVNum enchantment = AVNum.factory(var.spec.Enchantment);
+	if (enchantment.modified()) {
+	    weap.setEnchantmentCharge((int) enchantment.value(weap.getEnchantmentCharge()));
+	}
+	if (var.spec.Enchantment_Form.length >= 2) {
+	    try {
+		FormID enchantmentID = new FormID(var.spec.Enchantment_Form[0], var.spec.Enchantment_Form[1]);
+		weap.setEnchantment(enchantmentID);
+	    } catch (Exception e) {
+		SPGlobal.logException(e);
+	    }
+	}
+	AVNum weight = AVNum.factory(var.spec.Weight);
+	if (weight.modified()) {
+	    weap.setWeight(weight.value(weap.getWeight()));
+	}
+	AVNum reach = AVNum.factory(var.spec.Reach);
+	if (reach.modified()) {
+	    weap.setReach(reach.value(weap.getReach()));
+	}
+	AVNum damage = AVNum.factory(var.spec.Damage);
+	if (damage.modified()) {
+	    weap.setDamage((int)damage.value(weap.getDamage()));
+	}
+	AVNum crit = AVNum.factory(var.spec.Crit);
+	if (crit.modified()) {
+	    weap.setCritMult(crit.value(weap.getCritMult()));
+	}
+	AVNum critDamage = AVNum.factory(var.spec.Crit_Damage);
+	if (critDamage.modified()) {
+	    weap.setCritDamage((int)critDamage.value(weap.getCritDamage()));
+	}
+	AVNum stagger = AVNum.factory(var.spec.Stagger);
+	if (stagger.modified()) {
+	    weap.setStagger(stagger.value(weap.getStagger()));
+	}
+	AVNum rangeMin = AVNum.factory(var.spec.Range_Min);
+	if (rangeMin.modified()) {
+	    weap.setMinRange(rangeMin.value(weap.getMinRange()));
+	}
+	AVNum rangeMax = AVNum.factory(var.spec.Range_Max);
+	if (rangeMax.modified()) {
+	    weap.setMaxRange(rangeMax.value(weap.getMaxRange()));
+	}
+	AVNum numProj = AVNum.factory(var.spec.Num_Proj);
+	if (numProj.modified()) {
+	    weap.setNumProjectiles((int)numProj.value(weap.getNumProjectiles()));
 	}
     }
 }

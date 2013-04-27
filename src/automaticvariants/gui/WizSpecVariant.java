@@ -123,11 +123,11 @@ public class WizSpecVariant extends WizSpecTemplate {
 
 	exclusiveRegion.setSelected(s.Exclusive_Region);
 
-//	health.setValue(s.Health_Mult);
-//	magicka.setValue(s.Magicka_Mult);
-//	stamina.setValue(s.Stamina_Mult);
-//	speed.setValue(s.Speed_Mult);
-//	height.setValue(s.Height_Mult);
+//	health.setValue(s.Health);
+//	magicka.setValue(s.Magicka);
+//	stamina.setValue(s.Stamina);
+//	speed.setValue(s.Speed);
+//	height.setValue(s.Height);
 //
 //	namePrefix.setText(s.Name_Prefix);
 //
@@ -165,11 +165,11 @@ public class WizSpecVariant extends WizSpecTemplate {
 	String[][] stringarray = new String[0][];
 	v.Region_Include = out.toArray(stringarray);
 	v.Exclusive_Region = this.exclusiveRegion.isSelected();
-//	v.Health_Mult = health.getValue();
-//	v.Magicka_Mult = magicka.getValue();
-//	v.Stamina_Mult = stamina.getValue();
-//	v.Speed_Mult = speed.getValue();
-//	v.Height_Mult = height.getValue();
+//	v.Health = health.getValue();
+//	v.Magicka = magicka.getValue();
+//	v.Stamina = stamina.getValue();
+//	v.Speed = speed.getValue();
+//	v.Height = height.getValue();
 //	v.Name_Prefix = this.namePrefix.getText();
 //	v.Name_Affix = this.nameAffix.getText();
 
