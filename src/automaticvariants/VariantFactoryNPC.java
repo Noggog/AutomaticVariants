@@ -204,7 +204,8 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	for (ARMO armo : AV.getMerger().getArmors()) {
 	    if (!unusedSkins.contains(armo.getForm()) && !AV.block.contains(armo.getForm())) {
 		for (FormID piece : armo.getArmatures()) {
-		    if (!unusedPieces.get(armo.getForm()).contains(piece)) {
+		    if (!unusedPieces.containsKey(armo.getForm())
+			    || !unusedPieces.get(armo.getForm()).contains(piece)) {
 			ARMA arma = (ARMA) SPDatabase.getMajor(piece, GRUP_TYPE.ARMA);
 			if (arma == null) {
 			    if (SPGlobal.logging()) {
@@ -400,7 +401,7 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 	    script.setProperty("RaceHeightOffset", avr.race.getHeight(Gender.MALE));
 
 	    setStats(script);
-	    
+
 	    // Generate the spell
 	    SPEL spell = NiftyFunc.genScriptAttachingSpel(script, avr.race.getEDID());
 	    avr.race.addSpell(spell.getForm());
@@ -409,7 +410,6 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
     }
 
     static void setStats(ScriptRef script) {
-
 //	ArrayList<Integer> heights = new ArrayList<>();
 //	ArrayList<Integer> healths = new ArrayList<>();
 //	ArrayList<Integer> magickas = new ArrayList<>();
