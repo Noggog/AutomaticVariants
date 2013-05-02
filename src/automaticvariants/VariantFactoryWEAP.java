@@ -181,6 +181,7 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 		    list.addEntry(weapNew.weap.getForm(), level, 1);
 		}
 	    }
+	    list.splitEntries();
 	}
     }
 

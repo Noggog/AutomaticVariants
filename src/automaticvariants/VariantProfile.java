@@ -290,9 +290,11 @@ abstract public class VariantProfile {
     public boolean profileContainsVarTex(Variant var, String nodeName) {
 	ArrayList<String> varTextures = var.getTextureNames();
 	for (String profileTexture : textures.get(nodeName)) {
-	    for (String varTex : varTextures) {
-		if (profileTexture.contains(varTex)) {
-		    return true;
+	    if (!"".equals(profileTexture)) {
+		for (String varTex : varTextures) {
+		    if (profileTexture.contains(varTex)) {
+			return true;
+		    }
 		}
 	    }
 	}

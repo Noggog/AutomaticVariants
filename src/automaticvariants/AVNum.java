@@ -30,7 +30,7 @@ abstract public class AVNum {
     }
 
     void set(String s) {
-	num = Integer.valueOf(s.substring(1));
+	num = Float.valueOf(s.substring(1));
     }
 
     float value() {
@@ -78,7 +78,7 @@ abstract public class AVNum {
 	    if (s.charAt(0) == '=') {
 		super.set(s);
 	    } else {
-		num = Integer.valueOf(s);
+		num = Float.valueOf(s);
 	    }
 	}
     }

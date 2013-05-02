@@ -227,8 +227,6 @@ public class AV implements SUM {
 	SPGlobal.debugModMerge = false;
 	SPGlobal.debugBSAimport = false;
 	SPGlobal.debugNIFimport = false;
-	LDebug.timeElapsed = true;
-	LDebug.timeStamp = true;
     }
 
     static void readInExceptions() throws IOException {

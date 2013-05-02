@@ -65,25 +65,12 @@ abstract public class VariantFactory<T extends VariantProfile> {
     public void loadProfileNifs() {
 	for (VariantProfile profile : new ArrayList<>(profiles)) {
 	    try {
-		LShrinkArray nifRawData = BSA.getUsedFile(profile.getNifPath());
-		if (nifRawData != null) {
-		    Map<Integer, LPair<String, ArrayList<String>>> nifTextures = loadNif(profile.getNifPath(), nifRawData);
-		    Map<Integer, String> nifData = new HashMap<>();
-		    profile.nifInfoDatabase.put(profile.getNifPath(), nifData);
-		    for (Integer index : nifTextures.keySet()) {
-			LPair<String, ArrayList<String>> pair = nifTextures.get(index);
-			profile.textures.put(pair.a, pair.b);
-			nifData.put(index, pair.a);
-		    }
-		    if (profile.textures.isEmpty()) {
-			remove(profile);
-			SPGlobal.log(profile.toString(), "Removing profile with nif because it had no textures: " + profile.getNifPath());
-		    }
-		} else {
+		profile.catalogNif(profile.getNifPath());
+		if (profile.textures.isEmpty()) {
 		    remove(profile);
-		    SPGlobal.logError(header, "Error locating nif file: " + profile.getNifPath() + ", removing profile.");
+		    SPGlobal.log(profile.toString(), "Removing profile with nif because it had no textures: " + profile.getNifPath());
 		}
-	    } catch (IOException | DataFormatException ex) {
+	    } catch (Exception ex) {
 		SPGlobal.logException(ex);
 	    }
 	}
@@ -228,7 +215,7 @@ abstract public class VariantFactory<T extends VariantProfile> {
     public abstract void createStructureRecords(Mod source);
 
     public abstract VariantType getType();
-    
+
     public boolean needed() {
 	for (PackageNode avPackageC : AVFileVars.AVPackages.getAll(PackageNode.Type.PACKAGE)) {
 	    AVPackage avPackage = (AVPackage) avPackageC;
