@@ -11,6 +11,7 @@ import java.util.zip.DataFormatException;
 import lev.LPair;
 import lev.LShrinkArray;
 import skyproc.*;
+import skyproc.NIF.TextureSet;
 
 /**
  *
@@ -101,13 +102,12 @@ abstract public class VariantProfile {
 		    nifRawData = BSA.getUsedFile(nifPath);
 		}
 		if (nifRawData != null) {
-		    Map<Integer, LPair<String, ArrayList<String>>> nifTextures = VariantFactory.loadNif(nifPath, nifRawData);
+		    ArrayList<TextureSet> nifTextures = VariantFactory.loadNif(nifPath, nifRawData);
 		    Map<Integer, String> nifData = new HashMap<>();
 		    nifInfoDatabase.put(nifPath, nifData);
-		    for (Integer index : nifTextures.keySet()) {
-			LPair<String, ArrayList<String>> pair = nifTextures.get(index);
-			textures.put(pair.a, pair.b);
-			nifData.put(index, pair.a);
+		    for (TextureSet t : nifTextures) {
+			textures.put(t.getName(), t.getTextures());
+			nifData.put(t.getIndex(), t.getName());
 		    }
 		    return true;
 		} else {

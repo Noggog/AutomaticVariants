@@ -6,15 +6,14 @@ package automaticvariants;
 
 import automaticvariants.AVFileVars.SpecHolder;
 import automaticvariants.SpecVariantSet.VariantType;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.DataFormatException;
 import lev.LPair;
 import lev.LShrinkArray;
 import lev.Ln;
 import skyproc.*;
+import skyproc.NIF.TextureSet;
 import skyproc.exceptions.BadParameter;
 
 /**
@@ -76,17 +75,16 @@ abstract public class VariantFactory<T extends VariantProfile> {
 	}
     }
 
-    public static Map<Integer, LPair<String, ArrayList<String>>> loadNif(String nifPath, LShrinkArray in) {
-	Map<Integer, LPair<String, ArrayList<String>>> nifTextures = new HashMap<>();
+    public static ArrayList<TextureSet> loadNif(String nifPath, LShrinkArray in) {
+	ArrayList<TextureSet> nifTextures = new ArrayList<>();
 	try {
 	    NIF nif = new NIF(nifPath, in);
-	    nifTextures = nif.extractTextures();
+	    nifTextures = nif.extractTextureSets();
 
 	    // To uppercase
-	    for (Integer index : nifTextures.keySet()) {
-		LPair<String, ArrayList<String>> pair = nifTextures.get(index);
-		for (int i = 0; i < pair.b.size(); i++) {
-		    pair.b.set(i, pair.b.get(i).toUpperCase());
+	    for (TextureSet t : nifTextures) {
+		for (int i = 0; i < t.getTextures().size(); i++) {
+		    t.getTextures().set(i, t.getTextures().get(i).toUpperCase());
 		}
 	    }
 
