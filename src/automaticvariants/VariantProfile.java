@@ -8,10 +8,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.zip.DataFormatException;
-import lev.LPair;
 import lev.LShrinkArray;
-import skyproc.*;
 import skyproc.NIF.TextureSet;
+import skyproc.*;
 
 /**
  *
@@ -20,7 +19,7 @@ import skyproc.NIF.TextureSet;
 abstract public class VariantProfile {
 
     static int nextID = 0;
-    Map<String, Map<Integer, String>> nifInfoDatabase = new HashMap<>();
+    static Map<String, Map<Integer, TextureSet>> nifInfoDatabase = new HashMap<>();
     Map<String, ArrayList<String>> textures = new HashMap<>();
     Map<String, ArrayList<String>> altTextures = new HashMap<>();
     String texturesPrintout;
@@ -37,7 +36,6 @@ abstract public class VariantProfile {
     VariantProfile(VariantProfile rhs) {
 	this();
 	textures = new HashMap<>();
-	nifInfoDatabase = new HashMap<>(rhs.nifInfoDatabase);
 	for (String key : rhs.textures.keySet()) {
 	    ArrayList<String> list = new ArrayList<>();
 	    for (String value : rhs.textures.get(key)) {
@@ -103,11 +101,11 @@ abstract public class VariantProfile {
 		}
 		if (nifRawData != null) {
 		    ArrayList<TextureSet> nifTextures = VariantFactory.loadNif(nifPath, nifRawData);
-		    Map<Integer, String> nifData = new HashMap<>();
+		    Map<Integer, TextureSet> nifData = new HashMap<>();
 		    nifInfoDatabase.put(nifPath, nifData);
 		    for (TextureSet t : nifTextures) {
 			textures.put(t.getName(), t.getTextures());
-			nifData.put(t.getIndex(), t.getName());
+			nifData.put(t.getIndex(), t);
 		    }
 		    return true;
 		} else {
@@ -194,9 +192,9 @@ abstract public class VariantProfile {
     public void loadAltTextures(ArrayList<AltTextures.AltTexture> alts, Map<String, TXST> txsts, String nifPath) {
 	alts.clear();
 
-	Map<Integer, String> nifInfo = nifInfoDatabase.get(nifPath);
+	Map<Integer, TextureSet> nifInfo = nifInfoDatabase.get(nifPath);
 	for (Integer index : nifInfo.keySet()) {
-	    String nifNodeName = nifInfo.get(index);
+	    String nifNodeName = nifInfo.get(index).getName();
 	    if (txsts.containsKey(nifNodeName)) {
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(toString(), " * | Loading TXST for " + nifNodeName + " index " + index);
@@ -212,9 +210,9 @@ abstract public class VariantProfile {
 	}
 	Map<String, TXST> out = new HashMap<>();
 
-	Map<Integer, String> nifInfo = nifInfoDatabase.get(nifPath);
+	Map<Integer, TextureSet> nifInfo = nifInfoDatabase.get(nifPath);
 	for (Integer index : nifInfo.keySet()) {
-	    String nodeName = nifInfo.get(index);
+	    String nodeName = nifInfo.get(index).getName();
 	    if (shouldGenerate(var, nodeName)) {
 		String edid = NiftyFunc.EDIDtrimmer(generateEDID(var) + "_" + nodeName + "_txst");
 		if (SPGlobal.logging()) {
