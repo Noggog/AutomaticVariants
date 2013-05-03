@@ -20,8 +20,8 @@ abstract public class VariantProfile {
 
     static int nextID = 0;
     static Map<String, Map<Integer, TextureSet>> nifInfoDatabase = new HashMap<>();
-    Map<String, ArrayList<String>> textures = new HashMap<>();
-    Map<String, ArrayList<String>> altTextures = new HashMap<>();
+    Map<Integer, ArrayList<String>> textures = new HashMap<>();
+    Map<Integer, ArrayList<String>> altTextures = new HashMap<>();
     String texturesPrintout;
     Set<String> texturesFlat;
     Set<String> textureNames;
@@ -36,7 +36,7 @@ abstract public class VariantProfile {
     VariantProfile(VariantProfile rhs) {
 	this();
 	textures = new HashMap<>();
-	for (String key : rhs.textures.keySet()) {
+	for (Integer key : rhs.textures.keySet()) {
 	    ArrayList<String> list = new ArrayList<>();
 	    for (String value : rhs.textures.get(key)) {
 		list.add(value);
@@ -54,12 +54,12 @@ abstract public class VariantProfile {
 		continue;
 	    }
 	    ArrayList<String> txstTextures = txst.getTextures();
-	    if (!textures.containsKey(altTex.getName())) {
+	    if (!textures.containsKey(altTex.getIndex())) {
 		SPGlobal.logError(getNifPath(), "Skipping profile " + toString() + ", because it did not have a nif node name of: " + altTex.getName());
 		return false;
 	    }
-	    altTextures.put(altTex.getName(), new ArrayList<String>());
-	    ArrayList<String> profileAltTextures = altTextures.get(altTex.getName());
+	    altTextures.put(altTex.getIndex(), new ArrayList<String>());
+	    ArrayList<String> profileAltTextures = altTextures.get(altTex.getIndex());
 	    for (int i = 0; i < txstTextures.size(); i++) {
 		if (txstTextures.get(i) == null) {
 		    profileAltTextures.add("");
@@ -79,7 +79,7 @@ abstract public class VariantProfile {
     }
 
     public void finalizeProfile() {
-	for (String key : altTextures.keySet()) {
+	for (Integer key : altTextures.keySet()) {
 	    ArrayList<String> tex = textures.get(key);
 	    ArrayList<String> altTex = altTextures.get(key);
 	    for (int i = 0; i < tex.size() && i < altTex.size(); i++) {
@@ -104,7 +104,7 @@ abstract public class VariantProfile {
 		    Map<Integer, TextureSet> nifData = new HashMap<>();
 		    nifInfoDatabase.put(nifPath, nifData);
 		    for (TextureSet t : nifTextures) {
-			textures.put(t.getName(), t.getTextures());
+			textures.put(t.getIndex(), t.getTextures());
 			nifData.put(t.getIndex(), t);
 		    }
 		    return true;
@@ -129,7 +129,7 @@ abstract public class VariantProfile {
 	printShort();
 	SPGlobal.log(toString(), " \\========================================");
 	SPGlobal.log(toString(), "    \\===== NIF nodes and Textures Used: ==");
-	for (String n : textures.keySet()) {
+	for (Integer n : textures.keySet()) {
 	    SPGlobal.log(toString(), "    |===== " + n + " ====/");
 	    SPGlobal.log(toString(), "    |=========================/");
 	    int i = 0;
@@ -213,7 +213,7 @@ abstract public class VariantProfile {
 	Map<Integer, TextureSet> nifInfo = nifInfoDatabase.get(nifPath);
 	for (Integer index : nifInfo.keySet()) {
 	    String nodeName = nifInfo.get(index).getName();
-	    if (shouldGenerate(var, nodeName)) {
+	    if (shouldGenerate(var, index)) {
 		String edid = NiftyFunc.EDIDtrimmer(generateEDID(var) + "_" + nodeName + "_txst");
 		if (SPGlobal.logging()) {
 		    SPGlobal.log(toString(), " * | Generating: " + edid);
@@ -225,8 +225,8 @@ abstract public class VariantProfile {
 
 		// For each texture there normally...
 		ArrayList<File> varFiles = var.getTextureFiles();
-		for (int i = 0; i < textures.get(nodeName).size(); i++) {
-		    String texture = textures.get(nodeName).get(i);
+		for (int i = 0; i < textures.get(index).size(); i++) {
+		    String texture = textures.get(index).get(i);
 		    if (texture.length() < 9) {
 			continue;
 		    }
@@ -280,14 +280,14 @@ abstract public class VariantProfile {
 	return j;
     }
 
-    public boolean shouldGenerate(Variant var, String nodeName) {
+    public boolean shouldGenerate(Variant var, int index) {
 	// Also need to check if TXST already exists with data
-	return profileContainsVarTex(var, nodeName);
+	return profileContainsVarTex(var, index);
     }
 
-    public boolean profileContainsVarTex(Variant var, String nodeName) {
+    public boolean profileContainsVarTex(Variant var, int index) {
 	ArrayList<String> varTextures = var.getTextureNames();
-	for (String profileTexture : textures.get(nodeName)) {
+	for (String profileTexture : textures.get(index)) {
 	    if (!"".equals(profileTexture)) {
 		for (String varTex : varTextures) {
 		    if (profileTexture.contains(varTex)) {
