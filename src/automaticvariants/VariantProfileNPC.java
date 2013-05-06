@@ -177,7 +177,7 @@ public class VariantProfileNPC extends VariantProfile {
 		    SPGlobal.log(toString(), " ***************> Generating var " + var.printName("-"));
 		}
 
-		String targetNifPath = getNifPath(var);
+		String targetNifPath = getNifPath(var, false);
 
 		Map<String, TXST> txsts = generateTXSTs(var, targetNifPath);
 		if (txsts.isEmpty()) {
@@ -204,10 +204,7 @@ public class VariantProfileNPC extends VariantProfile {
 	arma.setRace(getRace().getForm());
 	arma.clearAdditionalRaces();
 
-	String cleanNifPath = nifPath;
-	if (cleanNifPath.indexOf("MESHES\\") == 0) {
-	    cleanNifPath = cleanNifPath.substring(7);
-	}
+	String cleanNifPath = getCleanNifPath(nifPath);
 	arma.setModelPath(cleanNifPath, Gender.MALE, Perspective.THIRD_PERSON);
 
 	loadAltTextures(arma.getAltTextures(Gender.MALE, Perspective.THIRD_PERSON), txsts, nifPath);

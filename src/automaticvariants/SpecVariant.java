@@ -26,14 +26,14 @@ public class SpecVariant extends SpecFile {
     public String Name_Affix = "";
     public String Name_Prefix = "";
     public String Name_Set = "";
-    
+
     // NPC
     public String Health = "%100";
     public String Height = "%100";
     public String Magicka = "%100";
     public String Stamina = "%100";
     public String Speed = "%100";
-    
+
     // Items
     public String Gold_Value = "%100";
     public String Enchantment = "%100";
@@ -49,6 +49,7 @@ public class SpecVariant extends SpecFile {
     public String Num_Proj = "%100";
     public String Armor = "%100";
     public String Spawn_Level = "%100";
+    public String FirstPersonModelName = "";
 
     public static SpecVariant prototype = new SpecVariant();
 
@@ -59,28 +60,28 @@ public class SpecVariant extends SpecFile {
     public SpecVariant(File src) {
 	super(src);
     }
-    
+
     public SpecVariant merge(SpecVariant rhs) {
 	SpecVariant out = new SpecVariant();
 	out.Probability_Divider = Probability_Divider * rhs.Probability_Divider;
-	
+
 	ArrayList<String[]> regionInclude = new ArrayList<>(Arrays.asList(Region_Include));
 	regionInclude.addAll(Arrays.asList(rhs.Region_Include));
 	out.Region_Include = regionInclude.toArray(new String[0][]);
-	
+
 	out.Exclusive_Region = this.Exclusive_Region || rhs.Exclusive_Region;
-	
+
 	out.Name_Set = "".equals(this.Name_Set) ? rhs.Name_Set : this.Name_Set;
 	out.Name_Affix = "".equals(this.Name_Affix) ? rhs.Name_Affix : this.Name_Affix;
 	out.Name_Prefix = "".equals(this.Name_Prefix) ? rhs.Name_Prefix : this.Name_Prefix;
-	
+
 	//NPC
 	out.Health = AVNum.merge(out.Health, rhs.Health);
 	out.Height = AVNum.merge(out.Height, rhs.Height);
 	out.Magicka = AVNum.merge(out.Magicka, rhs.Magicka);
 	out.Stamina = AVNum.merge(out.Stamina, rhs.Stamina);
 	out.Speed = AVNum.merge(out.Speed, rhs.Speed);
-	
+
 	//Items
 	out.Gold_Value = AVNum.merge(this.Gold_Value, rhs.Gold_Value);
 	out.Enchantment = AVNum.merge(this.Enchantment, rhs.Enchantment);
@@ -100,7 +101,7 @@ public class SpecVariant extends SpecFile {
 	out.Num_Proj = AVNum.merge(this.Num_Proj, rhs.Num_Proj);
 	out.Armor = AVNum.merge(this.Armor, rhs.Armor);
 	out.Spawn_Level = AVNum.merge(this.Spawn_Level, rhs.Spawn_Level);
-	
+
 	return out;
     }
 

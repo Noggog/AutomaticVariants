@@ -80,15 +80,11 @@ public class VariantProfileWEAP extends VariantProfile {
 		    setStats(weaponDup, var);
 		    STAT stat = new STAT(varEDID + "_stat");
 		    weaponDup.setFirstPersonModel(stat.getForm());
-		    // Set nif
-		    String nifPath = getNifPath(var);
-		    String cleanNifPath = nifPath;
-		    if (cleanNifPath.indexOf("MESHES\\") == 0) {
-			cleanNifPath = cleanNifPath.substring(7);
-		    }
-		    weaponDup.setModelFilename(cleanNifPath);
-		    stat.getModelData().setFileName(cleanNifPath);
 
+		    // Set Third Person
+		    SPGlobal.log(toString(), " * ==> Generating TXSTs for third person");
+		    String nifPath = getNifPath(var, false);
+		    weaponDup.setModelFilename(getCleanNifPath(nifPath));
 		    //Generate and set alt textures
 		    Map<String, TXST> txsts = generateTXSTs(var, nifPath);
 		    if (txsts.isEmpty()) {
@@ -96,7 +92,19 @@ public class VariantProfileWEAP extends VariantProfile {
 			continue;
 		    }
 		    loadAltTextures(weaponDup.getAltTextures(), txsts, nifPath);
-		    loadAltTextures(stat.getModelData().getAltTextures(), txsts, nifPath);
+
+		    // Set First Person
+		    SPGlobal.log(toString(), " * ==> Generating TXSTs for first person");
+		    String firstPersonNifPath = getNifPath(var, true);
+		    stat.getModelData().setFileName(getCleanNifPath(nifPath));
+		    if (!firstPersonNifPath.equals(nifPath)) {
+			txsts = generateTXSTs(var, firstPersonNifPath);
+			if (txsts.isEmpty()) {
+			    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated");
+			    continue;
+			}
+			loadAltTextures(stat.getModelData().getAltTextures(), txsts, firstPersonNifPath);
+		    }
 
 		    VariantFactoryWEAP.weapons.put(weapon, new WEAP_spec(weaponDup, var.spec));
 
@@ -149,7 +157,7 @@ public class VariantProfileWEAP extends VariantProfile {
 	}
 	AVNum damage = AVNum.factory(var.spec.Damage);
 	if (damage.modified()) {
-	    weap.setDamage((int)damage.value(weap.getDamage()));
+	    weap.setDamage((int) damage.value(weap.getDamage()));
 	}
 	AVNum crit = AVNum.factory(var.spec.Crit);
 	if (crit.modified()) {
@@ -157,7 +165,7 @@ public class VariantProfileWEAP extends VariantProfile {
 	}
 	AVNum critDamage = AVNum.factory(var.spec.Crit_Damage);
 	if (critDamage.modified()) {
-	    weap.setCritDamage((int)critDamage.value(weap.getCritDamage()));
+	    weap.setCritDamage((int) critDamage.value(weap.getCritDamage()));
 	}
 	AVNum stagger = AVNum.factory(var.spec.Stagger);
 	if (stagger.modified()) {
@@ -173,7 +181,7 @@ public class VariantProfileWEAP extends VariantProfile {
 	}
 	AVNum numProj = AVNum.factory(var.spec.Num_Proj);
 	if (numProj.modified()) {
-	    weap.setNumProjectiles((int)numProj.value(weap.getNumProjectiles()));
+	    weap.setNumProjectiles((int) numProj.value(weap.getNumProjectiles()));
 	}
     }
 }

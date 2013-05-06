@@ -175,18 +175,39 @@ abstract public class VariantProfile {
 	return globalMeshes;
     }
 
-    public String getNifPath(Variant var) {
+    public String getNifPath(Variant var, boolean firstPerson) {
 	String targetNifPath;
 	ArrayList<PackageNode> varNifs = var.getAll(PackageNode.Type.MESH);
+	String firstPersonPath = var.spec.FirstPersonModelName.toUpperCase();
 	if (varNifs.size() > 0) {
-	    targetNifPath = varNifs.get(0).src.getPath();
-	    catalogNif(targetNifPath);
-	    SPGlobal.log(toString(), " * Using variant nif file: " + targetNifPath);
-	} else {
-	    targetNifPath = getNifPath();
-	    SPGlobal.log(toString(), " * Using default nif file: " + targetNifPath);
+	    for (int i = 0; i < varNifs.size(); i++) {
+		targetNifPath = varNifs.get(i).src.getPath();
+		if ("".equals(firstPersonPath)
+			|| firstPerson == targetNifPath.toUpperCase().endsWith(firstPersonPath)) {
+		    catalogNif(targetNifPath);
+		    SPGlobal.log(toString(), " * Using variant nif file: " + targetNifPath);
+		    return targetNifPath;
+		}
+	    }
+	    // If first person, and cannot find.. revert to 3rd person
+	    if (firstPerson) {
+		return getNifPath(var, false);
+	    }
 	}
+	targetNifPath = getNifPath();
+	SPGlobal.log(toString(), " * Using default nif file: " + targetNifPath);
 	return targetNifPath;
+    }
+
+    public String getCleanNifPath(Variant var, boolean firstPerson) {
+	return getCleanNifPath(getNifPath(var, firstPerson));
+    }
+
+    public String getCleanNifPath(String path) {
+	if (path.indexOf("MESHES\\") == 0) {
+	    path = path.substring(7);
+	}
+	return path;
     }
 
     public void loadAltTextures(ArrayList<AltTextures.AltTexture> alts, Map<String, TXST> txsts, String nifPath) {

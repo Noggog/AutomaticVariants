@@ -298,7 +298,6 @@ public class PackageNode extends LSwingTreeNode implements Comparable {
 			    clearDisplay();
 			}
 		    } catch (Exception ex) {
-			SPGlobal.logException(ex);
 			SPGlobal.logError("PackageComponent", "Could not display " + src);
 			clearDisplay();
 		    }
