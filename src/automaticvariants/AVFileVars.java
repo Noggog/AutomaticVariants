@@ -9,11 +9,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
 import lev.Ln;
 import skyproc.*;
+import skyproc.exceptions.BadMod;
 import skyproc.exceptions.BadParameter;
+import skyproc.exceptions.MissingMaster;
 import skyproc.exceptions.Uninitialized;
 import skyproc.gui.SPProgressBarPlug;
 
@@ -35,8 +39,10 @@ public class AVFileVars {
     public static PackageNode AVPackages = new PackageNode(new File(AVPackagesDir), PackageNode.Type.ROOT);
     public static VariantFactoryNPC npcFactory = new VariantFactoryNPC();
     public static VariantFactoryWEAP weapFactory = new VariantFactoryWEAP();
+    public static Mod templateMerger = new Mod(new ModListing("AVTemplateMerger", false));
 
     enum AVFileLogs {
+
 	PackageImport;
     }
 
@@ -164,9 +170,21 @@ public class AVFileVars {
 	return AV.save.getStrings(Settings.PACKAGE_LISTING);
     }
 
+    public static boolean importTemplateMod(ModListing listing) {
+	if (!SPGlobal.getDB().hasMod(listing)) {
+	    try {
+		Mod mod = SPImporter.importMod(listing, GRUP_TYPE.values());
+	    } catch (BadMod | MissingMaster ex) {
+		SPGlobal.logException(ex);
+		return false;
+	    }
+	}
+	return true;
+    }
     /*
      * Other Methods
      */
+
     static int readjustTXSTindices(int j) {
 	// Because nif fields map 2->3 if facegen flag is on.
 	int set = j;
@@ -205,6 +223,10 @@ public class AVFileVars {
 
     static boolean isDDS(File f) {
 	return Ln.isFileType(f, "DDS");
+    }
+
+    static boolean isESP(File f) {
+	return Ln.isFileType(f, "ESP");
     }
 
     static boolean isNIF(File f) {
@@ -263,6 +285,7 @@ public class AVFileVars {
     }
 
     static class SpecHolder {
+
 	SpecVariant spec;
     }
 

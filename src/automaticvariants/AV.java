@@ -357,7 +357,6 @@ public class AV implements SUM {
 	} else {
 	    AVFileVars.moveOut();
 	}
-	AVFileVars.importVariants(false);
     }
 
     @Override

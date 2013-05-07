@@ -7,7 +7,11 @@ package automaticvariants;
 import automaticvariants.AVFileVars.WEAP_spec;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import skyproc.*;
+import skyproc.exceptions.BadMod;
+import skyproc.exceptions.MissingMaster;
 
 /**
  *
@@ -76,34 +80,34 @@ public class VariantProfileWEAP extends VariantProfile {
 		    if (SPGlobal.logging()) {
 			SPGlobal.log(toString(), " * ==> Generating WEAP: " + edid);
 		    }
-		    WEAP weaponDup = (WEAP) SPGlobal.getGlobalPatch().makeCopy(weapon, edid);
+		    WEAP weaponDup = getWeapon(edid, weapon, var);
 		    setStats(weaponDup, var);
 		    STAT stat = new STAT(varEDID + "_stat");
 		    weaponDup.setFirstPersonModel(stat.getForm());
 
 		    // Set Third Person
-		    SPGlobal.log(toString(), " * ==> Generating TXSTs for third person");
 		    String nifPath = getNifPath(var, false);
 		    weaponDup.setModelFilename(getCleanNifPath(nifPath));
 		    //Generate and set alt textures
 		    Map<String, TXST> txsts = generateTXSTs(var, nifPath);
-		    if (txsts.isEmpty()) {
-			SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated");
+		    if (!txsts.isEmpty()) {
+			loadAltTextures(weaponDup.getAltTextures(), txsts, nifPath);
+		    } else if (!var.isTemplated()) {
+			SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated and it was not templated.");
 			continue;
 		    }
-		    loadAltTextures(weaponDup.getAltTextures(), txsts, nifPath);
 
 		    // Set First Person
-		    SPGlobal.log(toString(), " * ==> Generating TXSTs for first person");
 		    String firstPersonNifPath = getNifPath(var, true);
 		    stat.getModelData().setFileName(getCleanNifPath(nifPath));
 		    if (!firstPersonNifPath.equals(nifPath)) {
 			txsts = generateTXSTs(var, firstPersonNifPath);
-			if (txsts.isEmpty()) {
-			    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated");
+			if (!txsts.isEmpty()) {
+			    loadAltTextures(stat.getModelData().getAltTextures(), txsts, firstPersonNifPath);
+			} else if (!var.isTemplated()) {
+			    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated and it was not templated.");
 			    continue;
 			}
-			loadAltTextures(stat.getModelData().getAltTextures(), txsts, firstPersonNifPath);
 		    }
 
 		    VariantFactoryWEAP.weapons.put(weapon, new WEAP_spec(weaponDup, var.spec));
@@ -115,6 +119,29 @@ public class VariantProfileWEAP extends VariantProfile {
 		}
 	    }
 	}
+    }
+
+    WEAP getWeapon(String edid, WEAP seed, Variant var) {
+	if (var.isTemplated()) {
+	    FormID templateF = new FormID(var.spec.Template_Form);
+	    WEAP template = (WEAP) SPDatabase.getMajor(templateF, GRUP_TYPE.WEAP);
+	    if (template == null) {
+		AVFileVars.importTemplateMod(templateF.getMaster());
+		template = (WEAP) SPDatabase.getMajor(templateF, GRUP_TYPE.WEAP);
+	    }
+	    if (template != null) {
+		WEAP copy = (WEAP) SPGlobal.getGlobalPatch().makeCopy(template, edid);
+		ArrayList<MajorRecord> copies = NiftyFunc.deepCopySubRecords(copy, templateF.getMaster());
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(toString(), " * Copied template: " + template);
+		    for (MajorRecord m : copies) {
+			SPGlobal.log(toString(), " *   Deep Copied : " + m);
+		    }
+		}
+		return copy;
+	    }
+	}
+	return (WEAP) SPGlobal.getGlobalPatch().makeCopy(seed, edid);
     }
 
     void setStats(WEAP weap, Variant var) {
@@ -139,9 +166,9 @@ public class VariantProfileWEAP extends VariantProfile {
 	if (enchantment.modified()) {
 	    weap.setEnchantmentCharge((int) enchantment.value(weap.getEnchantmentCharge()));
 	}
-	if (var.spec.Enchantment_Form.length >= 2) {
+	if (var.spec.Enchantment_Form.length() >= 6) {
 	    try {
-		FormID enchantmentID = new FormID(var.spec.Enchantment_Form[0], var.spec.Enchantment_Form[1]);
+		FormID enchantmentID = new FormID(var.spec.Enchantment_Form);
 		weap.setEnchantment(enchantmentID);
 	    } catch (Exception e) {
 		SPGlobal.logException(e);
@@ -183,5 +210,25 @@ public class VariantProfileWEAP extends VariantProfile {
 	if (numProj.modified()) {
 	    weap.setNumProjectiles((int) numProj.value(weap.getNumProjectiles()));
 	}
+    }
+
+    @Override
+    public String getNif(FormID id, boolean firstPerson) {
+	WEAP template = (WEAP) SPDatabase.getMajor(id, GRUP_TYPE.WEAP);
+	if (template == null) {
+	    AVFileVars.importTemplateMod(id.getMaster());
+	    template = (WEAP) SPDatabase.getMajor(id, GRUP_TYPE.WEAP);
+	}
+	if (template != null) {
+	    if (firstPerson) {
+		STAT stat = (STAT) SPDatabase.getMajor(template.getFirstPersonModel(), GRUP_TYPE.STAT);
+		if (stat != null) {
+		    return "MESHES\\" + stat.getModelData().getFileName();
+		}
+	    } else {
+		return "MESHES\\" + template.getModelData().getFileName();
+	    }
+	}
+	return "";
     }
 }

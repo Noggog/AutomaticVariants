@@ -37,7 +37,7 @@ public class SpecVariant extends SpecFile {
     // Items
     public String Gold_Value = "%100";
     public String Enchantment = "%100";
-    public String[] Enchantment_Form = new String[0];
+    public String Enchantment_Form = "";
     public String Weight = "%100";
     public String Reach = "%100";
     public String Damage = "%100";
@@ -50,6 +50,7 @@ public class SpecVariant extends SpecFile {
     public String Armor = "%100";
     public String Spawn_Level = "%100";
     public String FirstPersonModelName = "";
+    public String Template_Form = "";
 
     public static SpecVariant prototype = new SpecVariant();
 
@@ -85,7 +86,7 @@ public class SpecVariant extends SpecFile {
 	//Items
 	out.Gold_Value = AVNum.merge(this.Gold_Value, rhs.Gold_Value);
 	out.Enchantment = AVNum.merge(this.Enchantment, rhs.Enchantment);
-	if (this.Enchantment_Form.length > 0) {
+	if (this.Enchantment_Form.length() > 6) {
 	    out.Enchantment_Form = this.Enchantment_Form;
 	} else {
 	    out.Enchantment_Form = rhs.Enchantment_Form;
@@ -101,6 +102,11 @@ public class SpecVariant extends SpecFile {
 	out.Num_Proj = AVNum.merge(this.Num_Proj, rhs.Num_Proj);
 	out.Armor = AVNum.merge(this.Armor, rhs.Armor);
 	out.Spawn_Level = AVNum.merge(this.Spawn_Level, rhs.Spawn_Level);
+	if (this.Template_Form.length() > 6) {
+	    out.Template_Form = this.Template_Form;
+	} else {
+	    out.Template_Form = rhs.Template_Form;
+	}
 
 	return out;
     }
@@ -154,6 +160,9 @@ public class SpecVariant extends SpecFile {
 	}
 	if (Probability_Divider != 1) {
 	    out += "Relative Probability: 1/" + Probability_Divider + "\n";
+	}
+	if (Probability_Divider != 1) {
+	    out += "Template: " + Template_Form + "\n";
 	}
 	if (Region_Include.length > 0) {
 	    out += "Regions To Spawn In:";

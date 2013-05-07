@@ -268,4 +268,9 @@ public class VariantProfileNPC extends VariantProfile {
     public void generateRecords() {
 	generateARMOs();
     }
+
+    @Override
+    public String getNif(FormID id, boolean firstPerson) {
+	return "";
+    }
 }

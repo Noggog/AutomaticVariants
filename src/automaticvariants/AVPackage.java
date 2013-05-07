@@ -20,6 +20,7 @@ public class AVPackage extends PackageNode {
 
     public SpecPackage spec;
     static String depth = "";
+    ArrayList<File> templateMods = new ArrayList<>(1);
 
     public AVPackage(File packageFolder) throws FileNotFoundException, IOException {
 	super(packageFolder, Type.PACKAGE);

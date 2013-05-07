@@ -173,4 +173,13 @@ public class Variant extends PackageNode implements Serializable {
 	PackageNode p = (PackageNode) this.getParent();
 	return p.printName(spacer) + spacer + name;
     }
+
+    public AVPackage getPackage() {
+	return (AVPackage) getParent().getParent().getParent();
+    }
+
+    public boolean isTemplated() {
+	return spec.Template_Form.length() > 6;
+    }
+    
 }

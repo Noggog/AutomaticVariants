@@ -102,7 +102,7 @@ abstract public class VariantProfile {
 		if (nifRawData != null) {
 		    ArrayList<TextureSet> nifTextures = VariantFactory.loadNif(nifPath, nifRawData);
 		    Map<Integer, TextureSet> nifData = new HashMap<>();
-		    nifInfoDatabase.put(nifPath, nifData);
+		    nifInfoDatabase.put(nifPath.toUpperCase(), nifData);
 		    for (TextureSet t : nifTextures) {
 			textures.put(t.getIndex(), t.getTextures());
 			nifData.put(t.getIndex(), t);
@@ -176,6 +176,12 @@ abstract public class VariantProfile {
     }
 
     public String getNifPath(Variant var, boolean firstPerson) {
+	String nif = getNifPathInternal(var, firstPerson);
+	catalogNif(nif);
+	return nif;
+    }
+
+    private String getNifPathInternal(Variant var, boolean firstPerson) {
 	String targetNifPath;
 	ArrayList<PackageNode> varNifs = var.getAll(PackageNode.Type.MESH);
 	String firstPersonPath = var.spec.FirstPersonModelName.toUpperCase();
@@ -184,20 +190,34 @@ abstract public class VariantProfile {
 		targetNifPath = varNifs.get(i).src.getPath();
 		if ("".equals(firstPersonPath)
 			|| firstPerson == targetNifPath.toUpperCase().endsWith(firstPersonPath)) {
-		    catalogNif(targetNifPath);
 		    SPGlobal.log(toString(), " * Using variant nif file: " + targetNifPath);
 		    return targetNifPath;
 		}
 	    }
-	    // If first person, and cannot find.. revert to 3rd person
-	    if (firstPerson) {
-		return getNifPath(var, false);
+	}
+
+	// Look in template for NIF path
+	if (var.isTemplated()) {
+	    FormID templateID = new FormID(var.spec.Template_Form);
+	    String template = getNif(templateID, firstPerson);
+	    if (!"".equals(template)) {
+		SPGlobal.log(toString(), " * Using template nif file: " + template);
+		return template;
 	    }
 	}
+
+	// If first person, and cannot find.. revert to 3rd person
+	if (firstPerson) {
+	    return getNifPath(var, false);
+	}
+
+	// Cannot find any NIF replacements
 	targetNifPath = getNifPath();
 	SPGlobal.log(toString(), " * Using default nif file: " + targetNifPath);
 	return targetNifPath;
     }
+
+    public abstract String getNif(FormID id, boolean firstPerson);
 
     public String getCleanNifPath(Variant var, boolean firstPerson) {
 	return getCleanNifPath(getNifPath(var, firstPerson));
@@ -213,7 +233,7 @@ abstract public class VariantProfile {
     public void loadAltTextures(ArrayList<AltTextures.AltTexture> alts, Map<String, TXST> txsts, String nifPath) {
 	alts.clear();
 
-	Map<Integer, TextureSet> nifInfo = nifInfoDatabase.get(nifPath);
+	Map<Integer, TextureSet> nifInfo = nifInfoDatabase.get(nifPath.toUpperCase());
 	for (Integer index : nifInfo.keySet()) {
 	    String nifNodeName = nifInfo.get(index).getName();
 	    if (txsts.containsKey(nifNodeName)) {
@@ -231,7 +251,7 @@ abstract public class VariantProfile {
 	}
 	Map<String, TXST> out = new HashMap<>();
 
-	Map<Integer, TextureSet> nifInfo = nifInfoDatabase.get(nifPath);
+	Map<Integer, TextureSet> nifInfo = nifInfoDatabase.get(nifPath.toUpperCase());
 	for (Integer index : nifInfo.keySet()) {
 	    String nodeName = nifInfo.get(index).getName();
 	    if (shouldGenerate(var, index)) {
