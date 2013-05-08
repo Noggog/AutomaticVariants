@@ -82,8 +82,6 @@ public class VariantProfileWEAP extends VariantProfile {
 		    }
 		    WEAP weaponDup = getWeapon(edid, weapon, var);
 		    setStats(weaponDup, var);
-		    STAT stat = new STAT(varEDID + "_stat");
-		    weaponDup.setFirstPersonModel(stat.getForm());
 
 		    // Set Third Person
 		    String nifPath = getNifPath(var, false);
@@ -98,6 +96,7 @@ public class VariantProfileWEAP extends VariantProfile {
 		    }
 
 		    // Set First Person
+		    STAT stat = new STAT(edid + "_stat");
 		    String firstPersonNifPath = getNifPath(var, true);
 		    stat.getModelData().setFileName(getCleanNifPath(nifPath));
 		    if (!firstPersonNifPath.equals(nifPath)) {
@@ -109,6 +108,8 @@ public class VariantProfileWEAP extends VariantProfile {
 			    continue;
 			}
 		    }
+		    stat = (STAT) NiftyFunc.mergeDuplicate(stat);
+		    weaponDup.setFirstPersonModel(stat.getForm());
 
 		    VariantFactoryWEAP.weapons.put(weapon, new WEAP_spec(weaponDup, var.spec));
 
