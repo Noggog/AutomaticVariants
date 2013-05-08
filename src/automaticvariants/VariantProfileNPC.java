@@ -19,7 +19,7 @@ import skyproc.*;
  *
  * @author Justin Swanson
  */
-public class VariantProfileNPC extends VariantProfile {
+public class VariantProfileNPC extends VariantProfile<NPC_> {
 
     public SeedNPC seed;
     String nifPath;
@@ -166,35 +166,6 @@ public class VariantProfileNPC extends VariantProfile {
 	return hasTexture(texture.getName().toUpperCase());
     }
 
-    public void generateARMOs() {
-	for (VariantSet varSet : matchedVariantSets) {
-	    if (SPGlobal.logging()) {
-		SPGlobal.log(toString(), " *************> Generating set " + varSet.printName("-"));
-	    }
-	    ArrayList<Variant> vars = varSet.multiplyAndFlatten(getGlobalMeshes());
-	    for (Variant var : vars) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(toString(), " ***************> Generating var " + var.printName("-"));
-		}
-
-		String targetNifPath = getNifPath(var, false);
-
-		Map<String, TXST> txsts = generateTXSTs(var, targetNifPath);
-		if (txsts.isEmpty()) {
-		    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated");
-		    continue;
-		}
-		ARMA arma = generateARMA(var, txsts, targetNifPath);
-		ARMO armo = generateARMO(var, arma);
-
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(toString(), " ******************************>");
-		    SPGlobal.log(toString(), "");
-		}
-	    }
-	}
-    }
-
     public ARMA generateARMA(Variant var, Map<String, TXST> txsts, String nifPath) {
 	String edid = NiftyFunc.EDIDtrimmer(generateEDID(var) + "_arma");
 	if (SPGlobal.logging()) {
@@ -265,8 +236,16 @@ public class VariantProfileNPC extends VariantProfile {
     }
 
     @Override
-    public void generateRecords() {
-	generateARMOs();
+    public void generateRecord(Variant var) {
+	String targetNifPath = getNifPath(var, false);
+
+	Map<String, TXST> txsts = generateTXSTs(var, targetNifPath);
+	if (txsts.isEmpty()) {
+	    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated");
+	    return;
+	}
+	ARMA arma = generateARMA(var, txsts, targetNifPath);
+	ARMO armo = generateARMO(var, arma);
     }
 
     @Override

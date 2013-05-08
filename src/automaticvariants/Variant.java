@@ -181,5 +181,21 @@ public class Variant extends PackageNode implements Serializable {
     public boolean isTemplated() {
 	return spec.Template_Form.length() > 6;
     }
-    
+
+    @Override
+    public int hashCode() {
+	return printName("").hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+	if (obj == null) {
+	    return false;
+	}
+	if (getClass() != obj.getClass()) {
+	    return false;
+	}
+	final Variant other = (Variant) obj;
+	return printName("").equals(other.printName(""));
+    }
 }

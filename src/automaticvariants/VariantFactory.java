@@ -202,7 +202,7 @@ abstract public class VariantFactory<T extends VariantProfile> {
 	}
 	for (VariantProfile profile : profiles) {
 	    if (SPGlobal.logging()) {
-		SPGlobal.log(toString(), " ***********> Generating profile " + profile.ID);
+		SPGlobal.log(toString(), " ***********> Generating profile " + profile);
 	    }
 	    profile.generateRecords();
 	}

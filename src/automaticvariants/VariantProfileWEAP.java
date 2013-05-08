@@ -6,18 +6,15 @@ package automaticvariants;
 
 import automaticvariants.AVFileVars.WEAP_spec;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import skyproc.*;
-import skyproc.exceptions.BadMod;
-import skyproc.exceptions.MissingMaster;
 
 /**
  *
  * @author Justin Swanson
  */
-public class VariantProfileWEAP extends VariantProfile {
+public class VariantProfileWEAP extends VariantProfile<WEAP> {
 
     SeedWEAP seed = new SeedWEAP();
     private ArrayList<WEAP> matchedWeapons = new ArrayList<>();
@@ -39,6 +36,11 @@ public class VariantProfileWEAP extends VariantProfile {
 	}
 	SPGlobal.log(toString(), "");
 	SPGlobal.log(toString(), "");
+    }
+
+    @Override
+    public String toString() {
+	return super.toString() + " NIF: " + getNifPath();
     }
 
     @Override
@@ -64,85 +66,50 @@ public class VariantProfileWEAP extends VariantProfile {
     }
 
     @Override
-    public void generateRecords() {
-	for (VariantSet varSet : matchedVariantSets) {
+    public void generateRecord(Variant var) {
+	String varEDID = NiftyFunc.EDIDtrimmer(generateEDID(var));
+	for (WEAP weapon : matchedWeapons) {
 	    if (SPGlobal.logging()) {
-		SPGlobal.log(toString(), " *************> Generating set " + varSet.printName("-"));
+		SPGlobal.log(toString(), " *****************> Generating weapon " + weapon);
 	    }
-	    ArrayList<Variant> vars = varSet.multiplyAndFlatten(getGlobalMeshes());
-	    for (Variant var : vars) {
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(toString(), " ***************> Generating var " + var.printName("-"));
-		}
-		String varEDID = NiftyFunc.EDIDtrimmer(generateEDID(var));
-		for (WEAP weapon : matchedWeapons) {
-		    String edid = varEDID + weapon.getEDID() + "_weap";
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(toString(), " * ==> Generating WEAP: " + edid);
-		    }
-		    WEAP weaponDup = getWeapon(edid, weapon, var);
-		    setStats(weaponDup, var);
-
-		    // Set Third Person
-		    String nifPath = getNifPath(var, false);
-		    weaponDup.setModelFilename(getCleanNifPath(nifPath));
-		    //Generate and set alt textures
-		    Map<String, TXST> txsts = generateTXSTs(var, nifPath);
-		    if (!txsts.isEmpty()) {
-			loadAltTextures(weaponDup.getAltTextures(), txsts, nifPath);
-		    } else if (!var.isTemplated()) {
-			SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated and it was not templated.");
-			continue;
-		    }
-
-		    // Set First Person
-		    STAT stat = new STAT(edid + "_stat");
-		    String firstPersonNifPath = getNifPath(var, true);
-		    stat.getModelData().setFileName(getCleanNifPath(nifPath));
-		    if (!firstPersonNifPath.equals(nifPath)) {
-			txsts = generateTXSTs(var, firstPersonNifPath);
-			if (!txsts.isEmpty()) {
-			    loadAltTextures(stat.getModelData().getAltTextures(), txsts, firstPersonNifPath);
-			} else if (!var.isTemplated()) {
-			    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated and it was not templated.");
-			    continue;
-			}
-		    }
-		    stat = (STAT) NiftyFunc.mergeDuplicate(stat);
-		    weaponDup.setFirstPersonModel(stat.getForm());
-
-		    VariantFactoryWEAP.weapons.put(weapon, new WEAP_spec(weaponDup, var.spec));
-
-		    if (SPGlobal.logging()) {
-			SPGlobal.log(toString(), " ******************************>");
-			SPGlobal.log(toString(), "");
-		    }
-		}
-	    }
+	    WEAP dup = generateFor(weapon, varEDID, var);
+	    VariantFactoryWEAP.weapons.put(weapon, new WEAP_spec(dup, var.spec));
 	}
     }
 
-    WEAP getWeapon(String edid, WEAP seed, Variant var) {
-	if (var.isTemplated()) {
-	    FormID templateF = new FormID(var.spec.Template_Form);
-	    WEAP template = (WEAP) SPDatabase.getMajor(templateF, GRUP_TYPE.WEAP);
-	    if (template == null) {
-		AVFileVars.importTemplateMod(templateF.getMaster());
-		template = (WEAP) SPDatabase.getMajor(templateF, GRUP_TYPE.WEAP);
-	    }
-	    if (template != null) {
-		WEAP copy = (WEAP) SPGlobal.getGlobalPatch().makeCopy(template, edid);
-		ArrayList<MajorRecord> copies = NiftyFunc.deepCopySubRecords(copy, templateF.getMaster());
-		if (SPGlobal.logging()) {
-		    SPGlobal.log(toString(), " * Copied template: " + template);
-		    for (MajorRecord m : copies) {
-			SPGlobal.log(toString(), " *   Deep Copied : " + m);
-		    }
-		}
-		return copy;
+    WEAP generateFor(WEAP weapon, String varEDID, Variant var) {
+
+	WEAP weaponDup = (WEAP) generateFor(weapon, varEDID);
+	setStats(weaponDup, var);
+
+	// Set Third Person
+	String nifPath = getNifPath(var, false);
+	weaponDup.setModelFilename(getCleanNifPath(nifPath));
+	//Generate and set alt textures
+	Map<String, TXST> txsts = generateTXSTs(var, nifPath);
+	if (!txsts.isEmpty()) {
+	    loadAltTextures(weaponDup.getAltTextures(), txsts, nifPath);
+	} else if (!var.isTemplated()) {
+	    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated and it was not templated.");
+	    return null;
+	}
+
+	// Set First Person
+	STAT stat = new STAT(varEDID + weapon.getEDID() + "_stat");
+	String firstPersonNifPath = getNifPath(var, true);
+	stat.getModelData().setFileName(getCleanNifPath(nifPath));
+	if (!firstPersonNifPath.equals(nifPath)) {
+	    txsts = generateTXSTs(var, firstPersonNifPath);
+	    if (!txsts.isEmpty()) {
+		loadAltTextures(stat.getModelData().getAltTextures(), txsts, firstPersonNifPath);
+	    } else if (!var.isTemplated()) {
+		SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated and it was not templated.");
+		return null;
 	    }
 	}
-	return (WEAP) SPGlobal.getGlobalPatch().makeCopy(seed, edid);
+	stat = (STAT) NiftyFunc.mergeDuplicate(stat);
+	weaponDup.setFirstPersonModel(stat.getForm());
+	return weaponDup;
     }
 
     void setStats(WEAP weap, Variant var) {

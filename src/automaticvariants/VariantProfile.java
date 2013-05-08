@@ -16,7 +16,7 @@ import skyproc.*;
  *
  * @author Justin Swanson
  */
-abstract public class VariantProfile {
+abstract public class VariantProfile<T extends MajorRecord> {
 
     static int nextID = 0;
     static Map<String, Map<Integer, TextureSet>> nifInfoDatabase = new HashMap<>();
@@ -32,7 +32,7 @@ abstract public class VariantProfile {
 	ID = nextID++;
     }
 
-    VariantProfile(VariantProfile rhs) {
+    VariantProfile(VariantProfile<T> rhs) {
 	this();
 	textures = new HashMap<>();
 	for (Integer key : rhs.textures.keySet()) {
@@ -164,7 +164,26 @@ abstract public class VariantProfile {
 
     public abstract Seed getSeed();
 
-    public abstract void generateRecords();
+    public final void generateRecords() {
+	for (VariantSet varSet : matchedVariantSets) {
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(toString(), " *************> Generating set " + varSet.printName("-"));
+	    }
+	    ArrayList<Variant> vars = varSet.multiplyAndFlatten(getGlobalMeshes());
+	    for (Variant var : vars) {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(toString(), " ***************> Generating var " + var.printName("-"));
+		}
+		generateRecord(var);
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(toString(), " ******************************>");
+		    SPGlobal.log(toString(), "");
+		}
+	    }
+	}
+    }
+
+    public abstract void generateRecord(Variant var);
 
     public ArrayList<VariantGlobalMesh> getGlobalMeshes() {
 	ArrayList<VariantGlobalMesh> globalMeshes = new ArrayList<>();
@@ -292,7 +311,7 @@ abstract public class VariantProfile {
 		}
 
 		txst = (TXST) NiftyFunc.mergeDuplicate(txst);
-		
+
 		out.put(nodeName, txst);
 	    }
 	}
@@ -328,4 +347,32 @@ abstract public class VariantProfile {
 	}
 	return false;
     }
+
+    T generateFor(T in, String varEDID) {
+	String edid = varEDID + "_" + in.getEDID() + "_" + in.getType();
+	T dup = (T) SPGlobal.getGlobalPatch().makeCopy(in, edid);
+	if (SPGlobal.logging()) {
+	    SPGlobal.log(toString(), " * ==> Generated : " + dup);
+	}
+	return dup;
+    }
+
+    public T getTemplateRecord(Variant var) {
+	FormID templateF = new FormID(var.spec.Template_Form);
+	T template = (T) SPDatabase.getMajor(templateF);
+	if (template == null) {
+	    AVFileVars.importTemplateMod(templateF.getMaster());
+	    template = (T) SPDatabase.getMajor(templateF);
+	}
+	if (template != null) {
+	    ArrayList<MajorRecord> copies = NiftyFunc.deepCopySubRecords(template, template.getFormMaster());
+	    if (SPGlobal.logging()) {
+		for (MajorRecord m : copies) {
+		    SPGlobal.log(toString(), " *   Deep Copied : " + m);
+		}
+	    }
+	}
+	return template;
+    }
+
 }
