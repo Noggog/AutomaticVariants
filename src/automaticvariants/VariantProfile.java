@@ -26,7 +26,6 @@ abstract public class VariantProfile {
     Set<String> texturesFlat;
     Set<String> textureNames;
     ArrayList<VariantSet> matchedVariantSets = new ArrayList<>();
-    ArrayList<TXST> generatedTXSTs = new ArrayList<>();
     public int ID;
 
     VariantProfile() {
@@ -292,18 +291,8 @@ abstract public class VariantProfile {
 		    }
 		}
 
-		//Check to see if generated txst is duplicate
-		for (TXST existingtxst : generatedTXSTs) {
-		    if (existingtxst.deepEquals(txst)) {
-			if (SPGlobal.logging()) {
-			    SPGlobal.log(toString(), " * |    Discarding txst because it was duplicate with " + existingtxst);
-			}
-			SPGlobal.getGlobalPatch().remove(txst.getForm());
-			txst = existingtxst;
-			break;
-		    }
-		}
-
+		txst = (TXST) NiftyFunc.mergeDuplicate(txst);
+		
 		out.put(nodeName, txst);
 	    }
 	}
