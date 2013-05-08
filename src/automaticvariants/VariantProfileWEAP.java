@@ -18,6 +18,7 @@ public class VariantProfileWEAP extends VariantProfile<WEAP> {
 
     SeedWEAP seed = new SeedWEAP();
     private ArrayList<WEAP> matchedWeapons = new ArrayList<>();
+    HashMap<Variant, WEAP> templateMap = new HashMap<>();
 
     public VariantProfileWEAP(WEAP in) {
 	seed.setNifPath(in.getModelFilename());
@@ -36,11 +37,6 @@ public class VariantProfileWEAP extends VariantProfile<WEAP> {
 	}
 	SPGlobal.log(toString(), "");
 	SPGlobal.log(toString(), "");
-    }
-
-    @Override
-    public String toString() {
-	return super.toString() + " NIF: " + getNifPath();
     }
 
     @Override
@@ -70,25 +66,85 @@ public class VariantProfileWEAP extends VariantProfile<WEAP> {
 	String varEDID = NiftyFunc.EDIDtrimmer(generateEDID(var));
 	for (WEAP weapon : matchedWeapons) {
 	    if (SPGlobal.logging()) {
-		SPGlobal.log(toString(), " *****************> Generating weapon " + weapon);
+		SPGlobal.log(Integer.toString(ID), " *****************> Generating for weapon " + weapon);
 	    }
-	    WEAP dup = generateFor(weapon, varEDID, var);
+	    WEAP dup = (WEAP) generateFor(weapon, varEDID);
+	    WEAP template = getTemplateCopy(var, varEDID);
+	    if (template != null) {
+		SPGlobal.log(toString(), " * Templating to " + template);
+		dup.setName(subInNewName(template, weapon));
+		dup.setValue(subInNewValue(template, weapon));
+		dup.setTemplate(template.getForm());
+	    } else {
+		SPGlobal.log(toString(), " * No template.  Generating records: ");
+		generateSupportRecords(weapon, varEDID, var);
+	    }
 	    VariantFactoryWEAP.weapons.put(weapon, new WEAP_spec(dup, var.spec));
+
+	    if (SPGlobal.logging()) {
+		SPGlobal.log(Integer.toString(ID), " *****************>");
+	    }
 	}
     }
 
-    WEAP generateFor(WEAP weapon, String varEDID, Variant var) {
+    String subInNewName(WEAP template, WEAP orig) {
+	if (!orig.getTemplate().equals(FormID.NULL)) {
+	    WEAP templateTop = orig.getTemplateTop();
+	    if (templateTop != null) {
+		String origName = orig.getName();
+		String topName = templateTop.getName();
+		String ret = origName.replaceAll(topName, template.getName());
+		return ret;
+	    }
+	}
+	return template.getName();
+    }
 
-	WEAP weaponDup = (WEAP) generateFor(weapon, varEDID);
-	setStats(weaponDup, var);
+    int subInNewValue(WEAP template, WEAP orig) {
+	double scale = 1.0;
+	if (!orig.getTemplate().equals(FormID.NULL)) {
+	    WEAP templateTop = orig.getTemplateTop();
+	    if (templateTop != null) {
+		int origVal = orig.getValue();
+		int topVal = templateTop.getValue();
+		scale = ((double) origVal) / topVal;
+	    }
+	}
+	return (int) Math.round(template.getValue() * scale);
+    }
+
+    WEAP getTemplateCopy(Variant var, String varEDID) {
+	if (var.isTemplated()) {
+	    WEAP dup = templateMap.get(var);
+	    if (dup != null) {
+		SPGlobal.log(toString(), " * Variant is templated and exists: " + dup);
+		return dup;
+	    } else {
+		// If not stored, create and store it
+		WEAP template = getTemplateRecord(var);
+		if (template != null) {
+		    SPGlobal.log(toString(), " * Variant is templated to " + template + " GENERATING RECORDS:");
+		    dup = (WEAP) generateFor(template, varEDID);
+		    generateSupportRecords(dup, varEDID, var);
+		    templateMap.put(var, dup);
+		    return dup;
+		}
+	    }
+	}
+	return null;
+    }
+
+    WEAP generateSupportRecords(WEAP weapon, String varEDID, Variant var) {
+
+	setStats(weapon, var);
 
 	// Set Third Person
 	String nifPath = getNifPath(var, false);
-	weaponDup.setModelFilename(getCleanNifPath(nifPath));
+	weapon.getModelData().setFileName(getCleanNifPath(nifPath));
 	//Generate and set alt textures
 	Map<String, TXST> txsts = generateTXSTs(var, nifPath);
 	if (!txsts.isEmpty()) {
-	    loadAltTextures(weaponDup.getAltTextures(), txsts, nifPath);
+	    loadAltTextures(weapon.getModelData().getAltTextures(), txsts, nifPath);
 	} else if (!var.isTemplated()) {
 	    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated and it was not templated.");
 	    return null;
@@ -108,8 +164,8 @@ public class VariantProfileWEAP extends VariantProfile<WEAP> {
 	    }
 	}
 	stat = (STAT) NiftyFunc.mergeDuplicate(stat);
-	weaponDup.setFirstPersonModel(stat.getForm());
-	return weaponDup;
+	weapon.setFirstPersonModel(stat.getForm());
+	return weapon;
     }
 
     void setStats(WEAP weap, Variant var) {
