@@ -162,6 +162,9 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 	}
 	for (WEAP weapSrc : weapons.keySet()) {
 	    LVLI list = new LVLI(weapSrc.getEDID() + "_llist");
+	    if (list.getEDID().equals("IronDagger_llist")) {
+		int wer = 23;
+	    }
 	    if (SPGlobal.logging()) {
 		SPGlobal.log(header, "Generating for " + weapSrc);
 		SPGlobal.log(header, "  Generating " + list);
@@ -176,7 +179,7 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 		AVNum levelSpec = AVNum.factory(weapNew.spec.Spawn_Level);
 		if (levelSpec.getClass().equals(AVNumSet.class)) {
 		    level = (int) levelSpec.value();
-		} 
+		}
 		for (int i = 0; i < lcm / weapNew.spec.Probability_Divider; i++) {
 		    list.addEntry(weapNew.weap.getForm(), level, 1);
 		}

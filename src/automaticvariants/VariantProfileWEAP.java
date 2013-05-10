@@ -77,10 +77,11 @@ public class VariantProfileWEAP extends VariantProfile<WEAP> {
 		dup.setTemplate(template.getForm());
 	    } else {
 		SPGlobal.log(toString(), " * No template.  Generating records: ");
-		generateSupportRecords(weapon, varEDID, var);
+		weapon = generateSupportRecords(weapon, varEDID, var);
 	    }
-	    VariantFactoryWEAP.weapons.put(weapon, new WEAP_spec(dup, var.spec));
-
+	    if (weapon != null) {
+		VariantFactoryWEAP.weapons.put(weapon, new WEAP_spec(dup, var.spec));
+	    }
 	    if (SPGlobal.logging()) {
 		SPGlobal.log(Integer.toString(ID), " *****************>");
 	    }
@@ -125,7 +126,7 @@ public class VariantProfileWEAP extends VariantProfile<WEAP> {
 		if (template != null) {
 		    SPGlobal.log(toString(), " * Variant is templated to " + template + " GENERATING RECORDS:");
 		    dup = (WEAP) generateFor(template, varEDID);
-		    generateSupportRecords(dup, varEDID, var);
+		    dup = generateSupportRecords(dup, varEDID, var);
 		    templateMap.put(var, dup);
 		    return dup;
 		}
@@ -146,7 +147,7 @@ public class VariantProfileWEAP extends VariantProfile<WEAP> {
 	if (!txsts.isEmpty()) {
 	    loadAltTextures(weapon.getModelData().getAltTextures(), txsts, nifPath);
 	} else if (!var.isTemplated()) {
-	    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated and it was not templated.");
+	    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated and it was not templated: " + var.printName("_") + " for " + weapon);
 	    return null;
 	}
 
@@ -159,7 +160,7 @@ public class VariantProfileWEAP extends VariantProfile<WEAP> {
 	    if (!txsts.isEmpty()) {
 		loadAltTextures(stat.getModelData().getAltTextures(), txsts, firstPersonNifPath);
 	    } else if (!var.isTemplated()) {
-		SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated and it was not templated.");
+		SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated and it was not templated." + var.printName("_") + " for " + weapon);
 		return null;
 	    }
 	}

@@ -241,7 +241,7 @@ public class VariantProfileNPC extends VariantProfile<NPC_> {
 
 	Map<String, TXST> txsts = generateTXSTs(var, targetNifPath);
 	if (txsts.isEmpty()) {
-	    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated");
+	    SPGlobal.logError(toString(), " * Skipped because no TXSTs were generated: " + var.printName("_"));
 	    return;
 	}
 	ARMA arma = generateARMA(var, txsts, targetNifPath);
