@@ -91,13 +91,7 @@ abstract public class VariantProfile<T extends MajorRecord> {
     public boolean catalogNif(String nifPath) {
 	if (!nifInfoDatabase.containsKey(nifPath)) {
 	    try {
-		LShrinkArray nifRawData = null;
-		File f = new File(nifPath);
-		if (f.exists()) {
-		    nifRawData = new LShrinkArray(f);
-		} else {
-		    nifRawData = BSA.getUsedFile(nifPath);
-		}
+		LShrinkArray nifRawData = BSA.getUsedFile(nifPath);
 		if (nifRawData != null) {
 		    ArrayList<TextureSet> nifTextures = VariantFactory.loadNif(nifPath, nifRawData);
 		    Map<Integer, TextureSet> nifData = new HashMap<>();

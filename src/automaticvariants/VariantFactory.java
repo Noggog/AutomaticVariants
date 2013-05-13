@@ -64,12 +64,17 @@ abstract public class VariantFactory<T extends VariantProfile> {
     public void loadProfileNifs() {
 	for (VariantProfile profile : new ArrayList<>(profiles)) {
 	    try {
+		if (SPGlobal.logging()) {
+		    SPGlobal.log(header, "Loading NIFs for profile " + profile);
+		}
 		profile.catalogNif(profile.getNifPath());
 		if (profile.textures.isEmpty()) {
 		    remove(profile);
 		    SPGlobal.log(profile.toString(), "Removing profile with nif because it had no textures: " + profile.getNifPath());
 		}
-	    } catch (Exception ex) {
+	    } catch (Throwable ex) {
+		remove(profile);
+		SPGlobal.log(profile.toString(), "Removing profile with nif because exception occured: " + profile.getNifPath());
 		SPGlobal.logException(ex);
 	    }
 	}

@@ -162,9 +162,6 @@ public class VariantFactoryWEAP extends VariantFactory<VariantProfileWEAP> {
 	}
 	for (WEAP weapSrc : weapons.keySet()) {
 	    LVLI list = new LVLI(weapSrc.getEDID() + "_llist");
-	    if (list.getEDID().equals("IronDagger_llist")) {
-		int wer = 23;
-	    }
 	    if (SPGlobal.logging()) {
 		SPGlobal.log(header, "Generating for " + weapSrc);
 		SPGlobal.log(header, "  Generating " + list);

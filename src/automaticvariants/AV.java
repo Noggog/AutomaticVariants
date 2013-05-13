@@ -23,6 +23,7 @@ import lev.gui.LImagePane;
 import lev.gui.LSaveFile;
 import skyproc.GLOB.GLOBType;
 import skyproc.*;
+import skyproc.BSA.FileType;
 import skyproc.gui.SPMainMenuConfig;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SUM;
@@ -35,7 +36,7 @@ import skyproc.gui.SUMGUI;
  */
 public class AV implements SUM {
 
-    public static String version = "2.0 Alpha";
+    public static String version = "2.0.0.1 Beta";
     static private String header = "AV";
     /*
      * Exception lists
@@ -518,14 +519,8 @@ public class AV implements SUM {
 
 	makeGlobals();
 	makeAVQuest();
-
-	// For all race SWITCHING variants
-	// (such as texture variants)
+	
 	AVFileVars.setUpFileVariants(getMerger());
-//
-//	// For all non-skin SWITCHING variants
-//	// (such as height variant scripting)
-//	setUpInGameScriptBasedVariants(source);
     }
 
     static public Mod getMerger() {

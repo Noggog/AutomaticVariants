@@ -224,6 +224,9 @@ public class VariantFactoryNPC extends VariantFactory<VariantProfileNPC> {
 			    VariantProfileNPC profile = new VariantProfileNPC();
 			    profiles.add(profile);
 			    profile.nifPath = nifPath;
+			    if (SPGlobal.logging()) {
+				SPGlobal.log(header, "Created profile " + profile);
+			    }
 			}
 		    }
 		}
