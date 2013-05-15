@@ -23,7 +23,6 @@ import lev.gui.LImagePane;
 import lev.gui.LSaveFile;
 import skyproc.GLOB.GLOBType;
 import skyproc.*;
-import skyproc.BSA.FileType;
 import skyproc.gui.SPMainMenuConfig;
 import skyproc.gui.SPMainMenuPanel;
 import skyproc.gui.SUM;
@@ -36,7 +35,7 @@ import skyproc.gui.SUMGUI;
  */
 public class AV implements SUM {
 
-    public static String version = "2.0.0.1 Beta";
+    public static String version = "2.0.1 Beta";
     static private String header = "AV";
     /*
      * Exception lists
