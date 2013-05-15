@@ -9,8 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import lev.LMergeMap;
 import lev.Ln;
@@ -52,14 +50,9 @@ public class AVFileVars {
 	AVPackages.prune();
 	cleanBadSets();
 
-	SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Creating NPC Variants");
 	npcFactory.createVariants(source);
-	SPProgressBarPlug.incrementBar();
 
-	SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Creating WEAP Variants");
 	weapFactory.createVariants(source);
-	SPProgressBarPlug.incrementBar();
-
 	SPProgressBarPlug.done();
     }
 
@@ -91,7 +84,7 @@ public class AVFileVars {
 	    if (srcDir.isDirectory()) {
 		File[] files = srcDir.listFiles();
 		if (progressBar) {
-		    SPProgressBarPlug.setStatusNumbered(AV.step++, AV.numSteps, "Importing AV Packages");
+		    SPProgressBarPlug.setStatusNumbered(0, 0, "Importing AV Packages");
 		    SPProgressBarPlug.reset();
 		    SPProgressBarPlug.setMax(files.length);
 		}
@@ -173,12 +166,15 @@ public class AVFileVars {
     public static boolean importTemplateMod(ModListing listing) {
 	if (!SPGlobal.getDB().hasMod(listing)) {
 	    try {
+		SPProgressBarPlug.pause(true);
 		Mod mod = SPImporter.importMod(listing, GRUP_TYPE.values());
 	    } catch (BadMod | MissingMaster ex) {
 		SPGlobal.logException(ex);
+		SPProgressBarPlug.pause(false);
 		return false;
 	    }
 	}
+	SPProgressBarPlug.pause(false);
 	return true;
     }
     /*

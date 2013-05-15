@@ -15,6 +15,7 @@ import lev.Ln;
 import skyproc.*;
 import skyproc.NIF.TextureSet;
 import skyproc.exceptions.BadParameter;
+import skyproc.gui.SPProgressBarPlug;
 
 /**
  *
@@ -28,14 +29,27 @@ abstract public class VariantFactory<T extends VariantProfile> {
 
     public void createVariants(Mod source) {
 	if (needed()) {
+	    int step = 1;
+	    int steps = 3;
+	    SPProgressBarPlug.reset();
+	    SPProgressBarPlug.setMax(steps);
+
+	    SPProgressBarPlug.setStatusNumbered(step++, steps, "Matching With Profiles");
 	    prepProfiles();
 	    dropVariantSetsInProfiles();
+	    SPProgressBarPlug.incrementBar();
+
+	    SPProgressBarPlug.setStatusNumbered(step++, steps, "Creating Variant Records");
 	    clearUnusedProfiles();
 	    createVariantRecords(source);
 	    if (AV.save.getBool(AVSaveFile.Settings.PACKAGES_ORIG_AS_VAR)) {
 		implementOriginalAsVar();
 	    }
+	    SPProgressBarPlug.incrementBar();
+
+	    SPProgressBarPlug.setStatusNumbered(step++, steps, "Creating Structure Records");
 	    createStructureRecords(source);
+	    SPProgressBarPlug.incrementBar();
 	}
     }
 
