@@ -4,6 +4,13 @@
  */
 package automaticvariants;
 
+import skyproc.NiftyFunc;
+import skyproc.GRUP_TYPE;
+import skyproc.MajorRecord;
+import skyproc.FormID;
+import skyproc.SPDatabase;
+import skyproc.SPGlobal;
+import skyproc.BSA;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;

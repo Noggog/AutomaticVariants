@@ -4,6 +4,10 @@
  */
 package automaticvariants;
 
+import skyproc.FormID;
+import skyproc.SPGlobal;
+import skyproc.Mod;
+import skyproc.BSA;
 import automaticvariants.AVFileVars.SpecHolder;
 import automaticvariants.SpecVariantSet.VariantType;
 import java.util.ArrayList;

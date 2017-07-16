@@ -4,6 +4,8 @@
  */
 package automaticvariants;
 
+import skyproc.GRUP_TYPE;
+import skyproc.SPGlobal;
 import automaticvariants.gui.ProfileDisplay;
 import java.io.File;
 import java.util.ArrayList;

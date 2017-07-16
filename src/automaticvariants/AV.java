@@ -1,5 +1,11 @@
 package automaticvariants;
 
+import skyproc.NiftyFunc;
+import skyproc.GRUP_TYPE;
+import skyproc.FormID;
+import skyproc.SPGlobal;
+import skyproc.ModListing;
+import skyproc.Mod;
 import automaticvariants.AVSaveFile.Settings;
 import automaticvariants.gui.*;
 import com.google.gson.Gson;

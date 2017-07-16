@@ -4,6 +4,9 @@
  */
 package automaticvariants;
 
+import skyproc.NiftyFunc;
+import skyproc.FormID;
+import skyproc.SPGlobal;
 import skyproc.genenums.Perspective;
 import skyproc.genenums.Gender;
 import automaticvariants.AVFileVars.ARMO_spec;

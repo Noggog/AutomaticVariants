@@ -4,6 +4,10 @@
  */
 package automaticvariants;
 
+import skyproc.GRUP_TYPE;
+import skyproc.FormID;
+import skyproc.SPDatabase;
+import skyproc.SPGlobal;
 import automaticvariants.AVSaveFile.Settings;
 import java.io.*;
 import java.util.ArrayList;

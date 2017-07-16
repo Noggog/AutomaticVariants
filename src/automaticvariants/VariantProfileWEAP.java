@@ -4,6 +4,11 @@
  */
 package automaticvariants;
 
+import skyproc.NiftyFunc;
+import skyproc.GRUP_TYPE;
+import skyproc.FormID;
+import skyproc.SPDatabase;
+import skyproc.SPGlobal;
 import automaticvariants.AVFileVars.WEAP_spec;
 import java.util.ArrayList;
 import java.util.HashMap;

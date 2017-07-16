@@ -4,6 +4,13 @@
  */
 package automaticvariants;
 
+import skyproc.GRUP_TYPE;
+import skyproc.FormID;
+import skyproc.SPDatabase;
+import skyproc.SPGlobal;
+import skyproc.ModListing;
+import skyproc.SPImporter;
+import skyproc.Mod;
 import automaticvariants.AVSaveFile.Settings;
 import java.io.File;
 import java.io.IOException;

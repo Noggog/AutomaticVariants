@@ -4,6 +4,13 @@
  */
 package automaticvariants;
 
+import skyproc.NiftyFunc;
+import skyproc.GRUP_TYPE;
+import skyproc.MajorRecord;
+import skyproc.FormID;
+import skyproc.SPDatabase;
+import skyproc.SPGlobal;
+import skyproc.Mod;
 import automaticvariants.AVFileVars.WEAP_spec;
 import automaticvariants.AVNum.AVNumSet;
 import automaticvariants.SpecVariantSet.VariantType;

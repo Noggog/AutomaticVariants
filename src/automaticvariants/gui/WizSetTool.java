@@ -4,6 +4,7 @@
  */
 package automaticvariants.gui;
 
+import skyproc.SPGlobal;
 import automaticvariants.AV;
 import automaticvariants.AVFileVars;
 import automaticvariants.AVSaveFile.Settings;
